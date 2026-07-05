@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --pink:   #E91E8C;
+  --purple: #7C3AED;
+  --green:  #10B981;
+  --dark:   #0B1120;
+  --slate:  #1E293B;
+  --muted:  #64748B;
+  --border: #E2E8F0;
+  --off:    #F8FAFC;
+  --grad:   linear-gradient(135deg, #E91E8C 0%, #7C3AED 100%);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--slate);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.grad-bg { background: var(--grad); }
+
+.grad-border {
+  border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, var(--grad) border-box;
+}
+
+/* ── animations ── */
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .4; transform: scale(.65); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-7px); }
+}
+
+@keyframes travel {
+  0%        { opacity: 0; transform: translateX(-4px); }
+  20%, 80%  { opacity: 1; }
+  100%      { opacity: 0; transform: translateX(4px); }
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-blink  { animation: blink  1.6s ease-in-out infinite; }
+.animate-float  { animation: float  3.5s ease-in-out infinite; }
+.animate-float-delay { animation: float 3.5s ease-in-out infinite .8s; }
+.animate-travel { animation: travel 1.8s linear infinite; }
+.animate-travel-2 { animation: travel 1.8s linear infinite .6s; }
+.animate-travel-3 { animation: travel 1.8s linear infinite 1.2s; }
+.animate-pop    { animation: pop    0.4s ease 2.2s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blink, .animate-float, .animate-float-delay,
+  .animate-travel, .animate-travel-2, .animate-travel-3, .animate-pop {
+    animation: none;
+  }
+}
