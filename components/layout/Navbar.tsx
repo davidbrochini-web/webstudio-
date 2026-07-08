@@ -19,9 +19,10 @@ export default function Navbar() {
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-8 list-none">
           {[
-            { href: '#como-funciona', label: 'Como funciona' },
+            { href: '#demo',          label: 'Demo' },
+            { href: '#templates',     label: 'Modelos de site' },
+            { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },
-            { href: '#contato',       label: 'Contato' },
           ].map(({ href, label }) => (
             <li key={href}>
               <Link
@@ -76,9 +77,10 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-[var(--border)] bg-white px-6 pb-4">
           {[
-            { href: '#como-funciona', label: 'Como funciona' },
+            { href: '#demo',          label: 'Demo' },
+            { href: '#templates',     label: 'Modelos de site' },
+            { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },
-            { href: '#contato',       label: 'Contato' },
           ].map(({ href, label }) => (
             <Link
               key={href}
