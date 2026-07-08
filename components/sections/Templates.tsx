@@ -1,18 +1,8 @@
 import Link from 'next/link'
 import { niches } from '@/lib/templates'
+import { themedPhoto } from '@/lib/photos'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
-// ícone de cada nicho para o card da home
-const icons: Record<string, string> = {
-  'clinica-odontologica': '🦷',
-  'escola-curso': '🎓',
-  'estudio-fotografia': '📸',
-  'advocacia': '⚖️',
-  'barbearia-salao': '💈',
-  'academia-personal': '🏋️',
-  'clinica-massagem': '💆',
-}
 
 const descs: Record<string, string> = {
   'clinica-odontologica': 'Agendamento pelo WhatsApp, tratamentos em destaque e antes/depois direto do Instagram.',
@@ -43,24 +33,30 @@ export default function Templates() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {niches.map(({ slug, label, accent }) => (
+          {niches.map(({ slug, label, photoKeywords }) => (
             <Link
               key={slug}
               href={`/modelos/${slug}`}
               className="group bg-white border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-50 hover:border-purple-200 transition-all"
             >
-              {/* Preview mini */}
-              <div className={`relative h-36 bg-gradient-to-br ${accent} flex items-center justify-center`}>
-                <span className="text-5xl drop-shadow-lg">{icons[slug]}</span>
+              {/* Preview com foto temática do nicho */}
+              <div className="relative h-44 overflow-hidden">
+                <img
+                  src={themedPhoto(photoKeywords, 5, 800, 500)}
+                  alt={label}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
                 <div className="absolute top-3 left-3 right-3 flex items-center gap-1.5 bg-white/20 backdrop-blur rounded-md px-2 py-1">
                   <div className="flex gap-1">
                     {[0, 1, 2].map(i => (
-                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                      <div key={i} className="w-1.5 h-1.5 rounded-full bg-white/60" />
                     ))}
                   </div>
-                  <span className="text-[8px] text-white/80 font-medium">seunegocio.com.br</span>
+                  <span className="text-[8px] text-white/90 font-medium">seunegocio.com.br</span>
                 </div>
-                <span className="absolute bottom-3 right-3 text-[10px] font-bold text-white bg-black/30 backdrop-blur px-2.5 py-1 rounded-full group-hover:bg-black/50 transition-colors">
+                <span className="absolute bottom-3 right-3 text-[10px] font-bold text-white bg-black/40 backdrop-blur px-2.5 py-1 rounded-full group-hover:bg-black/60 transition-colors">
                   Ver o site →
                 </span>
               </div>

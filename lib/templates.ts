@@ -43,6 +43,8 @@ export interface NicheConfig {
   testimonials: NicheTestimonial[]
   /** Handle fictício do Instagram no preview */
   igHandle: string
+  /** Palavras-chave para fotos temáticas de banco gratuito (LoremFlickr) */
+  photoKeywords: string
 }
 
 export const niches: NicheConfig[] = [
@@ -58,6 +60,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#4facfe] to-[#00f2fe]',
     solidBg: 'bg-[#0ea5e9]',
     igHandle: '@sorrirodonto',
+    photoKeywords: 'dentist,dental',
     services: [
       { icon: '🦷', title: 'Limpeza e prevenção', desc: 'Profilaxia completa e orientação para manter a saúde bucal em dia.' },
       { icon: '✨', title: 'Clareamento', desc: 'Clareamento profissional com resultado visível já nas primeiras sessões.' },
@@ -88,9 +91,10 @@ export const niches: NicheConfig[] = [
     heroSub: 'Ensino de qualidade, turmas reduzidas e acompanhamento individual. Venha conhecer nossa estrutura.',
     ctaLabel: 'Garantir matrícula',
     heroLayout: 'centered',
-    accent: 'from-[#5ee7df] to-[#b490ca]',
-    solidBg: 'bg-[#8b5cf6]',
+    accent: 'from-[#3b82f6] to-[#1d4ed8]',
+    solidBg: 'bg-[#2563eb]',
     igHandle: '@institutoaprender',
+    photoKeywords: 'school,classroom',
     services: [
       { icon: '📚', title: 'Ensino fundamental', desc: 'Base sólida com metodologia ativa e projetos interdisciplinares.' },
       { icon: '🎓', title: 'Ensino médio', desc: 'Preparação para o ENEM e vestibulares com simulados mensais.' },
@@ -124,6 +128,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#f6d365] to-[#fda085]',
     solidBg: 'bg-[#f59e0b]',
     igHandle: '@lenteviva',
+    photoKeywords: 'photographer,camera',
     services: [
       { icon: '👰', title: 'Casamentos', desc: 'Cobertura completa do making of à festa, com segundo fotógrafo.' },
       { icon: '👶', title: 'Ensaios de família', desc: 'Gestante, newborn e acompanhamento — em estúdio ou externo.' },
@@ -154,9 +159,10 @@ export const niches: NicheConfig[] = [
     heroSub: 'Atendimento personalizado e transparente. Envie sua dúvida e receba uma análise inicial do seu caso.',
     ctaLabel: 'Consultar meu caso',
     heroLayout: 'dark-bold',
-    accent: 'from-[#667eea] to-[#764ba2]',
-    solidBg: 'bg-[#4f46e5]',
+    accent: 'from-[#b8860b] to-[#7c5c10]',
+    solidBg: 'bg-[#1e293b]',
     igHandle: '@ferrazassociados',
+    photoKeywords: 'law,justice,library',
     services: [
       { icon: '⚖️', title: 'Direito trabalhista', desc: 'Rescisões, verbas não pagas, assédio e acordos trabalhistas.' },
       { icon: '🏠', title: 'Direito imobiliário', desc: 'Contratos, usucapião, regularização e disputas de imóveis.' },
@@ -187,9 +193,10 @@ export const niches: NicheConfig[] = [
     heroSub: 'Cortes clássicos e modernos, barba alinhada e aquele papo bom. Agende seu horário pelo WhatsApp.',
     ctaLabel: 'Agendar horário',
     heroLayout: 'dark-bold',
-    accent: 'from-[#f093fb] to-[#f5576c]',
-    solidBg: 'bg-[#e11d48]',
+    accent: 'from-[#dc2626] to-[#7f1d1d]',
+    solidBg: 'bg-[#b91c1c]',
     igHandle: '@navalhaclub',
+    photoKeywords: 'barbershop,barber',
     services: [
       { icon: '💈', title: 'Corte', desc: 'Degradê, social, navalhado — do clássico ao contemporâneo.' },
       { icon: '🧔', title: 'Barba', desc: 'Alinhamento com navalha, toalha quente e produtos premium.' },
@@ -223,6 +230,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#43e97b] to-[#38f9d7]',
     solidBg: 'bg-[#10b981]',
     igHandle: '@forjafit',
+    photoKeywords: 'gym,fitness',
     services: [
       { icon: '🏋️', title: 'Musculação', desc: 'Equipamentos novos e ficha de treino atualizada mensalmente.' },
       { icon: '🥊', title: 'Aulas coletivas', desc: 'Funcional, muay thai, spinning e ritmos — inclusos no plano.' },
@@ -256,6 +264,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#a8edea] to-[#fed6e3]',
     solidBg: 'bg-[#14b8a6]',
     igHandle: '@essenciaspa',
+    photoKeywords: 'spa,massage',
     services: [
       { icon: '💆', title: 'Massagem relaxante', desc: 'Alívio do estresse e tensões do dia a dia com óleos essenciais.' },
       { icon: '🧘', title: 'Massagem terapêutica', desc: 'Tratamento de dores musculares, lombalgia e má postura.' },

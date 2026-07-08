@@ -1,9 +1,10 @@
 import type { NicheConfig } from '@/lib/templates'
+import { themedPhoto } from '@/lib/photos'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 export default function HeroSplit({ config }: { config: NicheConfig }) {
-  const { heroTitle, heroSub, ctaLabel, accent, tagline } = config
+  const { heroTitle, heroSub, ctaLabel, accent, tagline, photoKeywords } = config
   return (
     <section className="px-6 py-16 sm:py-20 max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
@@ -22,8 +23,13 @@ export default function HeroSplit({ config }: { config: NicheConfig }) {
             💬 {ctaLabel}
           </a>
         </div>
-        <div className={`aspect-[4/3] rounded-3xl bg-gradient-to-br ${accent} flex items-center justify-center shadow-xl`}>
-          <span className="text-7xl sm:text-8xl drop-shadow-lg">✦</span>
+        <div className="relative">
+          <div className={`absolute -inset-3 rounded-[28px] bg-gradient-to-br ${accent} opacity-15 blur-xl`} />
+          <img
+            src={themedPhoto(photoKeywords, 2, 800, 600)}
+            alt=""
+            className="relative aspect-[4/3] w-full object-cover rounded-3xl shadow-xl"
+          />
         </div>
       </div>
     </section>
