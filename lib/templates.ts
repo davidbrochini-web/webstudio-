@@ -32,6 +32,8 @@ export interface NicheConfig {
   heroTitle: string
   heroSub: string
   ctaLabel: string
+  /** Arquétipo visual do hero — evita que todos os nichos pareçam a mesma página */
+  heroLayout: 'split' | 'centered' | 'dark-bold'
   /** Gradiente tailwind (from-X to-Y) usado como identidade do nicho */
   accent: string
   /** Cor sólida para botões/detalhes (classe tailwind de bg) */
@@ -52,6 +54,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seu sorriso merece cuidado de verdade.',
     heroSub: 'Tratamentos modernos, equipe especializada e atendimento humanizado. Agende sua avaliação sem compromisso.',
     ctaLabel: 'Agendar avaliação',
+    heroLayout: 'split',
     accent: 'from-[#4facfe] to-[#00f2fe]',
     solidBg: 'bg-[#0ea5e9]',
     igHandle: '@sorrirodonto',
@@ -68,6 +71,8 @@ export const niches: NicheConfig[] = [
       { emoji: '✨', bg: 'from-[#4facfe] to-[#00f2fe]', likes: 95, caption: 'Sorriso novo, confiança nova' },
       { emoji: '📅', bg: 'from-[#a1c4fd] to-[#c2e9fb]', likes: 47, caption: 'Agenda aberta para novembro' },
       { emoji: '🪥', bg: 'from-[#84fab0] to-[#8fd3f4]', likes: 58, caption: 'Como escovar do jeito certo' },
+      { emoji: '🦷', bg: 'from-[#4facfe] to-[#00f2fe]', likes: 73, caption: 'Facetas de porcelana' },
+      { emoji: '👶', bg: 'from-[#a1c4fd] to-[#c2e9fb]', likes: 81, caption: 'Odontopediatria com carinho' },
     ],
     testimonials: [
       { name: 'Mariana S.', text: 'Atendimento impecável do início ao fim. Perdi o medo de dentista aqui.' },
@@ -82,6 +87,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Matrículas abertas para 2026.',
     heroSub: 'Ensino de qualidade, turmas reduzidas e acompanhamento individual. Venha conhecer nossa estrutura.',
     ctaLabel: 'Garantir matrícula',
+    heroLayout: 'centered',
     accent: 'from-[#5ee7df] to-[#b490ca]',
     solidBg: 'bg-[#8b5cf6]',
     igHandle: '@institutoaprender',
@@ -98,6 +104,8 @@ export const niches: NicheConfig[] = [
       { emoji: '📖', bg: 'from-[#5ee7df] to-[#b490ca]', likes: 76, caption: 'Clube de leitura' },
       { emoji: '🎭', bg: 'from-[#d299c2] to-[#fef9d7]', likes: 156, caption: 'Festival de teatro' },
       { emoji: '🏆', bg: 'from-[#89f7fe] to-[#66a6ff]', likes: 189, caption: '1º lugar na olimpíada de matemática' },
+      { emoji: '🎨', bg: 'from-[#5ee7df] to-[#b490ca]', likes: 92, caption: 'Feira de artes' },
+      { emoji: '🚌', bg: 'from-[#d299c2] to-[#fef9d7]', likes: 68, caption: 'Passeio pedagógico' },
     ],
     testimonials: [
       { name: 'Patrícia L.', text: 'Meus dois filhos estudam aqui. A evolução deles é visível a cada semestre.' },
@@ -112,6 +120,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Momentos que merecem ficar para sempre.',
     heroSub: 'Ensaios, eventos e retratos com direção profissional. Seu portfólio se atualiza aqui a cada trabalho novo.',
     ctaLabel: 'Pedir orçamento',
+    heroLayout: 'dark-bold',
     accent: 'from-[#f6d365] to-[#fda085]',
     solidBg: 'bg-[#f59e0b]',
     igHandle: '@lenteviva',
@@ -128,6 +137,8 @@ export const niches: NicheConfig[] = [
       { emoji: '🌅', bg: 'from-[#f6d365] to-[#fda085]', likes: 167, caption: 'Ensaio na praia' },
       { emoji: '💍', bg: 'from-[#fbc2eb] to-[#a6c1ee]', likes: 223, caption: 'Pré-wedding no campo' },
       { emoji: '🎂', bg: 'from-[#fddb92] to-[#d1fdff]', likes: 145, caption: 'Smash the cake da Alice' },
+      { emoji: '📷', bg: 'from-[#f6d365] to-[#fda085]', likes: 178, caption: 'Bastidores do estúdio' },
+      { emoji: '🌸', bg: 'from-[#fbc2eb] to-[#a6c1ee]', likes: 134, caption: 'Ensaio de 15 anos' },
     ],
     testimonials: [
       { name: 'Ana & Pedro', text: 'As fotos do nosso casamento ficaram um sonho. Cada momento capturado com sensibilidade.' },
@@ -142,6 +153,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seus direitos defendidos com seriedade.',
     heroSub: 'Atendimento personalizado e transparente. Envie sua dúvida e receba uma análise inicial do seu caso.',
     ctaLabel: 'Consultar meu caso',
+    heroLayout: 'dark-bold',
     accent: 'from-[#667eea] to-[#764ba2]',
     solidBg: 'bg-[#4f46e5]',
     igHandle: '@ferrazassociados',
@@ -158,6 +170,8 @@ export const niches: NicheConfig[] = [
       { emoji: '💼', bg: 'from-[#667eea] to-[#764ba2]', likes: 58, caption: 'Direitos do consumidor em 2025' },
       { emoji: '📱', bg: 'from-[#30cfd0] to-[#330867]', likes: 71, caption: 'Golpe do PIX: como se proteger' },
       { emoji: '✍️', bg: 'from-[#a8c0ff] to-[#3f2b96]', likes: 49, caption: 'Quando vale a pena fazer acordo' },
+      { emoji: '📖', bg: 'from-[#667eea] to-[#764ba2]', likes: 55, caption: 'Entenda a nova lei do inquilinato' },
+      { emoji: '🤝', bg: 'from-[#30cfd0] to-[#330867]', likes: 63, caption: 'Mediação: uma alternativa ao processo' },
     ],
     testimonials: [
       { name: 'Marcos V.', text: 'Resolveram minha causa trabalhista com agilidade. Comunicação clara em cada etapa.' },
@@ -172,6 +186,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Mais que um corte. Uma experiência.',
     heroSub: 'Cortes clássicos e modernos, barba alinhada e aquele papo bom. Agende seu horário pelo WhatsApp.',
     ctaLabel: 'Agendar horário',
+    heroLayout: 'dark-bold',
     accent: 'from-[#f093fb] to-[#f5576c]',
     solidBg: 'bg-[#e11d48]',
     igHandle: '@navalhaclub',
@@ -188,6 +203,8 @@ export const niches: NicheConfig[] = [
       { emoji: '🔥', bg: 'from-[#f093fb] to-[#f5576c]', likes: 187, caption: 'Corte + barba + sobrancelha' },
       { emoji: '🎩', bg: 'from-[#ff9a9e] to-[#fecfef]', likes: 112, caption: 'Estilo não tem idade' },
       { emoji: '🍺', bg: 'from-[#ffecd2] to-[#fcb69f]', likes: 143, caption: 'Sexta no club' },
+      { emoji: '💇', bg: 'from-[#f093fb] to-[#f5576c]', likes: 121, caption: 'Corte navalhado' },
+      { emoji: '🪒', bg: 'from-[#ff9a9e] to-[#fecfef]', likes: 96, caption: 'Barba na navalha, do jeito certo' },
     ],
     testimonials: [
       { name: 'Diego F.', text: 'Melhor barbearia da região. Corte impecável e ambiente top demais.' },
@@ -202,6 +219,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seu melhor shape começa aqui.',
     heroSub: 'Treinos personalizados, acompanhamento de verdade e uma comunidade que motiva. Primeira aula grátis.',
     ctaLabel: 'Aula experimental grátis',
+    heroLayout: 'dark-bold',
     accent: 'from-[#43e97b] to-[#38f9d7]',
     solidBg: 'bg-[#10b981]',
     igHandle: '@forjafit',
@@ -218,6 +236,8 @@ export const niches: NicheConfig[] = [
       { emoji: '🔥', bg: 'from-[#43e97b] to-[#38f9d7]', likes: 156, caption: 'Desafio 30 dias começou!' },
       { emoji: '🏃', bg: 'from-[#0ba360] to-[#3cba92]', likes: 98, caption: 'Grupo de corrida aos sábados' },
       { emoji: '🏆', bg: 'from-[#92fe9d] to-[#00c9ff]', likes: 201, caption: 'Nossos atletas no pódio' },
+      { emoji: '💦', bg: 'from-[#43e97b] to-[#38f9d7]', likes: 87, caption: 'Bora suar a camisa' },
+      { emoji: '🧘', bg: 'from-[#0ba360] to-[#3cba92]', likes: 76, caption: 'Alongamento pós-treino' },
     ],
     testimonials: [
       { name: 'Rafael N.', text: 'Perdi 12kg em 5 meses com o acompanhamento do personal. Mudou minha vida.' },
@@ -232,6 +252,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Pausa para cuidar de você.',
     heroSub: 'Massagens terapêuticas e relaxantes com profissionais certificados. Agende sua sessão e desligue do estresse.',
     ctaLabel: 'Agendar sessão',
+    heroLayout: 'centered',
     accent: 'from-[#a8edea] to-[#fed6e3]',
     solidBg: 'bg-[#14b8a6]',
     igHandle: '@essenciaspa',
@@ -248,6 +269,8 @@ export const niches: NicheConfig[] = [
       { emoji: '✨', bg: 'from-[#a8edea] to-[#fed6e3]', likes: 102, caption: 'Ambiente preparado para você' },
       { emoji: '🤰', bg: 'from-[#d4fc79] to-[#96e6a1]', likes: 67, caption: 'Massagem gestante: benefícios' },
       { emoji: '🕯️', bg: 'from-[#e0c3fc] to-[#8ec5fc]', likes: 81, caption: 'Autocuidado não é luxo' },
+      { emoji: '🌺', bg: 'from-[#a8edea] to-[#fed6e3]', likes: 59, caption: 'Sala de relaxamento' },
+      { emoji: '💧', bg: 'from-[#d4fc79] to-[#96e6a1]', likes: 71, caption: 'Drenagem linfática' },
     ],
     testimonials: [
       { name: 'Fernanda C.', text: 'Saí de lá renovada. Ambiente impecável e profissional super atenciosa.' },

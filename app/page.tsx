@@ -1,8 +1,8 @@
 import Navbar     from '@/components/layout/Navbar'
 import Footer     from '@/components/layout/Footer'
 import Hero       from '@/components/sections/Hero'
-import Stats      from '@/components/sections/Stats'
 import FeedDemo   from '@/components/sections/FeedDemo'
+import Stats      from '@/components/sections/Stats'
 import HowItWorks from '@/components/sections/HowItWorks'
 import Templates  from '@/components/sections/Templates'
 import Features   from '@/components/sections/Features'
@@ -16,8 +16,8 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <Stats />
         <FeedDemo />
+        <Stats />
         <HowItWorks />
         <Templates />
         <Features />
