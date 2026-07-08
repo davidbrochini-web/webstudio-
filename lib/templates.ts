@@ -32,8 +32,8 @@ export interface NicheConfig {
   heroTitle: string
   heroSub: string
   ctaLabel: string
-  /** Arquétipo visual do hero — evita que todos os nichos pareçam a mesma página */
-  heroLayout: 'split' | 'centered' | 'dark-bold'
+  /** Arquétipo de PÁGINA INTEIRA — cada um tem estrutura, ordem de seções e componentes próprios */
+  pageLayout: 'clinico' | 'editorial' | 'portfolio' | 'urbano' | 'performance' | 'zen' | 'acolhedor'
   /** Gradiente tailwind (from-X to-Y) usado como identidade do nicho */
   accent: string
   /** Cor sólida para botões/detalhes (classe tailwind de bg) */
@@ -56,7 +56,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seu sorriso merece cuidado de verdade.',
     heroSub: 'Tratamentos modernos, equipe especializada e atendimento humanizado. Agende sua avaliação sem compromisso.',
     ctaLabel: 'Agendar avaliação',
-    heroLayout: 'split',
+    pageLayout: 'clinico',
     accent: 'from-[#4facfe] to-[#00f2fe]',
     solidBg: 'bg-[#0ea5e9]',
     igHandle: '@sorrirodonto',
@@ -90,7 +90,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Matrículas abertas para 2026.',
     heroSub: 'Ensino de qualidade, turmas reduzidas e acompanhamento individual. Venha conhecer nossa estrutura.',
     ctaLabel: 'Garantir matrícula',
-    heroLayout: 'centered',
+    pageLayout: 'acolhedor',
     accent: 'from-[#3b82f6] to-[#1d4ed8]',
     solidBg: 'bg-[#2563eb]',
     igHandle: '@institutoaprender',
@@ -124,7 +124,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Momentos que merecem ficar para sempre.',
     heroSub: 'Ensaios, eventos e retratos com direção profissional. Seu portfólio se atualiza aqui a cada trabalho novo.',
     ctaLabel: 'Pedir orçamento',
-    heroLayout: 'dark-bold',
+    pageLayout: 'portfolio',
     accent: 'from-[#f6d365] to-[#fda085]',
     solidBg: 'bg-[#f59e0b]',
     igHandle: '@lenteviva',
@@ -158,7 +158,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seus direitos defendidos com seriedade.',
     heroSub: 'Atendimento personalizado e transparente. Envie sua dúvida e receba uma análise inicial do seu caso.',
     ctaLabel: 'Consultar meu caso',
-    heroLayout: 'dark-bold',
+    pageLayout: 'editorial',
     accent: 'from-[#b8860b] to-[#7c5c10]',
     solidBg: 'bg-[#1e293b]',
     igHandle: '@ferrazassociados',
@@ -192,7 +192,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Mais que um corte. Uma experiência.',
     heroSub: 'Cortes clássicos e modernos, barba alinhada e aquele papo bom. Agende seu horário pelo WhatsApp.',
     ctaLabel: 'Agendar horário',
-    heroLayout: 'dark-bold',
+    pageLayout: 'urbano',
     accent: 'from-[#dc2626] to-[#7f1d1d]',
     solidBg: 'bg-[#b91c1c]',
     igHandle: '@navalhaclub',
@@ -226,7 +226,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Seu melhor shape começa aqui.',
     heroSub: 'Treinos personalizados, acompanhamento de verdade e uma comunidade que motiva. Primeira aula grátis.',
     ctaLabel: 'Aula experimental grátis',
-    heroLayout: 'dark-bold',
+    pageLayout: 'performance',
     accent: 'from-[#43e97b] to-[#38f9d7]',
     solidBg: 'bg-[#10b981]',
     igHandle: '@forjafit',
@@ -260,7 +260,7 @@ export const niches: NicheConfig[] = [
     heroTitle: 'Pausa para cuidar de você.',
     heroSub: 'Massagens terapêuticas e relaxantes com profissionais certificados. Agende sua sessão e desligue do estresse.',
     ctaLabel: 'Agendar sessão',
-    heroLayout: 'centered',
+    pageLayout: 'zen',
     accent: 'from-[#a8edea] to-[#fed6e3]',
     solidBg: 'bg-[#14b8a6]',
     igHandle: '@essenciaspa',
