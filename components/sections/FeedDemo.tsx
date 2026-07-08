@@ -1,14 +1,14 @@
-import { themedPhoto } from '@/lib/photos'
+import { unsplashPhoto } from '@/lib/photos'
 
-// Cada post da demo mostra um nicho diferente — vitrine dos segmentos que atendemos
+// Mostra uma foto real de cada nicho que atendemos — vitrine dos segmentos
 const posts = [
-  { likes: 142, caption: 'Novidade no cardápio!',    kw: 'restaurant,food' },
-  { likes: 98,  caption: 'Bastidores do estúdio',    kw: 'photographer,camera' },
-  { likes: 87,  caption: 'Sorriso renovado',         kw: 'dentist,dental' },
-  { likes: 210, caption: 'Matrículas abertas',       kw: 'school,classroom' },
-  { likes: 156, caption: 'Agenda da semana',         kw: 'barbershop,barber' },
-  { likes: 133, caption: 'Treino do dia',            kw: 'gym,fitness' },
-  { likes: 94,  caption: 'Sessão de relaxamento',    kw: 'spa,massage' },
+  { likes: 210, caption: 'Matrículas abertas',       photoId: '1519406596751-0a3ccc4937fe' }, // escola
+  { likes: 98,  caption: 'Bastidores do estúdio',    photoId: '1502920917128-1aa500764cbd' }, // fotografia
+  { likes: 87,  caption: 'Sorriso renovado',         photoId: '1704455306251-b4634215d98f' }, // odontológica
+  { likes: 156, caption: 'Agenda da semana',         photoId: '1503951914875-452162b0f3f1' }, // barbearia
+  { likes: 133, caption: 'Treino do dia',            photoId: '1689877020200-403d8542d95d' }, // academia
+  { likes: 94,  caption: 'Sessão de relaxamento',    photoId: '1770573319185-049b29ab0ca9' }, // massagem
+  { likes: 76,  caption: 'Consulta essa semana',     photoId: '1521587760476-6c12a4b040da' }, // advocacia
 ]
 
 export default function FeedDemo() {
@@ -28,7 +28,6 @@ export default function FeedDemo() {
           </p>
         </div>
 
-        {/* Barra de status conectado */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full grad-bg flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
@@ -46,10 +45,9 @@ export default function FeedDemo() {
         </div>
       </div>
 
-      {/* Feed horizontal — centralizado quando cabe, scroll quando não cabe */}
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
-          {posts.map(({ likes, caption }, i) => (
+          {posts.map(({ likes, caption, photoId }, i) => (
             <div
               key={caption}
               className="relative flex-shrink-0 w-[180px] sm:w-[220px] aspect-[4/5] rounded-2xl overflow-hidden bg-[var(--border)] group cursor-default"
@@ -60,7 +58,7 @@ export default function FeedDemo() {
                 </span>
               )}
               <img
-                src={themedPhoto(posts[i].kw, 30 + i)}
+                src={unsplashPhoto(photoId, 440, 550)}
                 alt={caption}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"

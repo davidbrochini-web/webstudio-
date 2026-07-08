@@ -1,15 +1,15 @@
 import type { NichePost } from '@/lib/templates'
-import { themedPhoto } from '@/lib/photos'
+import { unsplashPhoto } from '@/lib/photos'
 
 interface Props {
   posts: NichePost[]
   igHandle: string
   businessName: string
   accent: string
-  photoKeywords: string
+  photoId: string
 }
 
-export default function InstagramFeedStrip({ posts, igHandle, businessName, accent, photoKeywords }: Props) {
+export default function InstagramFeedStrip({ posts, igHandle, businessName, accent, photoId }: Props) {
   return (
     <section className="bg-[var(--off)] border-y border-[var(--border)] py-10">
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between mb-6">
@@ -41,7 +41,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
                 </span>
               )}
               <img
-                src={themedPhoto(photoKeywords, 10 + i)}
+                src={unsplashPhoto(photoId, 440, 550)}
                 alt={caption}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"
@@ -56,7 +56,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
       </div>
 
       <p className="text-center text-xs text-[var(--muted)] mt-5 px-6">
-        Arraste para o lado para ver mais posts — assim como no site do seu negócio.
+        No site real, cada post do feed vem direto do seu Instagram — aqui é uma amostra.
       </p>
     </section>
   )

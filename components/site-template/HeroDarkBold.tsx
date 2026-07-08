@@ -1,15 +1,15 @@
 import type { NicheConfig } from '@/lib/templates'
-import { themedBanner } from '@/lib/photos'
+import { unsplashPhoto } from '@/lib/photos'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 export default function HeroDarkBold({ config }: { config: NicheConfig }) {
-  const { heroTitle, heroSub, ctaLabel, accent, tagline, photoKeywords } = config
+  const { heroTitle, heroSub, ctaLabel, accent, tagline, photoId } = config
   return (
     <section className="relative px-6 py-24 sm:py-32 overflow-hidden">
       {/* Foto de fundo com overlay escuro */}
       <img
-        src={themedBanner(photoKeywords, 1)}
+        src={unsplashPhoto(photoId, 1600, 900)}
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
       />

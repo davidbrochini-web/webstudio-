@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { niches } from '@/lib/templates'
-import { themedPhoto } from '@/lib/photos'
+import { unsplashPhoto } from '@/lib/photos'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -33,7 +33,7 @@ export default function Templates() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {niches.map(({ slug, label, photoKeywords }) => (
+          {niches.map(({ slug, label, photoId }) => (
             <Link
               key={slug}
               href={`/modelos/${slug}`}
@@ -42,7 +42,7 @@ export default function Templates() {
               {/* Preview com foto temática do nicho */}
               <div className="relative h-44 overflow-hidden">
                 <img
-                  src={themedPhoto(photoKeywords, 5, 800, 500)}
+                  src={unsplashPhoto(photoId, 800, 500)}
                   alt={label}
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
