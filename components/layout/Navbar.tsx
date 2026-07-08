@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-const WA_LINK = 'https://wa.me/55XXXXXXXXXXX'
+const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
