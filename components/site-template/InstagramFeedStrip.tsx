@@ -7,6 +7,12 @@ interface Props {
   accent: string
 }
 
+/** Foto de banco gratuito (Unsplash via Picsum — licença livre para uso comercial).
+ *  Seed = legenda do post, garante a mesma foto sempre para o mesmo post. */
+function photoUrl(seed: string, w = 400, h = 500) {
+  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`
+}
+
 export default function InstagramFeedStrip({ posts, igHandle, businessName, accent }: Props) {
   return (
     <section className="bg-[var(--off)] border-y border-[var(--border)] py-10">
@@ -27,23 +33,26 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
         </div>
       </div>
 
-      {/* Feed horizontal — ponta a ponta, escapa do max-width do container */}
+      {/* Feed horizontal — centralizado quando cabe, com scroll quando não cabe */}
       <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-3 px-6 pb-2" style={{ width: 'max-content' }}>
-          {posts.map(({ emoji, bg, likes, caption }, i) => (
+        <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
+          {posts.map(({ likes, caption }, i) => (
             <div
               key={caption}
-              className={`relative flex-shrink-0 w-[180px] sm:w-[220px] aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br ${bg} group cursor-default snap-start`}
+              className="relative flex-shrink-0 w-[180px] sm:w-[220px] aspect-[4/5] rounded-2xl overflow-hidden bg-[var(--border)] group cursor-default"
             >
               {i === 0 && (
                 <span className="absolute top-3 left-3 z-10 text-[10px] font-bold text-white bg-black/40 backdrop-blur px-2.5 py-1 rounded-full">
                   ✦ novo
                 </span>
               )}
-              <div className="absolute inset-0 flex items-center justify-center text-5xl sm:text-6xl">
-                {emoji}
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-8">
+              <img
+                src={photoUrl(caption)}
+                alt={caption}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-3 pt-10">
                 <p className="text-white text-xs font-bold mb-0.5">❤️ {likes} curtidas</p>
                 <p className="text-white/85 text-[11px] leading-tight">{caption}</p>
               </div>
