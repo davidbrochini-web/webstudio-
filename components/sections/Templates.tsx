@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { niches } from '@/lib/templates'
-import { unsplashPhoto } from '@/lib/photos'
+import { unsplashPhotoFrom } from '@/lib/photos'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -23,7 +23,7 @@ export default function Templates() {
           <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">
             Esse site pode ser seu
           </p>
-          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--dark)] mb-3">
+          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             Feito para o seu tipo de negócio
           </h2>
           <p className="text-base text-[var(--muted)] max-w-lg mx-auto">
@@ -33,16 +33,16 @@ export default function Templates() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {niches.map(({ slug, label, photoId }) => (
+          {niches.map(({ slug, label, photoIds }) => (
             <Link
               key={slug}
               href={`/modelos/${slug}`}
-              className="group bg-white border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-50 hover:border-purple-200 transition-all"
+              className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-50 hover:border-purple-200 transition-all"
             >
               {/* Preview com foto temática do nicho */}
               <div className="relative h-44 overflow-hidden">
                 <img
-                  src={unsplashPhoto(photoId, 800, 500)}
+                  src={unsplashPhotoFrom(photoIds, 0, 800, 500)}
                   alt={label}
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -62,7 +62,7 @@ export default function Templates() {
               </div>
 
               <div className="p-6">
-                <h3 className="font-display font-bold text-base text-[var(--dark)] mb-2">{label}</h3>
+                <h3 className="font-display font-bold text-base text-[var(--ink)] mb-2">{label}</h3>
                 <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">{descs[slug]}</p>
                 <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--purple)] group-hover:gap-2.5 transition-all">
                   Navegar no modelo →

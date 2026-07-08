@@ -6,11 +6,24 @@
   --purple: #7C3AED;
   --green:  #10B981;
   --dark:   #0B1120;
+  --ink:    #0B1120;
   --slate:  #1E293B;
   --muted:  #64748B;
   --border: #E2E8F0;
   --off:    #F8FAFC;
   --grad:   linear-gradient(135deg, #E91E8C 0%, #7C3AED 100%);
+  --page-bg: #ffffff;
+  --card-bg: #ffffff;
+}
+
+.dark {
+  --ink:     #F1F5F9;
+  --slate:   #E2E8F0;
+  --muted:   #94A3B8;
+  --border:  #26324a;
+  --off:     #0F172A;
+  --page-bg: #0B1120;
+  --card-bg: #111827;
 }
 
 html { scroll-behavior: smooth; }
@@ -18,8 +31,9 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
   color: var(--slate);
-  background: #fff;
+  background: var(--page-bg);
   -webkit-font-smoothing: antialiased;
+  transition: background-color .2s ease, color .2s ease;
 }
 
 .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }

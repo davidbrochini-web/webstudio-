@@ -40,11 +40,11 @@ export default async function NichePreview(
   const config = getNiche(nicho)
   if (!config) notFound()
 
-  const { businessName, solidBg, services, posts, testimonials, igHandle, accent, heroLayout, ctaLabel, photoId } = config
+  const { businessName, solidBg, services, posts, testimonials, igHandle, accent, heroLayout, ctaLabel, photoIds } = config
   const HeroComponent = heroByLayout[heroLayout]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--page-bg)]">
 
       {/* ── Barra de preview da agência ─────────────────────── */}
       <div className="sticky top-0 z-50 bg-[var(--dark)] text-white px-4 py-2.5 flex items-center justify-between gap-3">
@@ -71,7 +71,7 @@ export default async function NichePreview(
 
       {/* ── Nav do site fictício ────────────────────────────── */}
       <nav className="border-b border-[var(--border)] px-6 h-16 flex items-center justify-between max-w-5xl mx-auto">
-        <span className="font-display font-extrabold text-lg text-[var(--dark)]">{businessName}</span>
+        <span className="font-display font-extrabold text-lg text-[var(--ink)]">{businessName}</span>
         <a
           href={WA_LINK}
           target="_blank"
@@ -86,12 +86,12 @@ export default async function NichePreview(
       <HeroComponent config={config} />
 
       {/* ── Instagram em destaque — logo após o hero, ponta a ponta ── */}
-      <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoId={photoId} />
+      <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* ── Serviços ────────────────────────────────────────── */}
       <section className="px-6 py-16 sm:py-20">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--dark)] text-center mb-12">
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--ink)] text-center mb-12">
             O que oferecemos
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -99,7 +99,7 @@ export default async function NichePreview(
               <div key={title} className="flex gap-4 p-6 border border-[var(--border)] rounded-2xl hover:shadow-md transition-shadow">
                 <span className="text-3xl flex-shrink-0">{icon}</span>
                 <div>
-                  <h3 className="font-display font-bold text-base text-[var(--dark)] mb-1">{title}</h3>
+                  <h3 className="font-display font-bold text-base text-[var(--ink)] mb-1">{title}</h3>
                   <p className="text-sm text-[var(--muted)] leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -109,17 +109,17 @@ export default async function NichePreview(
       </section>
 
       {/* ── Galeria do ambiente ─────────────────────────────── */}
-      <GalleryStrip photoId={photoId} businessName={businessName} />
+      <GalleryStrip photoIds={photoIds} businessName={businessName} />
 
       {/* ── Depoimentos ─────────────────────────────────────── */}
       <section className="px-6 py-16 sm:py-20 bg-[var(--off)] border-y border-[var(--border)]">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--dark)] text-center mb-12">
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--ink)] text-center mb-12">
             Quem já conhece, recomenda
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {testimonials.map(({ name, text }) => (
-              <figure key={name} className="p-6 bg-white border border-[var(--border)] rounded-2xl">
+              <figure key={name} className="p-6 bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl">
                 <div className="flex gap-0.5 mb-3 text-sm">{'⭐'.repeat(5)}</div>
                 <blockquote className="text-sm text-[var(--slate)] leading-relaxed mb-3">
                   &ldquo;{text}&rdquo;
@@ -142,7 +142,7 @@ export default async function NichePreview(
             href={WA_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[var(--dark)] font-bold px-7 py-3.5 rounded-xl hover:-translate-y-px hover:shadow-xl transition-all"
+            className="inline-flex items-center gap-2 bg-white text-[var(--ink)] font-bold px-7 py-3.5 rounded-xl hover:-translate-y-px hover:shadow-xl transition-all"
           >
             💬 {ctaLabel}
           </a>

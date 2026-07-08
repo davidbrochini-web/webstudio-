@@ -34,7 +34,7 @@ export default function Pricing() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">Preço</p>
-          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--dark)] mb-3">
+          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             Simples e sem surpresa
           </h2>
           <p className="text-base text-[var(--muted)]">
@@ -45,9 +45,9 @@ export default function Pricing() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-3xl mx-auto">
 
           {/* Site + Instagram */}
-          <div className="grad-border rounded-2xl bg-white p-8 shadow-2xl shadow-purple-100">
+          <div className="grad-border rounded-2xl bg-[var(--card-bg)] p-8 shadow-2xl shadow-purple-100">
             <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-2">Site + Instagram</p>
-            <div className="font-display font-extrabold text-5xl text-[var(--dark)] leading-none mb-1">
+            <div className="font-display font-extrabold text-5xl text-[var(--ink)] leading-none mb-1">
               R$&thinsp;149<span className="text-xl font-medium text-[var(--muted)]">/mês</span>
             </div>
             <p className="text-xs text-[var(--muted)] mb-6">Presença online profissional e automática.</p>
@@ -62,9 +62,9 @@ export default function Pricing() {
           </div>
 
           {/* Módulos internos */}
-          <div className="bg-white border border-[var(--border)] rounded-2xl p-8">
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-8">
             <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-2">Módulos internos</p>
-            <div className="font-display font-extrabold text-5xl text-[var(--dark)] leading-none mb-1">
+            <div className="font-display font-extrabold text-5xl text-[var(--ink)] leading-none mb-1">
               R$&thinsp;99<span className="text-xl font-medium text-[var(--muted)]">/módulo/mês</span>
             </div>
             <p className="text-xs text-[var(--muted)] mb-6">Contrate só o que a operação precisa.</p>
