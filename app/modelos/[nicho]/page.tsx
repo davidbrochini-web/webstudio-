@@ -2,6 +2,10 @@ import { niches, getNiche } from '@/lib/templates'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import HeroSplit from '@/components/site-template/HeroSplit'
+import HeroCentered from '@/components/site-template/HeroCentered'
+import HeroDarkBold from '@/components/site-template/HeroDarkBold'
+import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -18,8 +22,14 @@ export async function generateMetadata(
   return {
     title: `${config.label} — modelo de site | webstudio`,
     description: config.heroSub,
-    robots: { index: false }, // previews não indexam
+    robots: { index: false },
   }
+}
+
+const heroByLayout = {
+  split: HeroSplit,
+  centered: HeroCentered,
+  'dark-bold': HeroDarkBold,
 }
 
 export default async function NichePreview(
@@ -29,10 +39,8 @@ export default async function NichePreview(
   const config = getNiche(nicho)
   if (!config) notFound()
 
-  const {
-    businessName, tagline, heroTitle, heroSub, ctaLabel,
-    accent, solidBg, services, posts, testimonials, igHandle,
-  } = config
+  const { businessName, solidBg, services, posts, testimonials, igHandle, accent, heroLayout, ctaLabel } = config
+  const HeroComponent = heroByLayout[heroLayout]
 
   return (
     <div className="min-h-screen bg-white">
@@ -46,10 +54,7 @@ export default async function NichePreview(
           </span>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <Link
-            href="/#templates"
-            className="text-xs font-medium text-white/60 hover:text-white transition-colors px-2 py-1"
-          >
+          <Link href="/#templates" className="text-xs font-medium text-white/60 hover:text-white transition-colors px-2 py-1">
             ← Voltar
           </Link>
           <a
@@ -76,26 +81,11 @@ export default async function NichePreview(
         </a>
       </nav>
 
-      {/* ── Hero ────────────────────────────────────────────── */}
-      <section className={`bg-gradient-to-br ${accent} px-6 py-20 sm:py-28`}>
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-sm font-semibold text-white/80 uppercase tracking-widest mb-4">{tagline}</p>
-          <h1 className="font-display font-extrabold text-[clamp(30px,6vw,52px)] leading-[1.1] text-white drop-shadow-sm mb-5">
-            {heroTitle}
-          </h1>
-          <p className="text-base sm:text-lg text-white/85 leading-relaxed max-w-xl mx-auto mb-8">
-            {heroSub}
-          </p>
-          <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[var(--dark)] font-bold px-7 py-3.5 rounded-xl hover:-translate-y-px hover:shadow-xl transition-all"
-          >
-            💬 {ctaLabel}
-          </a>
-        </div>
-      </section>
+      {/* ── Hero — varia por arquétipo (split / centered / dark-bold) ── */}
+      <HeroComponent config={config} />
+
+      {/* ── Instagram em destaque — logo após o hero, ponta a ponta ── */}
+      <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} />
 
       {/* ── Serviços ────────────────────────────────────────── */}
       <section className="px-6 py-16 sm:py-20">
@@ -117,60 +107,15 @@ export default async function NichePreview(
         </div>
       </section>
 
-      {/* ── Feed Instagram (simulado) ───────────────────────── */}
-      <section className="px-6 py-16 sm:py-20 bg-[var(--off)] border-y border-[var(--border)]">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${accent} flex items-center justify-center text-white font-bold`}>
-                {businessName[0]}
-              </div>
-              <div>
-                <p className="text-sm font-bold text-[var(--dark)] leading-tight">{igHandle}</p>
-                <p className="text-xs text-[var(--muted)]">Direto do Instagram</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-blink" />
-              <span className="text-xs font-semibold text-[var(--green)]">Atualizado agora</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-1.5">
-            {posts.map(({ emoji, bg, likes, caption }, i) => (
-              <div
-                key={caption}
-                className={`relative aspect-square rounded-xl overflow-hidden bg-gradient-to-br ${bg} group cursor-default`}
-              >
-                {i === 0 && (
-                  <span className="absolute top-2 left-2 z-10 text-[9px] font-bold text-white bg-black/40 backdrop-blur px-2 py-0.5 rounded-full">
-                    ✦ novo
-                  </span>
-                )}
-                <div className="absolute inset-0 flex items-center justify-center text-3xl sm:text-4xl">{emoji}</div>
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 px-2">
-                  <span className="text-white text-xs font-bold">❤️ {likes}</span>
-                  <span className="text-white/80 text-[10px] text-center leading-tight">{caption}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center text-xs text-[var(--muted)] mt-4">
-            Este feed se atualiza sozinho a cada publicação no Instagram.
-          </p>
-        </div>
-      </section>
-
       {/* ── Depoimentos ─────────────────────────────────────── */}
-      <section className="px-6 py-16 sm:py-20">
+      <section className="px-6 py-16 sm:py-20 bg-[var(--off)] border-y border-[var(--border)]">
         <div className="max-w-4xl mx-auto">
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--dark)] text-center mb-12">
             Quem já conhece, recomenda
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {testimonials.map(({ name, text }) => (
-              <figure key={name} className="p-6 bg-[var(--off)] border border-[var(--border)] rounded-2xl">
+              <figure key={name} className="p-6 bg-white border border-[var(--border)] rounded-2xl">
                 <div className="flex gap-0.5 mb-3 text-sm">{'⭐'.repeat(5)}</div>
                 <blockquote className="text-sm text-[var(--slate)] leading-relaxed mb-3">
                   &ldquo;{text}&rdquo;

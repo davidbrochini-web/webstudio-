@@ -68,6 +68,12 @@ body {
 .animate-travel-3 { animation: travel 1.8s linear infinite 1.2s; }
 .animate-pop    { animation: pop    0.4s ease 2.2s both; }
 
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-blink, .animate-float, .animate-float-delay,
   .animate-travel, .animate-travel-2, .animate-travel-3, .animate-pop {
