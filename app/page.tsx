@@ -2,7 +2,9 @@ import Navbar     from '@/components/layout/Navbar'
 import Footer     from '@/components/layout/Footer'
 import Hero       from '@/components/sections/Hero'
 import Stats      from '@/components/sections/Stats'
+import FeedDemo   from '@/components/sections/FeedDemo'
 import HowItWorks from '@/components/sections/HowItWorks'
+import Templates  from '@/components/sections/Templates'
 import Features   from '@/components/sections/Features'
 import Modules    from '@/components/sections/Modules'
 import Pricing    from '@/components/sections/Pricing'
@@ -15,7 +17,9 @@ export default function Home() {
       <main>
         <Hero />
         <Stats />
+        <FeedDemo />
         <HowItWorks />
+        <Templates />
         <Features />
         <Modules />
         <Pricing />
