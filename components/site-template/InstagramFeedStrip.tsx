@@ -1,22 +1,17 @@
 import type { NichePost } from '@/lib/templates'
+import { themedPhoto } from '@/lib/photos'
 
 interface Props {
   posts: NichePost[]
   igHandle: string
   businessName: string
   accent: string
+  photoKeywords: string
 }
 
-/** Foto de banco gratuito (Unsplash via Picsum — licença livre para uso comercial).
- *  Seed = legenda do post, garante a mesma foto sempre para o mesmo post. */
-function photoUrl(seed: string, w = 400, h = 500) {
-  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`
-}
-
-export default function InstagramFeedStrip({ posts, igHandle, businessName, accent }: Props) {
+export default function InstagramFeedStrip({ posts, igHandle, businessName, accent, photoKeywords }: Props) {
   return (
     <section className="bg-[var(--off)] border-y border-[var(--border)] py-10">
-      {/* Header — max-width contido */}
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${accent} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
@@ -33,7 +28,6 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
         </div>
       </div>
 
-      {/* Feed horizontal — centralizado quando cabe, com scroll quando não cabe */}
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
           {posts.map(({ likes, caption }, i) => (
@@ -47,7 +41,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
                 </span>
               )}
               <img
-                src={photoUrl(caption)}
+                src={themedPhoto(photoKeywords, 10 + i)}
                 alt={caption}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"

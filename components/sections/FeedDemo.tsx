@@ -1,17 +1,15 @@
-const posts = [
-  { likes: 142, caption: 'Novidade no cardápio!' },
-  { likes: 98,  caption: 'Bastidores do estúdio' },
-  { likes: 87,  caption: 'Sorriso renovado' },
-  { likes: 210, caption: 'Matrículas abertas' },
-  { likes: 156, caption: 'Agenda da semana' },
-  { likes: 133, caption: 'Treino do dia' },
-  { likes: 94,  caption: 'Sessão de relaxamento' },
-]
+import { themedPhoto } from '@/lib/photos'
 
-/** Foto de banco gratuito (Unsplash via Picsum — licença livre para uso comercial). */
-function photoUrl(seed: string, w = 400, h = 500) {
-  return `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`
-}
+// Cada post da demo mostra um nicho diferente — vitrine dos segmentos que atendemos
+const posts = [
+  { likes: 142, caption: 'Novidade no cardápio!',    kw: 'restaurant,food' },
+  { likes: 98,  caption: 'Bastidores do estúdio',    kw: 'photographer,camera' },
+  { likes: 87,  caption: 'Sorriso renovado',         kw: 'dentist,dental' },
+  { likes: 210, caption: 'Matrículas abertas',       kw: 'school,classroom' },
+  { likes: 156, caption: 'Agenda da semana',         kw: 'barbershop,barber' },
+  { likes: 133, caption: 'Treino do dia',            kw: 'gym,fitness' },
+  { likes: 94,  caption: 'Sessão de relaxamento',    kw: 'spa,massage' },
+]
 
 export default function FeedDemo() {
   return (
@@ -62,7 +60,7 @@ export default function FeedDemo() {
                 </span>
               )}
               <img
-                src={photoUrl(caption)}
+                src={themedPhoto(posts[i].kw, 30 + i)}
                 alt={caption}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"

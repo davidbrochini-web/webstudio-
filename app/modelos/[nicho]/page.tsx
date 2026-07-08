@@ -6,6 +6,7 @@ import HeroSplit from '@/components/site-template/HeroSplit'
 import HeroCentered from '@/components/site-template/HeroCentered'
 import HeroDarkBold from '@/components/site-template/HeroDarkBold'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
+import GalleryStrip from '@/components/site-template/GalleryStrip'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -39,7 +40,7 @@ export default async function NichePreview(
   const config = getNiche(nicho)
   if (!config) notFound()
 
-  const { businessName, solidBg, services, posts, testimonials, igHandle, accent, heroLayout, ctaLabel } = config
+  const { businessName, solidBg, services, posts, testimonials, igHandle, accent, heroLayout, ctaLabel, photoKeywords } = config
   const HeroComponent = heroByLayout[heroLayout]
 
   return (
@@ -85,7 +86,7 @@ export default async function NichePreview(
       <HeroComponent config={config} />
 
       {/* ── Instagram em destaque — logo após o hero, ponta a ponta ── */}
-      <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} />
+      <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoKeywords={photoKeywords} />
 
       {/* ── Serviços ────────────────────────────────────────── */}
       <section className="px-6 py-16 sm:py-20">
@@ -106,6 +107,9 @@ export default async function NichePreview(
           </div>
         </div>
       </section>
+
+      {/* ── Galeria do ambiente ─────────────────────────────── */}
+      <GalleryStrip photoKeywords={photoKeywords} businessName={businessName} />
 
       {/* ── Depoimentos ─────────────────────────────────────── */}
       <section className="px-6 py-16 sm:py-20 bg-[var(--off)] border-y border-[var(--border)]">
