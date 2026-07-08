@@ -69,7 +69,7 @@ export default function Hero() {
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--pink)] animate-blink"/>
             Site + sistemas para pequenos e médios negócios
           </div>
-          <h1 className="font-display font-extrabold text-[clamp(32px,8vw,56px)] leading-[1.08] text-[var(--dark)] mb-5">
+          <h1 className="font-display font-extrabold text-[clamp(32px,8vw,56px)] leading-[1.08] text-[var(--ink)] mb-5">
             Seu negócio organizado.<br />
             <span className="grad-text">Do site ao estoque.</span>
           </h1>

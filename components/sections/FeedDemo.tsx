@@ -13,13 +13,13 @@ const posts = [
 
 export default function FeedDemo() {
   return (
-    <section id="demo" className="py-20 bg-white border-t border-[var(--border)]">
+    <section id="demo" className="py-20 bg-[var(--page-bg)] border-t border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">
             Veja funcionando
           </p>
-          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--dark)] mb-3">
+          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             O Instagram, direto no site.
           </h2>
           <p className="text-base text-[var(--muted)] max-w-lg mx-auto">
@@ -34,7 +34,7 @@ export default function FeedDemo() {
               w
             </div>
             <div>
-              <p className="text-sm font-semibold text-[var(--dark)] leading-tight">@webstudio</p>
+              <p className="text-sm font-semibold text-[var(--ink)] leading-tight">@webstudio</p>
               <p className="text-xs text-[var(--muted)]">Instagram conectado</p>
             </div>
           </div>

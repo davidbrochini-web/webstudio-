@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ThemeToggle from './ThemeToggle'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -9,7 +10,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[var(--border)]">
+    <nav className="sticky top-0 z-50 bg-[var(--page-bg)]/90 backdrop-blur-md border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="font-display font-extrabold text-xl grad-text">
@@ -36,6 +37,8 @@ export default function Navbar() {
         </ul>
 
         {/* Desktop CTA */}
+        <div className="hidden md:flex items-center gap-3">
+        <ThemeToggle />
         <a
           href={WA_LINK}
           target="_blank"
@@ -44,9 +47,11 @@ export default function Navbar() {
         >
           💬 WhatsApp
         </a>
+        </div>
 
-        {/* Mobile: WA button + hamburger */}
-        <div className="flex items-center gap-3 md:hidden">
+        {/* Mobile: theme toggle + WA button + hamburger */}
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <a
             href={WA_LINK}
             target="_blank"
@@ -75,7 +80,7 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden border-t border-[var(--border)] bg-white px-6 pb-4">
+        <div className="md:hidden border-t border-[var(--border)] bg-[var(--page-bg)] px-6 pb-4">
           {[
             { href: '#demo',          label: 'Demo' },
             { href: '#templates',     label: 'Modelos de site' },

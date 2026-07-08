@@ -1,15 +1,15 @@
 import type { NichePost } from '@/lib/templates'
-import { unsplashPhoto } from '@/lib/photos'
+import { unsplashPhotoFrom } from '@/lib/photos'
 
 interface Props {
   posts: NichePost[]
   igHandle: string
   businessName: string
   accent: string
-  photoId: string
+  photoIds: string[]
 }
 
-export default function InstagramFeedStrip({ posts, igHandle, businessName, accent, photoId }: Props) {
+export default function InstagramFeedStrip({ posts, igHandle, businessName, accent, photoIds }: Props) {
   return (
     <section className="bg-[var(--off)] border-y border-[var(--border)] py-10">
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between mb-6">
@@ -18,7 +18,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
             {businessName[0]}
           </div>
           <div>
-            <p className="text-sm font-bold text-[var(--dark)] leading-tight">{igHandle}</p>
+            <p className="text-sm font-bold text-[var(--ink)] leading-tight">{igHandle}</p>
             <p className="text-xs text-[var(--muted)]">Atualizado direto do Instagram</p>
           </div>
         </div>
@@ -41,7 +41,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
                 </span>
               )}
               <img
-                src={unsplashPhoto(photoId, 440, 550)}
+                src={unsplashPhotoFrom(photoIds, i, 440, 550)}
                 alt={caption}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"

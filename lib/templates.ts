@@ -43,8 +43,8 @@ export interface NicheConfig {
   testimonials: NicheTestimonial[]
   /** Handle fictício do Instagram no preview */
   igHandle: string
-  /** ID da foto curada no Unsplash (licença livre) para esse nicho */
-  photoId: string
+  /** IDs de fotos curadas no Unsplash (licença livre) — 2 a 3 por nicho, usadas em rotação */
+  photoIds: string[]
 }
 
 export const niches: NicheConfig[] = [
@@ -60,7 +60,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#4facfe] to-[#00f2fe]',
     solidBg: 'bg-[#0ea5e9]',
     igHandle: '@sorrirodonto',
-    photoId: '1704455306251-b4634215d98f',
+    photoIds: ['1704455306251-b4634215d98f', '1728342057953-94bfad8f0e7e'],
     services: [
       { icon: '🦷', title: 'Limpeza e prevenção', desc: 'Profilaxia completa e orientação para manter a saúde bucal em dia.' },
       { icon: '✨', title: 'Clareamento', desc: 'Clareamento profissional com resultado visível já nas primeiras sessões.' },
@@ -94,7 +94,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#3b82f6] to-[#1d4ed8]',
     solidBg: 'bg-[#2563eb]',
     igHandle: '@institutoaprender',
-    photoId: '1519406596751-0a3ccc4937fe',
+    photoIds: ['1519406596751-0a3ccc4937fe', '1757193714692-44cdf07a5377'],
     services: [
       { icon: '📚', title: 'Ensino fundamental', desc: 'Base sólida com metodologia ativa e projetos interdisciplinares.' },
       { icon: '🎓', title: 'Ensino médio', desc: 'Preparação para o ENEM e vestibulares com simulados mensais.' },
@@ -128,7 +128,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#f6d365] to-[#fda085]',
     solidBg: 'bg-[#f59e0b]',
     igHandle: '@lenteviva',
-    photoId: '1502920917128-1aa500764cbd',
+    photoIds: ['1502920917128-1aa500764cbd', '1516961642265-531546e84af2', '1520549233664-03f65c1d1327'],
     services: [
       { icon: '👰', title: 'Casamentos', desc: 'Cobertura completa do making of à festa, com segundo fotógrafo.' },
       { icon: '👶', title: 'Ensaios de família', desc: 'Gestante, newborn e acompanhamento — em estúdio ou externo.' },
@@ -162,7 +162,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#b8860b] to-[#7c5c10]',
     solidBg: 'bg-[#1e293b]',
     igHandle: '@ferrazassociados',
-    photoId: '1521587760476-6c12a4b040da',
+    photoIds: ['1521587760476-6c12a4b040da', '1603058817990-2b9a9abbce86', '1505664063603-28e48ca204eb'],
     services: [
       { icon: '⚖️', title: 'Direito trabalhista', desc: 'Rescisões, verbas não pagas, assédio e acordos trabalhistas.' },
       { icon: '🏠', title: 'Direito imobiliário', desc: 'Contratos, usucapião, regularização e disputas de imóveis.' },
@@ -196,7 +196,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#dc2626] to-[#7f1d1d]',
     solidBg: 'bg-[#b91c1c]',
     igHandle: '@navalhaclub',
-    photoId: '1503951914875-452162b0f3f1',
+    photoIds: ['1503951914875-452162b0f3f1', '1585747860715-2ba37e788b70', '1621645582931-d1d3e6564943'],
     services: [
       { icon: '💈', title: 'Corte', desc: 'Degradê, social, navalhado — do clássico ao contemporâneo.' },
       { icon: '🧔', title: 'Barba', desc: 'Alinhamento com navalha, toalha quente e produtos premium.' },
@@ -230,7 +230,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#43e97b] to-[#38f9d7]',
     solidBg: 'bg-[#10b981]',
     igHandle: '@forjafit',
-    photoId: '1689877020200-403d8542d95d',
+    photoIds: ['1689877020200-403d8542d95d', '1571902943202-507ec2618e8f', '1637430308606-86576d8fef3c'],
     services: [
       { icon: '🏋️', title: 'Musculação', desc: 'Equipamentos novos e ficha de treino atualizada mensalmente.' },
       { icon: '🥊', title: 'Aulas coletivas', desc: 'Funcional, muay thai, spinning e ritmos — inclusos no plano.' },
@@ -264,7 +264,7 @@ export const niches: NicheConfig[] = [
     accent: 'from-[#a8edea] to-[#fed6e3]',
     solidBg: 'bg-[#14b8a6]',
     igHandle: '@essenciaspa',
-    photoId: '1770573319185-049b29ab0ca9',
+    photoIds: ['1770573319185-049b29ab0ca9', '1595871151608-bc7abd1caca3', '1772616748507-9fb951a14d75'],
     services: [
       { icon: '💆', title: 'Massagem relaxante', desc: 'Alívio do estresse e tensões do dia a dia com óleos essenciais.' },
       { icon: '🧘', title: 'Massagem terapêutica', desc: 'Tratamento de dores musculares, lombalgia e má postura.' },

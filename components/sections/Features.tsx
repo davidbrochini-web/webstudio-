@@ -33,13 +33,13 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 bg-[var(--page-bg)]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">
             O que está incluso
           </p>
-          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--dark)] mb-3">
+          <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             Tudo que seu negócio precisa
           </h2>
           <p className="text-base text-[var(--muted)] max-w-md mx-auto">
@@ -56,7 +56,7 @@ export default function Features() {
               <div className="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center text-xl mb-4">
                 {icon}
               </div>
-              <h3 className="font-display font-bold text-base text-[var(--dark)] mb-2">{title}</h3>
+              <h3 className="font-display font-bold text-base text-[var(--ink)] mb-2">{title}</h3>
               <p className="text-sm text-[var(--muted)] leading-relaxed">{desc}</p>
             </div>
           ))}

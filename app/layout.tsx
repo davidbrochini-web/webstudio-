@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { ThemeScript } from '@/components/layout/ThemeScript'
 
 export const metadata: Metadata = {
   title: 'WebStudio — Seu site conectado ao Instagram',
@@ -20,7 +21,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="scroll-smooth">
+    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="antialiased">{children}</body>
     </html>
   )
