@@ -11,12 +11,9 @@ interface Tenant {
   plano: string
   status: string
   created_at: string
-}
-
-const statusStyle: Record<string, string> = {
-  ativo: 'bg-green-50 text-[var(--green)]',
-  suspenso: 'bg-amber-50 text-amber-600',
-  cancelado: 'bg-red-50 text-red-600',
+  modulosAtivos?: number
+  siteStatus?: string | null
+  clientesCount?: number
 }
 
 function TenantForm({
@@ -124,54 +121,73 @@ export default function TenantsManager({ initialTenants }: { initialTenants: Ten
         <TenantForm tenant={formMode} onDone={() => setFormMode('none')} />
       )}
 
-      <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl overflow-hidden">
-        {initialTenants.length === 0 ? (
-          <p className="text-sm text-[var(--muted)] p-6">Nenhum tenant cadastrado ainda.</p>
-        ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[var(--border)] text-left">
-                <th className="px-5 py-3 font-medium text-[var(--muted)]">Nome</th>
-                <th className="px-5 py-3 font-medium text-[var(--muted)] hidden sm:table-cell">Plano</th>
-                <th className="px-5 py-3 font-medium text-[var(--muted)]">Status</th>
-                <th className="px-5 py-3 font-medium text-[var(--muted)] text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)]">
-              {initialTenants.map(t => (
-                <tr key={t.id}>
-                  <td className="px-5 py-3 text-[var(--ink)] font-medium">
-                    <Link href={`/admin/tenants/${t.id}`} className="hover:text-[var(--brand)] transition-colors">
+      {initialTenants.length === 0 ? (
+        <p className="text-sm text-[var(--muted)] p-6 bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl">
+          Nenhum tenant cadastrado ainda.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {initialTenants.map(t => (
+            <div key={t.id} className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5">
+              <div className="flex items-start justify-between mb-4">
+                <Link href={`/admin/tenants/${t.id}`} className="flex items-center gap-3 min-w-0">
+                  <span className="w-10 h-10 rounded-xl bg-[var(--off)] flex items-center justify-center text-lg flex-shrink-0">
+                    🏢
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-display font-bold text-sm text-[var(--ink)] hover:text-[var(--brand)] transition-colors truncate">
                       {t.nome}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3 text-[var(--muted)] hidden sm:table-cell">{t.plano}</td>
-                  <td className="px-5 py-3">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusStyle[t.status] ?? ''}`}>
-                      {t.status}
                     </span>
-                  </td>
-                  <td className="px-5 py-3 text-right">
-                    <button
-                      onClick={() => setFormMode(t)}
-                      className="text-xs font-semibold text-[var(--brand)] mr-3"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleStatusToggle(t)}
-                      disabled={isPending}
-                      className="text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] disabled:opacity-50"
-                    >
-                      {t.status === 'ativo' ? 'Suspender' : 'Reativar'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+                    <span className="block text-xs text-[var(--muted)] truncate">{t.cnpj || 'sem CNPJ cadastrado'}</span>
+                  </span>
+                </Link>
+                <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1.5 ${
+                  t.status === 'ativo' ? 'bg-[var(--green)]' : t.status === 'suspenso' ? 'bg-amber-500' : 'bg-red-500'
+                }`} title={t.status} />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="flex flex-col items-center">
+                  <span className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 font-display font-bold text-sm flex items-center justify-center">
+                    {t.modulosAtivos ?? 0}
+                  </span>
+                  <span className="text-[10px] text-[var(--muted)] font-semibold uppercase tracking-wide mt-1.5">Módulos</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="w-11 h-11 rounded-full bg-teal-50 text-teal-600 font-display font-bold text-sm flex items-center justify-center">
+                    {t.clientesCount ?? 0}
+                  </span>
+                  <span className="text-[10px] text-[var(--muted)] font-semibold uppercase tracking-wide mt-1.5">Clientes</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className={`w-11 h-11 rounded-full font-display font-bold text-[10px] flex items-center justify-center text-center leading-tight ${
+                    t.siteStatus === 'publicado' ? 'bg-green-50 text-[var(--green)]' : t.siteStatus ? 'bg-amber-50 text-amber-600' : 'bg-[var(--off)] text-[var(--muted)]'
+                  }`}>
+                    {t.siteStatus === 'publicado' ? 'no ar' : t.siteStatus ? 'rascunho' : 'sem site'}
+                  </span>
+                  <span className="text-[10px] text-[var(--muted)] font-semibold uppercase tracking-wide mt-1.5">Site</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-[var(--border)]">
+                <span className="text-xs text-[var(--muted)]">Plano: <strong className="text-[var(--ink)]">{t.plano}</strong></span>
+                <div>
+                  <button onClick={() => setFormMode(t)} className="text-xs font-semibold text-[var(--brand)] mr-3">
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleStatusToggle(t)}
+                    disabled={isPending}
+                    className="text-xs font-semibold text-[var(--muted)] hover:text-[var(--ink)] disabled:opacity-50"
+                  >
+                    {t.status === 'ativo' ? 'Suspender' : 'Reativar'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

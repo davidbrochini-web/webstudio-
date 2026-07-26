@@ -18,6 +18,35 @@ export default async function TenantsPage() {
     .is('deleted_at', null)
     .eq('is_demo', true)
 
+  const tenantIds = (tenants ?? []).map(t => t.id)
+
+  // Contadores por tenant pra exibir nos cards — 3 queries pequenas
+  // (tabelas cabem inteiras em memória hoje) em vez de 1 por tenant,
+  // pra não virar N+1 conforme a base de tenants crescer.
+  const [{ data: subs }, { data: sites }, { data: clientesRows }] = tenantIds.length
+    ? await Promise.all([
+        supabase.from('subscriptions').select('tenant_id, modulo').in('tenant_id', tenantIds).eq('status', 'ativo').is('deleted_at', null),
+        supabase.from('sites').select('tenant_id, status').in('tenant_id', tenantIds).is('deleted_at', null),
+        supabase.from('clientes').select('tenant_id').in('tenant_id', tenantIds).is('deleted_at', null),
+      ])
+    : [{ data: [] }, { data: [] }, { data: [] }]
+
+  const modulosPorTenant = new Map<string, number>()
+  subs?.forEach(s => modulosPorTenant.set(s.tenant_id, (modulosPorTenant.get(s.tenant_id) ?? 0) + 1))
+
+  const sitePorTenant = new Map<string, string>()
+  sites?.forEach(s => sitePorTenant.set(s.tenant_id, s.status))
+
+  const clientesPorTenant = new Map<string, number>()
+  clientesRows?.forEach(c => clientesPorTenant.set(c.tenant_id, (clientesPorTenant.get(c.tenant_id) ?? 0) + 1))
+
+  const tenantsComStats = (tenants ?? []).map(t => ({
+    ...t,
+    modulosAtivos: modulosPorTenant.get(t.id) ?? 0,
+    siteStatus: sitePorTenant.get(t.id) ?? null,
+    clientesCount: clientesPorTenant.get(t.id) ?? 0,
+  }))
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -30,7 +59,7 @@ export default async function TenantsPage() {
           </Link>
         )}
       </div>
-      <TenantsManager initialTenants={tenants ?? []} />
+      <TenantsManager initialTenants={tenantsComStats} />
     </div>
   )
 }
