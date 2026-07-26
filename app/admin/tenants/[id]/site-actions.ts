@@ -64,9 +64,14 @@ export async function createSiteFromTemplate(
 
   const siteId = site.id
 
+  const URBANO_PRECOS = ['R$ 45', 'R$ 35', 'R$ 70', 'R$ 90']
+
   const [servicosRes, depoimentosRes, fotosRes, postsRes, statsRes] = await Promise.all([
     supabase.from('site_servicos').insert(
-      niche.services.map((s, i) => ({ site_id: siteId, icon: s.icon, title: s.title, description: s.desc, ordem: i }))
+      niche.services.map((s, i) => ({
+        site_id: siteId, icon: s.icon, title: s.title, description: s.desc, ordem: i,
+        preco: niche.pageLayout === 'urbano' ? URBANO_PRECOS[i % URBANO_PRECOS.length] : null,
+      }))
     ),
     supabase.from('site_depoimentos').insert(
       niche.testimonials.map((t, i) => ({ site_id: siteId, nome: t.name, texto: t.text, ordem: i }))
@@ -77,15 +82,36 @@ export async function createSiteFromTemplate(
     supabase.from('site_posts').insert(
       niche.posts.map((p, i) => ({ site_id: siteId, caption: p.caption, likes: p.likes, ordem: i }))
     ),
-    // A barra de números em destaque hoje só existe no template
-    // clínico — outros nichos ainda não têm esse bloco no layout.
-    niche.pageLayout === 'clinico'
-      ? supabase.from('site_stats').insert([
+    // A barra/bloco de números em destaque varia por nicho — cada um
+    // com seus valores originais (antes hardcoded dentro do próprio
+    // componente de layout, agora viram conteúdo real do tenant).
+    (() => {
+      if (niche.pageLayout === 'clinico') {
+        return supabase.from('site_stats').insert([
           { site_id: siteId, valor: '+15', rotulo: 'anos de experiência', ordem: 0 },
           { site_id: siteId, valor: '+3.200', rotulo: 'pacientes atendidos', ordem: 1 },
           { site_id: siteId, valor: '4.9★', rotulo: 'avaliação média', ordem: 2 },
         ])
-      : Promise.resolve({ error: null }),
+      }
+      if (niche.pageLayout === 'editorial') {
+        return supabase.from('site_stats').insert([
+          { site_id: siteId, valor: '+18', rotulo: 'anos de atuação', ordem: 0 },
+          { site_id: siteId, valor: '+400', rotulo: 'casos atendidos', ordem: 1 },
+          { site_id: siteId, valor: '92%', rotulo: 'êxito em acordos', ordem: 2 },
+        ])
+      }
+      if (niche.pageLayout === 'performance') {
+        // ordem 0 = número gigante do hero; 1-4 = grade pequena
+        return supabase.from('site_stats').insert([
+          { site_id: siteId, valor: '500+', rotulo: 'alunos transformados', ordem: 0 },
+          { site_id: siteId, valor: '+8', rotulo: 'anos', ordem: 1 },
+          { site_id: siteId, valor: '24/7', rotulo: 'acesso', ordem: 2 },
+          { site_id: siteId, valor: '4.8★', rotulo: 'avaliação', ordem: 3 },
+          { site_id: siteId, valor: '+30', rotulo: 'aulas/semana', ordem: 4 },
+        ])
+      }
+      return Promise.resolve({ error: null })
+    })(),
   ])
 
   const childError = servicosRes.error || depoimentosRes.error || fotosRes.error || postsRes.error || statsRes.error

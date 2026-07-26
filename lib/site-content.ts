@@ -53,7 +53,7 @@ export async function getSiteConfigBySlug(
   if (!site) return null
 
   const [{ data: servicos }, { data: depoimentos }, { data: fotos }, { data: posts }, { data: stats }] = await Promise.all([
-    supabase.from('site_servicos').select('icon, title, description').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_servicos').select('icon, title, description, preco').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_depoimentos').select('nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_posts').select('caption, likes').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
@@ -76,7 +76,7 @@ export async function getSiteConfigBySlug(
     igHandle: site.instagram_handle || '@seunegocio',
     whatsapp: site.whatsapp || undefined,
     photoIds: (fotos ?? []).map(f => f.url),
-    services: (servicos ?? []).map(s => ({ icon: s.icon, title: s.title, desc: s.description })),
+    services: (servicos ?? []).map(s => ({ icon: s.icon, title: s.title, desc: s.description, preco: s.preco ?? undefined })),
     testimonials: (depoimentos ?? []).map(d => ({ name: d.nome, text: d.texto })),
     posts: (posts ?? []).map(p => ({ emoji: '', bg: accent, likes: p.likes, caption: p.caption })),
     stats: (stats ?? []).map(s => ({ valor: s.valor, rotulo: s.rotulo })),

@@ -3,6 +3,12 @@ import { getCurrentTenant } from '@/lib/current-tenant'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import ClinicoLiveEditor from '@/components/site-editor/ClinicoLiveEditor'
+import EditorialLiveEditor from '@/components/site-editor/EditorialLiveEditor'
+import PortfolioLiveEditor from '@/components/site-editor/PortfolioLiveEditor'
+import UrbanoLiveEditor from '@/components/site-editor/UrbanoLiveEditor'
+import PerformanceLiveEditor from '@/components/site-editor/PerformanceLiveEditor'
+import ZenLiveEditor from '@/components/site-editor/ZenLiveEditor'
+import AcolhedorLiveEditor from '@/components/site-editor/AcolhedorLiveEditor'
 import ContactSettingsBar from '@/components/site-editor/ContactSettingsBar'
 
 export default async function SiteLiveEditorPage() {
@@ -18,16 +24,40 @@ export default async function SiteLiveEditorPage() {
     .single()
 
   if (!site) redirect('/app')
-  if (site.pagelayout !== 'clinico') redirect('/app/site')
 
   const [{ data: servicos }, { data: fotos }, { data: depoimentos }, { data: stats }] = await Promise.all([
-    supabase.from('site_servicos').select('id, icon, title, description').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_servicos').select('id, icon, title, description, preco').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('id, url').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
-    supabase.from('site_depoimentos').select('id, nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(1),
+    supabase.from('site_depoimentos').select('id, nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_stats').select('id, valor, rotulo').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
   ])
 
   const podeEditar = info.papel === 'owner' || info.papel === 'admin'
+  const servicosList = servicos ?? []
+  const fotosList = fotos ?? []
+  const depoimentosList = depoimentos ?? []
+  const statsList = stats ?? []
+
+  function renderEditor() {
+    switch (site!.pagelayout) {
+      case 'clinico':
+        return <ClinicoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} readOnly={!podeEditar} />
+      case 'editorial':
+        return <EditorialLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} readOnly={!podeEditar} />
+      case 'portfolio':
+        return <PortfolioLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
+      case 'urbano':
+        return <UrbanoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
+      case 'performance':
+        return <PerformanceLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} stats={statsList} readOnly={!podeEditar} />
+      case 'zen':
+        return <ZenLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
+      case 'acolhedor':
+        return <AcolhedorLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} readOnly={!podeEditar} />
+      default:
+        return <p className="p-6 text-sm text-[var(--muted)]">Template não reconhecido.</p>
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[var(--off)]">
@@ -54,14 +84,7 @@ export default async function SiteLiveEditorPage() {
       />
 
       <div className="max-w-6xl mx-auto my-6 rounded-2xl overflow-hidden border border-[var(--border)] shadow-sm">
-        <ClinicoLiveEditor
-          site={site}
-          servicos={servicos ?? []}
-          fotos={fotos ?? []}
-          depoimento={depoimentos?.[0] ?? null}
-          stats={stats ?? []}
-          readOnly={!podeEditar}
-        />
+        {renderEditor()}
       </div>
     </div>
   )

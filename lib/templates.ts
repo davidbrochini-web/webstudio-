@@ -8,6 +8,10 @@ export interface NicheService {
   icon: string
   title: string
   desc: string
+  /** Preço opcional — só o template Urbano usa hoje. Sites de tenant
+   *  real guardam isso no banco; vitrines de demo caem no fallback
+   *  fixo do componente quando ausente. */
+  preco?: string
 }
 
 export interface NichePost {

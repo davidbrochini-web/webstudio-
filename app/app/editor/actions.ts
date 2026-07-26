@@ -55,7 +55,7 @@ export async function deleteFotoFromPool(id: string) {
 export async function upsertServicoInline(
   siteId: string,
   servicoId: string | null,
-  data: { icon: string; title: string; description: string }
+  data: { icon: string; title: string; description: string; preco?: string | null }
 ) {
   const supabase = await createClient()
   if (servicoId) {
@@ -75,7 +75,7 @@ export async function upsertServicoInline(
   const { data: created, error } = await supabase
     .from('site_servicos')
     .insert({ site_id: siteId, ...data, ordem: (max?.ordem ?? -1) + 1 })
-    .select('id, icon, title, description')
+    .select('id, icon, title, description, preco')
     .single()
 
   if (error) throw new Error(error.message)
@@ -86,6 +86,13 @@ export async function upsertServicoInline(
 export async function deleteServicoInline(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('site_servicos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/app/editor')
+}
+
+export async function deleteDepoimentoInline(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('site_depoimentos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/app/editor')
 }
