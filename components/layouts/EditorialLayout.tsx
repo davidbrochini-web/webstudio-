@@ -77,15 +77,17 @@ export default function EditorialLayout({ config }: { config: NicheConfig }) {
       <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* Depoimento — texto puro, sem card, estilo citação de livro */}
-      <section className="px-6 py-20 border-t border-white/10">
-        <div className="max-w-2xl mx-auto">
-          <p className="text-4xl text-white/20 font-display leading-none mb-4">&ldquo;</p>
-          <blockquote className="text-lg text-white/70 leading-relaxed italic mb-6">
-            {testimonials[0].text}
-          </blockquote>
-          <p className="text-sm font-semibold text-white/40">— {testimonials[0].name}</p>
-        </div>
-      </section>
+      {testimonials[0] && (
+        <section className="px-6 py-20 border-t border-white/10">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-4xl text-white/20 font-display leading-none mb-4">&ldquo;</p>
+            <blockquote className="text-lg text-white/70 leading-relaxed italic mb-6">
+              {testimonials[0].text}
+            </blockquote>
+            <p className="text-sm font-semibold text-white/40">— {testimonials[0].name}</p>
+          </div>
+        </section>
+      )}
 
       {/* CTA sóbria */}
       <section className="px-6 py-16 border-t border-white/10 text-center">

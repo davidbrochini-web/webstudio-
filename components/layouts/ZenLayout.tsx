@@ -79,13 +79,15 @@ export default function ZenLayout({ config }: { config: NicheConfig }) {
       <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* Depoimento único, centralizado, elegante */}
-      <section className="px-6 py-20 max-w-xl mx-auto text-center">
-        <p className="text-4xl text-[#8B7355]/30 font-display leading-none mb-3">&ldquo;</p>
-        <blockquote className="font-display text-xl text-[#4A5548] leading-relaxed italic mb-5">
-          {testimonials[0].text}
-        </blockquote>
-        <p className="text-sm text-[#8B7355]">{testimonials[0].name}</p>
-      </section>
+      {testimonials[0] && (
+        <section className="px-6 py-20 max-w-xl mx-auto text-center">
+          <p className="text-4xl text-[#8B7355]/30 font-display leading-none mb-3">&ldquo;</p>
+          <blockquote className="font-display text-xl text-[#4A5548] leading-relaxed italic mb-5">
+            {testimonials[0].text}
+          </blockquote>
+          <p className="text-sm text-[#8B7355]">{testimonials[0].name}</p>
+        </section>
+      )}
 
       {/* Fechamento */}
       <section className="px-6 py-20 text-center bg-[#4A5548]">

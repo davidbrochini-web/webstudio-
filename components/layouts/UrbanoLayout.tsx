@@ -75,15 +75,17 @@ export default function UrbanoLayout({ config }: { config: NicheConfig }) {
       <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* Depoimento */}
-      <section className="px-6 py-16 sm:py-20 text-center">
-        <div className="max-w-lg mx-auto">
-          <p className="text-2xl mb-4">🔥</p>
-          <blockquote className="text-lg text-white/80 leading-relaxed mb-4">
-            &ldquo;{testimonials[0].text}&rdquo;
-          </blockquote>
-          <p className="text-sm font-semibold text-white/40">— {testimonials[0].name}</p>
-        </div>
-      </section>
+      {testimonials[0] && (
+        <section className="px-6 py-16 sm:py-20 text-center">
+          <div className="max-w-lg mx-auto">
+            <p className="text-2xl mb-4">🔥</p>
+            <blockquote className="text-lg text-white/80 leading-relaxed mb-4">
+              &ldquo;{testimonials[0].text}&rdquo;
+            </blockquote>
+            <p className="text-sm font-semibold text-white/40">— {testimonials[0].name}</p>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className={`bg-gradient-to-r ${accent} px-6 py-14 text-center`}>
