@@ -11,7 +11,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 bg-[var(--page-bg)]/90 backdrop-blur-md border-b border-[var(--border)]">
+    <nav className="sticky top-0 z-50 bg-[#0B0F0C]/95 backdrop-blur-md border-b border-white/10">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
@@ -23,7 +23,7 @@ export default function Navbar() {
             className="h-7 w-auto"
             priority
           />
-          <span className="font-display font-bold text-lg tracking-tight text-[var(--ink)]">
+          <span className="font-display font-bold text-lg tracking-tight text-white">
             omnidesign
           </span>
         </Link>
@@ -39,7 +39,7 @@ export default function Navbar() {
             <li key={href}>
               <Link
                 href={href}
-                className="text-sm font-medium text-[var(--muted)] hover:text-[var(--slate)] transition-colors"
+                className="text-sm font-medium text-white/60 hover:text-white transition-colors"
               >
                 {label}
               </Link>
@@ -80,7 +80,7 @@ export default function Navbar() {
           <button
             onClick={() => setOpen(!open)}
             aria-label="Menu"
-            className="p-2 rounded-lg text-[var(--muted)] hover:bg-[var(--off)] transition-colors"
+            className="p-2 rounded-lg text-white/70 hover:bg-white/10 transition-colors"
           >
             {open ? (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -97,11 +97,11 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       {open && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--page-bg)] px-6 pb-4">
+        <div className="md:hidden border-t border-white/10 bg-[#0B0F0C] px-6 pb-4">
           <Link
             href="/demo"
             onClick={() => setOpen(false)}
-            className="block py-3 text-sm font-semibold text-[var(--brand)] border-b border-[var(--border)]"
+            className="block py-3 text-sm font-semibold text-[var(--brand2)] border-b border-white/10"
           >
             ✨ Teste você mesmo
           </Link>
@@ -115,7 +115,7 @@ export default function Navbar() {
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              className="block py-3 text-sm font-medium text-[var(--slate)] border-b border-[var(--border)] last:border-0"
+              className="block py-3 text-sm font-medium text-white/70 border-b border-white/10 last:border-0"
             >
               {label}
             </Link>

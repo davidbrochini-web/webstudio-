@@ -34,7 +34,7 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-      className="w-9 h-9 flex items-center justify-center rounded-lg text-[var(--muted)] hover:bg-[var(--off)] transition-colors flex-shrink-0"
+      className="w-9 h-9 flex items-center justify-center rounded-lg text-white/70 hover:bg-white/10 transition-colors flex-shrink-0"
     >
       {isDark ? (
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
