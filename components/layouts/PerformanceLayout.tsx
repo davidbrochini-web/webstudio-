@@ -8,6 +8,10 @@ const progress = [92, 78, 85, 65]
 export default function PerformanceLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
+  const allStats = config.stats?.length
+    ? config.stats
+    : [{ valor: '500+', rotulo: 'alunos transformados' }, { valor: '+8', rotulo: 'anos' }, { valor: '24/7', rotulo: 'acesso' }, { valor: '4.8★', rotulo: 'avaliação' }, { valor: '+30', rotulo: 'aulas/semana' }]
+  const [heroStat, ...gridStats] = allStats
 
   return (
     <div className="bg-[#0A0F0D]">
@@ -33,9 +37,9 @@ export default function PerformanceLayout({ config }: { config: NicheConfig }) {
           {/* numero gigante em destaque */}
           <div className="my-8">
             <span className={`font-display font-extrabold text-[clamp(60px,15vw,120px)] leading-none bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}>
-              500+
+              {heroStat.valor}
             </span>
-            <span className="text-sm text-white/50 uppercase tracking-widest">alunos transformados</span>
+            <span className="text-sm text-white/50 uppercase tracking-widest">{heroStat.rotulo}</span>
           </div>
           <p className="text-base text-white/60 max-w-lg mx-auto mb-8">{heroSub}</p>
           <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
@@ -48,10 +52,10 @@ export default function PerformanceLayout({ config }: { config: NicheConfig }) {
       {/* Estatísticas grid — bem grande, protagonista */}
       <section className="px-6 py-10 border-y border-white/10">
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {[['+8', 'anos'], ['24/7', 'acesso'], ['4.8★', 'avaliação'], ['+30', 'aulas/semana']].map(([n, l]) => (
-            <div key={l}>
-              <span className={`font-display font-extrabold text-2xl sm:text-3xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}>{n}</span>
-              <span className="text-[11px] text-white/40 uppercase tracking-wide">{l}</span>
+          {gridStats.map(({ valor, rotulo }) => (
+            <div key={rotulo}>
+              <span className={`font-display font-extrabold text-2xl sm:text-3xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}>{valor}</span>
+              <span className="text-[11px] text-white/40 uppercase tracking-wide">{rotulo}</span>
             </div>
           ))}
         </div>

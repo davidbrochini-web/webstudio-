@@ -47,7 +47,7 @@ export default function UrbanoLayout({ config }: { config: NicheConfig }) {
             Nossos serviços
           </h2>
           <div className="flex flex-col divide-y divide-white/10">
-            {services.map(({ icon, title, desc }, i) => (
+            {services.map(({ icon, title, desc, preco }, i) => (
               <div key={title} className="flex items-center gap-3 py-4">
                 <span className="text-xl flex-shrink-0">{icon}</span>
                 <div className="flex-1 min-w-0">
@@ -55,7 +55,7 @@ export default function UrbanoLayout({ config }: { config: NicheConfig }) {
                   <p className="text-xs text-white/40 truncate">{desc}</p>
                 </div>
                 <span className={`font-display font-extrabold text-sm bg-gradient-to-r ${accent} bg-clip-text text-transparent flex-shrink-0`}>
-                  {prices[i % prices.length]}
+                  {preco || prices[i % prices.length]}
                 </span>
               </div>
             ))}

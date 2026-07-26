@@ -34,21 +34,10 @@ export default async function AppHome() {
     .eq('tenant_id', tenant.id)
     .is('deleted_at', null)
 
-  const { data: site } = await supabase
-    .from('sites')
-    .select('pagelayout')
-    .eq('tenant_id', tenant.id)
-    .is('deleted_at', null)
-    .maybeSingle()
-
   const ativo = (modulo: string) => subscriptions?.some(s => s.modulo === modulo && s.status === 'ativo') ?? false
 
-  // O editor clicável só existe pro template clinico por enquanto —
-  // os outros 6 arquétipos ainda usam o fluxo antigo de abas.
-  const siteHref = site?.pagelayout === 'clinico' ? '/app/editor' : '/app/site'
-
   const modulos = [
-    { slug: 'site', label: 'Meu site', desc: 'Edite o conteúdo do seu site: textos, serviços, depoimentos e fotos.', href: siteHref },
+    { slug: 'site', label: 'Meu site', desc: 'Edite o conteúdo do seu site: textos, serviços, depoimentos e fotos.', href: '/app/editor' },
     { slug: 'cadastros', label: 'Cadastros', desc: 'Clientes, fornecedores, funcionários e produtos/serviços.', href: '/app/cadastros' },
     { slug: 'crm', label: 'CRM', desc: 'Em breve.', href: null },
     { slug: 'estoque', label: 'Controle de estoque', desc: 'Em breve.', href: null },

@@ -6,6 +6,9 @@ import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 export default function EditorialLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
+  const stats = config.stats?.length
+    ? config.stats
+    : [{ valor: '+18', rotulo: 'anos de atuação' }, { valor: '+400', rotulo: 'casos atendidos' }, { valor: '92%', rotulo: 'êxito em acordos' }]
 
   return (
     <div className="bg-[var(--dark)]">
@@ -57,10 +60,10 @@ export default function EditorialLayout({ config }: { config: NicheConfig }) {
       {/* Estatísticas discretas */}
       <div className="border-y border-white/10 py-6">
         <div className="max-w-4xl mx-auto px-6 grid grid-cols-3 gap-4 text-center">
-          {[['+18', 'anos de atuação'], ['+400', 'casos atendidos'], ['92%', 'êxito em acordos']].map(([n, l]) => (
-            <div key={l}>
-              <span className={`font-display font-extrabold text-xl sm:text-2xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}>{n}</span>
-              <span className="text-[11px] text-white/40">{l}</span>
+          {stats.map(({ valor, rotulo }) => (
+            <div key={rotulo}>
+              <span className={`font-display font-extrabold text-xl sm:text-2xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}>{valor}</span>
+              <span className="text-[11px] text-white/40">{rotulo}</span>
             </div>
           ))}
         </div>
