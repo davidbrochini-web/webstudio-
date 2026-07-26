@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentTenant } from '@/lib/current-tenant'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import ClinicoLiveEditor from '@/components/site-editor/ClinicoLiveEditor'
 import EditorialLiveEditor from '@/components/site-editor/EditorialLiveEditor'
 import PortfolioLiveEditor from '@/components/site-editor/PortfolioLiveEditor'
@@ -66,7 +67,22 @@ export default async function SiteLiveEditorPage() {
       {info.isDemo ? (
         <div className="bg-[var(--card-bg)] border-b border-[var(--border)] px-4 sm:px-6 pt-3 pb-2 sticky top-0 z-20">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <Link href="/" className="flex-shrink-0" aria-label="Voltar pra home">
+              <Image
+                src="/brand/omnidesign-icon.png"
+                alt=""
+                width={28}
+                height={17}
+                className="h-6 w-auto"
+              />
+            </Link>
             <span className="text-xs font-bold text-[var(--brand)] flex-shrink-0">✨ Demo</span>
+            <Link
+              href="/demo"
+              className="text-xs font-semibold text-[var(--ink)] px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--off)] transition-colors whitespace-nowrap"
+            >
+              🔀 Trocar de modelo
+            </Link>
             <Link
               href="/app"
               className="text-sm font-bold text-white px-4 py-2 rounded-lg grad-bg hover:opacity-90 hover:scale-105 transition-all whitespace-nowrap shadow-md"
@@ -87,7 +103,18 @@ export default async function SiteLiveEditorPage() {
         </div>
       ) : (
         <div className="bg-[var(--card-bg)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-20">
-          <Link href="/app" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">← Voltar</Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" aria-label="Voltar pra home">
+              <Image
+                src="/brand/omnidesign-icon.png"
+                alt=""
+                width={28}
+                height={17}
+                className="h-6 w-auto"
+              />
+            </Link>
+            <Link href="/app" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">← Voltar</Link>
+          </div>
           <p className="text-xs text-[var(--muted)] text-center flex-1">
             Clique em qualquer texto ou foto pra editar direto aqui · status: <strong>{site.status}</strong>
             {!podeEditar && ' · leitura'}
