@@ -45,7 +45,7 @@ export async function getSiteConfigBySlug(
 
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, slug, pagelayout, accent_key, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status')
+    .select('id, tenant_id, slug, pagelayout, accent_key, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status, cta_heading, cta_subtext, banner_text')
     .eq('slug', slug)
     .is('deleted_at', null)
     .single()
@@ -80,6 +80,9 @@ export async function getSiteConfigBySlug(
     testimonials: (depoimentos ?? []).map(d => ({ name: d.nome, text: d.texto })),
     posts: (posts ?? []).map(p => ({ emoji: '', bg: accent, likes: p.likes, caption: p.caption })),
     stats: (stats ?? []).map(s => ({ valor: s.valor, rotulo: s.rotulo })),
+    ctaHeading: site.cta_heading ?? undefined,
+    ctaSubtext: site.cta_subtext ?? undefined,
+    bannerText: site.banner_text ?? undefined,
   }
 
   return { site: site as SiteRow, config }

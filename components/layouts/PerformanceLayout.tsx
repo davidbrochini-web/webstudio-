@@ -98,7 +98,7 @@ export default function PerformanceLayout({ config }: { config: NicheConfig }) {
 
       {/* CTA */}
       <section className="px-6 py-16 text-center border-t border-white/10">
-        <h2 className="font-display font-extrabold text-2xl text-white mb-6">Sua transformação começa hoje</h2>
+        <h2 className="font-display font-extrabold text-2xl text-white mb-6">{config.ctaHeading || "Sua transformação começa hoje"}</h2>
         <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
           className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full hover:-translate-y-px hover:shadow-2xl transition-all`}>
           {ctaLabel} →

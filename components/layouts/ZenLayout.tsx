@@ -45,7 +45,7 @@ export default function ZenLayout({ config }: { config: NicheConfig }) {
         <div className="absolute inset-0 bg-[#4A5548]/25" />
         <div className="relative h-full flex items-center justify-center px-6">
           <p className="font-display text-2xl sm:text-3xl text-white text-center max-w-lg leading-relaxed drop-shadow">
-            Um espaço pensado para o seu bem-estar.
+            {config.bannerText || "Um espaço pensado para o seu bem-estar."}
           </p>
         </div>
       </section>
@@ -91,8 +91,8 @@ export default function ZenLayout({ config }: { config: NicheConfig }) {
 
       {/* Fechamento */}
       <section className="px-6 py-20 text-center bg-[#4A5548]">
-        <p className="text-lg text-white/80 mb-2">Reserve um momento só seu.</p>
-        <p className="text-sm text-white/50 mb-8 max-w-sm mx-auto">Agende sua sessão e sinta a diferença de um cuidado de verdade.</p>
+        <p className="text-lg text-white/80 mb-2">{config.ctaHeading || "Reserve um momento só seu."}</p>
+        <p className="text-sm text-white/50 mb-8 max-w-sm mx-auto">{config.ctaSubtext || "Agende sua sessão e sinta a diferença de um cuidado de verdade."}</p>
         <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-white text-[#4A5548] font-semibold px-8 py-4 rounded-full hover:-translate-y-px hover:shadow-xl transition-all">
           {ctaLabel}

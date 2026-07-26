@@ -19,7 +19,7 @@ export default async function SiteLiveEditorPage() {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, slug, pagelayout, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status')
+    .select('id, slug, pagelayout, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status, cta_heading, cta_subtext, banner_text')
     .eq('id', info.siteId)
     .single()
 

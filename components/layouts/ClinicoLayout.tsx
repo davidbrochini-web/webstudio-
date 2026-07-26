@@ -95,8 +95,8 @@ export default function ClinicoLayout({ config }: { config: NicheConfig }) {
       {/* CTA */}
       <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center`}>
         <div className="max-w-xl mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4">Agende sua avaliação</h2>
-          <p className="text-white/85 mb-8">Atendimento rápido pelo WhatsApp — sem compromisso.</p>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4">{config.ctaHeading || "Agende sua avaliação"}</h2>
+          <p className="text-white/85 mb-8">{config.ctaSubtext || "Atendimento rápido pelo WhatsApp — sem compromisso."}</p>
           <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-[var(--ink)] font-bold px-7 py-3.5 rounded-xl hover:-translate-y-px hover:shadow-xl transition-all">
             💬 {ctaLabel}

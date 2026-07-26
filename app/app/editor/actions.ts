@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 const ALLOWED_SITE_FIELDS = [
   'business_name', 'tagline', 'hero_title', 'hero_sub', 'cta_label', 'whatsapp', 'instagram_handle',
+  'cta_heading', 'cta_subtext', 'banner_text',
 ] as const
 type SiteField = typeof ALLOWED_SITE_FIELDS[number]
 

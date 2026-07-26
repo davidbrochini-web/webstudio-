@@ -79,7 +79,7 @@ export default function AcolhedorLayout({ config }: { config: NicheConfig }) {
       {/* CTA em pílula */}
       <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center rounded-t-[40px]`}>
         <div className="max-w-lg mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-6">Vem fazer parte!</h2>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-6">{config.ctaHeading || "Vem fazer parte!"}</h2>
           <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-[var(--ink)] font-bold px-8 py-4 rounded-full hover:-translate-y-px hover:shadow-xl transition-all">
             💬 {ctaLabel}

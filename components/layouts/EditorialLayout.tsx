@@ -91,7 +91,7 @@ export default function EditorialLayout({ config }: { config: NicheConfig }) {
 
       {/* CTA sóbria */}
       <section className="px-6 py-16 border-t border-white/10 text-center">
-        <h2 className="font-display font-extrabold text-2xl text-white mb-4">Converse com nosso time</h2>
+        <h2 className="font-display font-extrabold text-2xl text-white mb-4">{config.ctaHeading || "Converse com nosso time"}</h2>
         <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
           className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} text-white font-bold px-7 py-3.5 rounded hover:-translate-y-px transition-all`}>
           {ctaLabel} →

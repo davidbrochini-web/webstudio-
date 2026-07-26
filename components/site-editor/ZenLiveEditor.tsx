@@ -15,6 +15,9 @@ export interface SiteData {
   hero_title: string
   hero_sub: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
+  banner_text: string | null
 }
 
 export default function ZenLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, readOnly }: {
@@ -29,7 +32,7 @@ export default function ZenLiveEditor({ site, servicos: servicosInit, fotos: fot
   const [depoimento, setDepoimento] = useState(depoimentoInit)
 
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label' | 'cta_heading' | 'cta_subtext' | 'banner_text') => (v: string) => updateSiteField(site.id, field, v)
   const heroFoto = fotos[0]
 
   return (
@@ -116,8 +119,8 @@ export default function ZenLiveEditor({ site, servicos: servicosInit, fotos: fot
       </section>
 
       <section className="px-6 py-20 text-center bg-[#4A5548]">
-        <p className="text-lg text-white/80 mb-2">Reserve um momento só seu.</p>
-        <p className="text-sm text-white/50 mb-8 max-w-sm mx-auto">Agende sua sessão e sinta a diferença de um cuidado de verdade.</p>
+        <p className="text-lg text-white/80 mb-2"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Reserve um momento só seu."} onSave={fieldSaver('cta_heading')} /></p>
+        <p className="text-sm text-white/50 mb-8 max-w-sm mx-auto"><EditableText as="span" readOnly={readOnly} value={site.cta_subtext || "Agende sua sessão e sinta a diferença de um cuidado de verdade."} onSave={fieldSaver('cta_subtext')} /></p>
         <span className="inline-flex items-center gap-2 bg-white text-[#4A5548] font-semibold px-8 py-4 rounded-full" title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
         </span>
