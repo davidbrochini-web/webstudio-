@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useState } from 'react'
 import { createTenantUser, updateMembershipRole, type UserFormState } from '@/app/admin/tenants/[id]/actions'
 
 interface Membership {
@@ -20,16 +20,26 @@ export default function TenantUsersManager({
   tenantId: string
   memberships: Membership[]
 }) {
-  const [showForm, setShowForm] = useState(false)
-  const [senha, setSenha] = useState(generateSenha())
+  const [form, setForm] = useState<{ showForm: boolean; senha: string }>({
+    showForm: false,
+    senha: generateSenha(),
+  })
+  const { showForm, senha } = form
+  const setShowForm = (showForm: boolean) => setForm(f => ({ ...f, showForm }))
+  const setSenha = (senha: string) => setForm(f => ({ ...f, senha }))
   const [state, formAction, pending] = useActionState<UserFormState, FormData>(createTenantUser, {})
 
-  useEffect(() => {
+  // Padrão "ajustar state durante o render" (recomendado pelo React pra
+  // resetar state quando um valor externo muda, evitando o efeito extra
+  // de render que um useEffect causaria aqui): guarda o último `state`
+  // visto e reage à mudança de `success` no próprio corpo do componente.
+  const [lastState, setLastState] = useState(state)
+  if (state !== lastState) {
+    setLastState(state)
     if (state.success) {
-      setShowForm(false)
-      setSenha(generateSenha())
+      setForm({ showForm: false, senha: generateSenha() })
     }
-  }, [state.success])
+  }
 
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6">
@@ -113,7 +123,14 @@ export default function TenantUsersManager({
               <span className="text-sm text-[var(--ink)]">{m.nome}</span>
               <select
                 defaultValue={m.papel}
-                onChange={e => updateMembershipRole(m.id, e.target.value, tenantId)}
+                onChange={e => {
+                  const valor = e.target.value
+                  const anterior = e.target
+                  updateMembershipRole(m.id, valor, tenantId).catch(err => {
+                    anterior.value = m.papel
+                    alert(err instanceof Error ? err.message : 'Erro ao atualizar papel.')
+                  })
+                }}
                 className="text-xs px-2 py-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--muted)]"
               >
                 <option value="owner">Owner</option>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { toggleModule } from '@/app/admin/tenants/[id]/actions'
 
 const modulos = [
@@ -26,20 +26,27 @@ export default function TenantModulesManager({
   subscriptions: Subscription[]
 }) {
   const [isPending, startTransition] = useTransition()
+  const [erro, setErro] = useState<string | null>(null)
 
   function isAtivo(slug: string) {
     return subscriptions.find(s => s.modulo === slug)?.status === 'ativo'
   }
 
   function handleToggle(slug: string, checked: boolean) {
-    startTransition(() => {
-      toggleModule(tenantId, slug, checked)
+    setErro(null)
+    startTransition(async () => {
+      try {
+        await toggleModule(tenantId, slug, checked)
+      } catch (err) {
+        setErro(err instanceof Error ? err.message : 'Erro ao atualizar módulo.')
+      }
     })
   }
 
   return (
     <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6">
       <h2 className="font-display font-bold text-base text-[var(--ink)] mb-4">Módulos</h2>
+      {erro && <p className="text-xs text-red-600 mb-3">{erro}</p>}
       <ul className="flex flex-col gap-1">
         {modulos.map(({ slug, label }) => {
           const ativo = isAtivo(slug)
