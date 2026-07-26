@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/app', '/login'],
+      disallow: ['/admin', '/app', '/login', '/demo/iniciar'],
     },
     sitemap: 'https://omnidesign.com.br/sitemap.xml',
   }

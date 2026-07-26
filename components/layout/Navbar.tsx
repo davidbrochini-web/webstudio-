@@ -50,6 +50,12 @@ export default function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
         <ThemeToggle />
+        <Link
+          href="/demo"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg grad-bg text-white text-sm font-semibold hover:opacity-90 transition-all hover:-translate-y-px"
+        >
+          ✨ Teste você mesmo
+        </Link>
         <a
           href={WA_LINK}
           target="_blank"
@@ -92,6 +98,13 @@ export default function Navbar() {
       {/* Mobile drawer */}
       {open && (
         <div className="md:hidden border-t border-[var(--border)] bg-[var(--page-bg)] px-6 pb-4">
+          <Link
+            href="/demo"
+            onClick={() => setOpen(false)}
+            className="block py-3 text-sm font-semibold text-[var(--brand)] border-b border-[var(--border)]"
+          >
+            ✨ Teste você mesmo
+          </Link>
           {[
             { href: '#demo',          label: 'Demo' },
             { href: '#templates',     label: 'Modelos de site' },

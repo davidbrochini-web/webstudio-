@@ -7,6 +7,7 @@ export interface CurrentTenantInfo {
   papel: string
   siteId: string | null
   siteSlug: string | null
+  isDemo: boolean
 }
 
 /**
@@ -23,11 +24,11 @@ export async function getCurrentTenant(): Promise<CurrentTenantInfo | null> {
 
   const { data: membership } = await supabase
     .from('memberships')
-    .select('papel, tenants(id, nome)')
+    .select('papel, tenants(id, nome, is_demo)')
     .eq('user_id', user.id)
     .single()
 
-  const tenant = membership?.tenants as unknown as { id: string; nome: string } | null
+  const tenant = membership?.tenants as unknown as { id: string; nome: string; is_demo: boolean } | null
   if (!tenant) return null
 
   const { data: site } = await supabase
@@ -43,5 +44,6 @@ export async function getCurrentTenant(): Promise<CurrentTenantInfo | null> {
     papel: membership!.papel,
     siteId: site?.id ?? null,
     siteSlug: site?.slug ?? null,
+    isDemo: tenant.is_demo,
   }
 }
