@@ -45,6 +45,10 @@ export interface NicheConfig {
   igHandle: string
   /** IDs de fotos curadas no Unsplash (licença livre) — 2 a 3 por nicho, usadas em rotação */
   photoIds: string[]
+  /** Número de WhatsApp do PRÓPRIO negócio (dígitos, ex: 5511999999999).
+   *  Sites de tenant real preenchem isso; vitrines estáticas de demo
+   *  deixam undefined e caem no número da agência (env var). */
+  whatsapp?: string
 }
 
 export const niches: NicheConfig[] = [

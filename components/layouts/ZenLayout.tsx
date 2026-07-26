@@ -2,10 +2,10 @@ import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto, unsplashPhotoFrom } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 export default function ZenLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, services, posts, testimonials, igHandle, photoIds, accent } = config
+  const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
 
   return (
     <div className="bg-[#FAF7F2]">
