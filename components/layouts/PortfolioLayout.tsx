@@ -65,16 +65,18 @@ export default function PortfolioLayout({ config }: { config: NicheConfig }) {
       <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* Depoimento flutuando sobre foto */}
-      <section className="relative py-24 px-6">
-        <img src={unsplashPhoto(photoIds[0], 1600, 700)} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="relative max-w-lg mx-auto text-center">
-          <blockquote className="font-display text-xl sm:text-2xl text-white leading-snug mb-4">
-            &ldquo;{testimonials[0].text}&rdquo;
-          </blockquote>
-          <p className="text-sm text-white/70">{testimonials[0].name}</p>
-        </div>
-      </section>
+      {testimonials[0] && (
+        <section className="relative py-24 px-6">
+          <img src={unsplashPhoto(photoIds[0], 1600, 700)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/55" />
+          <div className="relative max-w-lg mx-auto text-center">
+            <blockquote className="font-display text-xl sm:text-2xl text-white leading-snug mb-4">
+              &ldquo;{testimonials[0].text}&rdquo;
+            </blockquote>
+            <p className="text-sm text-white/70">{testimonials[0].name}</p>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center`}>

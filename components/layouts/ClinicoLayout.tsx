@@ -80,15 +80,17 @@ export default function ClinicoLayout({ config }: { config: NicheConfig }) {
       <InstagramFeedStrip posts={posts} igHandle={igHandle} businessName={businessName} accent={accent} photoIds={photoIds} />
 
       {/* Um depoimento grande em destaque */}
-      <section className="px-6 py-16 sm:py-20">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="text-3xl mb-4">⭐⭐⭐⭐⭐</div>
-          <blockquote className="font-display text-xl sm:text-2xl text-[var(--ink)] leading-snug mb-5">
-            &ldquo;{testimonials[0].text}&rdquo;
-          </blockquote>
-          <p className="text-sm font-semibold text-[var(--muted)]">{testimonials[0].name}</p>
-        </div>
-      </section>
+      {testimonials[0] && (
+        <section className="px-6 py-16 sm:py-20">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="text-3xl mb-4">⭐⭐⭐⭐⭐</div>
+            <blockquote className="font-display text-xl sm:text-2xl text-[var(--ink)] leading-snug mb-5">
+              &ldquo;{testimonials[0].text}&rdquo;
+            </blockquote>
+            <p className="text-sm font-semibold text-[var(--muted)]">{testimonials[0].name}</p>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center`}>
