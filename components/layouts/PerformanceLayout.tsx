@@ -1,12 +1,16 @@
 import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto, unsplashPhotoFrom } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
+import PlanosSection from '@/components/site-template/PlanosSection'
+import FaqSection from '@/components/site-template/FaqSection'
+import BlogSection from '@/components/site-template/BlogSection'
+import LeadForm from '@/components/site-template/LeadForm'
 
 
 const progress = [92, 78, 85, 65]
 
 export default function PerformanceLayout({ config }: { config: NicheConfig }) {
-  const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
+  const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, solidBg, services, posts, testimonials, igHandle, photoIds, faq, planos, blogPosts, siteId } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
   const allStats = config.stats?.length
     ? config.stats
@@ -95,6 +99,11 @@ export default function PerformanceLayout({ config }: { config: NicheConfig }) {
           ))}
         </div>
       </section>
+
+      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
+      <FaqSection faq={faq} accent={accent} />
+      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
+      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Bora começar?" subtext="Deixa seu contato pra garantir sua aula experimental." />
 
       {/* CTA */}
       <section className="px-6 py-16 text-center border-t border-white/10">
