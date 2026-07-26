@@ -83,7 +83,7 @@ export const modules: ModuleConfig[] = [
     icon: '👥',
     preco: 69.90,
     disponivel: false,
-    href: null,
+    href: '/app/crm',
   },
   {
     slug: 'estoque',
@@ -92,7 +92,7 @@ export const modules: ModuleConfig[] = [
     icon: '📦',
     preco: 69.90,
     disponivel: false,
-    href: null,
+    href: '/app/estoque',
   },
   {
     slug: 'pedidos-internos',
@@ -101,7 +101,7 @@ export const modules: ModuleConfig[] = [
     icon: '📋',
     preco: 79.90,
     disponivel: false,
-    href: null,
+    href: '/app/pedidos-internos',
   },
   {
     slug: 'agendamento',
@@ -110,7 +110,7 @@ export const modules: ModuleConfig[] = [
     icon: '📅',
     preco: 89.90,
     disponivel: false,
-    href: null,
+    href: '/app/agendamento',
   },
   {
     slug: 'videos',
@@ -119,7 +119,7 @@ export const modules: ModuleConfig[] = [
     icon: '🎬',
     preco: 39.90,
     disponivel: false,
-    href: null,
+    href: '/app/videos',
   },
   {
     slug: 'whatsapp',
@@ -128,7 +128,7 @@ export const modules: ModuleConfig[] = [
     icon: '💬',
     preco: 99.90,
     disponivel: false,
-    href: null,
+    href: '/app/whatsapp',
   },
 ]
 

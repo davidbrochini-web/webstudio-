@@ -137,7 +137,7 @@ export default function DarkTopNav({
             </span>
           )}
         </Link>
-        <div className="hidden sm:flex items-center gap-1 overflow-x-auto">
+        <div className="hidden sm:flex items-center gap-1 flex-wrap">
           {items.map(item => {
             if (item.children) {
               const active = item.children.some(c => pathname === c.href || pathname.startsWith(c.href + '/'))
@@ -159,7 +159,9 @@ export default function DarkTopNav({
           })}
         </div>
       </div>
-      <UserMenu email={email} />
+      <div className="flex-shrink-0">
+        <UserMenu email={email} />
+      </div>
     </nav>
   )
 }
