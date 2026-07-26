@@ -90,6 +90,45 @@ export async function deleteServicoInline(id: string) {
   revalidatePath('/app/editor')
 }
 
+export async function upsertStatInline(
+  siteId: string,
+  statId: string | null,
+  data: { valor: string; rotulo: string }
+) {
+  const supabase = await createClient()
+  if (statId) {
+    const { error } = await supabase.from('site_stats').update(data).eq('id', statId)
+    if (error) throw new Error(error.message)
+    revalidatePath('/app/editor')
+    return { id: statId, ...data }
+  }
+
+  const { data: max } = await supabase
+    .from('site_stats')
+    .select('ordem')
+    .eq('site_id', siteId)
+    .order('ordem', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const { data: created, error } = await supabase
+    .from('site_stats')
+    .insert({ site_id: siteId, ...data, ordem: (max?.ordem ?? -1) + 1 })
+    .select('id, valor, rotulo')
+    .single()
+
+  if (error) throw new Error(error.message)
+  revalidatePath('/app/editor')
+  return created
+}
+
+export async function deleteStatInline(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('site_stats').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath('/app/editor')
+}
+
 export async function upsertDepoimentoInline(
   siteId: string,
   depoimentoId: string | null,

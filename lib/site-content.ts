@@ -52,11 +52,12 @@ export async function getSiteConfigBySlug(
 
   if (!site) return null
 
-  const [{ data: servicos }, { data: depoimentos }, { data: fotos }, { data: posts }] = await Promise.all([
+  const [{ data: servicos }, { data: depoimentos }, { data: fotos }, { data: posts }, { data: stats }] = await Promise.all([
     supabase.from('site_servicos').select('icon, title, description').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_depoimentos').select('nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_posts').select('caption, likes').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_stats').select('valor, rotulo').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
   ])
 
   const { accent, solidBg } = resolveAccent(site.accent_key)
@@ -78,6 +79,7 @@ export async function getSiteConfigBySlug(
     services: (servicos ?? []).map(s => ({ icon: s.icon, title: s.title, desc: s.description })),
     testimonials: (depoimentos ?? []).map(d => ({ name: d.nome, text: d.texto })),
     posts: (posts ?? []).map(p => ({ emoji: '', bg: accent, likes: p.likes, caption: p.caption })),
+    stats: (stats ?? []).map(s => ({ valor: s.valor, rotulo: s.rotulo })),
   }
 
   return { site: site as SiteRow, config }

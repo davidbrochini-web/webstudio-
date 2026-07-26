@@ -20,10 +20,11 @@ export default async function SiteLiveEditorPage() {
   if (!site) redirect('/app')
   if (site.pagelayout !== 'clinico') redirect('/app/site')
 
-  const [{ data: servicos }, { data: fotos }, { data: depoimentos }] = await Promise.all([
+  const [{ data: servicos }, { data: fotos }, { data: depoimentos }, { data: stats }] = await Promise.all([
     supabase.from('site_servicos').select('id, icon, title, description').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('id, url').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_depoimentos').select('id, nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(1),
+    supabase.from('site_stats').select('id, valor, rotulo').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
   ])
 
   const podeEditar = info.papel === 'owner' || info.papel === 'admin'
@@ -58,6 +59,7 @@ export default async function SiteLiveEditorPage() {
           servicos={servicos ?? []}
           fotos={fotos ?? []}
           depoimento={depoimentos?.[0] ?? null}
+          stats={stats ?? []}
           readOnly={!podeEditar}
         />
       </div>

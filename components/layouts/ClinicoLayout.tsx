@@ -6,6 +6,9 @@ import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 export default function ClinicoLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, solidBg, services, posts, testimonials, igHandle, photoIds } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
+  const stats = config.stats?.length
+    ? config.stats
+    : [{ valor: '+15', rotulo: 'anos de experiência' }, { valor: '+3.200', rotulo: 'pacientes atendidos' }, { valor: '4.9★', rotulo: 'avaliação média' }]
 
   return (
     <>
@@ -42,10 +45,10 @@ export default function ClinicoLayout({ config }: { config: NicheConfig }) {
       {/* Barra de confiança */}
       <div className={`bg-gradient-to-r ${accent} py-5`}>
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 gap-4 text-center">
-          {[['+15', 'anos de experiência'], ['+3.200', 'pacientes atendidos'], ['4.9★', 'avaliação média']].map(([n, l]) => (
-            <div key={l}>
-              <span className="font-display font-extrabold text-xl sm:text-2xl text-white block">{n}</span>
-              <span className="text-[11px] sm:text-xs text-white/80">{l}</span>
+          {stats.map(({ valor, rotulo }) => (
+            <div key={rotulo}>
+              <span className="font-display font-extrabold text-xl sm:text-2xl text-white block">{valor}</span>
+              <span className="text-[11px] sm:text-xs text-white/80">{rotulo}</span>
             </div>
           ))}
         </div>

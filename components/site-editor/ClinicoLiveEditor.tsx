@@ -6,6 +6,7 @@ import EditableImage from '@/components/site-editor/EditableImage'
 import {
   updateSiteField, replaceFoto, addFotoToPool, deleteFotoFromPool,
   upsertServicoInline, deleteServicoInline, upsertDepoimentoInline,
+  upsertStatInline, deleteStatInline,
 } from '@/app/app/editor/actions'
 
 const ACCENT = 'from-[#4facfe] to-[#00f2fe]'
@@ -14,6 +15,7 @@ const SOLID_BG = 'bg-[#0ea5e9]'
 export interface Servico { id: string; icon: string; title: string; description: string }
 export interface Foto { id: string; url: string }
 export interface Depoimento { id: string; nome: string; texto: string }
+export interface Stat { id: string; valor: string; rotulo: string }
 
 export interface SiteData {
   id: string
@@ -69,16 +71,18 @@ function ServicoRow({ siteId, servico, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, readOnly }: {
+export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, readOnly }: {
   site: SiteData
   servicos: Servico[]
   fotos: Foto[]
   depoimento: Depoimento | null
+  stats: Stat[]
   readOnly: boolean
 }) {
   const [servicos, setServicos] = useState(servicosInit)
   const [fotos, setFotos] = useState(fotosInit)
   const [depoimento, setDepoimento] = useState(depoimentoInit)
+  const [stats, setStats] = useState(statsInit)
   const [addingFoto, setAddingFoto] = useState(false)
 
   const heroFoto = fotos[0]
@@ -113,7 +117,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
       {/* Nav */}
       <nav className="border-b border-gray-200 px-6 h-16 flex items-center justify-between max-w-5xl mx-auto">
         <EditableText as="span" readOnly={readOnly} value={site.business_name} className="font-display font-extrabold text-lg" onSave={fieldSaver('business_name')} />
-        <span className={`${SOLID_BG} text-white text-sm font-semibold px-4 py-2 rounded-lg`}>
+        <span className={`${SOLID_BG} text-white text-sm font-semibold px-4 py-2 rounded-lg`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
         </span>
       </nav>
@@ -125,7 +129,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
             <EditableText as="p" readOnly={readOnly} value={site.tagline} placeholder="Tagline (ex: Clínica odontológica)" className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 block" onSave={fieldSaver('tagline')} />
             <EditableText as="h1" readOnly={readOnly} value={site.hero_title} className="font-display font-extrabold text-[clamp(30px,5vw,48px)] leading-[1.12] mb-5 block" onSave={fieldSaver('hero_title')} multiline />
             <EditableText as="p" readOnly={readOnly} value={site.hero_sub} className="text-base text-gray-500 leading-relaxed max-w-md mb-8 block" onSave={fieldSaver('hero_sub')} multiline />
-            <span className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3.5 rounded-xl">
+            <span className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3.5 rounded-xl" title="No site publicado, isso abre o WhatsApp">
               💬 <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
             </span>
           </div>
@@ -143,15 +147,45 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
         </div>
       </section>
 
-      {/* Barra de confiança (fixa — não é conteúdo do tenant) */}
+      {/* Barra de confiança — agora editável */}
       <div className={`bg-gradient-to-r ${ACCENT} py-5`}>
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 gap-4 text-center">
-          {[['+15', 'anos de experiência'], ['+3.200', 'pacientes atendidos'], ['4.9★', 'avaliação média']].map(([n, l]) => (
-            <div key={l}>
-              <span className="font-display font-extrabold text-xl sm:text-2xl text-white block">{n}</span>
-              <span className="text-[11px] sm:text-xs text-white/80">{l}</span>
+        <div className="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-x-4 gap-y-3 text-center">
+          {stats.map(s => (
+            <div key={s.id} className="relative group px-2">
+              <EditableText
+                as="span" readOnly={readOnly}
+                value={s.valor}
+                className="font-display font-extrabold text-xl sm:text-2xl text-white block"
+                onSave={async v => { const r = await upsertStatInline(site.id, s.id, { valor: v, rotulo: s.rotulo }); setStats(list => list.map(x => (x.id === s.id ? (r as Stat) : x))) }}
+              />
+              <EditableText
+                as="span" readOnly={readOnly}
+                value={s.rotulo}
+                className="text-[11px] sm:text-xs text-white/80 block"
+                onSave={async v => { const r = await upsertStatInline(site.id, s.id, { valor: s.valor, rotulo: v }); setStats(list => list.map(x => (x.id === s.id ? (r as Stat) : x))) }}
+              />
+              {!readOnly && (
+                <button
+                  onClick={async () => { await deleteStatInline(s.id); setStats(list => list.filter(x => x.id !== s.id)) }}
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-black/30 text-white text-[9px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Remover"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           ))}
+          {!readOnly && (
+            <button
+              onClick={async () => {
+                const created = await upsertStatInline(site.id, null, { valor: '+100', rotulo: 'clientes atendidos' })
+                if (created) setStats(list => [...list, created as Stat])
+              }}
+              className="text-white/70 hover:text-white text-xs font-semibold self-center px-3 py-1 border border-white/30 rounded-full"
+            >
+              + número
+            </button>
+          )}
         </div>
       </div>
 
@@ -277,7 +311,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
         <div className="max-w-xl mx-auto">
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4">Agende sua avaliação</h2>
           <p className="text-white/85 mb-8">Atendimento rápido pelo WhatsApp — sem compromisso.</p>
-          <span className="inline-flex items-center gap-2 bg-white text-[#1e293b] font-bold px-7 py-3.5 rounded-xl">
+          <span className="inline-flex items-center gap-2 bg-white text-[#1e293b] font-bold px-7 py-3.5 rounded-xl" title="No site publicado, isso abre o WhatsApp">
             💬 <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
           </span>
         </div>
