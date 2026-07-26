@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
   // Não bloqueia o redirect se der erro aqui — pior caso, o módulo
   // Cadastros aparece vazio, mas o site (a parte principal da demo)
   // já está pronto.
-  await seedCadastrosDemo(admin, tenant.id, niche.pageLayout).catch(() => {})
+  await seedCadastrosDemo(admin, tenant.id, niche.slug).catch(() => {})
 
   return NextResponse.redirect(new URL('/app/editor?demo=1', request.url))
 }

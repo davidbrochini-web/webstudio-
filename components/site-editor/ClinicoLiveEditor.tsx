@@ -9,8 +9,6 @@ import {
   upsertStatInline, deleteStatInline,
 } from '@/app/app/editor/actions'
 
-const ACCENT = 'from-[#4facfe] to-[#00f2fe]'
-const SOLID_BG = 'bg-[#0ea5e9]'
 
 export interface Servico { id: string; icon: string; title: string; description: string }
 export interface Foto { id: string; url: string }
@@ -73,12 +71,14 @@ function ServicoRow({ siteId, servico, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, readOnly }: {
+export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, accent, solidBg, readOnly }: {
   site: SiteData
   servicos: Servico[]
   fotos: Foto[]
   depoimento: Depoimento | null
   stats: Stat[]
+  accent: string
+  solidBg: string
   readOnly: boolean
 }) {
   const [servicos, setServicos] = useState(servicosInit)
@@ -119,7 +119,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
       {/* Nav */}
       <nav className="border-b border-gray-200 px-6 h-16 flex items-center justify-between max-w-5xl mx-auto">
         <EditableText as="span" readOnly={readOnly} value={site.business_name} className="font-display font-extrabold text-lg" onSave={fieldSaver('business_name')} />
-        <span className={`${SOLID_BG} text-white text-sm font-semibold px-4 py-2 rounded-lg`} title="No site publicado, isso abre o WhatsApp">
+        <span className={`${solidBg} text-white text-sm font-semibold px-4 py-2 rounded-lg`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
         </span>
       </nav>
@@ -136,7 +136,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
             </span>
           </div>
           <div className="relative">
-            <div className={`absolute -inset-3 rounded-[28px] bg-gradient-to-br ${ACCENT} opacity-15 blur-xl`} />
+            <div className={`absolute -inset-3 rounded-[28px] bg-gradient-to-br ${accent} opacity-15 blur-xl`} />
             <EditableImage
               siteId={site.id}
               src={heroFoto?.url || 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&h=600&fit=crop&auto=format&q=80'}
@@ -150,7 +150,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
       </section>
 
       {/* Barra de confiança — agora editável */}
-      <div className={`bg-gradient-to-r ${ACCENT} py-5`}>
+      <div className={`bg-gradient-to-r ${accent} py-5`}>
         <div className="max-w-5xl mx-auto px-6 flex flex-wrap justify-center gap-x-4 gap-y-3 text-center">
           {stats.map(s => (
             <div key={s.id} className="relative group px-2">
@@ -309,7 +309,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
       </section>
 
       {/* CTA final */}
-      <section className={`bg-gradient-to-br ${ACCENT} px-6 py-16 sm:py-20 text-center`}>
+      <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center`}>
         <div className="max-w-xl mx-auto">
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Agende sua avaliação"} onSave={fieldSaver('cta_heading')} /></h2>
           <p className="text-white/85 mb-8"><EditableText as="span" readOnly={readOnly} value={site.cta_subtext || "Atendimento rápido pelo WhatsApp — sem compromisso."} onSave={fieldSaver('cta_subtext')} /></p>

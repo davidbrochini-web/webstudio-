@@ -9,7 +9,6 @@ import { EditableStat, addStat, type Stat } from '@/components/site-editor/Edita
 import { EditableDepoimentoCard, type Depoimento } from '@/components/site-editor/EditableDepoimentoCard'
 import { updateSiteField, replaceFoto, addFotoToPool, upsertServicoInline, upsertDepoimentoInline } from '@/app/app/editor/actions'
 
-const ACCENT = 'from-[#4ade80] to-[#22c55e]'
 
 export interface SiteData {
   id: string
@@ -22,12 +21,13 @@ export interface SiteData {
   cta_subtext: string | null
 }
 
-export default function PerformanceLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimentos: depoimentosInit, stats: statsInit, readOnly }: {
+export default function PerformanceLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimentos: depoimentosInit, stats: statsInit, accent, readOnly }: {
   site: SiteData
   servicos: Servico[]
   fotos: Foto[]
   depoimentos: Depoimento[]
   stats: Stat[]
+  accent: string
   readOnly: boolean
 }) {
   const [servicos, setServicos] = useState(servicosInit)
@@ -45,7 +45,7 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
     <div className="bg-[#0A0F0D] text-white">
       <nav className="px-6 h-16 flex items-center justify-between max-w-5xl mx-auto">
         <EditableText as="span" readOnly={readOnly} value={site.business_name} className="font-display font-extrabold text-lg" onSave={fieldSaver('business_name')} />
-        <span className={`bg-gradient-to-r ${ACCENT} text-[#0A0F0D] text-sm font-extrabold px-4 py-2 rounded-full`} title="No site publicado, isso abre o WhatsApp">
+        <span className={`bg-gradient-to-r ${accent} text-[#0A0F0D] text-sm font-extrabold px-4 py-2 rounded-full`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
         </span>
       </nav>
@@ -75,13 +75,13 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
                 onUpdate={u => setStats(list => list.map(x => (x.id === u.id ? u : x)))}
                 onDelete={id => setStats(list => list.filter(x => x.id !== id))}
                 className="inline-block"
-                valorClassName={`font-display font-extrabold text-[clamp(60px,15vw,120px)] leading-none bg-gradient-to-r ${ACCENT} bg-clip-text text-transparent block`}
+                valorClassName={`font-display font-extrabold text-[clamp(60px,15vw,120px)] leading-none bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}
                 rotuloClassName="text-sm text-white/50 uppercase tracking-widest block"
               />
             </div>
           )}
           <EditableText as="p" readOnly={readOnly} value={site.hero_sub} className="text-base text-white/60 max-w-lg mx-auto mb-8 block" onSave={fieldSaver('hero_sub')} multiline />
-          <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full`} title="No site publicado, isso abre o WhatsApp">
+          <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full`} title="No site publicado, isso abre o WhatsApp">
             <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
           </span>
         </div>
@@ -94,7 +94,7 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
               key={s.id} siteId={site.id} stat={s} readOnly={readOnly}
               onUpdate={u => setStats(list => list.map(x => (x.id === u.id ? u : x)))}
               onDelete={id => setStats(list => list.filter(x => x.id !== id))}
-              valorClassName={`font-display font-extrabold text-2xl sm:text-3xl bg-gradient-to-r ${ACCENT} bg-clip-text text-transparent block`}
+              valorClassName={`font-display font-extrabold text-2xl sm:text-3xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}
               rotuloClassName="text-[11px] text-white/40 uppercase tracking-wide block"
             />
           ))}
@@ -161,7 +161,7 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
 
       <section className="px-6 py-16 text-center border-t border-white/10">
         <h2 className="font-display font-extrabold text-2xl mb-6"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Sua transformação começa hoje"} onSave={fieldSaver('cta_heading')} /></h2>
-        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full`} title="No site publicado, isso abre o WhatsApp">
+        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
         </span>
       </section>

@@ -8,7 +8,7 @@ interface CadastroSeed {
 }
 
 const SEEDS: Record<string, CadastroSeed> = {
-  clinico: {
+  'clinica-odontologica': {
     clientes: [
       { nome: 'Marina Alves', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Carlos Eduardo Souza', tipo_pessoa: 'fisica', telefone: '5511976543210' },
@@ -28,7 +28,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Laboratório Sorriso Prótese', tipo_pessoa: 'juridica', telefone: '5511930002222' },
     ],
   },
-  editorial: {
+  advocacia: {
     clientes: [
       { nome: 'Roberto Mendes', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Construtora Horizonte Ltda', tipo_pessoa: 'juridica', telefone: '5511930003333' },
@@ -46,7 +46,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Cartório 5º Ofício de Notas', tipo_pessoa: 'juridica', telefone: '5511930004444' },
     ],
   },
-  portfolio: {
+  'estudio-fotografia': {
     clientes: [
       { nome: 'Camila Rocha', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Buffet Doce Momento', tipo_pessoa: 'juridica', telefone: '5511930005555' },
@@ -65,7 +65,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Foto Lab Revelações', tipo_pessoa: 'juridica', telefone: '5511930006666' },
     ],
   },
-  urbano: {
+  'barbearia-salao': {
     clientes: [
       { nome: 'Pedro Henrique', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Gabriel Costa', tipo_pessoa: 'fisica', telefone: '5511976543210' },
@@ -84,7 +84,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Barber Supply Distribuidora', tipo_pessoa: 'juridica', telefone: '5511930007777' },
     ],
   },
-  performance: {
+  'academia-personal': {
     clientes: [
       { nome: 'Larissa Cardoso', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Fábio Rodrigues', tipo_pessoa: 'fisica', telefone: '5511976543210' },
@@ -103,7 +103,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Fit Equipamentos e Suplementos', tipo_pessoa: 'juridica', telefone: '5511930008888' },
     ],
   },
-  zen: {
+  'clinica-massagem': {
     clientes: [
       { nome: 'Isabela Nogueira', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Eduardo Farias', tipo_pessoa: 'fisica', telefone: '5511976543210' },
@@ -121,7 +121,7 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Aromas & Óleos Essenciais', tipo_pessoa: 'juridica', telefone: '5511930009999' },
     ],
   },
-  acolhedor: {
+  'escola-curso': {
     clientes: [
       { nome: 'Responsável: Marcos Silva', tipo_pessoa: 'fisica', telefone: '5511987654321' },
       { nome: 'Responsável: Cristina Alves', tipo_pessoa: 'fisica', telefone: '5511976543210' },
@@ -139,15 +139,61 @@ const SEEDS: Record<string, CadastroSeed> = {
       { nome: 'Papelaria Educativa Distribuidora', tipo_pessoa: 'juridica', telefone: '5511930001010' },
     ],
   },
+  // Psicóloga — mesmo pageLayout do Instituto Aprender (acolhedor),
+  // mas com dados de exemplo próprios (pacientes, não alunos).
+  psicologa: {
+    clientes: [
+      { nome: 'Juliana Ribeiro', tipo_pessoa: 'fisica', telefone: '5511987654321' },
+      { nome: 'Marcelo Torres', tipo_pessoa: 'fisica', telefone: '5511976543210' },
+      { nome: 'Amanda Ferreira', tipo_pessoa: 'fisica', telefone: '5511965432109' },
+    ],
+    funcionarios: [
+      { nome: 'Dra. Camila Souza', cargo: 'Psicóloga clínica' },
+      { nome: 'Vanessa Lima', cargo: 'Recepcionista' },
+    ],
+    produtos_servicos: [
+      { tipo: 'servico', nome: 'Sessão individual', preco: 200, unidade: 'sessão' },
+      { tipo: 'servico', nome: 'Terapia de casal', preco: 280, unidade: 'sessão' },
+      { tipo: 'servico', nome: 'Orientação vocacional', preco: 350, unidade: 'pacote' },
+    ],
+    fornecedores: [
+      { nome: 'Editora Psicologia & Prática', tipo_pessoa: 'juridica', telefone: '5511930001212' },
+    ],
+  },
+  // Terapeuta Holística — mesmo pageLayout do Estúdio de Fotografia
+  // (portfolio), com dados próprios (sessões terapêuticas, não fotos).
+  'terapeuta-holistica': {
+    clientes: [
+      { nome: 'Beatriz Nunes', tipo_pessoa: 'fisica', telefone: '5511987654321' },
+      { nome: 'Ricardo Azevedo', tipo_pessoa: 'fisica', telefone: '5511976543210' },
+      { nome: 'Camila Duarte', tipo_pessoa: 'fisica', telefone: '5511965432109' },
+    ],
+    funcionarios: [
+      { nome: 'Ana Beatriz Costa', cargo: 'Terapeuta holística' },
+    ],
+    produtos_servicos: [
+      { tipo: 'servico', nome: 'Sessão de reiki', preco: 150, unidade: 'sessão' },
+      { tipo: 'servico', nome: 'Terapia floral', preco: 120, unidade: 'sessão' },
+      { tipo: 'servico', nome: 'Constelação familiar', preco: 250, unidade: 'sessão' },
+    ],
+    fornecedores: [
+      { nome: 'Ateliê de Essências Florais', tipo_pessoa: 'juridica', telefone: '5511930001313' },
+    ],
+  },
 }
 
 /**
  * Semeia dados de exemplo nos 4 sub-módulos de Cadastros — sem isso,
  * o módulo mais forte da demo (segundo o próprio David) aparece
  * vazio na primeira visita, o que reduz o impacto.
+ *
+ * Chaveado pelo SLUG do nicho, não pelo pageLayout — dois nichos
+ * podem compartilhar o mesmo arquétipo visual (Escola e Psicóloga
+ * são ambos 'acolhedor', por exemplo) mas precisam de dados de
+ * exemplo diferentes.
  */
-export async function seedCadastrosDemo(supabase: SupabaseClient, tenantId: string, pagelayout: string) {
-  const seed = SEEDS[pagelayout] ?? SEEDS.clinico
+export async function seedCadastrosDemo(supabase: SupabaseClient, tenantId: string, nicheSlug: string) {
+  const seed = SEEDS[nicheSlug] ?? SEEDS['clinica-odontologica']
 
   await Promise.all([
     supabase.from('clientes').insert(seed.clientes.map(c => ({ tenant_id: tenantId, ...c, status: 'ativo' }))),

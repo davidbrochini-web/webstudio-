@@ -8,7 +8,6 @@ import { EditableServicoRow, type Servico } from '@/components/site-editor/Edita
 import { EditableDepoimentoCard, type Depoimento } from '@/components/site-editor/EditableDepoimentoCard'
 import { updateSiteField, replaceFoto, addFotoToPool, upsertServicoInline, upsertDepoimentoInline } from '@/app/app/editor/actions'
 
-const ACCENT = 'from-[#ec4899] to-[#f472b6]'
 
 export interface SiteData {
   id: string
@@ -20,11 +19,12 @@ export interface SiteData {
   cta_subtext: string | null
 }
 
-export default function PortfolioLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, readOnly }: {
+export default function PortfolioLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, accent, readOnly }: {
   site: SiteData
   servicos: Servico[]
   fotos: Foto[]
   depoimento: Depoimento | null
+  accent: string
   readOnly: boolean
 }) {
   const [servicos, setServicos] = useState(servicosInit)
@@ -128,7 +128,7 @@ export default function PortfolioLiveEditor({ site, servicos: servicosInit, foto
         </div>
       </section>
 
-      <section className={`bg-gradient-to-br ${ACCENT} px-6 py-16 sm:py-20 text-center`}>
+      <section className={`bg-gradient-to-br ${accent} px-6 py-16 sm:py-20 text-center`}>
         <div className="max-w-xl mx-auto">
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Vamos criar algo juntos?"} onSave={fieldSaver('cta_heading')} /></h2>
           <span className="inline-flex items-center gap-2 bg-white text-[#1e293b] font-bold px-7 py-3.5 rounded-xl" title="No site publicado, isso abre o WhatsApp">
