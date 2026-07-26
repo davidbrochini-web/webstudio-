@@ -8,6 +8,8 @@ export interface TenantFormState {
   success?: boolean
 }
 
+const PLANOS_VALIDOS = ['trial', 'site', 'site+modulos', 'modulos']
+
 export async function createTenant(
   _prev: TenantFormState,
   formData: FormData
@@ -17,6 +19,7 @@ export async function createTenant(
   const plano = (formData.get('plano') as string)?.trim() || 'trial'
 
   if (!nome) return { error: 'Nome é obrigatório.' }
+  if (!PLANOS_VALIDOS.includes(plano)) return { error: 'Plano inválido.' }
 
   const supabase = await createClient()
   const { error } = await supabase.from('tenants').insert({ nome, cnpj, plano })
@@ -37,6 +40,7 @@ export async function updateTenant(
   const plano = (formData.get('plano') as string)?.trim() || 'trial'
 
   if (!id || !nome) return { error: 'Dados incompletos.' }
+  if (!PLANOS_VALIDOS.includes(plano)) return { error: 'Plano inválido.' }
 
   const supabase = await createClient()
   const { error } = await supabase
