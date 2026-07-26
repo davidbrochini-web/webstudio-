@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getNiche } from '@/lib/templates'
+import { unsplashPhoto } from '@/lib/photos'
 
 const URBANO_PRECOS = ['R$ 45', 'R$ 35', 'R$ 70', 'R$ 90']
 
@@ -67,7 +68,13 @@ export async function seedSiteFromNiche(
       niche.testimonials.map((t, i) => ({ site_id: siteId, nome: t.name, texto: t.text, ordem: i }))
     ),
     supabase.from('site_fotos').insert(
-      niche.photoIds.map((url, i) => ({ site_id: siteId, url, ordem: i }))
+      // niche.photoIds guarda só o ID do Unsplash (ex: '1506126613408-...'),
+      // não a URL completa — precisa passar por unsplashPhoto() antes de
+      // salvar, senão o <img src> no editor (que lê direto de site_fotos.url)
+      // fica quebrado. Os componentes *Layout.tsx estáticos não tinham esse
+      // bug porque leem niche.photoIds direto do config e já aplicam
+      // unsplashPhoto() na hora de renderizar.
+      niche.photoIds.map((id, i) => ({ site_id: siteId, url: unsplashPhoto(id, 900, 1100), ordem: i }))
     ),
     supabase.from('site_posts').insert(
       niche.posts.map((p, i) => ({ site_id: siteId, caption: p.caption, likes: p.likes, ordem: i }))
