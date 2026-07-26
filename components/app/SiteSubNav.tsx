@@ -4,10 +4,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const ITEMS = [
-  { href: '/app/site', label: 'Identidade' },
-  { href: '/app/site/servicos', label: 'Serviços' },
-  { href: '/app/site/depoimentos', label: 'Depoimentos' },
-  { href: '/app/site/fotos', label: 'Fotos' },
+  { href: '/app/site', label: '🏠 Topo do site' },
+  { href: '/app/site/servicos', label: '🛠️ Serviços' },
+  { href: '/app/site/fotos', label: '🖼️ Fotos e feed' },
+  { href: '/app/site/depoimentos', label: '💬 Depoimentos' },
 ]
 
 export default function SiteSubNav() {
