@@ -18,6 +18,8 @@ const descs: Record<string, string> = {
   'barbearia-salao': 'Agenda pelo WhatsApp, tabela de serviços e feed dos trabalhos mais recentes.',
   'academia-personal': 'Planos em destaque, aula experimental via WhatsApp e resultados dos alunos no feed.',
   'clinica-massagem': 'Agendamento de sessões, serviços de bem-estar e dicas de autocuidado no feed.',
+  'psicologa': 'Agendamento direto pelo WhatsApp, especialidades em destaque e depoimentos de pacientes.',
+  'terapeuta-holistica': 'Galeria visual do espaço terapêutico, serviços integrativos e feed de conteúdo de bem-estar.',
 }
 
 const ERROR_MESSAGES: Record<string, string> = {

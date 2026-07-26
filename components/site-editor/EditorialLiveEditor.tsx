@@ -9,7 +9,6 @@ import { EditableStat, addStat, type Stat } from '@/components/site-editor/Edita
 import { EditableDepoimentoCard, type Depoimento } from '@/components/site-editor/EditableDepoimentoCard'
 import { updateSiteField, replaceFoto, addFotoToPool, upsertServicoInline, upsertDepoimentoInline } from '@/app/app/editor/actions'
 
-const ACCENT = 'from-[#7C3AED] to-[#A855F7]'
 
 export interface SiteData {
   id: string
@@ -22,12 +21,13 @@ export interface SiteData {
   cta_subtext: string | null
 }
 
-export default function EditorialLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, readOnly }: {
+export default function EditorialLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, accent, readOnly }: {
   site: SiteData
   servicos: Servico[]
   fotos: Foto[]
   depoimento: Depoimento | null
   stats: Stat[]
+  accent: string
   readOnly: boolean
 }) {
   const [servicos, setServicos] = useState(servicosInit)
@@ -48,10 +48,10 @@ export default function EditorialLiveEditor({ site, servicos: servicosInit, foto
       </nav>
 
       <section className="px-6 pt-20 pb-14 max-w-4xl mx-auto">
-        <EditableText as="p" readOnly={readOnly} value={site.tagline} placeholder="Tagline (ex: Escritório de advocacia)" className={`text-xs font-bold uppercase tracking-[0.2em] bg-gradient-to-r ${ACCENT} bg-clip-text text-transparent mb-6 block`} onSave={fieldSaver('tagline')} />
+        <EditableText as="p" readOnly={readOnly} value={site.tagline} placeholder="Tagline (ex: Escritório de advocacia)" className={`text-xs font-bold uppercase tracking-[0.2em] bg-gradient-to-r ${accent} bg-clip-text text-transparent mb-6 block`} onSave={fieldSaver('tagline')} />
         <EditableText as="h1" readOnly={readOnly} value={site.hero_title} className="font-display font-extrabold text-[clamp(32px,6vw,54px)] leading-[1.08] mb-6 max-w-2xl block" onSave={fieldSaver('hero_title')} multiline />
         <EditableText as="p" readOnly={readOnly} value={site.hero_sub} className="text-base text-white/55 leading-relaxed max-w-lg mb-8 block" onSave={fieldSaver('hero_sub')} multiline />
-        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} font-bold px-6 py-3 rounded`} title="No site publicado, isso abre o WhatsApp">
+        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} font-bold px-6 py-3 rounded`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
         </span>
       </section>
@@ -98,7 +98,7 @@ export default function EditorialLiveEditor({ site, servicos: servicosInit, foto
               key={s.id} siteId={site.id} stat={s} readOnly={readOnly}
               onUpdate={u => setStats(list => list.map(x => (x.id === u.id ? u : x)))}
               onDelete={id => setStats(list => list.filter(x => x.id !== id))}
-              valorClassName={`font-display font-extrabold text-xl sm:text-2xl bg-gradient-to-r ${ACCENT} bg-clip-text text-transparent block`}
+              valorClassName={`font-display font-extrabold text-xl sm:text-2xl bg-gradient-to-r ${accent} bg-clip-text text-transparent block`}
               rotuloClassName="text-[11px] text-white/40 block"
             />
           ))}
@@ -151,7 +151,7 @@ export default function EditorialLiveEditor({ site, servicos: servicosInit, foto
 
       <section className="px-6 py-16 border-t border-white/10 text-center">
         <h2 className="font-display font-extrabold text-2xl mb-4"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Converse com nosso time"} onSave={fieldSaver('cta_heading')} /></h2>
-        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} font-bold px-7 py-3.5 rounded`} title="No site publicado, isso abre o WhatsApp">
+        <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${accent} font-bold px-7 py-3.5 rounded`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
         </span>
       </section>

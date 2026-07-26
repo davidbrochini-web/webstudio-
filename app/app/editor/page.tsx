@@ -10,6 +10,7 @@ import PerformanceLiveEditor from '@/components/site-editor/PerformanceLiveEdito
 import ZenLiveEditor from '@/components/site-editor/ZenLiveEditor'
 import AcolhedorLiveEditor from '@/components/site-editor/AcolhedorLiveEditor'
 import ContactSettingsBar from '@/components/site-editor/ContactSettingsBar'
+import { resolveAccent } from '@/lib/site-content'
 
 export default async function SiteLiveEditorPage() {
   const info = await getCurrentTenant()
@@ -19,7 +20,7 @@ export default async function SiteLiveEditorPage() {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, slug, pagelayout, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status, cta_heading, cta_subtext, banner_text')
+    .select('id, slug, pagelayout, accent_key, business_name, tagline, hero_title, hero_sub, cta_label, whatsapp, instagram_handle, status, cta_heading, cta_subtext, banner_text')
     .eq('id', info.siteId)
     .single()
 
@@ -37,23 +38,24 @@ export default async function SiteLiveEditorPage() {
   const fotosList = fotos ?? []
   const depoimentosList = depoimentos ?? []
   const statsList = stats ?? []
+  const { accent, solidBg } = resolveAccent(site.accent_key)
 
   function renderEditor() {
     switch (site!.pagelayout) {
       case 'clinico':
-        return <ClinicoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} readOnly={!podeEditar} />
+        return <ClinicoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} accent={accent} solidBg={solidBg} readOnly={!podeEditar} />
       case 'editorial':
-        return <EditorialLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} readOnly={!podeEditar} />
+        return <EditorialLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} stats={statsList} accent={accent} readOnly={!podeEditar} />
       case 'portfolio':
-        return <PortfolioLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
+        return <PortfolioLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} accent={accent} readOnly={!podeEditar} />
       case 'urbano':
-        return <UrbanoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
+        return <UrbanoLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} accent={accent} readOnly={!podeEditar} />
       case 'performance':
-        return <PerformanceLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} stats={statsList} readOnly={!podeEditar} />
+        return <PerformanceLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} stats={statsList} accent={accent} readOnly={!podeEditar} />
       case 'zen':
         return <ZenLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimento={depoimentosList[0] ?? null} readOnly={!podeEditar} />
       case 'acolhedor':
-        return <AcolhedorLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} readOnly={!podeEditar} />
+        return <AcolhedorLiveEditor site={site!} servicos={servicosList} fotos={fotosList} depoimentos={depoimentosList} accent={accent} readOnly={!podeEditar} />
       default:
         return <p className="p-6 text-sm text-[var(--muted)]">Template não reconhecido.</p>
     }
