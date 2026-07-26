@@ -31,7 +31,7 @@ export default function Navbar() {
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-8 list-none">
           {[
-            { href: '#demo',          label: 'Demo' },
+            { href: '#instagram',     label: 'Instagram' },
             { href: '#templates',     label: 'Modelos de site' },
             { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },
@@ -106,7 +106,7 @@ export default function Navbar() {
             ✨ Teste você mesmo
           </Link>
           {[
-            { href: '#demo',          label: 'Demo' },
+            { href: '#instagram',     label: 'Instagram' },
             { href: '#templates',     label: 'Modelos de site' },
             { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },

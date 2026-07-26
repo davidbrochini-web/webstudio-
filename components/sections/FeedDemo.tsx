@@ -13,7 +13,7 @@ const posts = [
 
 export default function FeedDemo() {
   return (
-    <section id="demo" className="py-20 bg-[var(--page-bg)] border-t border-[var(--border)]">
+    <section id="instagram" className="py-20 bg-[var(--page-bg)] border-t border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-3">
