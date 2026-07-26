@@ -65,7 +65,7 @@ export default function ClinicoLayout({ config }: { config: NicheConfig }) {
                 <p className="text-sm text-[var(--muted)]">{desc}</p>
               </div>
               <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-                className="text-xs font-semibold text-[var(--purple)] flex-shrink-0 hidden sm:block">
+                className="text-xs font-semibold text-[var(--brand)] flex-shrink-0 hidden sm:block">
                 Agendar →
               </a>
             </div>

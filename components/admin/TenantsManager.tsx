@@ -44,7 +44,7 @@ function TenantForm({
             name="nome"
             required
             defaultValue={tenant?.nome}
-            className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--purple)]"
+            className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
             placeholder="Nome da empresa"
           />
         </div>
@@ -53,7 +53,7 @@ function TenantForm({
           <input
             name="cnpj"
             defaultValue={tenant?.cnpj ?? ''}
-            className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--purple)]"
+            className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
             placeholder="00.000.000/0001-00"
           />
         </div>
@@ -64,7 +64,7 @@ function TenantForm({
         <select
           name="plano"
           defaultValue={tenant?.plano ?? 'trial'}
-          className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--purple)]"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
         >
           <option value="trial">Trial</option>
           <option value="site">Site (R$149/mês)</option>
@@ -141,7 +141,7 @@ export default function TenantsManager({ initialTenants }: { initialTenants: Ten
               {initialTenants.map(t => (
                 <tr key={t.id}>
                   <td className="px-5 py-3 text-[var(--ink)] font-medium">
-                    <Link href={`/admin/tenants/${t.id}`} className="hover:text-[var(--purple)] transition-colors">
+                    <Link href={`/admin/tenants/${t.id}`} className="hover:text-[var(--brand)] transition-colors">
                       {t.nome}
                     </Link>
                   </td>
@@ -154,7 +154,7 @@ export default function TenantsManager({ initialTenants }: { initialTenants: Ten
                   <td className="px-5 py-3 text-right">
                     <button
                       onClick={() => setFormMode(t)}
-                      className="text-xs font-semibold text-[var(--purple)] mr-3"
+                      className="text-xs font-semibold text-[var(--brand)] mr-3"
                     >
                       Editar
                     </button>

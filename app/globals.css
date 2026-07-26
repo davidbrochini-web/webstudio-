@@ -1,30 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --pink:   #E91E8C;
-  --purple: #7C3AED;
-  --green:  #10B981;
-  --dark:   #0B1120;
-  --ink:    #0B1120;
-  --slate:  #1E293B;
-  --muted:  #64748B;
-  --border: #E2E8F0;
-  --off:    #F8FAFC;
-  --grad:   linear-gradient(135deg, #E91E8C 0%, #7C3AED 100%);
-  --page-bg: #ffffff;
-  --card-bg: #ffffff;
+  /* Omnidesign — verde (automação/código), preto (base) e azul-escuro (cloud) */
+  --brand:       #7FA33E;  /* verde — versão mais escura, legível sobre branco (links, CTAs) */
+  --brand-bright:#A0C15B;  /* verde da marca — usado sobre fundo escuro */
+  --brand2:      #4FB8C4;  /* azul-ciano — acento secundário, remete a "cloud" */
+  --green:       #A0C15B;  /* alias semântico p/ estados de sucesso — mesma cor da marca */
+  --dark:        #05070A;
+  --ink:         #0A0F0B;
+  --slate:       #1B241C;
+  --muted:       #5C6B60;
+  --border:      #E1E8D8;
+  --off:         #F6F8F2;
+  --grad:        linear-gradient(135deg, #7FA33E 0%, #4FB8C4 100%);
+  --page-bg:     #ffffff;
+  --card-bg:     #ffffff;
 }
 
 .dark {
-  --ink:     #F1F5F9;
-  --slate:   #E2E8F0;
-  --muted:   #94A3B8;
-  --border:  #26324a;
-  --off:     #0F172A;
-  --page-bg: #0B1120;
-  --card-bg: #111827;
+  --brand:       #A0C15B;
+  --ink:         #EDF1E6;
+  --slate:       #C9D2C2;
+  --muted:       #7C8C7E;
+  --border:      #1E2A22;
+  --off:         #0B1220;
+  --page-bg:     #060606;
+  --card-bg:     #0B1220;
 }
+
 
 html { scroll-behavior: smooth; }
 
@@ -36,7 +40,8 @@ body {
   transition: background-color .2s ease, color .2s ease;
 }
 
-.font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
 
 .grad-text {
   background: var(--grad);

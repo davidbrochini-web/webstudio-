@@ -4,7 +4,7 @@ const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXX
 
 function PhoneMockup() {
   return (
-    <div className="animate-float w-[148px] flex-shrink-0 bg-[#18182a] rounded-[24px] p-1.5 shadow-[0_28px_56px_rgba(0,0,0,.30),0_0_0_1px_rgba(255,255,255,.06)]">
+    <div className="animate-float w-[148px] flex-shrink-0 bg-[#0B1220] rounded-[24px] p-1.5 shadow-[0_28px_56px_rgba(0,0,0,.30),0_0_0_1px_rgba(160,193,91,.12)]">
       <div className="bg-white rounded-[19px] overflow-hidden">
         <div className="flex items-center gap-1.5 px-2.5 py-2 border-b border-gray-100">
           <div className="w-5 h-5 rounded-full grad-bg flex-shrink-0" />
@@ -23,7 +23,7 @@ function PhoneMockup() {
 function SyncDots() {
   return (
     <div className="flex flex-col items-center gap-2 flex-shrink-0">
-      <span className="text-[8px] font-bold text-[var(--purple)] bg-purple-50 px-2 py-0.5 rounded-full whitespace-nowrap">automático</span>
+      <span className="text-[8px] font-bold text-[var(--brand)] bg-green-50 px-2 py-0.5 rounded-full whitespace-nowrap">automático</span>
       <div className="flex gap-1">
         <div className="w-1.5 h-1.5 rounded-full grad-bg animate-travel" />
         <div className="w-1.5 h-1.5 rounded-full grad-bg animate-travel-2" />
@@ -35,7 +35,7 @@ function SyncDots() {
 
 function BrowserMockup() {
   return (
-    <div className="animate-float-delay w-[200px] flex-shrink-0 bg-white border border-[var(--border)] rounded-xl overflow-hidden shadow-[0_28px_56px_rgba(124,58,237,.1)]">
+    <div className="animate-float-delay w-[200px] flex-shrink-0 bg-white border border-[var(--border)] rounded-xl overflow-hidden shadow-[0_28px_56px_rgba(127,163,62,.12)]">
       <div className="bg-[var(--off)] px-2.5 py-1.5 flex items-center gap-1.5 border-b border-[var(--border)]">
         <div className="flex gap-1">{[0,1,2].map(i=><div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--border)]"/>)}</div>
         <div className="flex-1 bg-white border border-[var(--border)] rounded px-1.5 py-0.5 text-[7px] text-[var(--muted)]">meunegocio.com.br</div>
@@ -65,8 +65,8 @@ export default function Hero() {
     <section className="max-w-6xl mx-auto px-6 pt-12 pb-10 lg:pt-20 lg:pb-16">
       <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
         <div className="flex-1 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--purple)] bg-purple-50 px-4 py-1.5 rounded-full mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--pink)] animate-blink"/>
+          <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--brand)] bg-green-50 px-4 py-1.5 rounded-full mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand2)] animate-blink"/>
             Site + sistemas para pequenos e médios negócios
           </div>
           <h1 className="font-display font-extrabold text-[clamp(32px,8vw,56px)] leading-[1.08] text-[var(--ink)] mb-5">
