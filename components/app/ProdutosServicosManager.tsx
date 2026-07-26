@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { upsertProdutoServico, deleteProdutoServico, type CadastroFormState } from '@/app/app/cadastros/actions'
+import { upsertProdutoServico, deleteProdutoServico, type CadastroFormState } from '@/app/app/(hub)/cadastros/actions'
 
 export interface ProdutoServico {
   id: string

@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { upsertServico, deleteServico, type ServicoFormState } from '@/app/app/site/servicos/actions'
+import { upsertServico, deleteServico, type ServicoFormState } from '@/app/app/(hub)/site/servicos/actions'
 
 export interface Servico {
   id: string

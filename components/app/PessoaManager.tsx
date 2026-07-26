@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { upsertCliente, deleteCliente, upsertFornecedor, deleteFornecedor, type CadastroFormState } from '@/app/app/cadastros/actions'
+import { upsertCliente, deleteCliente, upsertFornecedor, deleteFornecedor, type CadastroFormState } from '@/app/app/(hub)/cadastros/actions'
 
 export interface Pessoa {
   id: string

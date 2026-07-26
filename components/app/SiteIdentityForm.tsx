@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { updateSiteIdentity, type SiteIdentityFormState } from '@/app/app/site/actions'
+import { updateSiteIdentity, type SiteIdentityFormState } from '@/app/app/(hub)/site/actions'
 
 interface SiteData {
   id: string

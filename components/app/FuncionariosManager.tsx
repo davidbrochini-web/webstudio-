@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { upsertFuncionario, deleteFuncionario, type CadastroFormState } from '@/app/app/cadastros/actions'
+import { upsertFuncionario, deleteFuncionario, type CadastroFormState } from '@/app/app/(hub)/cadastros/actions'
 
 export interface Funcionario {
   id: string
