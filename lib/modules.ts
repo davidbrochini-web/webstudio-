@@ -14,6 +14,11 @@
 // de infra que os outros módulos não têm.
 // ─────────────────────────────────────────────────────────────
 
+export interface ModuleSubmenuItem {
+  label: string
+  href: string
+}
+
 export interface ModuleConfig {
   slug: string
   label: string
@@ -25,6 +30,11 @@ export interface ModuleConfig {
   disponivel: boolean
   /** Rota do painel do cliente — null enquanto não construído. */
   href: string | null
+  /** Sub-páginas do módulo — vira dropdown na navbar do cliente E a
+   *  sub-nav dentro da própria tela (CadastrosSubNav/FinanceiroSubNav
+   *  leem daqui também, pra não duplicar a lista em 2 lugares).
+   *  Módulo de página única (ex: Site) não precisa disso. */
+  submenu?: ModuleSubmenuItem[]
 }
 
 export const modules: ModuleConfig[] = [
@@ -45,6 +55,12 @@ export const modules: ModuleConfig[] = [
     preco: 39.90,
     disponivel: true,
     href: '/app/cadastros',
+    submenu: [
+      { label: 'Clientes', href: '/app/cadastros/clientes' },
+      { label: 'Fornecedores', href: '/app/cadastros/fornecedores' },
+      { label: 'Funcionários', href: '/app/cadastros/funcionarios' },
+      { label: 'Produtos/Serviços', href: '/app/cadastros/produtos-servicos' },
+    ],
   },
   {
     slug: 'financeiro',
@@ -54,6 +70,11 @@ export const modules: ModuleConfig[] = [
     preco: 59.90,
     disponivel: true,
     href: '/app/financeiro',
+    submenu: [
+      { label: 'Fluxo de caixa', href: '/app/financeiro' },
+      { label: 'Contas a pagar', href: '/app/financeiro/contas-pagar' },
+      { label: 'Contas a receber', href: '/app/financeiro/contas-receber' },
+    ],
   },
   {
     slug: 'crm',
