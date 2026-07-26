@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { modules } from '@/lib/modules'
 
 export default async function AppHome() {
   const supabase = await createClient()
@@ -36,15 +37,10 @@ export default async function AppHome() {
 
   const ativo = (modulo: string) => subscriptions?.some(s => s.modulo === modulo && s.status === 'ativo') ?? false
 
-  const modulosBase = [
-    { slug: 'site', label: 'Meu site', desc: 'Edite o conteúdo do seu site: textos, serviços, depoimentos e fotos.', href: '/app/editor' },
-    { slug: 'cadastros', label: 'Cadastros', desc: 'Clientes, fornecedores, funcionários e produtos/serviços.', href: '/app/cadastros' },
-    { slug: 'crm', label: 'CRM', desc: 'Em breve.', href: null },
-    { slug: 'estoque', label: 'Controle de estoque', desc: 'Em breve.', href: null },
-    { slug: 'contas_pagar', label: 'Contas a pagar', desc: 'Em breve.', href: null },
-    { slug: 'contas_receber', label: 'Contas a receber', desc: 'Em breve.', href: null },
-    { slug: 'fluxo_caixa', label: 'Fluxo de caixa', desc: 'Em breve.', href: null },
-  ]
+  // Catálogo canônico (lib/modules.ts) — mesma fonte da landing e do
+  // admin. "Em breve" (sem href) nunca aparece clicável, mesmo que
+  // alguém force a subscription ativa no banco.
+  const modulosBase = modules.map(m => ({ slug: m.slug, label: m.label, desc: m.desc, href: m.href }))
 
   // Na demo, os módulos (sistemas internos) são o diferencial mais forte
   // — coloca Cadastros primeiro e destacado, em vez de enterrado depois

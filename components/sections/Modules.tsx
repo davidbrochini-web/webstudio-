@@ -1,63 +1,11 @@
 import Link from 'next/link'
-
-const modules = [
-  {
-    icon: '🗂️',
-    title: 'Cadastros',
-    desc: 'Clientes, fornecedores, funcionários e produtos/serviços organizados num só lugar.',
-    tag: 'Disponível',
-  },
-  {
-    icon: '👥',
-    title: 'CRM',
-    desc: 'Cadastro de clientes, histórico de contatos, pipeline de oportunidades e follow-up organizado.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '📦',
-    title: 'Controle de Estoque',
-    desc: 'Entrada, saída e saldo de produtos em tempo real. Alertas de estoque mínimo e relatório de movimentação.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '📤',
-    title: 'Contas a Pagar',
-    desc: 'Lançamento de despesas, vencimentos, status de pagamento e visão de compromissos por período.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '📥',
-    title: 'Contas a Receber',
-    desc: 'Controle de cobranças, inadimplência, baixa de pagamentos e projeção de recebimentos.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '💰',
-    title: 'Fluxo de Caixa',
-    desc: 'Visão consolidada de entradas e saídas. Saldo projetado por dia, semana e mês.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '📋',
-    title: 'Pedidos Internos',
-    desc: 'Requisições de compra, aprovações por alçada e rastreamento de pedidos com fornecedores.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '📅',
-    title: 'Agendamento',
-    desc: 'Agenda online integrada ao site: cliente escolhe horário, você confirma e acompanha tudo num painel.',
-    tag: 'Em breve',
-  },
-  {
-    icon: '🎬',
-    title: 'Vídeos no Site',
-    desc: 'Área de vídeos no seu site institucional — apresentação, tour do espaço e depoimentos em vídeo.',
-    tag: 'Em breve',
-  },
-]
+import { modules, formatPreco } from '@/lib/modules'
 
 export default function Modules() {
+  // "Site" é o produto base (não é módulo à parte) — a grade aqui
+  // mostra só os módulos internos de fato contratáveis.
+  const internos = modules.filter(m => m.slug !== 'site')
+
   return (
     <section id="modulos" className="py-20 px-6 bg-[var(--dark)]">
       <div className="max-w-6xl mx-auto">
@@ -72,47 +20,49 @@ export default function Modules() {
               Módulos para quem tem negócio<br className="hidden sm:block" /> pra tocar.
             </h2>
             <p className="text-base text-white/40 leading-relaxed max-w-xl">
-              Cada módulo funciona de forma independente — você contrata só o
-              que precisa e adiciona o restante conforme a operação crescer.
+              Cada módulo tem seu próprio preço, de acordo com a complexidade —
+              você contrata só o que precisa e adiciona o restante conforme a
+              operação crescer.
             </p>
           </div>
           <div className="flex-shrink-0">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
-              <span className="font-display font-extrabold text-2xl grad-text">R$&thinsp;99</span>
-              <span className="text-sm text-white/40">/módulo/mês</span>
+              <span className="font-display font-extrabold text-2xl grad-text">R$&thinsp;39,90</span>
+              <span className="text-sm text-white/40">a R$&thinsp;99,90/módulo/mês</span>
             </div>
           </div>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden">
-          {modules.map(({ icon, title, desc, tag }) => {
-            const disponivel = tag === 'Disponível'
-            return (
-              <div
-                key={title}
-                className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
-              >
-                {tag && (
-                  <span className={`absolute top-5 right-5 text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                    disponivel
-                      ? 'text-white bg-[var(--brand)]'
-                      : 'text-[var(--brand)] bg-green-950/60 border border-green-800/40'
-                  }`}>
-                    {tag}
-                  </span>
-                )}
-                <span className="text-3xl">{icon}</span>
-                <div>
-                  <h3 className="font-display font-bold text-base text-white mb-1.5">{title}</h3>
-                  <p className="text-sm text-white/40 leading-relaxed">{desc}</p>
-                </div>
+          {internos.map(({ slug, icon, label, desc, preco, disponivel }) => (
+            <div
+              key={slug}
+              className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
+            >
+              <span className={`absolute top-5 right-5 text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                disponivel
+                  ? 'text-white bg-[var(--brand)]'
+                  : 'text-[var(--brand)] bg-green-950/60 border border-green-800/40'
+              }`}>
+                {disponivel ? 'Disponível' : 'Em breve'}
+              </span>
+              <span className="text-3xl">{icon}</span>
+              <div>
+                <h3 className="font-display font-bold text-base text-white mb-1.5">{label}</h3>
+                <p className="text-sm text-white/40 leading-relaxed">{desc}</p>
               </div>
-            )
-          })}
+              {preco != null && (
+                <p className="mt-auto pt-3 border-t border-white/5">
+                  <span className="font-display font-extrabold text-lg text-white">R$&thinsp;{formatPreco(preco)}</span>
+                  <span className="text-xs text-white/40">/mês</span>
+                </p>
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* CTA de teste — só Cadastros está de fato pronto pra testar hoje */}
+        {/* CTA de teste — só o que está disponível hoje dá pra testar */}
         <div className="mt-8 flex flex-col items-center gap-3">
           <Link
             href="/demo"

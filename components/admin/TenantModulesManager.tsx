@@ -2,24 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { toggleModule } from '@/app/admin/tenants/[id]/actions'
-
-const modulos = [
-  // Catálogo canônico — slugs travados por CHECK no banco (migration 0018).
-  // ATENÇÃO: padrão é HÍFEN (contas-pagar), igual aos slugs de nicho — os
-  // antigos com underscore nunca chegaram a existir em produção.
-  // `disponivel: false` = módulo listado mas ainda não desenvolvido: toggle
-  // desabilitado pra não ativar algo que não existe no painel do cliente.
-  { slug: 'site', label: 'Site + Instagram', disponivel: true },
-  { slug: 'cadastros', label: 'Cadastros', disponivel: true },
-  { slug: 'crm', label: 'CRM', disponivel: false },
-  { slug: 'estoque', label: 'Controle de estoque', disponivel: false },
-  { slug: 'contas-pagar', label: 'Contas a pagar', disponivel: false },
-  { slug: 'contas-receber', label: 'Contas a receber', disponivel: false },
-  { slug: 'fluxo-caixa', label: 'Fluxo de caixa', disponivel: false },
-  { slug: 'pedidos-internos', label: 'Pedidos internos', disponivel: false },
-  { slug: 'agendamento', label: 'Agendamento', disponivel: false },
-  { slug: 'videos', label: 'Vídeos no site', disponivel: false },
-]
+import { modules, formatPreco } from '@/lib/modules'
 
 interface Subscription {
   modulo: string
@@ -56,12 +39,13 @@ export default function TenantModulesManager({
       <h2 className="font-display font-bold text-base text-[var(--ink)] mb-4">Módulos</h2>
       {erro && <p className="text-xs text-red-600 mb-3">{erro}</p>}
       <ul className="flex flex-col gap-1">
-        {modulos.map(({ slug, label, disponivel }) => {
+        {modules.map(({ slug, label, disponivel, preco }) => {
           const ativo = isAtivo(slug)
           return (
             <li key={slug} className="flex items-center justify-between py-2.5 border-b border-[var(--border)] last:border-0">
               <span className={`text-sm ${disponivel ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}>
                 {label}
+                {preco != null && <span className="ml-2 text-xs text-[var(--muted)]">R$&thinsp;{formatPreco(preco)}/mês</span>}
                 {!disponivel && <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-[var(--brand)]">em breve</span>}
               </span>
               <label className={`relative inline-flex items-center ${disponivel ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}`}>
