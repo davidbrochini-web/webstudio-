@@ -9,8 +9,8 @@ export default function Footer() {
           <Image
             src="/brand/omnidesign-icon.png"
             alt=""
-            width={28}
-            height={16}
+            width={26}
+            height={27}
             className="h-6 w-auto opacity-90"
           />
           <span className="font-display font-bold text-base text-white">omnidesign</span>

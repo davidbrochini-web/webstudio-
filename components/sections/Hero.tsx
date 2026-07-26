@@ -68,8 +68,8 @@ export default function Hero() {
         src="/brand/omnidesign-icon-rain.png"
         alt=""
         aria-hidden="true"
-        width={668}
-        height={1090}
+        width={700}
+        height={740}
         className="hidden lg:block absolute -right-16 -top-24 h-[560px] w-auto opacity-[0.05] pointer-events-none select-none -z-10"
       />
       <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
