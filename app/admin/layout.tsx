@@ -1,29 +1,18 @@
-import Link from 'next/link'
-import Image from 'next/image'
-import LogoutButton from '@/components/auth/LogoutButton'
+import { createClient } from '@/lib/supabase/server'
+import AdminTopNav from '@/components/admin/AdminTopNav'
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  // Auth/permissão de super-admin já são resolvidas centralmente pelo
+  // proxy.ts (equivalente ao middleware) antes de chegar aqui — esse
+  // fetch é só pra exibir o e-mail no menu do usuário, não é o guard.
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <div className="min-h-screen bg-[var(--off)]">
-      <nav className="bg-[var(--card-bg)] border-b border-[var(--border)] px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/admin" className="flex items-center gap-2">
-            <Image src="/brand/omnidesign-icon.png" alt="" width={23} height={24} className="h-6 w-auto" />
-            <span className="font-display font-bold text-lg text-[var(--ink)]">omnidesign</span>
-          </Link>
-          <div className="hidden sm:flex items-center gap-1">
-            <Link href="/admin" className="text-sm font-medium text-[var(--muted)] hover:text-[var(--ink)] px-3 py-2 rounded-lg hover:bg-[var(--off)] transition-colors">
-              Dashboard
-            </Link>
-            <Link href="/admin/tenants" className="text-sm font-medium text-[var(--muted)] hover:text-[var(--ink)] px-3 py-2 rounded-lg hover:bg-[var(--off)] transition-colors">
-              Tenants
-            </Link>
-          </div>
-        </div>
-        <LogoutButton />
-      </nav>
+      <AdminTopNav email={user?.email ?? ''} />
       <main className="px-6 py-10">
-        <div className="max-w-4xl mx-auto">{children}</div>
+        <div className="max-w-5xl mx-auto">{children}</div>
       </main>
     </div>
   )

@@ -86,6 +86,10 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
   const [depoimento, setDepoimento] = useState(depoimentoInit)
   const [stats, setStats] = useState(statsInit)
   const [addingFoto, setAddingFoto] = useState(false)
+  // Nunca usar alert() nativo: fica silenciosamente bloqueado em alguns
+  // navegadores (não abre e a função só retorna, sem erro) — erro visível
+  // na tela em vez disso.
+  const [fotoError, setFotoError] = useState<string | null>(null)
 
   const heroFoto = fotos[0]
   const ctaLabel = site.cta_label || 'Fale conosco'
@@ -254,12 +258,13 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
                     const file = e.target.files?.[0]
                     if (!file) return
                     setAddingFoto(true)
+                    setFotoError(null)
                     try {
                       const { uploadSiteFoto } = await import('@/lib/storage')
                       const url = await uploadSiteFoto(site.id, file)
                       await handleAddFoto(url)
                     } catch (err) {
-                      alert(err instanceof Error ? err.message : 'Erro ao enviar foto.')
+                      setFotoError(err instanceof Error ? err.message : 'Erro ao enviar foto.')
                     } finally {
                       setAddingFoto(false)
                       e.target.value = ''
@@ -268,6 +273,7 @@ export default function ClinicoLiveEditor({ site, servicos: servicosInit, fotos:
                 />
               </label>
             )}
+            {fotoError && <p className="col-span-full text-xs text-red-600">{fotoError}</p>}
           </div>
         </div>
       </section>

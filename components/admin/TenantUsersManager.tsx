@@ -28,6 +28,11 @@ export default function TenantUsersManager({
   const setShowForm = (showForm: boolean) => setForm(f => ({ ...f, showForm }))
   const setSenha = (senha: string) => setForm(f => ({ ...f, senha }))
   const [state, formAction, pending] = useActionState<UserFormState, FormData>(createTenantUser, {})
+  // Erro ao trocar o papel de um usuário — nunca usar alert() nativo aqui:
+  // fica silenciosamente bloqueado em alguns navegadores (o diálogo não
+  // abre e a função só retorna, sem erro nenhum), então o app "engole"
+  // o erro e ninguém percebe. Erro visível na tela em vez disso.
+  const [roleError, setRoleError] = useState<string | null>(null)
 
   // Padrão "ajustar state durante o render" (recomendado pelo React pra
   // resetar state quando um valor externo muda, evitando o efeito extra
@@ -114,6 +119,8 @@ export default function TenantUsersManager({
         </form>
       )}
 
+      {roleError && <p className="text-xs text-red-600 mb-3">{roleError}</p>}
+
       {memberships.length === 0 ? (
         <p className="text-sm text-[var(--muted)]">Nenhum usuário vinculado ainda.</p>
       ) : (
@@ -126,9 +133,10 @@ export default function TenantUsersManager({
                 onChange={e => {
                   const valor = e.target.value
                   const anterior = e.target
+                  setRoleError(null)
                   updateMembershipRole(m.id, valor, tenantId).catch(err => {
                     anterior.value = m.papel
-                    alert(err instanceof Error ? err.message : 'Erro ao atualizar papel.')
+                    setRoleError(err instanceof Error ? err.message : 'Erro ao atualizar papel.')
                   })
                 }}
                 className="text-xs px-2 py-1 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--muted)]"

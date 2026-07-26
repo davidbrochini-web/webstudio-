@@ -16,6 +16,10 @@ export default function FotoPoolSection({ siteId, fotos: fotosInit, readOnly, ti
 }) {
   const [fotos, setFotos] = useState(fotosInit)
   const [addingFoto, setAddingFoto] = useState(false)
+  // Nunca usar alert() nativo: fica silenciosamente bloqueado em alguns
+  // navegadores (não abre e a função só retorna, sem erro) — erro visível
+  // na tela em vez disso.
+  const [fotoError, setFotoError] = useState<string | null>(null)
 
   return (
     <section className="px-6 py-10 sm:py-14 bg-[var(--off)]">
@@ -60,7 +64,7 @@ export default function FotoPoolSection({ siteId, fotos: fotosInit, readOnly, ti
                     const created = await addFotoToPool(siteId, url)
                     if (created) setFotos(fs => [...fs, created])
                   } catch (err) {
-                    alert(err instanceof Error ? err.message : 'Erro ao enviar foto.')
+                    setFotoError(err instanceof Error ? err.message : 'Erro ao enviar foto.')
                   } finally {
                     setAddingFoto(false)
                     e.target.value = ''
@@ -69,6 +73,7 @@ export default function FotoPoolSection({ siteId, fotos: fotosInit, readOnly, ti
               />
             </label>
           )}
+          {fotoError && <p className="col-span-full text-xs text-red-600">{fotoError}</p>}
         </div>
       </div>
     </section>
