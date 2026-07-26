@@ -8,7 +8,7 @@ import LeadForm from '@/components/site-template/LeadForm'
 
 
 export default function ZenLayout({ config }: { config: NicheConfig }) {
-  const { businessName, tagline, heroTitle, heroSub, ctaLabel, services, posts, testimonials, igHandle, photoIds, accent, solidBg, faq, planos, blogPosts, siteId } = config
+  const { businessName, tagline, heroTitle, heroSub, ctaLabel, services, posts, testimonials, igHandle, photoIds, accent, faq, planos, blogPosts, siteId } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
 
   return (
@@ -93,10 +93,23 @@ export default function ZenLayout({ config }: { config: NicheConfig }) {
         </section>
       )}
 
-      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
-      <FaqSection faq={faq} accent={accent} />
-      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
-      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Reserve seu momento" subtext="Deixe seu contato e a gente confirma o melhor horário pra sua sessão." />
+      {/* Seções compartilhadas — o Zen tem paleta creme FIXA (fundo #FAF7F2
+          hardcoded), mas os componentes usam CSS vars que mudam no dark mode
+          da agência (persistido em localStorage). Redefinimos as vars aqui
+          localmente pra paleta do Zen valer sempre, com ou sem .dark no html. */}
+      <div style={{
+        ['--ink' as string]: '#4A5548',
+        ['--muted' as string]: '#6B7565',
+        ['--border' as string]: '#E5DED2',
+        ['--card-bg' as string]: '#ffffff',
+        ['--off' as string]: '#F2EDE4',
+        ['--brand' as string]: '#4A5548',
+      } as React.CSSProperties}>
+        <PlanosSection planos={planos} accent={accent} solidBg="bg-[#4A5548]" waLink={WA_LINK} ctaLabel={ctaLabel} />
+        <FaqSection faq={faq} accent={accent} />
+        <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
+        <LeadForm siteId={siteId} accent={accent} solidBg="bg-[#4A5548]" heading="Reserve seu momento" subtext="Deixe seu contato e a gente confirma o melhor horário pra sua sessão." />
+      </div>
 
       {/* Fechamento */}
       <section className="px-6 py-20 text-center bg-[#4A5548]">

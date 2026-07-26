@@ -100,10 +100,10 @@ export default function PerformanceLayout({ config }: { config: NicheConfig }) {
         </div>
       </section>
 
-      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
-      <FaqSection faq={faq} accent={accent} />
-      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
-      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Bora começar?" subtext="Deixa seu contato pra garantir sua aula experimental." />
+      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} dark />
+      <FaqSection faq={faq} accent={accent} dark />
+      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} dark />
+      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Bora começar?" subtext="Deixa seu contato pra garantir sua aula experimental." dark />
 
       {/* CTA */}
       <section className="px-6 py-16 text-center border-t border-white/10">
