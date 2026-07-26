@@ -31,12 +31,18 @@ export default function DemoLeadCapture({ tenantId }: { tenantId: string }) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full grad-bg text-white text-sm font-semibold shadow-lg hover:opacity-90 hover:-translate-y-0.5 transition-all"
-      >
-        💬 Gostou? Deixe seu contato
-      </button>
+      <div className="fixed bottom-5 right-5 z-30 flex flex-col items-end gap-2">
+        <span className="hidden sm:block bg-[var(--ink)] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md animate-bounce">
+          Ative esse site de verdade 👇
+        </span>
+        <button
+          onClick={() => setOpen(true)}
+          className="relative flex items-center gap-2.5 px-6 py-4 rounded-full grad-bg text-white text-base font-bold shadow-2xl hover:opacity-90 hover:scale-105 transition-all"
+        >
+          <span className="absolute inset-0 rounded-full grad-bg animate-ping opacity-40" />
+          <span className="relative">🚀 Gostou? Fala com a gente!</span>
+        </button>
+      </div>
 
       {open && (
         <div className="fixed inset-0 z-40 flex items-center justify-center p-6 bg-black/50" onClick={() => setOpen(false)}>
