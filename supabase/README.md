@@ -57,6 +57,34 @@ const { data } = await supabase
 
 ---
 
+## 🐛 Bug real encontrado em produção: falta de GRANT (não confundir com RLS)
+
+Depois de aplicar 0001-0003, o login funcionava mas toda query pro banco
+dava **"permission denied for table X"** (código Postgres `42501`) — mesmo
+com as políticas de RLS corretas.
+
+**Causa:** RLS só **restringe** o que já foi liberado por `GRANT`. Ele não
+concede acesso nenhum sozinho. Quando você cria tabela pela **interface**
+do Supabase, o próprio painel já roda o `GRANT` nos bastidores. Como essas
+tabelas foram criadas via **SQL direto** (Management API), esse passo nunca
+aconteceu — e não tinha como um teste local pegar isso, porque o usuário de
+teste tinha sido criado com permissão total manual, mascarando o problema.
+
+**Correção:** `0004_grants.sql` — concede `SELECT/INSERT/UPDATE/DELETE` ao
+papel `authenticated` nas 8 tabelas + `EXECUTE` nas funções de RLS, e
+configura `ALTER DEFAULT PRIVILEGES` para que **toda tabela/função nova**
+(dos próximos módulos) já nasça com essa permissão automaticamente — não
+precisa lembrar de rodar GRANT de novo a cada módulo.
+
+**Se for testar RLS localmente de novo:** crie os papéis `anon`,
+`authenticated`, `service_role` manualmente (não existem em Postgres puro,
+só no Supabase) e rode cada `CREATE ROLE`/`CREATE SCHEMA` como comando
+**separado** — vários comandos num único `psql -c "a; b; c;"` rodam como
+uma transação implícita só, e se um falhar (ex: role já existe), os
+anteriores dão rollback silenciosamente também.
+
+---
+
 ## Testando localmente antes de aplicar em produção
 
 Se quiser reproduzir os testes que rodei:
