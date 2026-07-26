@@ -290,19 +290,61 @@ próprio negócio quando fechar contrato.
 - Existe painel super-admin (David vê/controla todos os tenants) separado
   do painel de cada cliente
 
-## Decisões técnicas em aberto / próximos passos
+## Painel super-admin — status real (atualizado)
 
-1. **Painel super-admin** — ainda não construído. Precisa: criar tenant,
-   criar usuário do cliente, ativar/desativar módulos, ver assinaturas
-2. **Painel do cliente** — CRUD de Cadastros (primeiro módulo vendável)
-3. **Criar app da Meta for Developers** — ainda pendente do lado do David.
+**Já construído e em produção (main):**
+- **Etapa 1**: autenticação (`/login`), `proxy.ts` protegendo `/admin` e `/app`
+  por sessão + papel (`is_super_admin`)
+- **Etapa 2**: gestão de tenants (`/admin/tenants`) — criar/editar/mudar status
+- **Etapa 3**: usuários do cliente (`/admin/tenants/[id]`) — criar login do
+  cliente (via `service_role`), atribuir papel, ativar/desativar módulos
+  (`subscriptions`)
+
+**Ainda não construído:**
+- **Painel do cliente** (`/app`) — hoje é só esqueleto, falta CRUD visual de
+  Cadastros (primeiro módulo vendável)
+- CRM, estoque, contas a pagar/receber, fluxo de caixa
+
+**Próximos passos:**
+1. **Painel do cliente** — CRUD de Cadastros
+2. **Criar app da Meta for Developers** — ainda pendente do lado do David.
    Aprovação leva 5-15 dias úteis, não depende do código estar pronto.
    Recomendado fazer em paralelo o quanto antes.
-4. **Integração real Instagram Graph API** — deixada por último de propósito
+3. **Integração real Instagram Graph API** — deixada por último de propósito
    (é a única dependência externa relevante do produto)
-5. **Asaas (cobrança)** — entra quando houver primeiro contrato real
-6. Staging separada no Supabase — não urgente com zero cliente pagante;
+4. **Asaas (cobrança)** — entra quando houver primeiro contrato real
+5. Staging separada no Supabase — não urgente com zero cliente pagante;
    criar quando tiver primeiro cliente real em produção
+
+## Auditoria de segurança — correções aplicadas (sessão de revisão)
+
+Revisão completa de código + banco + deploy encontrou e corrigiu:
+
+- **🔴 `createTenantUser` sem checagem de permissão**: essa server action usa
+  `service_role` (bypassa RLS) para criar login de cliente. Como server
+  actions viram endpoints POST expostos — `proxy.ts` protege a *página*,
+  não a action — qualquer um que descobrisse o endpoint podia criar
+  usuários/memberships em qualquer tenant. **Corrigido**: guard
+  `requireSuperAdmin()` (`lib/supabase/guards.ts`) checado antes de
+  qualquer operação com o client admin.
+- **🔴 Sem rollback em `createTenantUser`**: se `profile` ou `membership`
+  falhassem depois do usuário já criado no Auth, ficava órfão e bloqueava
+  o e-mail pra sempre. **Corrigido**: `deleteUser()` em qualquer falha após
+  a criação do login.
+- **🟡 `SUPABASE_SERVICE_ROLE_KEY` exposta em `preview` na Vercel**: qualquer
+  deploy de preview de branch rodava com a chave que bypassa todo RLS.
+  **Corrigido**: restrita a `production` apenas.
+- **Validação de `papel`/`plano`**: aceitavam qualquer string, só validado
+  na aplicação. **Corrigido**: whitelist na aplicação + `CHECK` constraint
+  no banco (`0006_constraints_validacao.sql`, aplicada em produção) —
+  protege também contra escrita direta via SQL/Management API.
+
+**Backlog registrado (não corrigido nesta sessão, por decisão consciente):**
+- Convite por e-mail em vez de admin definir senha do cliente (fase 2)
+- Sem rate limit/captcha dedicado no `/login` (Supabase já limita auth)
+- 2 erros de `eslint` pré-existentes (`react-hooks/set-state-in-effect` em
+  `ThemeToggle.tsx` e `TenantUsersManager.tsx`) — não bloqueiam CI (que só
+  roda `tsc` + `build`, sem lint), mas valem correção numa próxima sessão
 
 ---
 
