@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { upsertDepoimento, deleteDepoimento, type DepoimentoFormState } from '@/app/app/site/depoimentos/actions'
+import { upsertDepoimento, deleteDepoimento, type DepoimentoFormState } from '@/app/app/(hub)/site/depoimentos/actions'
 
 export interface Depoimento {
   id: string

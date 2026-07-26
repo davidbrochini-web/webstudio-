@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useActionState, useState } from 'react'
-import { addFoto, deleteFoto, type FotoFormState } from '@/app/app/site/fotos/actions'
+import { addFoto, deleteFoto, type FotoFormState } from '@/app/app/(hub)/site/fotos/actions'
 
 export interface Foto {
   id: string

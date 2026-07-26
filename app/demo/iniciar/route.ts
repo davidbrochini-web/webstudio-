@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getNiche } from '@/lib/templates'
 import { seedSiteFromNiche } from '@/lib/site-seed'
+import { seedCadastrosDemo } from '@/lib/demo-cadastros-seed'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
@@ -77,6 +78,11 @@ export async function GET(request: NextRequest) {
     await admin.from('tenants').delete().eq('id', tenant.id)
     return NextResponse.redirect(new URL('/demo?erro=setup', request.url))
   }
+
+  // Não bloqueia o redirect se der erro aqui — pior caso, o módulo
+  // Cadastros aparece vazio, mas o site (a parte principal da demo)
+  // já está pronto.
+  await seedCadastrosDemo(admin, tenant.id, niche.pageLayout).catch(() => {})
 
   return NextResponse.redirect(new URL('/app/editor?demo=1', request.url))
 }

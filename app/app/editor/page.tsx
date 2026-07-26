@@ -10,7 +10,6 @@ import PerformanceLiveEditor from '@/components/site-editor/PerformanceLiveEdito
 import ZenLiveEditor from '@/components/site-editor/ZenLiveEditor'
 import AcolhedorLiveEditor from '@/components/site-editor/AcolhedorLiveEditor'
 import ContactSettingsBar from '@/components/site-editor/ContactSettingsBar'
-import DemoLeadCapture from '@/components/site-editor/DemoLeadCapture'
 
 export default async function SiteLiveEditorPage() {
   const info = await getCurrentTenant()
@@ -68,14 +67,14 @@ export default async function SiteLiveEditorPage() {
             <span className="text-xs font-bold text-[var(--brand)] flex-shrink-0">✨ Demo</span>
             <Link
               href="/app"
-              className="text-xs font-semibold text-[var(--ink)] px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--off)] transition-colors whitespace-nowrap"
+              className="text-sm font-bold text-white px-4 py-2 rounded-lg grad-bg hover:opacity-90 hover:scale-105 transition-all whitespace-nowrap shadow-md"
             >
               🧩 Ver como os módulos funcionam
             </Link>
             <a
               href={`/sandbox/${site.slug}`}
               target="_blank"
-              className="text-xs font-semibold text-white px-3 py-1.5 rounded-lg grad-bg hover:opacity-90 transition-opacity whitespace-nowrap"
+              className="text-xs font-semibold text-[var(--ink)] px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--off)] transition-colors whitespace-nowrap"
             >
               🚀 Quero ver o site no ar
             </a>
@@ -101,7 +100,6 @@ export default async function SiteLiveEditorPage() {
         </div>
       )}
 
-      {info.isDemo && <DemoLeadCapture tenantId={info.tenantId} />}
 
       <ContactSettingsBar
         siteId={site.id}
