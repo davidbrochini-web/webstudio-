@@ -93,10 +93,10 @@ export default function EditorialLayout({ config }: { config: NicheConfig }) {
         </section>
       )}
 
-      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
-      <FaqSection faq={faq} accent={accent} />
-      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
-      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Envie sua dúvida" subtext="Conte brevemente sua situação — respondemos com uma análise inicial." />
+      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} dark />
+      <FaqSection faq={faq} accent={accent} dark />
+      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} dark />
+      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Envie sua dúvida" subtext="Conte brevemente sua situação — respondemos com uma análise inicial." dark />
 
       {/* CTA sóbria */}
       <section className="px-6 py-16 border-t border-white/10 text-center">

@@ -16,12 +16,14 @@ export default function LeadForm({
   solidBg,
   heading = 'Fale com a gente',
   subtext = 'Preencha o formulário e retornamos rapidinho.',
+  dark = false,
 }: {
   siteId?: string
   accent: string
   solidBg: string
   heading?: string
   subtext?: string
+  dark?: boolean
 }) {
   const [nome, setNome] = useState('')
   const [contato, setContato] = useState('')
@@ -52,17 +54,17 @@ export default function LeadForm({
 
   return (
     <section className="px-6 py-16 sm:py-20 max-w-xl mx-auto">
-      <div className={`relative rounded-3xl p-8 sm:p-10 overflow-hidden bg-[var(--card-bg)] border border-[var(--border)]`}>
+      <div className={`relative rounded-3xl p-8 sm:p-10 overflow-hidden border ${dark ? 'bg-white/5 border-white/10' : 'bg-[var(--card-bg)] border-[var(--border)]'}`}>
         <div className={`absolute -top-16 -right-16 w-48 h-48 rounded-full bg-gradient-to-br ${accent} opacity-15 blur-2xl`} />
         <div className="relative">
-          <h2 className="font-display font-extrabold text-2xl text-[var(--ink)] mb-2">{heading}</h2>
-          <p className="text-sm text-[var(--muted)] mb-6">{subtext}</p>
+          <h2 className={`font-display font-extrabold text-2xl mb-2 ${dark ? 'text-white' : 'text-[var(--ink)]'}`}>{heading}</h2>
+          <p className={`text-sm mb-6 ${dark ? 'text-white/60' : 'text-[var(--muted)]'}`}>{subtext}</p>
 
           {sent ? (
             <div className="text-center py-6">
               <p className="text-3xl mb-3">✅</p>
-              <p className="font-display font-bold text-[var(--ink)] mb-1">Recebido!</p>
-              <p className="text-sm text-[var(--muted)]">Retornamos assim que possível.</p>
+              <p className={`font-display font-bold mb-1 ${dark ? 'text-white' : 'text-[var(--ink)]'}`}>Recebido!</p>
+              <p className={`text-sm ${dark ? 'text-white/60' : 'text-[var(--muted)]'}`}>Retornamos assim que possível.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -70,20 +72,20 @@ export default function LeadForm({
                 value={nome}
                 onChange={e => setNome(e.target.value)}
                 placeholder="Seu nome"
-                className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none ${dark ? 'border-white/15 bg-white/10 text-white placeholder:text-white/40 focus:border-white/40' : 'border-[var(--border)] bg-[var(--off)] text-[var(--ink)] focus:border-[var(--brand)]'}`}
               />
               <input
                 value={contato}
                 onChange={e => setContato(e.target.value)}
                 placeholder="WhatsApp ou e-mail"
-                className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm text-[var(--ink)] outline-none focus:border-[var(--brand)]"
+                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none ${dark ? 'border-white/15 bg-white/10 text-white placeholder:text-white/40 focus:border-white/40' : 'border-[var(--border)] bg-[var(--off)] text-[var(--ink)] focus:border-[var(--brand)]'}`}
               />
               <textarea
                 value={mensagem}
                 onChange={e => setMensagem(e.target.value)}
                 placeholder="Sua mensagem (opcional)"
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm text-[var(--ink)] outline-none focus:border-[var(--brand)] resize-none"
+                className={`w-full px-4 py-3 rounded-xl border text-sm outline-none resize-none ${dark ? 'border-white/15 bg-white/10 text-white placeholder:text-white/40 focus:border-white/40' : 'border-[var(--border)] bg-[var(--off)] text-[var(--ink)] focus:border-[var(--brand)]'}`}
               />
               {erro && <p className="text-xs text-red-500">{erro}</p>}
               <button

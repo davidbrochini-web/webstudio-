@@ -13,18 +13,20 @@ export default function BlogSection({
   photoIds,
   siteSlug,
   accent,
+  dark = false,
 }: {
   posts: NicheBlogPost[]
   photoIds: string[]
   siteSlug?: string
   accent: string
+  dark?: boolean
 }) {
   if (!posts.length) return null
 
   return (
     <section className="px-6 py-16 sm:py-20 max-w-5xl mx-auto">
       <div className="flex items-end justify-between mb-10 gap-4">
-        <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--ink)]">Blog</h2>
+        <h2 className={`font-display font-extrabold text-2xl sm:text-3xl ${dark ? 'text-white' : 'text-[var(--ink)]'}`}>Blog</h2>
         {siteSlug && (
           <a href={`/sandbox/${siteSlug}/blog`} className="text-xs font-semibold text-[var(--brand)] whitespace-nowrap hidden sm:block">
             Ver todos →
@@ -40,8 +42,8 @@ export default function BlogSection({
                 <div className={`absolute inset-0 bg-gradient-to-br ${accent} opacity-20`} />
                 <img src={cover} alt="" className="w-full aspect-[16/10] object-cover" />
               </div>
-              <h3 className="font-display font-bold text-base text-[var(--ink)] mb-1.5 leading-snug">{titulo}</h3>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">{resumo}</p>
+              <h3 className={`font-display font-bold text-base mb-1.5 leading-snug ${dark ? 'text-white' : 'text-[var(--ink)]'}`}>{titulo}</h3>
+              <p className={`text-sm leading-relaxed ${dark ? 'text-white/60' : 'text-[var(--muted)]'}`}>{resumo}</p>
             </>
           )
           return siteSlug ? (

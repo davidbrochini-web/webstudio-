@@ -12,18 +12,20 @@ export default function PlanosSection({
   solidBg,
   waLink,
   ctaLabel = 'Falar no WhatsApp',
+  dark = false,
 }: {
   planos: NichePlano[]
   accent: string
   solidBg: string
   waLink: string
   ctaLabel?: string
+  dark?: boolean
 }) {
   if (!planos.length) return null
 
   return (
     <section className="px-6 py-16 sm:py-20 max-w-5xl mx-auto">
-      <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--ink)] text-center mb-10">
+      <h2 className={`font-display font-extrabold text-2xl sm:text-3xl text-center mb-10 ${dark ? 'text-white' : 'text-[var(--ink)]'}`}>
         Valores
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-stretch">
@@ -33,7 +35,9 @@ export default function PlanosSection({
             className={`relative rounded-2xl p-6 flex flex-col border ${
               destaque
                 ? `bg-gradient-to-br ${accent} border-transparent text-white shadow-xl sm:-translate-y-2`
-                : 'bg-[var(--card-bg)] border-[var(--border)] text-[var(--ink)]'
+                : dark
+                  ? 'bg-white/5 border-white/10 text-white'
+                  : 'bg-[var(--card-bg)] border-[var(--border)] text-[var(--ink)]'
             }`}
           >
             {destaque && (
@@ -41,14 +45,14 @@ export default function PlanosSection({
                 Mais escolhido
               </span>
             )}
-            <h3 className={`font-display font-bold text-lg mb-1 ${destaque ? 'text-white' : 'text-[var(--ink)]'}`}>{nome}</h3>
+            <h3 className={`font-display font-bold text-lg mb-1 ${destaque || dark ? 'text-white' : 'text-[var(--ink)]'}`}>{nome}</h3>
             <p className="mb-4">
               <span className="font-display font-extrabold text-2xl">{preco}</span>
-              {periodo && <span className={`text-sm ml-1 ${destaque ? 'text-white/80' : 'text-[var(--muted)]'}`}>{periodo}</span>}
+              {periodo && <span className={`text-sm ml-1 ${destaque ? 'text-white/80' : dark ? 'text-white/50' : 'text-[var(--muted)]'}`}>{periodo}</span>}
             </p>
             <ul className="flex flex-col gap-2 mb-6 flex-1">
               {features.map(f => (
-                <li key={f} className={`text-sm flex items-start gap-2 ${destaque ? 'text-white/90' : 'text-[var(--muted)]'}`}>
+                <li key={f} className={`text-sm flex items-start gap-2 ${destaque ? 'text-white/90' : dark ? 'text-white/60' : 'text-[var(--muted)]'}`}>
                   <span className={destaque ? 'text-white' : ''}>✓</span> {f}
                 </li>
               ))}
