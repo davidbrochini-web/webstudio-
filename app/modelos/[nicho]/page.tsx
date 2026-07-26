@@ -2,13 +2,7 @@ import { niches, getNiche } from '@/lib/templates'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import ClinicoLayout from '@/components/layouts/ClinicoLayout'
-import EditorialLayout from '@/components/layouts/EditorialLayout'
-import PortfolioLayout from '@/components/layouts/PortfolioLayout'
-import UrbanoLayout from '@/components/layouts/UrbanoLayout'
-import PerformanceLayout from '@/components/layouts/PerformanceLayout'
-import ZenLayout from '@/components/layouts/ZenLayout'
-import AcolhedorLayout from '@/components/layouts/AcolhedorLayout'
+import { layoutByArchetype } from '@/lib/layout-map'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -27,16 +21,6 @@ export async function generateMetadata(
     description: config.heroSub,
     robots: { index: false },
   }
-}
-
-const layoutByArchetype = {
-  clinico: ClinicoLayout,
-  editorial: EditorialLayout,
-  portfolio: PortfolioLayout,
-  urbano: UrbanoLayout,
-  performance: PerformanceLayout,
-  zen: ZenLayout,
-  acolhedor: AcolhedorLayout,
 }
 
 export default async function NichePreview(

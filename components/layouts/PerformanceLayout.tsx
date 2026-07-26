@@ -2,12 +2,12 @@ import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto, unsplashPhotoFrom } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 const progress = [92, 78, 85, 65]
 
 export default function PerformanceLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
+  const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
 
   return (
     <div className="bg-[#0A0F0D]">

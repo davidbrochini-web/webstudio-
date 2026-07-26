@@ -2,10 +2,10 @@ import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
 export default function EditorialLayout({ config }: { config: NicheConfig }) {
   const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
+  const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
 
   return (
     <div className="bg-[var(--dark)]">

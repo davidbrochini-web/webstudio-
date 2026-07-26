@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import TenantUsersManager from '@/components/admin/TenantUsersManager'
 import TenantModulesManager from '@/components/admin/TenantModulesManager'
+import TenantSiteManager from '@/components/admin/TenantSiteManager'
 
 export default async function TenantDetailPage(
   { params }: { params: Promise<{ id: string }> }
@@ -30,6 +31,13 @@ export default async function TenantDetailPage(
     .eq('tenant_id', id)
     .is('deleted_at', null)
 
+  const { data: site } = await supabase
+    .from('sites')
+    .select('id, slug, business_name, status')
+    .eq('tenant_id', id)
+    .is('deleted_at', null)
+    .maybeSingle()
+
   // Busca o e-mail de cada membro (não fica em profiles, fica em auth.users —
   // usamos a mesma query server-side, o service_role não é necessário pra
   // leitura própria via join, mas auth.users não é exposto via PostgREST
@@ -53,6 +61,7 @@ export default async function TenantDetailPage(
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TenantSiteManager tenantId={tenant.id} site={site ?? null} />
         <TenantUsersManager
           tenantId={tenant.id}
           memberships={(memberships ?? []).map(m => ({
