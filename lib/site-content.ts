@@ -52,12 +52,15 @@ export async function getSiteConfigBySlug(
 
   if (!site) return null
 
-  const [{ data: servicos }, { data: depoimentos }, { data: fotos }, { data: posts }, { data: stats }] = await Promise.all([
+  const [{ data: servicos }, { data: depoimentos }, { data: fotos }, { data: posts }, { data: stats }, { data: faq }, { data: planos }, { data: blog }] = await Promise.all([
     supabase.from('site_servicos').select('icon, title, description, preco').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_depoimentos').select('nome, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_posts').select('caption, likes').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
     supabase.from('site_stats').select('valor, rotulo').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_faq').select('pergunta, resposta').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_planos').select('nome, preco, periodo, destaque, features').eq('site_id', site.id).is('deleted_at', null).order('ordem'),
+    supabase.from('site_blog_posts').select('slug, titulo, resumo').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem'),
   ])
 
   const { accent, solidBg } = resolveAccent(site.accent_key)
@@ -83,7 +86,46 @@ export async function getSiteConfigBySlug(
     ctaHeading: site.cta_heading ?? undefined,
     ctaSubtext: site.cta_subtext ?? undefined,
     bannerText: site.banner_text ?? undefined,
+    faq: (faq ?? []).map(f => ({ pergunta: f.pergunta, resposta: f.resposta })),
+    planos: (planos ?? []).map(p => ({ nome: p.nome, preco: p.preco, periodo: p.periodo ?? undefined, destaque: p.destaque, features: p.features ?? [] })),
+    blogPosts: (blog ?? []).map(b => ({ slug: b.slug, titulo: b.titulo, resumo: b.resumo })),
+    siteId: site.id,
   }
 
   return { site: site as SiteRow, config }
+}
+
+export interface SiteBlogPostRow {
+  slug: string
+  titulo: string
+  resumo: string
+  conteudo: string
+  capa_url: string | null
+}
+
+/** Lista de posts publicados — usada pela página /sandbox/[slug]/blog (índice). */
+export async function getSiteBlogPosts(siteId: string): Promise<SiteBlogPostRow[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('site_blog_posts')
+    .select('slug, titulo, resumo, conteudo, capa_url')
+    .eq('site_id', siteId)
+    .eq('publicado', true)
+    .is('deleted_at', null)
+    .order('ordem')
+  return data ?? []
+}
+
+/** Um post específico — usado pela página /sandbox/[slug]/blog/[postSlug]. */
+export async function getSiteBlogPost(siteId: string, postSlug: string): Promise<SiteBlogPostRow | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('site_blog_posts')
+    .select('slug, titulo, resumo, conteudo, capa_url')
+    .eq('site_id', siteId)
+    .eq('slug', postSlug)
+    .eq('publicado', true)
+    .is('deleted_at', null)
+    .single()
+  return data ?? null
 }

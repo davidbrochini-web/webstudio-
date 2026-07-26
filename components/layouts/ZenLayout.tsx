@@ -1,10 +1,14 @@
 import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto, unsplashPhotoFrom } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
+import PlanosSection from '@/components/site-template/PlanosSection'
+import FaqSection from '@/components/site-template/FaqSection'
+import BlogSection from '@/components/site-template/BlogSection'
+import LeadForm from '@/components/site-template/LeadForm'
 
 
 export default function ZenLayout({ config }: { config: NicheConfig }) {
-  const { businessName, tagline, heroTitle, heroSub, ctaLabel, services, posts, testimonials, igHandle, photoIds, accent } = config
+  const { businessName, tagline, heroTitle, heroSub, ctaLabel, services, posts, testimonials, igHandle, photoIds, accent, solidBg, faq, planos, blogPosts, siteId } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
 
   return (
@@ -88,6 +92,11 @@ export default function ZenLayout({ config }: { config: NicheConfig }) {
           <p className="text-sm text-[#8B7355]">{testimonials[0].name}</p>
         </section>
       )}
+
+      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
+      <FaqSection faq={faq} accent={accent} />
+      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
+      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Reserve seu momento" subtext="Deixe seu contato e a gente confirma o melhor horário pra sua sessão." />
 
       {/* Fechamento */}
       <section className="px-6 py-20 text-center bg-[#4A5548]">

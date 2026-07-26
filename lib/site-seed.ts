@@ -57,7 +57,7 @@ export async function seedSiteFromNiche(
 
   const siteId = site.id as string
 
-  const [servicosRes, depoimentosRes, fotosRes, postsRes, statsRes] = await Promise.all([
+  const [servicosRes, depoimentosRes, fotosRes, postsRes, statsRes, faqRes, planosRes, blogRes] = await Promise.all([
     supabase.from('site_servicos').insert(
       niche.services.map((s, i) => ({
         site_id: siteId, icon: s.icon, title: s.title, description: s.desc, ordem: i,
@@ -105,9 +105,25 @@ export async function seedSiteFromNiche(
       }
       return Promise.resolve({ error: null })
     })(),
+    supabase.from('site_faq').insert(
+      niche.faq.map((f, i) => ({ site_id: siteId, pergunta: f.pergunta, resposta: f.resposta, ordem: i }))
+    ),
+    supabase.from('site_planos').insert(
+      niche.planos.map((p, i) => ({
+        site_id: siteId, nome: p.nome, preco: p.preco, periodo: p.periodo ?? null,
+        destaque: p.destaque ?? false, features: p.features, ordem: i,
+      }))
+    ),
+    supabase.from('site_blog_posts').insert(
+      niche.blogPosts.map((b, i) => ({
+        site_id: siteId, slug: b.slug, titulo: b.titulo, resumo: b.resumo,
+        conteudo: b.resumo, publicado: true, ordem: i,
+      }))
+    ),
   ])
 
   const childError = servicosRes.error || depoimentosRes.error || fotosRes.error || postsRes.error || statsRes.error
+    || faqRes.error || planosRes.error || blogRes.error
   if (childError) {
     await supabase.from('sites').delete().eq('id', siteId)
     return { error: `Site criado, mas erro ao copiar conteúdo demo: ${childError.message}.` }

@@ -26,6 +26,26 @@ export interface NicheTestimonial {
   text: string
 }
 
+export interface NicheFaqItem {
+  pergunta: string
+  resposta: string
+}
+
+export interface NichePlano {
+  nome: string
+  preco: string
+  /** ex: "/mês", "/sessão" — vazio quando é preço único (ex: avaliação grátis) */
+  periodo?: string
+  destaque?: boolean
+  features: string[]
+}
+
+export interface NicheBlogPost {
+  slug: string
+  titulo: string
+  resumo: string
+}
+
 export interface NicheConfig {
   slug: string
   /** Nome exibido no menu de templates da home */
@@ -66,6 +86,20 @@ export interface NicheConfig {
   /** Frase de banner no meio da página (usado pelo Zen, outros podem
    *  adotar). Opcional. */
   bannerText?: string
+  /** Perguntas frequentes — seção obrigatória em todos os templates. */
+  faq: NicheFaqItem[]
+  /** Tabela de preços/planos exibida no site — SEM sistema de
+   *  assinatura/cobrança real (isso é módulo futuro, pendência
+   *  registrada separadamente). Puramente informativo. */
+  planos: NichePlano[]
+  /** Posts de blog (SEO). Autoria pelo painel do cliente é o próximo
+   *  passo — por ora o conteúdo nasce igual ao demo do nicho. */
+  blogPosts: NicheBlogPost[]
+  /** Preenchido só quando o config vem de um site real no banco
+   *  (getSiteConfigBySlug) — usado pelo formulário de contato pra
+   *  saber onde gravar o lead. Undefined nas vitrines estáticas de
+   *  /modelos/[nicho] (aí o formulário mostra estado de preview). */
+  siteId?: string
 }
 
 export const niches: NicheConfig[] = [
@@ -102,6 +136,21 @@ export const niches: NicheConfig[] = [
       { name: 'Mariana S.', text: 'Atendimento impecável do início ao fim. Perdi o medo de dentista aqui.' },
       { name: 'Carlos E.', text: 'Fiz implante e o resultado superou a expectativa. Equipe muito atenciosa.' },
     ],
+    faq: [
+      { pergunta: 'Vocês atendem convênio?', resposta: 'Atendemos particular e alguns convênios selecionados — confirme o seu direto pelo WhatsApp antes da consulta.' },
+      { pergunta: 'Quanto tempo dura uma consulta de avaliação?', resposta: 'Em média 40 minutos, incluindo exame clínico e explicação do plano de tratamento.' },
+      { pergunta: 'Clareamento dói?', resposta: 'É um procedimento indolor pra maioria dos pacientes; sensibilidade leve e temporária pode ocorrer e é controlada na hora.' },
+    ],
+    planos: [
+      { nome: 'Avaliação', preco: 'Grátis', destaque: false, features: ['Exame clínico completo', 'Plano de tratamento personalizado', 'Orçamento sem compromisso'] },
+      { nome: 'Manutenção', preco: 'R$ 180', periodo: '/semestre', destaque: true, features: ['Limpeza e profilaxia', 'Avaliação de rotina', 'Orientação de higiene'] },
+      { nome: 'Tratamento completo', preco: 'Sob consulta', destaque: false, features: ['Ortodontia ou implantes', 'Parcelamento facilitado', 'Acompanhamento mensal'] },
+    ],
+    blogPosts: [
+      { slug: 'clareamento-dental-mitos-verdades', titulo: 'Clareamento dental: mitos e verdades', resumo: 'Separamos o que é fato e o que é exagero sobre clareamento — da dor à durabilidade do resultado.' },
+      { slug: 'quando-procurar-um-ortodontista', titulo: 'Quando procurar um ortodontista', resumo: 'Sinais de que pode ser hora de avaliar um aparelho ou alinhador, em qualquer idade.' },
+      { slug: 'cuidados-pos-implante', titulo: 'Cuidados essenciais pós-implante', resumo: 'O que fazer (e evitar) nos primeiros dias após colocar um implante dentário.' },
+    ],
   },
   {
     slug: 'escola-curso',
@@ -135,6 +184,21 @@ export const niches: NicheConfig[] = [
     testimonials: [
       { name: 'Patrícia L.', text: 'Meus dois filhos estudam aqui. A evolução deles é visível a cada semestre.' },
       { name: 'Roberto M.', text: 'Escola que realmente acompanha o aluno. Comunicação com os pais é excelente.' },
+    ],
+    faq: [
+      { pergunta: 'Como funciona o processo de matrícula?', resposta: 'Preencha o formulário no site ou fale pelo WhatsApp — nossa secretaria retorna com a documentação necessária e agenda uma visita.' },
+      { pergunta: 'As turmas têm quantos alunos?', resposta: 'Trabalhamos com turmas reduzidas para garantir acompanhamento individual de cada estudante.' },
+      { pergunta: 'Vocês oferecem bolsas de estudo?', resposta: 'Sim, temos um programa de bolsas por mérito e critério socioeconômico — consulte a secretaria.' },
+    ],
+    planos: [
+      { nome: 'Ensino Fundamental', preco: 'R$ 890', periodo: '/mês', destaque: false, features: ['Material didático incluso', 'Atividades extracurriculares', 'Comunicação direta com os pais'] },
+      { nome: 'Ensino Médio', preco: 'R$ 1.190', periodo: '/mês', destaque: true, features: ['Preparação para o ENEM', 'Simulados mensais', 'Orientação vocacional'] },
+      { nome: 'Curso Técnico', preco: 'R$ 650', periodo: '/mês', destaque: false, features: ['Estágio garantido em parceiras', 'Certificação reconhecida', 'Aulas práticas'] },
+    ],
+    blogPosts: [
+      { slug: 'como-escolher-a-escola-ideal', titulo: 'Como escolher a escola ideal pro seu filho', resumo: 'Pontos essenciais para avaliar antes de fechar a matrícula em uma nova instituição.' },
+      { slug: 'rotina-de-estudos-em-casa', titulo: 'Como montar uma rotina de estudos em casa', resumo: 'Dicas práticas para ajudar seu filho a organizar o tempo entre escola e atividades.' },
+      { slug: 'preparacao-para-o-enem', titulo: 'Preparação para o ENEM: por onde começar', resumo: 'Um guia direto para estudantes do ensino médio que estão iniciando a preparação.' },
     ],
   },
   {
@@ -170,6 +234,21 @@ export const niches: NicheConfig[] = [
       { name: 'Ana & Pedro', text: 'As fotos do nosso casamento ficaram um sonho. Cada momento capturado com sensibilidade.' },
       { name: 'Juliana T.', text: 'Ensaio newborn perfeito. Paciência e carinho com o bebê do início ao fim.' },
     ],
+    faq: [
+      { pergunta: 'Quanto tempo leva para receber as fotos editadas?', resposta: 'O prazo padrão é de 15 dias úteis; ensaios com entrega expressa podem ser combinados à parte.' },
+      { pergunta: 'Posso escolher quantas fotos editadas quero?', resposta: 'Sim, cada pacote inclui uma quantidade de fotos em alta edição — fotos extras podem ser adicionadas.' },
+      { pergunta: 'Vocês atendem fora do estúdio?', resposta: 'Sim, fazemos ensaios externos e cobertura de eventos em qualquer localização combinada.' },
+    ],
+    planos: [
+      { nome: 'Ensaio Essencial', preco: 'R$ 450', periodo: '/sessão', destaque: false, features: ['1h de sessão', '15 fotos editadas', 'Galeria online'] },
+      { nome: 'Ensaio Completo', preco: 'R$ 890', periodo: '/sessão', destaque: true, features: ['2h de sessão', '40 fotos editadas', 'Making of incluso'] },
+      { nome: 'Cobertura de Evento', preco: 'Sob consulta', destaque: false, features: ['Cobertura completa do evento', 'Segundo fotógrafo opcional', 'Entrega expressa disponível'] },
+    ],
+    blogPosts: [
+      { slug: 'como-escolher-fotografo-casamento', titulo: 'Como escolher o fotógrafo do seu casamento', resumo: 'O que perguntar antes de fechar contrato, do estilo de edição ao prazo de entrega.' },
+      { slug: 'dicas-ensaio-gestante', titulo: '5 dicas para um ensaio de gestante incrível', resumo: 'Roupas, horário e clima para tirar o melhor proveito do seu ensaio.' },
+      { slug: 'bastidores-making-of', titulo: 'Bastidores: como fazemos um making of', resumo: 'Um olhar por trás das câmeras no dia de um dos nossos ensaios recentes.' },
+    ],
   },
   {
     slug: 'advocacia',
@@ -203,6 +282,21 @@ export const niches: NicheConfig[] = [
     testimonials: [
       { name: 'Marcos V.', text: 'Resolveram minha causa trabalhista com agilidade. Comunicação clara em cada etapa.' },
       { name: 'Helena R.', text: 'Profissionais sérios. Me explicaram tudo sem juridiquês e ganhamos a causa.' },
+    ],
+    faq: [
+      { pergunta: 'A primeira consulta é gratuita?', resposta: 'Oferecemos uma análise inicial do seu caso sem custo, para entender a situação antes de propor os próximos passos.' },
+      { pergunta: 'Quanto tempo demora um processo trabalhista?', resposta: 'Varia por complexidade e tribunal, mas explicamos o prazo estimado já na primeira reunião.' },
+      { pergunta: 'Vocês atendem outras cidades além da sede?', resposta: 'Sim, atuamos em todo o Brasil, inclusive em Tribunais Superiores, com atendimento remoto quando necessário.' },
+    ],
+    planos: [
+      { nome: 'Consulta Inicial', preco: 'Grátis', destaque: false, features: ['Análise preliminar do caso', 'Orientação sobre os próximos passos', 'Sem compromisso'] },
+      { nome: 'Acompanhamento Processual', preco: 'Sob consulta', destaque: true, features: ['Atuação em todas as instâncias', 'Relatórios periódicos do andamento', 'Atendimento direto com o advogado'] },
+      { nome: 'Consultoria Empresarial', preco: 'Sob consulta', periodo: '/mês', destaque: false, features: ['Suporte jurídico contínuo', 'Revisão de contratos', 'Prevenção de litígios'] },
+    ],
+    blogPosts: [
+      { slug: 'direitos-na-rescisao-trabalhista', titulo: 'Seus direitos na rescisão trabalhista', resumo: 'O que verificar no acerto de contas antes de assinar qualquer documento.' },
+      { slug: 'o-que-verificar-antes-de-comprar-imovel', titulo: 'O que verificar antes de comprar um imóvel', resumo: 'Documentação e cuidados essenciais para evitar dor de cabeça na compra.' },
+      { slug: 'divorcio-consensual-passo-a-passo', titulo: 'Divórcio consensual: passo a passo', resumo: 'Como funciona o processo quando as duas partes estão de acordo.' },
     ],
   },
   {
@@ -238,6 +332,21 @@ export const niches: NicheConfig[] = [
       { name: 'Diego F.', text: 'Melhor barbearia da região. Corte impecável e ambiente top demais.' },
       { name: 'Lucas A.', text: 'Virei cliente fixo. Atendimento pontual e o degradê sempre perfeito.' },
     ],
+    faq: [
+      { pergunta: 'Preciso agendar horário ou pode chegar direto?', resposta: 'Recomendamos agendar pelo WhatsApp para garantir seu horário, mas também atendemos por ordem de chegada quando há vaga.' },
+      { pergunta: 'Quanto tempo dura o combo corte + barba?', resposta: 'Em média 50 minutos, com todo o cuidado no acabamento.' },
+      { pergunta: 'Vocês têm produtos à venda?', resposta: 'Sim, trabalhamos com uma linha própria de produtos para manutenção em casa.' },
+    ],
+    planos: [
+      { nome: 'Corte', preco: 'R$ 45', destaque: false, features: ['Corte clássico ou moderno', 'Acabamento na navalha', 'Toalha quente'] },
+      { nome: 'Combo Completo', preco: 'R$ 75', destaque: true, features: ['Corte + barba', 'Sobrancelha inclusa', 'Bebida de cortesia'] },
+      { nome: 'Clube Navalha', preco: 'R$ 149', periodo: '/mês', destaque: false, features: ['4 cortes no mês', 'Prioridade no agendamento (exemplo)', 'Desconto em produtos'] },
+    ],
+    blogPosts: [
+      { slug: 'como-manter-a-barba-em-dia', titulo: 'Como manter a barba em dia entre as visitas', resumo: 'Cuidados simples pra barba ficar alinhada até o próximo agendamento.' },
+      { slug: 'tendencias-de-corte-masculino', titulo: 'Tendências de corte masculino para 2026', resumo: 'Os estilos que mais têm saído da cadeira aqui no estúdio.' },
+      { slug: 'produtos-essenciais-pos-corte', titulo: '3 produtos essenciais para o pós-corte', resumo: 'O que usar em casa pra prolongar o resultado do corte novo.' },
+    ],
   },
   {
     slug: 'academia-personal',
@@ -271,6 +380,21 @@ export const niches: NicheConfig[] = [
     testimonials: [
       { name: 'Rafael N.', text: 'Perdi 12kg em 5 meses com o acompanhamento do personal. Mudou minha vida.' },
       { name: 'Camila B.', text: 'Ambiente acolhedor, nada daquela pressão de academia. Aulas coletivas são demais.' },
+    ],
+    faq: [
+      { pergunta: 'Como funciona o acesso à academia?', resposta: 'A área de musculação tem acesso livre no horário de funcionamento. Aulas coletivas têm vagas limitadas — chegue com alguns minutos de antecedência.' },
+      { pergunta: 'Tem taxa de matrícula?', resposta: 'Não cobramos taxa de matrícula nos planos mensais e trimestrais.' },
+      { pergunta: 'Posso congelar meu plano?', resposta: 'Sim, é possível congelar por até 30 dias por motivo de viagem ou saúde — fale com a recepção.' },
+    ],
+    planos: [
+      { nome: 'Mensal', preco: 'R$ 129', periodo: '/mês', destaque: false, features: ['Acesso à musculação', 'Aulas coletivas inclusas', 'Avaliação física inicial'] },
+      { nome: 'Trimestral', preco: 'R$ 349', periodo: '/trimestre', destaque: true, features: ['Tudo do plano mensal', '1 sessão de personal por mês', 'Acompanhamento nutricional'] },
+      { nome: 'Personal Exclusivo', preco: 'R$ 89', periodo: '/sessão', destaque: false, features: ['Treino 100% individual', 'Ficha personalizada', 'Agendamento direto com o personal (exemplo)'] },
+    ],
+    blogPosts: [
+      { slug: 'como-manter-a-motivacao-na-academia', titulo: 'Como manter a motivação nos primeiros meses', resumo: 'Estratégias práticas para não desistir do treino nas primeiras semanas.' },
+      { slug: 'musculacao-ou-funcional', titulo: 'Musculação ou funcional: qual escolher?', resumo: 'As diferenças entre as modalidades e como decidir o que combina com seu objetivo.' },
+      { slug: 'alimentacao-antes-e-depois-do-treino', titulo: 'O que comer antes e depois do treino', resumo: 'Orientações gerais de nutrição esportiva para otimizar seus resultados.' },
     ],
   },
   {
@@ -306,6 +430,21 @@ export const niches: NicheConfig[] = [
       { name: 'Fernanda C.', text: 'Saí de lá renovada. Ambiente impecável e profissional super atenciosa.' },
       { name: 'André P.', text: 'Trato minha lombalgia aqui há 6 meses. A dor praticamente sumiu.' },
     ],
+    faq: [
+      { pergunta: 'Preciso de indicação médica para fazer massagem terapêutica?', resposta: 'Não é obrigatório, mas se você tem alguma condição de saúde específica, recomendamos avisar antes da sessão.' },
+      { pergunta: 'Quanto tempo dura cada sessão?', resposta: 'As sessões variam entre 50 e 90 minutos, dependendo da técnica escolhida.' },
+      { pergunta: 'Vocês atendem gestantes?', resposta: 'Sim, temos uma técnica específica e segura para cada fase da gestação.' },
+    ],
+    planos: [
+      { nome: 'Sessão Avulsa', preco: 'R$ 160', periodo: '/sessão', destaque: false, features: ['50 minutos de sessão', 'Óleos essenciais inclusos', 'Ambiente climatizado'] },
+      { nome: 'Pacote 4 Sessões', preco: 'R$ 580', periodo: '(economize 9%)', destaque: true, features: ['4 sessões avulsas', 'Validade de 60 dias', '10% de desconto em produtos'] },
+      { nome: 'Dia de Spa', preco: 'R$ 380', periodo: '/sessão', destaque: false, features: ['Massagem + esfoliação', 'Aromaterapia completa', '2h de experiência'] },
+    ],
+    blogPosts: [
+      { slug: 'beneficios-da-massagem-terapeutica', titulo: 'Os benefícios da massagem terapêutica', resumo: 'Como a técnica ajuda no alívio de dores crônicas e tensões do dia a dia.' },
+      { slug: 'aromaterapia-qual-oleo-escolher', titulo: 'Aromaterapia: qual óleo escolher para cada momento', resumo: 'Um guia simples sobre os aromas mais usados em nossas sessões.' },
+      { slug: 'autocuidado-nao-e-luxo', titulo: 'Autocuidado não é luxo, é necessidade', resumo: 'Por que reservar um tempo pra si mesmo faz diferença na sua saúde mental.' },
+    ],
   },
   {
     slug: 'psicologa',
@@ -340,6 +479,21 @@ export const niches: NicheConfig[] = [
       { name: 'Juliana R.', text: 'Encontrei um espaço onde realmente me sinto ouvida, sem julgamento.' },
       { name: 'Marcelo T.', text: 'A terapia de casal salvou nosso relacionamento. Muito grata pela condução.' },
     ],
+    faq: [
+      { pergunta: 'Como funciona a primeira sessão?', resposta: 'É um momento de acolhimento, onde você conta o que te trouxe até aqui e alinhamos juntos como será o acompanhamento.' },
+      { pergunta: 'O atendimento online tem a mesma qualidade do presencial?', resposta: 'Sim, a abordagem é a mesma — a única diferença é o formato da conversa.' },
+      { pergunta: 'Existe sigilo garantido?', resposta: 'Sim, sigilo profissional absoluto é a base de qualquer atendimento psicológico.' },
+    ],
+    planos: [
+      { nome: 'Sessão Avulsa', preco: 'R$ 180', periodo: '/sessão', destaque: false, features: ['50 minutos de atendimento', 'Presencial ou online', 'Agendamento flexível'] },
+      { nome: 'Acompanhamento Mensal', preco: 'R$ 650', periodo: '/mês', destaque: true, features: ['4 sessões semanais', 'Prioridade de horário', 'Material de apoio entre sessões'] },
+      { nome: 'Terapia de Casal', preco: 'R$ 240', periodo: '/sessão', destaque: false, features: ['80 minutos de sessão', 'Espaço neutro para os dois', 'Foco em comunicação'] },
+    ],
+    blogPosts: [
+      { slug: 'como-saber-se-preciso-de-terapia', titulo: 'Como saber se é hora de procurar terapia', resumo: 'Sinais que indicam que conversar com um profissional pode ajudar.' },
+      { slug: 'ansiedade-primeiros-passos', titulo: 'Ansiedade: primeiros passos para lidar com ela', resumo: 'Orientações gerais sobre como reconhecer e começar a cuidar da ansiedade.' },
+      { slug: 'terapia-online-funciona', titulo: 'Terapia online realmente funciona?', resumo: 'O que muda (e o que não muda) no atendimento psicológico à distância.' },
+    ],
   },
   {
     slug: 'terapeuta-holistica',
@@ -373,6 +527,21 @@ export const niches: NicheConfig[] = [
     testimonials: [
       { name: 'Beatriz N.', text: 'As sessões de reiki mudaram minha relação com a ansiedade. Recomendo muito.' },
       { name: 'Ricardo A.', text: 'A constelação familiar me trouxe clareza sobre coisas que eu carregava há anos.' },
+    ],
+    faq: [
+      { pergunta: 'Preciso acreditar em algo específico para fazer as sessões?', resposta: 'Não — recebemos qualquer pessoa aberta a se conhecer melhor, sem exigir nenhuma crença específica.' },
+      { pergunta: 'Quantas sessões de reiki são recomendadas?', resposta: 'Varia por pessoa; muitos sentem benefício já na primeira, mas recomendamos um ciclo de 3 a 4 sessões para resultados mais profundos.' },
+      { pergunta: 'O que levar para a constelação familiar?', resposta: 'Só a disposição de olhar pra sua história com cuidado — o resto conduzimos no espaço.' },
+    ],
+    planos: [
+      { nome: 'Sessão Avulsa', preco: 'R$ 170', periodo: '/sessão', destaque: false, features: ['Reiki ou terapia floral', '60 minutos de sessão', 'Ambiente preparado'] },
+      { nome: 'Ciclo de Reencontro', preco: 'R$ 590', periodo: '/pacote de 4', destaque: true, features: ['4 sessões de reiki', 'Acompanhamento entre sessões', 'Prioridade no agendamento'] },
+      { nome: 'Constelação em Grupo', preco: 'R$ 220', periodo: '/encontro', destaque: false, features: ['Encontro mensal em grupo', 'Espaço de escuta coletiva', 'Sem necessidade de experiência prévia'] },
+    ],
+    blogPosts: [
+      { slug: 'o-que-e-reiki-e-como-funciona', titulo: 'O que é reiki e como funciona uma sessão', resumo: 'Entenda o que esperar do início ao fim do seu primeiro atendimento.' },
+      { slug: 'terapia-floral-para-ansiedade', titulo: 'Terapia floral: um caminho suave para a ansiedade', resumo: 'Como as essências florais atuam nos padrões emocionais do dia a dia.' },
+      { slug: 'o-que-e-constelacao-familiar', titulo: 'O que é constelação familiar', resumo: 'Uma introdução a essa abordagem que revela padrões repetidos entre gerações.' },
     ],
   },
 ]

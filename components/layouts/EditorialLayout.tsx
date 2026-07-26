@@ -1,10 +1,14 @@
 import type { NicheConfig } from '@/lib/templates'
 import { unsplashPhoto } from '@/lib/photos'
 import InstagramFeedStrip from '@/components/site-template/InstagramFeedStrip'
+import PlanosSection from '@/components/site-template/PlanosSection'
+import FaqSection from '@/components/site-template/FaqSection'
+import BlogSection from '@/components/site-template/BlogSection'
+import LeadForm from '@/components/site-template/LeadForm'
 
 
 export default function EditorialLayout({ config }: { config: NicheConfig }) {
-  const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, services, posts, testimonials, igHandle, photoIds } = config
+  const { businessName, tagline, heroTitle, heroSub, ctaLabel, accent, solidBg, services, posts, testimonials, igHandle, photoIds, faq, planos, blogPosts, siteId } = config
   const WA_LINK = `https://wa.me/${config.whatsapp || process.env.NEXT_PUBLIC_WA_NUMBER || '55XXXXXXXXXXX'}`
   const stats = config.stats?.length
     ? config.stats
@@ -88,6 +92,11 @@ export default function EditorialLayout({ config }: { config: NicheConfig }) {
           </div>
         </section>
       )}
+
+      <PlanosSection planos={planos} accent={accent} solidBg={solidBg} waLink={WA_LINK} ctaLabel={ctaLabel} />
+      <FaqSection faq={faq} accent={accent} />
+      <BlogSection posts={blogPosts} photoIds={photoIds} siteSlug={siteId ? config.slug : undefined} accent={accent} />
+      <LeadForm siteId={siteId} accent={accent} solidBg={solidBg} heading="Envie sua dúvida" subtext="Conte brevemente sua situação — respondemos com uma análise inicial." />
 
       {/* CTA sóbria */}
       <section className="px-6 py-16 border-t border-white/10 text-center">
