@@ -98,6 +98,15 @@ export async function deleteDepoimentoInline(id: string) {
   revalidatePath('/app/editor')
 }
 
+export async function submitDemoLead(tenantId: string, nome: string, contato: string) {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('demo_leads')
+    .insert({ tenant_id: tenantId, nome: nome.trim(), contato: contato.trim() })
+
+  if (error) throw new Error(error.message)
+}
+
 export async function upsertStatInline(
   siteId: string,
   statId: string | null,

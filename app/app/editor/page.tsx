@@ -10,6 +10,7 @@ import PerformanceLiveEditor from '@/components/site-editor/PerformanceLiveEdito
 import ZenLiveEditor from '@/components/site-editor/ZenLiveEditor'
 import AcolhedorLiveEditor from '@/components/site-editor/AcolhedorLiveEditor'
 import ContactSettingsBar from '@/components/site-editor/ContactSettingsBar'
+import DemoLeadCapture from '@/components/site-editor/DemoLeadCapture'
 
 export default async function SiteLiveEditorPage() {
   const info = await getCurrentTenant()
@@ -64,6 +65,7 @@ export default async function SiteLiveEditorPage() {
       <div className="bg-[var(--card-bg)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-20">
         <Link href="/app" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">← Voltar</Link>
         <p className="text-xs text-[var(--muted)] text-center flex-1">
+          {info.isDemo && <span className="font-semibold text-[var(--brand)]">✨ Demo · </span>}
           Clique em qualquer texto ou foto pra editar direto aqui · status: <strong>{site.status}</strong>
           {!podeEditar && ' · leitura'}
         </p>
@@ -75,6 +77,8 @@ export default async function SiteLiveEditorPage() {
           Abrir site →
         </a>
       </div>
+
+      {info.isDemo && <DemoLeadCapture tenantId={info.tenantId} />}
 
       <ContactSettingsBar
         siteId={site.id}
