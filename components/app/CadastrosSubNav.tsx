@@ -2,13 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { getModule } from '@/lib/modules'
 
-const ITEMS = [
-  { href: '/app/cadastros/clientes', label: 'Clientes' },
-  { href: '/app/cadastros/fornecedores', label: 'Fornecedores' },
-  { href: '/app/cadastros/funcionarios', label: 'Funcionários' },
-  { href: '/app/cadastros/produtos-servicos', label: 'Produtos/Serviços' },
-]
+// Lista de sub-páginas vem de lib/modules.ts (mesma fonte usada pelo
+// dropdown do módulo na navbar) — evita manter a mesma lista em 2 lugares.
+const ITEMS = getModule('cadastros')?.submenu ?? []
 
 export default function CadastrosSubNav() {
   const pathname = usePathname()

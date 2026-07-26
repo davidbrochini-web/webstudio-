@@ -2,12 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { getModule } from '@/lib/modules'
 
-const ITEMS = [
-  { href: '/app/financeiro', label: 'Fluxo de caixa' },
-  { href: '/app/financeiro/contas-pagar', label: 'Contas a pagar' },
-  { href: '/app/financeiro/contas-receber', label: 'Contas a receber' },
-]
+const ITEMS = getModule('financeiro')?.submenu ?? []
 
 export default function FinanceiroSubNav() {
   const pathname = usePathname()
