@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState, useEffect, useState, useTransition } from 'react'
 import { createTenant, updateTenant, setTenantStatus, type TenantFormState } from '@/app/admin/tenants/actions'
 
@@ -139,7 +140,11 @@ export default function TenantsManager({ initialTenants }: { initialTenants: Ten
             <tbody className="divide-y divide-[var(--border)]">
               {initialTenants.map(t => (
                 <tr key={t.id}>
-                  <td className="px-5 py-3 text-[var(--ink)] font-medium">{t.nome}</td>
+                  <td className="px-5 py-3 text-[var(--ink)] font-medium">
+                    <Link href={`/admin/tenants/${t.id}`} className="hover:text-[var(--purple)] transition-colors">
+                      {t.nome}
+                    </Link>
+                  </td>
                   <td className="px-5 py-3 text-[var(--muted)] hidden sm:table-cell">{t.plano}</td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusStyle[t.status] ?? ''}`}>
