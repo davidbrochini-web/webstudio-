@@ -1,33 +1,41 @@
+import Link from 'next/link'
+
 const modules = [
+  {
+    icon: '🗂️',
+    title: 'Cadastros',
+    desc: 'Clientes, fornecedores, funcionários e produtos/serviços organizados num só lugar.',
+    tag: 'Disponível',
+  },
   {
     icon: '👥',
     title: 'CRM',
     desc: 'Cadastro de clientes, histórico de contatos, pipeline de oportunidades e follow-up organizado.',
-    tag: null,
+    tag: 'Em breve',
   },
   {
     icon: '📦',
     title: 'Controle de Estoque',
     desc: 'Entrada, saída e saldo de produtos em tempo real. Alertas de estoque mínimo e relatório de movimentação.',
-    tag: null,
+    tag: 'Em breve',
   },
   {
     icon: '📤',
     title: 'Contas a Pagar',
     desc: 'Lançamento de despesas, vencimentos, status de pagamento e visão de compromissos por período.',
-    tag: null,
+    tag: 'Em breve',
   },
   {
     icon: '📥',
     title: 'Contas a Receber',
     desc: 'Controle de cobranças, inadimplência, baixa de pagamentos e projeção de recebimentos.',
-    tag: null,
+    tag: 'Em breve',
   },
   {
     icon: '💰',
     title: 'Fluxo de Caixa',
     desc: 'Visão consolidada de entradas e saídas. Saldo projetado por dia, semana e mês.',
-    tag: null,
+    tag: 'Em breve',
   },
   {
     icon: '📋',
@@ -66,29 +74,44 @@ export default function Modules() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden">
-          {modules.map(({ icon, title, desc, tag }) => (
-            <div
-              key={title}
-              className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
-            >
-              {tag && (
-                <span className="absolute top-5 right-5 text-[10px] font-bold text-[var(--brand)] bg-green-950/60 border border-green-800/40 px-2.5 py-1 rounded-full">
-                  {tag}
-                </span>
-              )}
-              <span className="text-3xl">{icon}</span>
-              <div>
-                <h3 className="font-display font-bold text-base text-white mb-1.5">{title}</h3>
-                <p className="text-sm text-white/40 leading-relaxed">{desc}</p>
+          {modules.map(({ icon, title, desc, tag }) => {
+            const disponivel = tag === 'Disponível'
+            return (
+              <div
+                key={title}
+                className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
+              >
+                {tag && (
+                  <span className={`absolute top-5 right-5 text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                    disponivel
+                      ? 'text-white bg-[var(--brand)]'
+                      : 'text-[var(--brand)] bg-green-950/60 border border-green-800/40'
+                  }`}>
+                    {tag}
+                  </span>
+                )}
+                <span className="text-3xl">{icon}</span>
+                <div>
+                  <h3 className="font-display font-bold text-base text-white mb-1.5">{title}</h3>
+                  <p className="text-sm text-white/40 leading-relaxed">{desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
-        {/* Bottom note */}
-        <p className="text-center text-sm text-white/25 mt-8">
-          Todos os módulos rodam na web — sem instalação, acessível de qualquer dispositivo.
-        </p>
+        {/* CTA de teste — só Cadastros está de fato pronto pra testar hoje */}
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <Link
+            href="/demo"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl grad-bg text-white text-sm font-bold hover:opacity-90 hover:scale-105 transition-all"
+          >
+            ✨ Teste os módulos você mesmo
+          </Link>
+          <p className="text-center text-sm text-white/25">
+            Todos os módulos rodam na web — sem instalação, acessível de qualquer dispositivo.
+          </p>
+        </div>
       </div>
     </section>
   )
