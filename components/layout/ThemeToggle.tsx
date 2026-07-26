@@ -3,17 +3,24 @@
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [theme, setTheme] = useState<{ mounted: boolean; isDark: boolean }>({
+    mounted: false,
+    isDark: false,
+  })
+  const { mounted, isDark } = theme
 
   useEffect(() => {
-    setMounted(true)
-    setIsDark(document.documentElement.classList.contains('dark'))
+    // Necessário pra evitar mismatch de hidratação: no servidor não existe
+    // `document`, então o estado real só pode ser lido depois de montar no
+    // client. É o padrão recomendado do Next.js pra esse caso — não dá pra
+    // computar isso durante o render sem quebrar a hidratação.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTheme({ mounted: true, isDark: document.documentElement.classList.contains('dark') })
   }, [])
 
   function toggle() {
     const next = !isDark
-    setIsDark(next)
+    setTheme(t => ({ ...t, isDark: next }))
     document.documentElement.classList.toggle('dark', next)
     localStorage.setItem('theme', next ? 'dark' : 'light')
   }
