@@ -19,52 +19,56 @@ import { NextRequest, NextResponse } from 'next/server'
  * as policies normais de RLS (is_admin_of_tenant) bloqueariam.
  */
 export async function GET(request: NextRequest) {
-  const nichoSlug = request.nextUrl.searchParams.get('nicho')
-  const niche = nichoSlug ? getNiche(nichoSlug) : null
+  try {
+    const nichoSlug = request.nextUrl.searchParams.get('nicho')
+    const niche = nichoSlug ? getNiche(nichoSlug) : null
 
-  if (!niche) {
-    return NextResponse.redirect(new URL('/demo?erro=nicho-invalido', request.url))
+    if (!niche) {
+      return NextResponse.redirect(new URL('/demo?erro=nicho-invalido', request.url))
+    }
+
+    const supabase = await createClient()
+    const { data: authData, error: authError } = await supabase.auth.signInAnonymously()
+
+    if (authError || !authData.user) {
+      return NextResponse.json({ stage: 'auth', error: authError?.message }, { status: 500 })
+    }
+
+    const userId = authData.user.id
+    const admin = createAdminClient()
+    const randomId = Math.random().toString(36).slice(2, 8)
+
+    const { data: tenant, error: tenantError } = await admin
+      .from('tenants')
+      .insert({ nome: `Demo — ${niche.label}`, plano: 'demo', status: 'ativo', is_demo: true })
+      .select('id')
+      .single()
+
+    if (tenantError || !tenant) {
+      return NextResponse.json({ stage: 'tenant', error: tenantError?.message }, { status: 500 })
+    }
+
+    const seedResult = await seedSiteFromNiche(admin, tenant.id, niche.slug, `demo-${randomId}`, 'publicado')
+
+    if (seedResult.error || !seedResult.siteId) {
+      await admin.from('tenants').delete().eq('id', tenant.id)
+      return NextResponse.json({ stage: 'seed', error: seedResult.error }, { status: 500 })
+    }
+
+    const [membershipRes, subSiteRes, subCadastrosRes] = await Promise.all([
+      admin.from('memberships').insert({ tenant_id: tenant.id, user_id: userId, papel: 'owner' }),
+      admin.from('subscriptions').insert({ tenant_id: tenant.id, modulo: 'site', status: 'ativo' }),
+      admin.from('subscriptions').insert({ tenant_id: tenant.id, modulo: 'cadastros', status: 'ativo' }),
+    ])
+
+    const setupError = membershipRes.error || subSiteRes.error || subCadastrosRes.error
+    if (setupError) {
+      await admin.from('tenants').delete().eq('id', tenant.id)
+      return NextResponse.json({ stage: 'setup', error: setupError.message }, { status: 500 })
+    }
+
+    return NextResponse.redirect(new URL('/app/editor?demo=1', request.url))
+  } catch (err) {
+    return NextResponse.json({ stage: 'catch', error: err instanceof Error ? err.message : String(err) }, { status: 500 })
   }
-
-  const supabase = await createClient()
-  const { data: authData, error: authError } = await supabase.auth.signInAnonymously()
-
-  if (authError || !authData.user) {
-    return NextResponse.redirect(new URL('/demo?erro=login', request.url))
-  }
-
-  const userId = authData.user.id
-  const admin = createAdminClient()
-  const randomId = Math.random().toString(36).slice(2, 8)
-
-  const { data: tenant, error: tenantError } = await admin
-    .from('tenants')
-    .insert({ nome: `Demo — ${niche.label}`, plano: 'demo', status: 'ativo', is_demo: true })
-    .select('id')
-    .single()
-
-  if (tenantError || !tenant) {
-    return NextResponse.redirect(new URL('/demo?erro=tenant', request.url))
-  }
-
-  const seedResult = await seedSiteFromNiche(admin, tenant.id, niche.slug, `demo-${randomId}`, 'publicado')
-
-  if (seedResult.error || !seedResult.siteId) {
-    await admin.from('tenants').delete().eq('id', tenant.id)
-    return NextResponse.redirect(new URL('/demo?erro=seed', request.url))
-  }
-
-  const [membershipRes, subSiteRes, subCadastrosRes] = await Promise.all([
-    admin.from('memberships').insert({ tenant_id: tenant.id, user_id: userId, papel: 'owner' }),
-    admin.from('subscriptions').insert({ tenant_id: tenant.id, modulo: 'site', status: 'ativo' }),
-    admin.from('subscriptions').insert({ tenant_id: tenant.id, modulo: 'cadastros', status: 'ativo' }),
-  ])
-
-  const setupError = membershipRes.error || subSiteRes.error || subCadastrosRes.error
-  if (setupError) {
-    await admin.from('tenants').delete().eq('id', tenant.id)
-    return NextResponse.redirect(new URL('/demo?erro=setup', request.url))
-  }
-
-  return NextResponse.redirect(new URL('/app/editor?demo=1', request.url))
 }
