@@ -16,6 +16,8 @@ export interface SiteData {
   hero_title: string
   hero_sub: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
 }
 
 export default function UrbanoLiveEditor({ site, servicos: servicosInit, fotos, depoimento: depoimentoInit, readOnly }: {
@@ -29,7 +31,7 @@ export default function UrbanoLiveEditor({ site, servicos: servicosInit, fotos, 
   const [depoimento, setDepoimento] = useState(depoimentoInit)
 
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label' | 'cta_heading' | 'cta_subtext') => (v: string) => updateSiteField(site.id, field, v)
 
   return (
     <div className="bg-[#18181B] text-white">
@@ -105,7 +107,7 @@ export default function UrbanoLiveEditor({ site, servicos: servicosInit, fotos, 
       </section>
 
       <section className={`bg-gradient-to-r ${ACCENT} px-6 py-14 text-center`}>
-        <h2 className="font-display font-extrabold text-2xl mb-5">Chega de esperar. Marca aí.</h2>
+        <h2 className="font-display font-extrabold text-2xl mb-5"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Chega de esperar. Marca aí."} onSave={fieldSaver('cta_heading')} /></h2>
         <span className="inline-flex items-center gap-2 bg-white text-[#18181B] font-bold px-7 py-3.5 rounded" title="No site publicado, isso abre o WhatsApp">
           💬 <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
         </span>

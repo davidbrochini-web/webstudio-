@@ -18,6 +18,8 @@ export interface SiteData {
   hero_title: string
   hero_sub: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
 }
 
 export default function PerformanceLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimentos: depoimentosInit, stats: statsInit, readOnly }: {
@@ -34,7 +36,7 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
   const [stats, setStats] = useState(statsInit)
 
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label' | 'cta_heading' | 'cta_subtext') => (v: string) => updateSiteField(site.id, field, v)
   const heroFoto = fotos[0]
   const heroStat = stats[0]
   const gridStats = stats.slice(1)
@@ -158,7 +160,7 @@ export default function PerformanceLiveEditor({ site, servicos: servicosInit, fo
       </section>
 
       <section className="px-6 py-16 text-center border-t border-white/10">
-        <h2 className="font-display font-extrabold text-2xl mb-6">Sua transformação começa hoje</h2>
+        <h2 className="font-display font-extrabold text-2xl mb-6"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Sua transformação começa hoje"} onSave={fieldSaver('cta_heading')} /></h2>
         <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} text-[#0A0F0D] font-extrabold px-8 py-4 rounded-full`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
         </span>

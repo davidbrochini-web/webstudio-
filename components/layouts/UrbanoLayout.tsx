@@ -89,7 +89,7 @@ export default function UrbanoLayout({ config }: { config: NicheConfig }) {
 
       {/* CTA */}
       <section className={`bg-gradient-to-r ${accent} px-6 py-14 text-center`}>
-        <h2 className="font-display font-extrabold text-2xl text-white mb-5">Chega de esperar. Marca aí.</h2>
+        <h2 className="font-display font-extrabold text-2xl text-white mb-5">{config.ctaHeading || "Chega de esperar. Marca aí."}</h2>
         <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-white text-[#18181B] font-bold px-7 py-3.5 rounded hover:-translate-y-px transition-all">
           💬 {ctaLabel}

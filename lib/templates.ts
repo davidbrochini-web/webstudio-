@@ -57,6 +57,15 @@ export interface NicheConfig {
    *  só o template clínico usa por enquanto; sites reais guardam isso
    *  no banco (site_stats), vitrines de demo usam o fallback fixo. */
   stats?: { valor: string; rotulo: string }[]
+  /** Título da seção de CTA final (ex: "Agende sua avaliação"). Cada
+   *  template tem seu fallback padrão quando não preenchido. */
+  ctaHeading?: string
+  /** Subtexto abaixo do título do CTA (ex: "Atendimento rápido pelo
+   *  WhatsApp — sem compromisso."). Opcional — nem todo template tem. */
+  ctaSubtext?: string
+  /** Frase de banner no meio da página (usado pelo Zen, outros podem
+   *  adotar). Opcional. */
+  bannerText?: string
 }
 
 export const niches: NicheConfig[] = [

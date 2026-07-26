@@ -16,6 +16,8 @@ export interface SiteData {
   tagline: string
   hero_title: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
 }
 
 export default function PortfolioLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, readOnly }: {
@@ -30,7 +32,7 @@ export default function PortfolioLiveEditor({ site, servicos: servicosInit, foto
   const [depoimento, setDepoimento] = useState(depoimentoInit)
 
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'cta_label' | 'cta_heading' | 'cta_subtext') => (v: string) => updateSiteField(site.id, field, v)
   const mosaico = [fotos[0], fotos[1], fotos[2], fotos[3]]
   const restoFotos = fotos.slice(4)
 
@@ -128,7 +130,7 @@ export default function PortfolioLiveEditor({ site, servicos: servicosInit, foto
 
       <section className={`bg-gradient-to-br ${ACCENT} px-6 py-16 sm:py-20 text-center`}>
         <div className="max-w-xl mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4">Vamos criar algo juntos?</h2>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-4"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Vamos criar algo juntos?"} onSave={fieldSaver('cta_heading')} /></h2>
           <span className="inline-flex items-center gap-2 bg-white text-[#1e293b] font-bold px-7 py-3.5 rounded-xl" title="No site publicado, isso abre o WhatsApp">
             💬 <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
           </span>

@@ -18,6 +18,8 @@ export interface SiteData {
   hero_title: string
   hero_sub: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
 }
 
 export default function EditorialLiveEditor({ site, servicos: servicosInit, fotos: fotosInit, depoimento: depoimentoInit, stats: statsInit, readOnly }: {
@@ -34,7 +36,7 @@ export default function EditorialLiveEditor({ site, servicos: servicosInit, foto
 
   const officeFoto = fotosInit[0]
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label' | 'cta_heading' | 'cta_subtext') => (v: string) => updateSiteField(site.id, field, v)
 
   return (
     <div className="bg-[#0B0F14] text-white">
@@ -148,7 +150,7 @@ export default function EditorialLiveEditor({ site, servicos: servicosInit, foto
       </section>
 
       <section className="px-6 py-16 border-t border-white/10 text-center">
-        <h2 className="font-display font-extrabold text-2xl mb-4">Converse com nosso time</h2>
+        <h2 className="font-display font-extrabold text-2xl mb-4"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Converse com nosso time"} onSave={fieldSaver('cta_heading')} /></h2>
         <span className={`inline-flex items-center gap-2 bg-gradient-to-r ${ACCENT} font-bold px-7 py-3.5 rounded`} title="No site publicado, isso abre o WhatsApp">
           <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} /> →
         </span>

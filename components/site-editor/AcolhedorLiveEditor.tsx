@@ -16,6 +16,8 @@ export interface SiteData {
   hero_title: string
   hero_sub: string
   cta_label: string
+  cta_heading: string | null
+  cta_subtext: string | null
 }
 
 export default function AcolhedorLiveEditor({ site, servicos: servicosInit, fotos, depoimentos: depoimentosInit, readOnly }: {
@@ -29,7 +31,7 @@ export default function AcolhedorLiveEditor({ site, servicos: servicosInit, foto
   const [depoimentos, setDepoimentos] = useState(depoimentosInit)
 
   const ctaLabel = site.cta_label || 'Fale conosco'
-  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label') => (v: string) => updateSiteField(site.id, field, v)
+  const fieldSaver = (field: 'business_name' | 'tagline' | 'hero_title' | 'hero_sub' | 'cta_label' | 'cta_heading' | 'cta_subtext') => (v: string) => updateSiteField(site.id, field, v)
 
   return (
     <div className="bg-white text-[#1e293b]">
@@ -109,7 +111,7 @@ export default function AcolhedorLiveEditor({ site, servicos: servicosInit, foto
 
       <section className={`bg-gradient-to-br ${ACCENT} px-6 py-16 sm:py-20 text-center rounded-t-[40px]`}>
         <div className="max-w-lg mx-auto">
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-6">Vem fazer parte!</h2>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-6"><EditableText as="span" readOnly={readOnly} value={site.cta_heading || "Vem fazer parte!"} onSave={fieldSaver('cta_heading')} /></h2>
           <span className="inline-flex items-center gap-2 bg-white text-[#1e293b] font-bold px-8 py-4 rounded-full" title="No site publicado, isso abre o WhatsApp">
             💬 <EditableText as="span" readOnly={readOnly} value={ctaLabel} onSave={fieldSaver('cta_label')} />
           </span>
