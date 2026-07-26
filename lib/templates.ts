@@ -49,6 +49,10 @@ export interface NicheConfig {
    *  Sites de tenant real preenchem isso; vitrines estáticas de demo
    *  deixam undefined e caem no número da agência (env var). */
   whatsapp?: string
+  /** Números em destaque (ex: "+15 anos de experiência"). Opcional —
+   *  só o template clínico usa por enquanto; sites reais guardam isso
+   *  no banco (site_stats), vitrines de demo usam o fallback fixo. */
+  stats?: { valor: string; rotulo: string }[]
 }
 
 export const niches: NicheConfig[] = [

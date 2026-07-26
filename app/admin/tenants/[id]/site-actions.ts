@@ -64,7 +64,7 @@ export async function createSiteFromTemplate(
 
   const siteId = site.id
 
-  const [servicosRes, depoimentosRes, fotosRes, postsRes] = await Promise.all([
+  const [servicosRes, depoimentosRes, fotosRes, postsRes, statsRes] = await Promise.all([
     supabase.from('site_servicos').insert(
       niche.services.map((s, i) => ({ site_id: siteId, icon: s.icon, title: s.title, description: s.desc, ordem: i }))
     ),
@@ -77,9 +77,18 @@ export async function createSiteFromTemplate(
     supabase.from('site_posts').insert(
       niche.posts.map((p, i) => ({ site_id: siteId, caption: p.caption, likes: p.likes, ordem: i }))
     ),
+    // A barra de números em destaque hoje só existe no template
+    // clínico — outros nichos ainda não têm esse bloco no layout.
+    niche.pageLayout === 'clinico'
+      ? supabase.from('site_stats').insert([
+          { site_id: siteId, valor: '+15', rotulo: 'anos de experiência', ordem: 0 },
+          { site_id: siteId, valor: '+3.200', rotulo: 'pacientes atendidos', ordem: 1 },
+          { site_id: siteId, valor: '4.9★', rotulo: 'avaliação média', ordem: 2 },
+        ])
+      : Promise.resolve({ error: null }),
   ])
 
-  const childError = servicosRes.error || depoimentosRes.error || fotosRes.error || postsRes.error
+  const childError = servicosRes.error || depoimentosRes.error || fotosRes.error || postsRes.error || statsRes.error
   if (childError) {
     // limpa o site criado se o conteúdo demo falhou ao copiar — evita
     // site "casca vazia" sem nenhum conteúdo
