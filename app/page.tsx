@@ -8,6 +8,7 @@ import Templates  from '@/components/sections/Templates'
 import Features   from '@/components/sections/Features'
 import Modules    from '@/components/sections/Modules'
 import Pricing    from '@/components/sections/Pricing'
+import Faq        from '@/components/sections/Faq'
 import CtaFinal   from '@/components/sections/CtaFinal'
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
         <Features />
         <Modules />
         <Pricing />
+        <Faq />
         <CtaFinal />
       </main>
       <Footer />

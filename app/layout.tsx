@@ -3,13 +3,37 @@ import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 
 export const metadata: Metadata = {
-  title: 'Omnidesign — Sistemas Web Inteligentes · Automação · Cloud',
+  metadataBase: new URL('https://omnidesign.com.br'),
+  title: {
+    default: 'Omnidesign — Sites Inteligentes Conectados ao Instagram + Sistemas Internos',
+    template: '%s | Omnidesign',
+  },
   description:
     'Sites profissionais conectados ao Instagram e sistemas internos sob medida para pequenos e médios negócios. Automação, organização e presença digital em um só lugar.',
+  keywords: [
+    'criação de site', 'site para pequena empresa', 'site conectado ao instagram',
+    'sistema interno para empresa', 'site institucional', 'CRM para pequena empresa',
+  ],
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
   openGraph: {
-    title: 'Omnidesign — Sistemas Web Inteligentes',
+    title: 'Omnidesign — Sites Inteligentes Conectados ao Instagram',
     description: 'Sites que se atualizam sozinhos e sistemas internos que organizam sua empresa. Tudo automatizado, sem trabalho extra.',
     type: 'website',
+    url: 'https://omnidesign.com.br',
+    siteName: 'Omnidesign',
+    locale: 'pt_BR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Omnidesign — Sites Inteligentes Conectados ao Instagram',
+    description: 'Sites que se atualizam sozinhos e sistemas internos que organizam sua empresa.',
   },
 }
 
@@ -20,10 +44,24 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Omnidesign',
+    url: 'https://omnidesign.com.br',
+    logo: 'https://omnidesign.com.br/brand/omnidesign-logo.png',
+    description: 'Sites profissionais conectados ao Instagram e sistemas internos sob medida para pequenos e médios negócios.',
+    areaServed: 'BR',
+  }
+
   return (
     <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <ThemeScript />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
       </head>
       <body className="antialiased">{children}</body>
     </html>
