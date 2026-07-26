@@ -23,6 +23,7 @@ const descs: Record<string, string> = {
 const ERROR_MESSAGES: Record<string, string> = {
   'nicho-invalido': 'Esse modelo não existe. Escolha um dos abaixo.',
   'login': 'Não conseguimos iniciar a demo agora. Tenta de novo em alguns segundos.',
+  'profile': 'Erro ao preparar sua demo. Tenta de novo.',
   'tenant': 'Erro ao preparar sua demo. Tenta de novo.',
   'seed': 'Erro ao montar o conteúdo do site. Tenta de novo.',
   'setup': 'Erro ao finalizar a preparação. Tenta de novo.',
