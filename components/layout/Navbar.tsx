@@ -18,8 +18,8 @@ export default function Navbar() {
           <Image
             src="/brand/omnidesign-icon.png"
             alt=""
-            width={32}
-            height={19}
+            width={30}
+            height={32}
             className="h-7 w-auto"
             priority
           />

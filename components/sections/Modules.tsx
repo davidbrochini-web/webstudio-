@@ -43,6 +43,18 @@ const modules = [
     desc: 'Requisições de compra, aprovações por alçada e rastreamento de pedidos com fornecedores.',
     tag: 'Em breve',
   },
+  {
+    icon: '📅',
+    title: 'Agendamento',
+    desc: 'Agenda online integrada ao site: cliente escolhe horário, você confirma e acompanha tudo num painel.',
+    tag: 'Em breve',
+  },
+  {
+    icon: '🎬',
+    title: 'Vídeos no Site',
+    desc: 'Área de vídeos no seu site institucional — apresentação, tour do espaço e depoimentos em vídeo.',
+    tag: 'Em breve',
+  },
 ]
 
 export default function Modules() {

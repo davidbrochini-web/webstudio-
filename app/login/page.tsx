@@ -48,8 +48,8 @@ function LoginForm() {
           <Image
             src="/brand/omnidesign-icon-rain.png"
             alt=""
-            width={98}
-            height={160}
+            width={95}
+            height={100}
             className="h-24 w-auto mx-auto mb-2"
           />
           <span className="font-display font-bold text-2xl text-[var(--ink)]">omnidesign</span>

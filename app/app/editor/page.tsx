@@ -71,8 +71,8 @@ export default async function SiteLiveEditorPage() {
               <Image
                 src="/brand/omnidesign-icon.png"
                 alt=""
-                width={28}
-                height={17}
+                width={27}
+                height={28}
                 className="h-6 w-auto"
               />
             </Link>
@@ -108,8 +108,8 @@ export default async function SiteLiveEditorPage() {
               <Image
                 src="/brand/omnidesign-icon.png"
                 alt=""
-                width={28}
-                height={17}
+                width={27}
+                height={28}
                 className="h-6 w-auto"
               />
             </Link>
