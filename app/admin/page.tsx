@@ -31,7 +31,7 @@ export default async function AdminHome() {
 
       <Link
         href="/admin/tenants"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--purple)]"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand)]"
       >
         Gerenciar tenants →
       </Link>

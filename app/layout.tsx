@@ -3,12 +3,12 @@ import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 
 export const metadata: Metadata = {
-  title: 'WebStudio — Seu site conectado ao Instagram',
+  title: 'Omnidesign — Sistemas Web Inteligentes · Automação · Cloud',
   description:
-    'Sites profissionais para pequenos negócios que se atualizam automaticamente com o feed do Instagram. Do contrato ao ar em 48 horas.',
+    'Sites profissionais conectados ao Instagram e sistemas internos sob medida para pequenos e médios negócios. Automação, organização e presença digital em um só lugar.',
   openGraph: {
-    title: 'WebStudio — Postou no Instagram, atualizou o site.',
-    description: 'Site profissional conectado ao seu Instagram. Automático, sem trabalho extra.',
+    title: 'Omnidesign — Sistemas Web Inteligentes',
+    description: 'Sites que se atualizam sozinhos e sistemas internos que organizam sua empresa. Tudo automatizado, sem trabalho extra.',
     type: 'website',
   },
 }
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#7C3AED',
+  themeColor: '#060606',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

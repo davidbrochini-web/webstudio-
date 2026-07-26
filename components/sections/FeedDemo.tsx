@@ -16,7 +16,7 @@ export default function FeedDemo() {
     <section id="demo" className="py-20 bg-[var(--page-bg)] border-t border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">
+          <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-3">
             Veja funcionando
           </p>
           <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
@@ -31,10 +31,10 @@ export default function FeedDemo() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full grad-bg flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-              w
+              o
             </div>
             <div>
-              <p className="text-sm font-semibold text-[var(--ink)] leading-tight">@webstudio</p>
+              <p className="text-sm font-semibold text-[var(--ink)] leading-tight">@omnidesign</p>
               <p className="text-xs text-[var(--muted)]">Instagram conectado</p>
             </div>
           </div>

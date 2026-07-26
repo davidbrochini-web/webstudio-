@@ -20,7 +20,7 @@ export default function Templates() {
       <div className="max-w-6xl mx-auto">
 
         <div className="text-center mb-14">
-          <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">
+          <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-3">
             Esse site pode ser seu
           </p>
           <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
@@ -37,7 +37,7 @@ export default function Templates() {
             <Link
               key={slug}
               href={`/modelos/${slug}`}
-              className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-50 hover:border-purple-200 transition-all"
+              className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-green-50 hover:border-green-200 transition-all"
             >
               {/* Preview com foto temática do nicho */}
               <div className="relative h-44 overflow-hidden">
@@ -64,7 +64,7 @@ export default function Templates() {
               <div className="p-6">
                 <h3 className="font-display font-bold text-base text-[var(--ink)] mb-2">{label}</h3>
                 <p className="text-sm text-[var(--muted)] leading-relaxed mb-4">{descs[slug]}</p>
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--purple)] group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--brand)] group-hover:gap-2.5 transition-all">
                   Navegar no modelo →
                 </span>
               </div>
@@ -74,7 +74,7 @@ export default function Templates() {
 
         <p className="text-center text-sm text-[var(--muted)] mt-10">
           Não achou o seu nicho? A gente monta sob medida —{' '}
-          <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="font-semibold text-[var(--purple)] underline underline-offset-2">
+          <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="font-semibold text-[var(--brand)] underline underline-offset-2">
             chama no WhatsApp
           </a>.
         </p>

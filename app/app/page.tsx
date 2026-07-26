@@ -33,7 +33,7 @@ export default async function AppHome() {
         <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6">
           {!tenant ? (
             <p className="text-sm text-[var(--muted)]">
-              Sua conta ainda não está vinculada a nenhuma empresa. Fale com a webstudio.
+              Sua conta ainda não está vinculada a nenhuma empresa. Fale com a omnidesign.
             </p>
           ) : (
             <p className="text-sm text-[var(--muted)]">

@@ -45,7 +45,7 @@ export default function Modules() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase text-[var(--pink)] mb-3">
+            <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand2)] mb-3">
               Sistemas internos
             </p>
             <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-white mb-3">
@@ -72,7 +72,7 @@ export default function Modules() {
               className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
             >
               {tag && (
-                <span className="absolute top-5 right-5 text-[10px] font-bold text-[var(--purple)] bg-purple-950/60 border border-purple-800/40 px-2.5 py-1 rounded-full">
+                <span className="absolute top-5 right-5 text-[10px] font-bold text-[var(--brand)] bg-green-950/60 border border-green-800/40 px-2.5 py-1 rounded-full">
                   {tag}
                 </span>
               )}

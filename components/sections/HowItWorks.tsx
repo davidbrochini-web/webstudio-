@@ -20,7 +20,7 @@ export default function HowItWorks() {
   return (
     <section id="como-funciona" className="bg-[var(--dark)] py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-bold tracking-widest uppercase text-[var(--pink)] mb-3">
+        <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand2)] mb-3">
           Como funciona
         </p>
         <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-white mb-4">

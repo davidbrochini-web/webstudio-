@@ -23,7 +23,7 @@ export async function generateMetadata(
   const config = getNiche(nicho)
   if (!config) return {}
   return {
-    title: `${config.label} — modelo de site | webstudio`,
+    title: `${config.label} — modelo de site | omnidesign`,
     description: config.heroSub,
     robots: { index: false },
   }
@@ -53,7 +53,7 @@ export default async function NichePreview(
       {/* Barra de preview da agência — única coisa compartilhada entre os 7 arquétipos */}
       <div className="sticky top-0 z-50 bg-black text-white px-4 py-2.5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xs font-bold grad-text flex-shrink-0">webstudio</span>
+          <span className="text-xs font-bold text-[var(--brand-bright)] flex-shrink-0">omnidesign</span>
           <span className="text-xs text-white/50 truncate">
             — modelo: {config.label}. Esse site pode ser seu.
           </span>

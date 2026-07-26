@@ -15,7 +15,7 @@ export default function CtaFinal() {
           href={WA_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[var(--purple)] font-bold text-base hover:-translate-y-px hover:shadow-xl hover:shadow-black/10 transition-all"
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[var(--brand)] font-bold text-base hover:-translate-y-px hover:shadow-xl hover:shadow-black/10 transition-all"
         >
           💬 Chamar no WhatsApp agora
         </a>

@@ -1,4 +1,4 @@
-# webstudio
+# omnidesign
 
 Site da agência — landing page com integração Instagram.
 

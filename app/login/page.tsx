@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 function LoginForm() {
@@ -44,7 +45,14 @@ function LoginForm() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--off)] px-6">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <span className="font-display font-extrabold text-2xl grad-text">webstudio</span>
+          <Image
+            src="/brand/omnidesign-icon.png"
+            alt=""
+            width={40}
+            height={23}
+            className="h-9 w-auto mx-auto mb-2"
+          />
+          <span className="font-display font-bold text-2xl text-[var(--ink)]">omnidesign</span>
           <p className="text-sm text-[var(--muted)] mt-2">Entre com sua conta</p>
         </div>
 
@@ -59,7 +67,7 @@ function LoginForm() {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--purple)]"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
               placeholder="voce@email.com"
             />
           </div>
@@ -74,7 +82,7 @@ function LoginForm() {
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--purple)]"
+              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
               placeholder="••••••••"
             />
           </div>

@@ -33,7 +33,7 @@ export default function Pricing() {
     <section id="preco" className="py-20 px-6 bg-[var(--off)] border-t border-[var(--border)]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-3">Preço</p>
+          <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-3">Preço</p>
           <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             Simples e sem surpresa
           </h2>
@@ -45,8 +45,8 @@ export default function Pricing() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-3xl mx-auto">
 
           {/* Site + Instagram */}
-          <div className="grad-border rounded-2xl bg-[var(--card-bg)] p-8 shadow-2xl shadow-purple-100">
-            <p className="text-xs font-bold tracking-widest uppercase text-[var(--purple)] mb-2">Site + Instagram</p>
+          <div className="grad-border rounded-2xl bg-[var(--card-bg)] p-8 shadow-2xl shadow-green-100">
+            <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-2">Site + Instagram</p>
             <div className="font-display font-extrabold text-5xl text-[var(--ink)] leading-none mb-1">
               R$&thinsp;149<span className="text-xl font-medium text-[var(--muted)]">/mês</span>
             </div>

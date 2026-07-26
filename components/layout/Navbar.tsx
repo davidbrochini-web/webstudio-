@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import ThemeToggle from './ThemeToggle'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
@@ -13,8 +14,18 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-[var(--page-bg)]/90 backdrop-blur-md border-b border-[var(--border)]">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="font-display font-extrabold text-xl grad-text">
-          webstudio
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image
+            src="/brand/omnidesign-icon.png"
+            alt=""
+            width={32}
+            height={19}
+            className="h-7 w-auto"
+            priority
+          />
+          <span className="font-display font-bold text-lg tracking-tight text-[var(--ink)]">
+            omnidesign
+          </span>
         </Link>
 
         {/* Desktop nav */}

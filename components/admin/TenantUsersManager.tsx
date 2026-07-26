@@ -50,7 +50,7 @@ export default function TenantUsersManager({
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="text-xs font-semibold text-[var(--purple)]"
+            className="text-xs font-semibold text-[var(--brand)]"
           >
             + Novo usuário
           </button>
