@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -62,7 +63,15 @@ function BrowserMockup() {
 
 export default function Hero() {
   return (
-    <section className="max-w-6xl mx-auto px-6 pt-12 pb-10 lg:pt-20 lg:pb-16">
+    <section className="relative max-w-6xl mx-auto px-6 pt-12 pb-10 lg:pt-20 lg:pb-16 overflow-hidden">
+      <Image
+        src="/brand/omnidesign-icon-rain.png"
+        alt=""
+        aria-hidden="true"
+        width={668}
+        height={1090}
+        className="hidden lg:block absolute -right-16 -top-24 h-[560px] w-auto opacity-[0.05] pointer-events-none select-none -z-10"
+      />
       <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
         <div className="flex-1 text-center lg:text-left">
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--brand)] bg-green-50 px-4 py-1.5 rounded-full mb-5">

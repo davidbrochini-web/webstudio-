@@ -46,11 +46,11 @@ function LoginForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Image
-            src="/brand/omnidesign-icon.png"
+            src="/brand/omnidesign-icon-rain.png"
             alt=""
-            width={40}
-            height={23}
-            className="h-9 w-auto mx-auto mb-2"
+            width={98}
+            height={160}
+            className="h-24 w-auto mx-auto mb-2"
           />
           <span className="font-display font-bold text-2xl text-[var(--ink)]">omnidesign</span>
           <p className="text-sm text-[var(--muted)] mt-2">Entre com sua conta</p>
