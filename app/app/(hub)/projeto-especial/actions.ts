@@ -86,7 +86,7 @@ const TRATAMENTO_CAMPOS = ['slug', 'titulo', 'descricao_curta', 'descricao_compl
 export async function upsertTratamento(prev: PEFormState, fd: FormData) { return upsertGenerico('site_tratamentos', TRATAMENTO_CAMPOS, prev, fd) }
 export async function deleteTratamento(id: string) { return deleteGenerico('site_tratamentos', id, 'tratamentos') }
 
-const EQUIPE_CAMPOS = ['nome', 'foto_url', 'alt_text', 'formacao', 'especialidade', 'ordem']
+const EQUIPE_CAMPOS = ['nome', 'foto_url', 'alt_text', 'formacao', 'especialidade', 'bio', 'ordem']
 export async function upsertEquipe(prev: PEFormState, fd: FormData) { return upsertGenerico('site_equipe', EQUIPE_CAMPOS, prev, fd) }
 export async function deleteEquipe(id: string) { return deleteGenerico('site_equipe', id, 'equipe') }
 
