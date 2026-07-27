@@ -17,6 +17,7 @@ export interface SiteEspecial {
   tagline: string | null
   hero_title: string | null
   hero_sub: string | null
+  hero_imagem_url: string | null
   whatsapp: string | null
   instagram_handle: string | null
   telefone: string | null
@@ -32,7 +33,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, whatsapp, instagram_handle, telefone, endereco, status')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, whatsapp, instagram_handle, telefone, endereco, status')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

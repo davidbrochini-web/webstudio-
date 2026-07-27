@@ -48,19 +48,28 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero */}
-      <section className="px-6 py-20 max-w-5xl mx-auto text-center">
-        <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-[#0B2B3C] mb-4">
-          {site.hero_title || site.business_name}
-        </h1>
-        {site.hero_sub && <p className="text-lg text-slate-500 max-w-2xl mx-auto mb-8">{site.hero_sub}</p>}
-        <div className="flex items-center justify-center gap-3">
-          <Link href="/projetos-especiais/dentista-joao/contato" className="bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
-            Marcar consulta
-          </Link>
-          <Link href="/projetos-especiais/dentista-joao/tratamentos" className="border border-slate-200 text-[#0B2B3C] font-bold px-6 py-3.5 rounded-full hover:bg-slate-50 transition-colors">
-            Ver tratamentos
-          </Link>
+      <section className="px-6 py-16 sm:py-20 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div className="text-center md:text-left">
+          <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-[#0B2B3C] mb-4">
+            {site.hero_title || site.business_name}
+          </h1>
+          {site.hero_sub && <p className="text-lg text-slate-500 max-w-xl mx-auto md:mx-0 mb-8">{site.hero_sub}</p>}
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            <Link href="/projetos-especiais/dentista-joao/contato" className="bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
+              Marcar consulta
+            </Link>
+            <Link href="/projetos-especiais/dentista-joao/tratamentos" className="border border-slate-200 text-[#0B2B3C] font-bold px-6 py-3.5 rounded-full hover:bg-slate-50 transition-colors">
+              Ver tratamentos
+            </Link>
+          </div>
         </div>
+        {site.hero_imagem_url && (
+          <img
+            src={site.hero_imagem_url}
+            alt={site.business_name}
+            className="w-full aspect-[4/3] object-cover rounded-3xl order-first md:order-last"
+          />
+        )}
       </section>
 
       {/* Tratamentos em destaque */}

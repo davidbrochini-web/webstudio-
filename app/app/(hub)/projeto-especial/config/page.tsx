@@ -11,7 +11,7 @@ export default async function ConfigPage() {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, business_name, tagline, hero_title, hero_sub, telefone, whatsapp, instagram_handle, endereco, status')
+    .select('id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, telefone, whatsapp, instagram_handle, endereco, status')
     .eq('id', info.siteId)
     .single()
 
