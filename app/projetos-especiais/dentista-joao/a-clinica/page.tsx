@@ -21,8 +21,18 @@ export default async function AClinicaPage() {
 
   return (
     <PageShell site={site}>
+      {/* Banner de página — mesmo padrão do site de referência: título
+          sobre uma faixa com foto de fundo desfocada. */}
+      <section className="relative px-6 py-24 text-center overflow-hidden">
+        {site.hero_imagem_url && (
+          <img src={site.hero_imagem_url} alt="" className="absolute inset-0 w-full h-full object-cover blur-sm scale-110" />
+        )}
+        <div className="absolute inset-0 bg-[#0B2B3C]/80" />
+        <h1 className="relative font-display font-extrabold text-3xl sm:text-4xl text-white">A Clínica</h1>
+      </section>
+
       <section className="px-6 py-16 max-w-3xl mx-auto">
-        <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-6">A Clínica</h1>
+        <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-2">Sobre nós</p>
         <p className="text-slate-600 leading-relaxed whitespace-pre-wrap mb-4">
           {site.tagline || 'Texto institucional a definir no levantamento com o cliente.'}
         </p>
