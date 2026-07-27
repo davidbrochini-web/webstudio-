@@ -91,8 +91,12 @@ export const modules: ModuleConfig[] = [
     desc: 'Entrada, saída e saldo de produtos em tempo real. Alertas de estoque mínimo.',
     icon: '📦',
     preco: 69.90,
-    disponivel: false,
+    disponivel: true,
     href: '/app/estoque',
+    submenu: [
+      { label: 'Produtos', href: '/app/estoque' },
+      { label: 'Movimentações', href: '/app/estoque/movimentacoes' },
+    ],
   },
   {
     slug: 'pedidos-internos',
