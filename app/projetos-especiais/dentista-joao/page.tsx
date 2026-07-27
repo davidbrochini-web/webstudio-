@@ -157,24 +157,35 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Prévia de FAQ */}
+      {/* Prévia de FAQ — com foto do profissional ao lado, igual referência */}
       {!!faqPrevia?.length && (
         <section className="px-6 py-16 bg-slate-50">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-10">Dúvidas Frequentes</h2>
-            <div className="flex flex-col gap-3">
-              {faqPrevia.map(f => (
-                <div key={f.pergunta} className="bg-white border border-slate-100 rounded-xl p-4">
-                  <p className="font-display font-bold text-sm text-[#0B2B3C] mb-1">{f.pergunta}</p>
-                  <p className="text-sm text-slate-500">{f.resposta}</p>
-                </div>
-              ))}
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_280px] gap-10 items-start">
+            <div>
+              <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] mb-10">Dúvidas Frequentes</h2>
+              <div className="flex flex-col gap-3">
+                {faqPrevia.map(f => (
+                  <div key={f.pergunta} className="bg-white border border-slate-100 rounded-xl p-4">
+                    <p className="font-display font-bold text-sm text-[#0B2B3C] mb-1">{f.pergunta}</p>
+                    <p className="text-sm text-slate-500">{f.resposta}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6">
+                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="text-sm font-semibold text-[#0EA5A0]">
+                  Ver todas as perguntas →
+                </Link>
+              </div>
             </div>
-            <div className="text-center mt-6">
-              <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="text-sm font-semibold text-[#0EA5A0]">
-                Ver todas as perguntas →
-              </Link>
-            </div>
+            {site.hero_imagem_url && (
+              <div className="hidden md:flex flex-col items-center">
+                <img
+                  src={site.hero_imagem_url}
+                  alt={site.business_name}
+                  className="w-64 h-64 rounded-full object-cover border-4 border-[#0B2B3C]/10"
+                />
+              </div>
+            )}
           </div>
         </section>
       )}

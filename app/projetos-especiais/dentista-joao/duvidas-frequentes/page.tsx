@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import PageBanner from '@/components/dentista-joao/PageBanner'
 import FaqSection from '@/components/site-template/FaqSection'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -39,9 +40,9 @@ export default async function DuvidasFrequentesPage() {
 
   return (
     <PageShell site={site}>
+      <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="px-6 pt-16">
-        <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] max-w-3xl mx-auto mb-4">Dúvidas Frequentes</h1>
       </div>
       {!faq?.length ? (
         <p className="text-center text-slate-500 pb-16">Nenhuma dúvida cadastrada ainda.</p>
