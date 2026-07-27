@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.meta_titulo || `${post.titulo} — ${site.business_name}`,
     description: post.meta_descricao || post.resumo,
     openGraph: post.imagem_og ? { images: [post.imagem_og] } : undefined,
-    robots: { index: site.status === 'publicado' },
+    robots: { index: false }, // rascunho — nunca indexar antes do conteúdo final aprovado
   }
 }
 

@@ -6,7 +6,7 @@ import FaqSection from '@/components/site-template/FaqSection'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `Dúvidas Frequentes — ${site.business_name}`, robots: { index: site.status === 'publicado' } }
+  return { title: `Dúvidas Frequentes — ${site.business_name}`, robots: { index: false } }
 }
 
 export default async function DuvidasFrequentesPage() {

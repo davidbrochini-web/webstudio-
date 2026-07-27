@@ -6,7 +6,7 @@ import PageShell from '@/components/dentista-joao/PageShell'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `Artigos — ${site.business_name}`, robots: { index: site.status === 'publicado' } }
+  return { title: `Artigos — ${site.business_name}`, robots: { index: false } }
 }
 
 export default async function ArtigosPage() {
