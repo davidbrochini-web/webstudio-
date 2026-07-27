@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/HeroCarousel'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -66,34 +67,32 @@ export default async function HomePage() {
     ...(site.endereco && { address: site.endereco }),
   }
 
+  // 3 slides — o principal (config do site) + os 2 primeiros
+  // tratamentos em destaque, mesmo padrão do site de referência
+  // (slide 1 = apresentação, slides 2-3 = chamada pra tratamento
+  // específico). Sem tabela nova: reaproveita o que já existe.
+  const slides: CarouselSlide[] = [
+    {
+      titulo: site.hero_title || site.business_name,
+      subtitulo: site.hero_sub || '',
+      imagem_url: site.hero_imagem_url,
+      ctaLabel: 'Marcar consulta',
+      ctaHref: '/projetos-especiais/dentista-joao/contato',
+    },
+    ...(tratamentos ?? []).slice(0, 2).map((t): CarouselSlide => ({
+      titulo: t.titulo,
+      subtitulo: t.descricao_curta,
+      imagem_url: t.imagem_url,
+      ctaLabel: 'Saiba Mais',
+      ctaHref: `/projetos-especiais/dentista-joao/tratamentos/${t.slug}`,
+    })),
+  ]
+
   return (
     <PageShell site={site}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* Hero */}
-      <section className="px-6 py-16 sm:py-20 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <div className="text-center md:text-left">
-          <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-[#0B2B3C] mb-4">
-            {site.hero_title || site.business_name}
-          </h1>
-          {site.hero_sub && <p className="text-lg text-slate-500 max-w-xl mx-auto md:mx-0 mb-8">{site.hero_sub}</p>}
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <Link href="/projetos-especiais/dentista-joao/contato" className="bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
-              Marcar consulta
-            </Link>
-            <Link href="/projetos-especiais/dentista-joao/tratamentos" className="border border-slate-200 text-[#0B2B3C] font-bold px-6 py-3.5 rounded-full hover:bg-slate-50 transition-colors">
-              Ver tratamentos
-            </Link>
-          </div>
-        </div>
-        {site.hero_imagem_url && (
-          <img
-            src={site.hero_imagem_url}
-            alt={site.business_name}
-            className="w-full aspect-[4/3] object-cover rounded-3xl order-first md:order-last"
-          />
-        )}
-      </section>
+      <HeroCarousel slides={slides} />
 
       {/* Bem-vindo — foto emoldurada + texto + CTA pra A Clínica (mesmo
           padrão do site de referência: "Bem vindo à Clínica do X") */}
