@@ -9,6 +9,7 @@ const FIELDS: FieldConfig[] = [
   { name: 'nome', label: 'Nome', required: true },
   { name: 'especialidade', label: 'Especialidade' },
   { name: 'formacao', label: 'Formação' },
+  { name: 'bio', label: 'Bio / trajetória profissional', type: 'textarea' },
   { name: 'foto_url', label: 'URL da foto' },
   { name: 'alt_text', label: 'Texto alternativo da foto' },
   { name: 'ordem', label: 'Ordem de exibição (0, 1, 2...)' },
@@ -27,7 +28,7 @@ export default async function EquipeAdminPage() {
   const supabase = await createClient()
   const { data: itens } = await supabase
     .from('site_equipe')
-    .select('id, nome, especialidade, formacao, foto_url, alt_text, ordem')
+    .select('id, nome, especialidade, formacao, bio, foto_url, alt_text, ordem')
     .eq('site_id', info.siteId)
     .is('deleted_at', null)
     .order('ordem')

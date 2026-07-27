@@ -14,7 +14,7 @@ export default async function EquipePage() {
 
   const { data: equipe } = await supabase
     .from('site_equipe')
-    .select('nome, foto_url, alt_text, formacao, especialidade')
+    .select('nome, foto_url, alt_text, formacao, especialidade, bio')
     .eq('site_id', site.id)
     .is('deleted_at', null)
     .order('ordem')
@@ -26,17 +26,20 @@ export default async function EquipePage() {
         {!equipe?.length ? (
           <p className="text-slate-500">Equipe a cadastrar.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-12">
             {equipe.map(p => (
-              <div key={p.nome} className="text-center">
+              <div key={p.nome} className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-6 items-start">
                 {p.foto_url ? (
-                  <img src={p.foto_url} alt={p.alt_text || p.nome} className="w-32 h-32 rounded-full object-cover mx-auto mb-4" />
+                  <img src={p.foto_url} alt={p.alt_text || p.nome} className="w-40 h-40 rounded-full object-cover mx-auto sm:mx-0" />
                 ) : (
-                  <div className="w-32 h-32 rounded-full bg-slate-100 mx-auto mb-4 flex items-center justify-center text-3xl text-slate-300">👤</div>
+                  <div className="w-40 h-40 rounded-full bg-slate-100 mx-auto sm:mx-0 flex items-center justify-center text-4xl text-slate-300">👤</div>
                 )}
-                <h2 className="font-display font-bold text-base text-[#0B2B3C]">{p.nome}</h2>
-                {p.especialidade && <p className="text-sm text-[#0EA5A0] font-semibold">{p.especialidade}</p>}
-                {p.formacao && <p className="text-sm text-slate-500 mt-1">{p.formacao}</p>}
+                <div className="text-center sm:text-left">
+                  <h2 className="font-display font-bold text-xl text-[#0B2B3C]">{p.nome}</h2>
+                  {p.especialidade && <p className="text-sm text-[#0EA5A0] font-semibold mt-0.5">{p.especialidade}</p>}
+                  {p.formacao && <p className="text-sm text-slate-500 mt-1">{p.formacao}</p>}
+                  {p.bio && <p className="text-sm text-slate-600 leading-relaxed mt-3">{p.bio}</p>}
+                </div>
               </div>
             ))}
           </div>
