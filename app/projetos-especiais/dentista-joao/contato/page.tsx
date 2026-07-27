@@ -5,7 +5,7 @@ import ContatoForm from '@/components/dentista-joao/ContatoForm'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `Contato — ${site.business_name}`, robots: { index: site.status === 'publicado' } }
+  return { title: `Contato — ${site.business_name}`, robots: { index: false } }
 }
 
 export default async function ContatoPage() {

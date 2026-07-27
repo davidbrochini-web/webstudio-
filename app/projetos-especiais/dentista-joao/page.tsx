@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: site.business_name,
     description: site.tagline ?? undefined,
-    robots: { index: site.status === 'publicado' },
+    robots: { index: false }, // rascunho — nunca indexar antes do conteúdo final aprovado
   }
 }
 
