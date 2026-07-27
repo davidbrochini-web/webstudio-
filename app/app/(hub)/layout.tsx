@@ -12,11 +12,11 @@ export default async function HubLayout({ children }: { children: React.ReactNod
   if (user) {
     const { data: membership } = await supabase
       .from('memberships')
-      .select('tenants(id, nome)')
+      .select('tenants(id, nome, projeto_especial_slug)')
       .eq('user_id', user.id)
       .single()
 
-    const tenant = membership?.tenants as unknown as { id: string; nome: string } | null
+    const tenant = membership?.tenants as unknown as { id: string; nome: string; projeto_especial_slug: string | null } | null
 
     if (tenant) {
       tenantNome = tenant.nome
@@ -40,6 +40,24 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         } else {
           navItems.push({ label: m.label, href: m.href })
         }
+      }
+
+      // Projeto Especial: painel próprio, NÃO passa pelo catálogo de
+      // módulos (nunca cobrado por assinatura de módulo) — gate é só a
+      // flag do tenant, não uma subscription.
+      if (tenant.projeto_especial_slug) {
+        navItems.push({
+          label: 'Site',
+          children: [
+            { label: 'Configurações', href: '/app/projeto-especial/config' },
+            { label: 'Tratamentos', href: '/app/projeto-especial/tratamentos' },
+            { label: 'Equipe', href: '/app/projeto-especial/equipe' },
+            { label: 'Cursos e Eventos', href: '/app/projeto-especial/cursos-e-eventos' },
+            { label: 'Dúvidas Frequentes', href: '/app/projeto-especial/faq' },
+            { label: 'Artigos', href: '/app/projeto-especial/artigos' },
+            { label: 'Leads recebidos', href: '/app/projeto-especial/leads' },
+          ],
+        })
       }
     }
   }
