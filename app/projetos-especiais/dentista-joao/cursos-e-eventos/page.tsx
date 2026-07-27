@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import PageBanner from '@/components/dentista-joao/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -23,8 +24,8 @@ export default async function CursosEventosPage() {
 
   return (
     <PageShell site={site}>
+      <PageBanner title="Cursos e Eventos" imageUrl={site.hero_imagem_url} />
       <section className="px-6 py-16 max-w-5xl mx-auto">
-        <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-10">Cursos e Eventos</h1>
         {!itens?.length ? (
           <p className="text-slate-500">Nenhum curso ou evento publicado ainda.</p>
         ) : (
