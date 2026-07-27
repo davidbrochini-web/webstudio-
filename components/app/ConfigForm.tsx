@@ -9,6 +9,7 @@ interface Site {
   tagline: string | null
   hero_title: string | null
   hero_sub: string | null
+  hero_imagem_url: string | null
   telefone: string | null
   whatsapp: string | null
   instagram_handle: string | null
@@ -39,6 +40,7 @@ export default function ConfigForm({ site, readOnly }: { site: Site; readOnly: b
       <input name="tagline" defaultValue={site.tagline ?? ''} placeholder="Texto institucional (Sobre / A Clínica)" className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-sm" />
       <input name="hero_title" defaultValue={site.hero_title ?? ''} placeholder="Título de destaque na home" className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-sm" />
       <input name="hero_sub" defaultValue={site.hero_sub ?? ''} placeholder="Subtítulo na home" className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-sm" />
+      <input name="hero_imagem_url" defaultValue={site.hero_imagem_url ?? ''} placeholder="URL da foto de destaque (hero)" className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-sm" />
 
       <div className="grid grid-cols-2 gap-3">
         <input name="telefone" defaultValue={site.telefone ?? ''} placeholder="Telefone" className="px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-sm" />

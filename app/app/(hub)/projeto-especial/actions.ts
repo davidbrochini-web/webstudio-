@@ -16,6 +16,7 @@ export async function atualizarConfig(_prev: PEFormState, formData: FormData): P
     tagline: (formData.get('tagline') as string)?.trim() || null,
     hero_title: (formData.get('hero_title') as string)?.trim() || null,
     hero_sub: (formData.get('hero_sub') as string)?.trim() || null,
+    hero_imagem_url: (formData.get('hero_imagem_url') as string)?.trim() || null,
     telefone: (formData.get('telefone') as string)?.trim() || null,
     whatsapp: (formData.get('whatsapp') as string)?.trim() || null,
     instagram_handle: (formData.get('instagram_handle') as string)?.trim() || null,
