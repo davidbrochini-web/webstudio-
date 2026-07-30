@@ -34,7 +34,9 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
             className="absolute inset-0 w-full h-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/85 via-[#0B2B3C]/60 to-[#0B2B3C]/20" />
+        {/* Gradiente duplo: escurece bordas e bottom, mantém clareza no texto */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/90 via-[#0B2B3C]/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/60 via-transparent to-transparent" />
 
         <div className="relative h-full max-w-6xl mx-auto px-6 flex flex-col justify-center">
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white mb-4 max-w-xl">
