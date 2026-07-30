@@ -10,6 +10,20 @@ import { notFound } from 'next/navigation'
  */
 export const SITE_SLUG = 'dentista-joao'
 
+/** Formata um número guardado cru (ex: "5511900000000") pra exibição
+ *  amigável (ex: "(11) 90000-0000"). O valor cru continua sendo usado
+ *  no link wa.me — isso é só pra exibir na tela. */
+export function formatTelefoneExibicao(numero: string): string {
+  const digits = numero.replace(/\D/g, '').replace(/^55/, '')
+  if (digits.length === 11) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
+  }
+  if (digits.length === 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  }
+  return numero
+}
+
 export interface SiteEspecial {
   id: string
   tenant_id: string

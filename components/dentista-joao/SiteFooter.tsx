@@ -1,4 +1,5 @@
 import type { SiteEspecial } from '@/lib/dentista-joao'
+import { formatTelefoneExibicao } from '@/lib/dentista-joao'
 import NewsletterForm from '@/components/dentista-joao/NewsletterForm'
 
 const LINKS = [
@@ -21,7 +22,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
           <p className="mb-4 leading-relaxed">{site.tagline}</p>
           <ul className="flex flex-col gap-1.5">
             {site.telefone && <li>📞 {site.telefone}</li>}
-            {waLink && <li><a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:text-white">💬 {site.whatsapp}</a></li>}
+            {waLink && <li><a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:text-white">💬 {formatTelefoneExibicao(site.whatsapp!)}</a></li>}
             {site.endereco && <li>📍 {site.endereco}</li>}
           </ul>
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, formatTelefoneExibicao } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import ContatoForm from '@/components/dentista-joao/ContatoForm'
@@ -41,7 +41,7 @@ export default async function ContatoPage() {
             <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1">Entre em contato</p>
             <ul className="text-sm text-slate-600 flex flex-col gap-1">
               {site.telefone && <li>📞 {site.telefone}</li>}
-              {waLink && <li><a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:text-[#0EA5A0]">💬 {site.whatsapp}</a></li>}
+              {waLink && <li><a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:text-[#0EA5A0]">💬 {formatTelefoneExibicao(site.whatsapp!)}</a></li>}
             </ul>
           </div>
 
