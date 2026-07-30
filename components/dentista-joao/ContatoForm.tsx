@@ -18,15 +18,15 @@ export default function ContatoForm() {
 
   return (
     <form action={formAction} className="flex flex-col gap-4 max-w-lg">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <input name="nome" required placeholder="Nome" className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
         <input name="sobrenome" required placeholder="Sobrenome" className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <input name="email" type="email" placeholder="E-mail" className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
         <input name="telefone" placeholder="Telefone/WhatsApp" className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <input name="data_desejada" type="date" className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
         <select name="periodo" defaultValue="" className="px-4 py-3 rounded-xl border border-slate-200 text-sm">
           <option value="">Período (opcional)</option>

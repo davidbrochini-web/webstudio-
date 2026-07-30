@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { SiteEspecial } from '@/lib/dentista-joao'
+import MobileMenu from '@/components/dentista-joao/MobileMenu'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
@@ -17,33 +18,35 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
     : null
 
   return (
-    // header inteiro é sticky — barra superior + nav ficam juntos
     <header className="sticky top-0 z-40 shadow-sm">
-
-      {/* Barra superior — link Dúvidas Frequentes + telefone/WhatsApp/redes */}
-      <div className="bg-[#0EA5A0] text-white text-xs px-6 py-2 flex flex-wrap items-center justify-between gap-2">
+      {/* Barra superior — compacta no mobile, completa no desktop */}
+      <div className="bg-[#0EA5A0] text-white text-xs px-4 sm:px-6 py-2 flex items-center justify-between gap-2">
         <Link
           href={`${BASE}/duvidas-frequentes`}
           className="font-semibold uppercase tracking-wide hover:underline hidden sm:block"
         >
           Dúvidas Frequentes
         </Link>
-        <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-3 sm:gap-5 flex-wrap">
           {site.telefone && (
-            <a href={`tel:${site.telefone.replace(/\D/g,'')}`} className="flex items-center gap-1 hover:opacity-80">
-              📞 {site.telefone}
+            <a href={`tel:${site.telefone.replace(/\D/g,'')}`} className="hover:opacity-80 flex items-center gap-1">
+              <span>📞</span>
+              <span className="hidden sm:inline">{site.telefone}</span>
+              <span className="sm:hidden">Ligar</span>
             </a>
           )}
           {waLink && (
-            <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:opacity-80">
-              💬 WhatsApp
+            <a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+              <span>💬</span>
+              <span className="hidden sm:inline"> WhatsApp</span>
+              <span className="sm:hidden"> WhatsApp</span>
             </a>
           )}
           {site.instagram_handle && (
             <a
               href={`https://instagram.com/${site.instagram_handle.replace('@','')}`}
               target="_blank" rel="noopener noreferrer"
-              className="hover:opacity-80"
+              className="hover:opacity-80 hidden sm:block"
             >
               📸 Instagram
             </a>
@@ -51,13 +54,14 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
         </div>
       </div>
 
-      {/* Menu principal — branco, logo + itens + CTA */}
-      <nav className="bg-white border-b border-slate-100 px-6 h-16 flex items-center justify-between">
-        <Link href={BASE} className="font-display font-bold text-lg text-[#0B2B3C] flex-shrink-0">
+      {/* Menu principal */}
+      <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <Link href={BASE} className="font-display font-bold text-base sm:text-lg text-[#0B2B3C] flex-shrink-0 truncate max-w-[160px] sm:max-w-none">
           {site.business_name}
         </Link>
 
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Itens desktop */}
+        <div className="hidden lg:flex items-center gap-5 xl:gap-7">
           {NAV_ITEMS.map(item => (
             <Link
               key={item.href}
@@ -69,12 +73,17 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
           ))}
         </div>
 
-        <Link
-          href={`${BASE}/contato`}
-          className="text-sm font-bold text-white bg-[#0B2B3C] px-5 py-2.5 rounded-full hover:bg-[#0EA5A0] transition-colors whitespace-nowrap"
-        >
-          Marcar Uma Consulta
-        </Link>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* CTA — oculto no mobile pequeno pra não colidir com logo */}
+          <Link
+            href={`${BASE}/contato`}
+            className="hidden sm:inline-block text-sm font-bold text-white bg-[#0B2B3C] px-4 py-2.5 rounded-full hover:bg-[#0EA5A0] transition-colors whitespace-nowrap"
+          >
+            Marcar consulta
+          </Link>
+          {/* Hambúrguer — só aparece quando o menu de itens está oculto */}
+          <MobileMenu />
+        </div>
       </nav>
     </header>
   )
