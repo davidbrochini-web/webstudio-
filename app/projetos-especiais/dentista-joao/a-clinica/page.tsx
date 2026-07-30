@@ -7,7 +7,7 @@ import Reveal from '@/components/dentista-joao/Reveal'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `A Clínica — ${site.business_name}`, robots: { index: false } }
+  return { title: 'A Clínica' }
 }
 
 export default async function AClinicaPage() {

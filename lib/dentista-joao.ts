@@ -55,3 +55,10 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   if (!site) notFound()
   return site as SiteEspecial
 }
+
+/** Kill-switch único de indexação — flipar pra true quando o cliente
+ *  aprovar o conteúdo real (herda pra todas as páginas via layout.tsx,
+ *  e o sitemap.ts do projeto só emite URLs quando true). */
+export const SITE_INDEXAVEL = false
+
+export const SITE_URL_BASE = `https://omnidesign.com.br/projetos-especiais/${SITE_SLUG}`

@@ -23,10 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tratamento = await getTratamento(site.id, slug)
   if (!tratamento) return {}
   return {
-    title: tratamento.meta_titulo || `${tratamento.titulo} — ${site.business_name}`,
+    title: tratamento.meta_titulo ? { absolute: tratamento.meta_titulo } : tratamento.titulo,
     description: tratamento.meta_descricao || tratamento.descricao_curta,
     openGraph: tratamento.imagem_og ? { images: [tratamento.imagem_og] } : undefined,
-    robots: { index: false }, // rascunho — nunca indexar antes do conteúdo final aprovado
   }
 }
 

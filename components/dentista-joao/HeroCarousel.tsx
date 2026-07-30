@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 
 export interface CarouselSlide {
@@ -11,13 +11,33 @@ export interface CarouselSlide {
   ctaHref: string
 }
 
+const AUTOPLAY_MS = 6000
+
+/**
+ * Carrossel com crossfade + Ken Burns (zoom lento na imagem ativa) e
+ * texto que re-anima a cada troca. Todos os slides ficam montados e
+ * empilhados (só a opacidade muda) — evita o "corte seco" e o
+ * re-download da imagem que a versão anterior tinha (trocava o <img>
+ * inteiro via key). Autoplay pausa quando o usuário interage (toque,
+ * setas ou dots) e retoma sozinho depois. Respeita
+ * prefers-reduced-motion (via classes CSS em globals.css).
+ */
 export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
   const [index, setIndex] = useState(0)
   const touchStartX = useRef<number | null>(null)
+  const pausedUntil = useRef(0)
+
+  const go = useCallback((next: number, fromUser = false) => {
+    if (fromUser) pausedUntil.current = Date.now() + AUTOPLAY_MS * 2
+    setIndex(((next % slides.length) + slides.length) % slides.length)
+  }, [slides.length])
 
   useEffect(() => {
     if (slides.length < 2) return
-    const timer = setInterval(() => setIndex(i => (i + 1) % slides.length), 6000)
+    const timer = setInterval(() => {
+      if (Date.now() < pausedUntil.current) return
+      setIndex(i => (i + 1) % slides.length)
+    }, AUTOPLAY_MS)
     return () => clearInterval(timer)
   }, [slides.length])
 
@@ -27,63 +47,79 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
   function onTouchEnd(e: React.TouchEvent) {
     if (touchStartX.current === null) return
     const delta = e.changedTouches[0].clientX - touchStartX.current
-    if (Math.abs(delta) > 50) {
-      setIndex(i => delta < 0
-        ? (i + 1) % slides.length
-        : (i - 1 + slides.length) % slides.length
-      )
-    }
+    if (Math.abs(delta) > 50) go(index + (delta < 0 ? 1 : -1), true)
     touchStartX.current = null
   }
 
   if (slides.length === 0) return null
-  const slide = slides[index]
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden" aria-roledescription="carrossel">
       <div
-        className="relative h-[400px] sm:h-[500px] lg:h-[560px]"
+        className="relative h-[420px] sm:h-[500px] lg:h-[560px]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {slide.imagem_url && (
-          <img
-            key={slide.imagem_url}
-            src={slide.imagem_url}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
-        {/* Gradiente duplo */}
+        {/* Camada de imagens — todas montadas, crossfade por opacidade */}
+        {slides.map((s, i) => (
+          <div
+            key={s.titulo}
+            aria-hidden={i !== index}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              i === index ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            {s.imagem_url && (
+              <img
+                src={s.imagem_url}
+                alt=""
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                {...(i === 0 ? { fetchPriority: 'high' as const } : {})}
+                className={`absolute inset-0 w-full h-full object-cover hero-kenburns ${
+                  i === index ? 'hero-kenburns-active' : ''
+                }`}
+              />
+            )}
+          </div>
+        ))}
+
+        {/* Gradiente duplo (fixo, por cima de todas as imagens) */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/90 via-[#0B2B3C]/55 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/60 via-transparent to-transparent" />
 
-        <div className="relative h-full max-w-6xl mx-auto px-5 sm:px-6 flex flex-col justify-center">
+        {/* Texto — key no index força re-animação a cada troca */}
+        <div
+          key={index}
+          className="relative h-full max-w-6xl mx-auto px-5 sm:px-6 flex flex-col justify-center hero-text-enter"
+        >
           <h1 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4 max-w-xl leading-tight">
-            {slide.titulo}
+            {slides[index].titulo}
           </h1>
-          <p className="text-white/85 text-sm sm:text-base max-w-sm sm:max-w-lg mb-6 sm:mb-8 line-clamp-3">{slide.subtitulo}</p>
+          <p className="text-white/85 text-sm sm:text-base max-w-sm sm:max-w-lg mb-6 sm:mb-8 line-clamp-3">
+            {slides[index].subtitulo}
+          </p>
           <Link
-            href={slide.ctaHref}
-            className="self-start bg-white text-[#0B2B3C] font-bold px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-full hover:opacity-90 transition-opacity text-sm sm:text-base"
+            href={slides[index].ctaHref}
+            className="self-start bg-white text-[#0B2B3C] font-bold px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-full hover:opacity-90 transition-opacity text-sm sm:text-base shadow-lg shadow-black/20"
           >
-            {slide.ctaLabel}
+            {slides[index].ctaLabel}
           </Link>
         </div>
 
         {slides.length > 1 && (
           <>
             <button
-              onClick={() => setIndex(i => (i - 1 + slides.length) % slides.length)}
+              onClick={() => go(index - 1, true)}
               aria-label="Slide anterior"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all backdrop-blur-sm"
             >
               ‹
             </button>
             <button
-              onClick={() => setIndex(i => (i + 1) % slides.length)}
+              onClick={() => go(index + 1, true)}
               aria-label="Próximo slide"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all backdrop-blur-sm"
             >
               ›
             </button>
@@ -91,9 +127,11 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
               {slides.map((s, i) => (
                 <button
                   key={s.titulo}
-                  onClick={() => setIndex(i)}
+                  onClick={() => go(i, true)}
                   aria-label={`Ir pro slide ${i + 1}`}
-                  className={`w-2 h-2 rounded-full transition-all ${i === index ? 'bg-white w-6' : 'bg-white/40'}`}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    i === index ? 'bg-white w-6' : 'bg-white/40 w-2 hover:bg-white/60'
+                  }`}
                 />
               ))}
             </div>

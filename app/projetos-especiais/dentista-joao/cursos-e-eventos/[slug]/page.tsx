@@ -23,10 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const item = await getCursoEvento(site.id, slug)
   if (!item) return {}
   return {
-    title: item.meta_titulo || `${item.titulo} — ${site.business_name}`,
+    title: item.meta_titulo ? { absolute: item.meta_titulo } : item.titulo,
     description: item.meta_descricao || item.descricao.slice(0, 160),
     openGraph: item.imagem_og ? { images: [item.imagem_og] } : undefined,
-    robots: { index: false }, // rascunho — nunca indexar antes do conteúdo final aprovado
   }
 }
 
