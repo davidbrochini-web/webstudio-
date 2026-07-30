@@ -117,19 +117,44 @@ export default async function HomePage() {
                   Trabalhamos com inovação, dedicação e tecnologia para garantir o melhor tratamento aos nossos pacientes.
                 </p>
               </Reveal>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {/* Grade estilo revista — imagem full com overlay e título sobreposto */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {tratamentos.map((t, i) => (
-                  <Reveal key={t.slug} delay={i * 80}>
-                    <div className="border border-white/30 rounded-2xl p-6 flex flex-col h-full hover:bg-white/10 transition-colors">
-                      <h3 className="font-display font-bold text-base text-white mb-2">{t.titulo}</h3>
-                      <p className="text-sm text-white/80 leading-relaxed mb-4 flex-1">{t.descricao_curta}</p>
-                      <Link
-                        href={`/projetos-especiais/dentista-joao/tratamentos/${t.slug}`}
-                        className="self-start text-xs font-bold uppercase tracking-wide text-white border border-white/50 rounded-full px-4 py-2 hover:bg-white hover:text-[#0EA5A0] transition-colors"
-                      >
-                        Saiba Mais
-                      </Link>
-                    </div>
+                  <Reveal key={t.slug} delay={i * 70}
+                    className={i === 0 ? 'col-span-2 sm:col-span-1' : ''}
+                  >
+                    <Link
+                      href={`/projetos-especiais/dentista-joao/tratamentos/${t.slug}`}
+                      className="group relative block overflow-hidden rounded-2xl shadow-lg"
+                    >
+                      {/* Imagem de fundo */}
+                      {t.imagem_url ? (
+                        <img
+                          loading="lazy" decoding="async"
+                          src={t.imagem_url}
+                          alt={t.titulo}
+                          className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${i === 0 ? 'aspect-[3/2] sm:aspect-[4/3]' : 'aspect-[4/3]'}`}
+                        />
+                      ) : (
+                        <div className={`w-full bg-white/20 ${i === 0 ? 'aspect-[3/2] sm:aspect-[4/3]' : 'aspect-[4/3]'}`} />
+                      )}
+                      {/* Overlay gradiente sempre visível na base */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/90 via-[#0B2B3C]/20 to-transparent" />
+                      {/* Hover: teal suave */}
+                      <div className="absolute inset-0 bg-[#0EA5A0]/0 group-hover:bg-[#0EA5A0]/20 transition-colors duration-300" />
+                      {/* Texto */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <p className="font-display font-bold text-white text-sm leading-snug drop-shadow">
+                          {t.titulo}
+                        </p>
+                        <p className="text-white/80 text-xs mt-1 line-clamp-2 leading-snug hidden group-hover:block">
+                          {t.descricao_curta}
+                        </p>
+                        <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-wider text-[#0EA5A0] opacity-0 group-hover:opacity-100 transition-opacity">
+                          Saiba Mais →
+                        </span>
+                      </div>
+                    </Link>
                   </Reveal>
                 ))}
               </div>
@@ -150,17 +175,28 @@ export default async function HomePage() {
               Também atuamos como palestrantes em instituições de ensino e eventos.
             </p>
           </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          {/* Mobile: scroll horizontal tipo carrossel; tablet+: grid normal */}
+          <div className="cursos-scroll sm:grid sm:grid-cols-3 sm:gap-6 mb-8">
             {cursos.map((c, i) => (
-              <Reveal key={c.slug} delay={i * 100}>
-                <Link href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[#0EA5A0] hover:shadow-md transition-all">
-                  {c.imagem_url && <img loading="lazy" decoding="async" src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />}
-                  <div className="p-5">
-                    <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 group-hover:text-[#0EA5A0] transition-colors">{c.titulo}</h3>
-                    <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{c.descricao}</p>
+              <Link
+                key={c.slug}
+                href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`}
+                className="cursos-card group border border-slate-100 rounded-2xl overflow-hidden hover:border-[#0EA5A0] hover:shadow-lg transition-all flex-shrink-0 sm:flex-shrink sm:block"
+              >
+                {c.imagem_url && (
+                  <div className="overflow-hidden">
+                    <img loading="lazy" decoding="async" src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
-                </Link>
-              </Reveal>
+                )}
+                <div className="p-5">
+                  {/* Badge de índice */}
+                  <span className="inline-block bg-[#0EA5A0]/10 text-[#0EA5A0] text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2">
+                    Evento {i + 1}
+                  </span>
+                  <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 group-hover:text-[#0EA5A0] transition-colors">{c.titulo}</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{c.descricao}</p>
+                </div>
+              </Link>
             ))}
           </div>
           <div className="text-center">
@@ -173,30 +209,41 @@ export default async function HomePage() {
 
       {/* FAQ + foto do profissional */}
       {!!faqPrevia?.length && (
-        <section className="px-6 py-16 bg-slate-50">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_280px] gap-10 items-start">
+        <section className="px-5 sm:px-6 py-16 sm:py-20 bg-slate-50">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_300px] gap-12 items-start">
             <div>
               <Reveal>
-                <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] mb-10">
-                  Dúvidas <strong>Frequentes</strong>
+                <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Tire suas dúvidas</p>
+                <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[#0B2B3C] mb-8 leading-tight">
+                  Dúvidas<br className="hidden sm:block" /> Frequentes
                 </h2>
               </Reveal>
               <FaqAccordion itens={faqPrevia ?? []} />
-              <div className="mt-6">
-                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[#0B2B3C] text-white font-bold text-sm px-5 py-2.5 rounded-full hover:bg-[#0EA5A0] transition-colors">
-                  Ver todas as perguntas
+              <div className="mt-8">
+                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[#0B2B3C] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[#0EA5A0] transition-colors shadow-md">
+                  Ver todas as perguntas →
                 </Link>
               </div>
             </div>
             {site.hero_imagem_url && (
-              <Reveal className="hidden md:flex flex-col items-center">
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-full bg-[#0B2B3C] translate-x-3 translate-y-3" />
+              <Reveal className="hidden md:flex flex-col items-center gap-6">
+                {/* Foto maior com moldura decorativa */}
+                <div className="relative w-full max-w-[280px]">
+                  <div className="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-[#0EA5A0]/40" />
+                  <div className="absolute -bottom-3 -right-3 w-full h-full rounded-3xl bg-[#0B2B3C]/10" />
                   <img loading="lazy" decoding="async"
                     src={site.hero_imagem_url}
                     alt={site.business_name}
-                    className="relative w-64 h-64 rounded-full object-cover border-4 border-white shadow-xl"
+                    className="relative w-full aspect-[3/4] rounded-3xl object-cover shadow-2xl border-4 border-white"
                   />
+                  {/* Chip de destaque */}
+                  <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#0EA5A0] text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
+                    ✦ Atendimento humanizado
+                  </div>
+                </div>
+                <div className="mt-8 text-center">
+                  <p className="font-display font-bold text-[#0B2B3C] text-base">{site.business_name}</p>
+                  <p className="text-slate-400 text-xs mt-0.5">Clínica Odontológica</p>
                 </div>
               </Reveal>
             )}
