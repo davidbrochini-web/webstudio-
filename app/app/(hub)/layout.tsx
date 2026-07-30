@@ -47,16 +47,23 @@ export default async function HubLayout({ children }: { children: React.ReactNod
       // flag do tenant, não uma subscription.
       if (tenant.projeto_especial_slug) {
         navItems.push({
-          label: 'Site',
+          label: '📥 Leads',
+          href: '/app/projeto-especial/leads',
+        })
+        navItems.push({
+          label: 'Editor do Site',
           children: [
-            { label: 'Configurações', href: '/app/projeto-especial/config' },
-            { label: 'Tratamentos', href: '/app/projeto-especial/tratamentos' },
-            { label: 'Equipe', href: '/app/projeto-especial/equipe' },
-            { label: 'Cursos e Eventos', href: '/app/projeto-especial/cursos-e-eventos' },
-            { label: 'Dúvidas Frequentes', href: '/app/projeto-especial/faq' },
-            { label: 'Artigos', href: '/app/projeto-especial/artigos' },
-            { label: 'Leads recebidos', href: '/app/projeto-especial/leads' },
+            { label: '🏠 Home', href: '/app/projeto-especial/editor/home' },
+            { label: '🦷 Tratamentos', href: '/app/projeto-especial/editor/tratamentos' },
+            { label: '👨‍⚕️ Equipe', href: '/app/projeto-especial/editor/equipe' },
+            { label: '🎓 Cursos e Eventos', href: '/app/projeto-especial/editor/cursos' },
+            { label: '💬 FAQ', href: '/app/projeto-especial/editor/faq' },
+            { label: '⚙️ Informações Gerais', href: '/app/projeto-especial/editor/config' },
           ],
+        })
+        navItems.push({
+          label: '✍️ Blog',
+          href: '/app/projeto-especial/blog',
         })
       }
     }

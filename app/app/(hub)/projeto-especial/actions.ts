@@ -31,6 +31,7 @@ export async function atualizarConfig(_prev: PEFormState, formData: FormData): P
   if (error) return { error: error.message }
 
   revalidatePath('/app/projeto-especial/config')
+  revalidatePath('/app/projeto-especial/editor/home')
   revalidatePath('/projetos-especiais/dentista-joao', 'layout')
   return { success: true }
 }

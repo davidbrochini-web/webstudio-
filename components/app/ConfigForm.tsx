@@ -17,7 +17,7 @@ interface Site {
   status: string
 }
 
-export default function ConfigForm({ site, readOnly }: { site: Site; readOnly: boolean }) {
+export default function ConfigForm({ site, readOnly, redirectTo }: { site: Site; readOnly: boolean; redirectTo?: string }) {
   const [state, formAction, pending] = useActionState<PEFormState, FormData>(atualizarConfig, {})
 
   if (readOnly) {
@@ -27,6 +27,7 @@ export default function ConfigForm({ site, readOnly }: { site: Site; readOnly: b
   return (
     <form action={formAction} className="flex flex-col gap-4 max-w-xl">
       <input type="hidden" name="site_id" value={site.id} />
+      {redirectTo && <input type="hidden" name="redirect_to" value={redirectTo} />}
 
       <label className="text-sm font-semibold text-[var(--ink)]">
         Status do site
