@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/HeroCarousel'
 import Reveal from '@/components/dentista-joao/Reveal'
@@ -11,9 +11,8 @@ import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
   return {
-    title: site.business_name,
+    title: { absolute: site.business_name },
     description: site.tagline ?? undefined,
-    robots: { index: false },
   }
 }
 
@@ -31,10 +30,16 @@ export default async function HomePage() {
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'MedicalBusiness',
+    '@type': 'Dentist',
     name: site.business_name,
+    url: SITE_URL_BASE,
+    ...(site.tagline && { description: site.tagline }),
+    ...(site.hero_imagem_url && { image: site.hero_imagem_url }),
     ...(site.telefone && { telephone: site.telefone }),
     ...(site.endereco && { address: site.endereco }),
+    ...(site.instagram_handle && {
+      sameAs: [`https://instagram.com/${site.instagram_handle.replace('@', '')}`],
+    }),
   }
 
   const slides: CarouselSlide[] = [
@@ -83,7 +88,7 @@ export default async function HomePage() {
       {fotos?.[0] && (
         <section className="px-6 py-16 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <Reveal>
-            <img src={fotos[0].url} alt="" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[#0EA5A0]/20 shadow-lg" />
+            <img loading="lazy" decoding="async" src={fotos[0].url} alt="" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[#0EA5A0]/20 shadow-lg" />
           </Reveal>
           <Reveal delay={150}>
             <h2 className="font-display font-bold text-2xl text-slate-400 mb-1">Bem-vindo à</h2>
@@ -149,7 +154,7 @@ export default async function HomePage() {
             {cursos.map((c, i) => (
               <Reveal key={c.slug} delay={i * 100}>
                 <Link href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[#0EA5A0] hover:shadow-md transition-all">
-                  {c.imagem_url && <img src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />}
+                  {c.imagem_url && <img loading="lazy" decoding="async" src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />}
                   <div className="p-5">
                     <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 group-hover:text-[#0EA5A0] transition-colors">{c.titulo}</h3>
                     <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{c.descricao}</p>
@@ -187,7 +192,7 @@ export default async function HomePage() {
               <Reveal className="hidden md:flex flex-col items-center">
                 <div className="relative">
                   <div className="absolute inset-0 rounded-full bg-[#0B2B3C] translate-x-3 translate-y-3" />
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={site.hero_imagem_url}
                     alt={site.business_name}
                     className="relative w-64 h-64 rounded-full object-cover border-4 border-white shadow-xl"
@@ -216,7 +221,7 @@ export default async function HomePage() {
                 <Link href={`/projetos-especiais/dentista-joao/artigos/${a.slug}`} className="block group">
                   {a.capa_url && (
                     <div className="overflow-hidden rounded-2xl mb-3">
-                      <img src={a.capa_url} alt="" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img loading="lazy" decoding="async" src={a.capa_url} alt="" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                   )}
                   <h3 className="font-display font-bold text-sm text-[#0B2B3C] mb-1 leading-snug group-hover:text-[#0EA5A0] transition-colors">{a.titulo}</h3>

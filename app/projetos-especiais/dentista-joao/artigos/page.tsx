@@ -7,7 +7,7 @@ import PageBanner from '@/components/dentista-joao/PageBanner'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `Artigos — ${site.business_name}`, robots: { index: false } }
+  return { title: 'Artigos' }
 }
 
 export default async function ArtigosPage() {

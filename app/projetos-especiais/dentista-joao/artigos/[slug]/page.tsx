@@ -23,10 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = await getPost(site.id, slug)
   if (!post) return {}
   return {
-    title: post.meta_titulo || `${post.titulo} — ${site.business_name}`,
+    title: post.meta_titulo ? { absolute: post.meta_titulo } : post.titulo,
     description: post.meta_descricao || post.resumo,
     openGraph: post.imagem_og ? { images: [post.imagem_og] } : undefined,
-    robots: { index: false }, // rascunho — nunca indexar antes do conteúdo final aprovado
   }
 }
 

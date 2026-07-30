@@ -8,7 +8,7 @@ import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: `Dúvidas Frequentes — ${site.business_name}`, robots: { index: false } }
+  return { title: 'Dúvidas Frequentes' }
 }
 
 export default async function DuvidasFrequentesPage() {

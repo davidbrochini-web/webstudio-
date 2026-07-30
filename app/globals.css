@@ -113,3 +113,49 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .reveal-hidden { opacity: 1; transform: none; }
 }
+
+/* ── Hero carousel (dentista-joao/HeroCarousel.tsx) ─────────────────── */
+/* Ken Burns: zoom lento contínuo só na imagem do slide ativo */
+.hero-kenburns {
+  transform: scale(1);
+  transition: transform 0.7s ease;
+}
+.hero-kenburns-active {
+  animation: hero-zoom 8s ease-out forwards;
+}
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+/* Texto do slide: entra com fade + slide-up a cada troca */
+.hero-text-enter {
+  animation: hero-text-in 0.7s ease both;
+}
+@keyframes hero-text-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns-active { animation: none; }
+  .hero-text-enter { animation: none; }
+}
+
+/* Sublinhado animado do menu desktop (dentista-joao/SiteNav.tsx) */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: #0EA5A0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-underline:hover::after {
+  transform: scaleX(1);
+}

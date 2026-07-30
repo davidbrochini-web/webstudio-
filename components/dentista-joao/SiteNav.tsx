@@ -66,7 +66,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-slate-600 hover:text-[#0B2B3C] transition-colors whitespace-nowrap"
+              className="nav-underline text-sm font-medium text-slate-600 hover:text-[#0B2B3C] transition-colors whitespace-nowrap"
             >
               {item.label}
             </Link>
