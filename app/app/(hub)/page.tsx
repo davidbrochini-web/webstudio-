@@ -10,11 +10,18 @@ export default async function AppHome() {
 
   const { data: membership } = await supabase
     .from('memberships')
-    .select('papel, tenants(id, nome, is_demo)')
+    .select('papel, tenants(id, nome, is_demo, projeto_especial_slug)')
     .eq('user_id', user.id)
     .single()
 
-  const tenant = membership?.tenants as unknown as { id: string; nome: string; is_demo: boolean } | null
+  const tenant = membership?.tenants as unknown as { id: string; nome: string; is_demo: boolean; projeto_especial_slug: string | null } | null
+
+  // Projeto especial: usuário só tem acesso a isso — redireciona direto
+  // pro painel de conteúdo sem mostrar a grade de módulos (não faz sentido
+  // mostrar "Cadastros não contratado" pra ele).
+  if (tenant?.projeto_especial_slug) {
+    redirect('/app/projeto-especial/config')
+  }
 
   if (!tenant) {
     return (
