@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
-import FaqSection from '@/components/site-template/FaqSection'
+import Reveal from '@/components/dentista-joao/Reveal'
+import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -21,7 +22,7 @@ export default async function DuvidasFrequentesPage() {
     .is('deleted_at', null)
     .order('ordem')
 
-  const porCategoria = new Map<string, { pergunta: string; resposta: string }[]>()
+  const porCategoria = new Map<string, { pergunta: string; resposta: string; categoria?: string | null }[]>()
   ;(faq ?? []).forEach(f => {
     const cat = f.categoria || 'Geral'
     if (!porCategoria.has(cat)) porCategoria.set(cat, [])
@@ -40,21 +41,26 @@ export default async function DuvidasFrequentesPage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="px-6 pt-16">
-      </div>
+      <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
+
       {!faq?.length ? (
-        <p className="text-center text-slate-500 pb-16">Nenhuma dúvida cadastrada ainda.</p>
+        <p className="text-center text-slate-500 py-16">Nenhuma dúvida cadastrada ainda.</p>
       ) : (
-        [...porCategoria.entries()].map(([categoria, itens]) => (
-          <div key={categoria}>
-            {porCategoria.size > 1 && (
-              <p className="text-center text-xs font-bold uppercase tracking-wide text-[#0EA5A0] -mb-6">{categoria}</p>
-            )}
-            <FaqSection faq={itens} accent="from-[#0EA5A0] to-[#0B2B3C]" />
-          </div>
-        ))
+        <section className="px-4 sm:px-6 py-12 max-w-3xl mx-auto">
+          {[...porCategoria.entries()].map(([categoria, itens]) => (
+            <div key={categoria} className="mb-10">
+              {porCategoria.size > 1 && (
+                <Reveal>
+                  <h2 className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-4">{categoria}</h2>
+                </Reveal>
+              )}
+              <Reveal>
+                <FaqAccordion itens={itens} />
+              </Reveal>
+            </div>
+          ))}
+        </section>
       )}
     </PageShell>
   )

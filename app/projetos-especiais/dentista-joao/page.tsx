@@ -6,6 +6,7 @@ import PageShell from '@/components/dentista-joao/PageShell'
 import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/HeroCarousel'
 import Reveal from '@/components/dentista-joao/Reveal'
 import WaveDivider from '@/components/dentista-joao/WaveDivider'
+import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -59,6 +60,24 @@ export default async function HomePage() {
 
       {/* Carrossel hero */}
       <HeroCarousel slides={slides} />
+
+      {/* Faixa de números/credenciais — imediatamente após o hero, mesmo
+          padrão de clínicas de referência pra transmitir confiança rápido */}
+      <div className="bg-[#0B2B3C] px-5 sm:px-6 py-8">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center text-white">
+          {[
+            { numero: '10+', label: 'Anos de experiência' },
+            { numero: '6',   label: 'Especialidades' },
+            { numero: '100%', label: 'Dedicação ao paciente' },
+            { numero: '5★',  label: 'Atendimento humanizado' },
+          ].map(stat => (
+            <div key={stat.label}>
+              <p className="font-display font-extrabold text-2xl sm:text-3xl text-[#0EA5A0]">{stat.numero}</p>
+              <p className="text-xs sm:text-sm text-white/60 mt-1 leading-snug">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Bem-vindo */}
       {fotos?.[0] && (
@@ -157,16 +176,7 @@ export default async function HomePage() {
                   Dúvidas <strong>Frequentes</strong>
                 </h2>
               </Reveal>
-              <div className="flex flex-col gap-3">
-                {faqPrevia.map((f, i) => (
-                  <Reveal key={f.pergunta} delay={i * 80}>
-                    <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm">
-                      <p className="font-display font-bold text-sm text-[#0B2B3C] mb-1">{f.pergunta}</p>
-                      <p className="text-sm text-slate-500">{f.resposta}</p>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
+              <FaqAccordion itens={faqPrevia ?? []} />
               <div className="mt-6">
                 <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[#0B2B3C] text-white font-bold text-sm px-5 py-2.5 rounded-full hover:bg-[#0EA5A0] transition-colors">
                   Ver todas as perguntas
