@@ -20,7 +20,7 @@ export default async function AppHome() {
   // pro painel de conteúdo sem mostrar a grade de módulos (não faz sentido
   // mostrar "Cadastros não contratado" pra ele).
   if (tenant?.projeto_especial_slug) {
-    redirect('/app/projeto-especial/config')
+    redirect('/app/projeto-especial')
   }
 
   if (!tenant) {
