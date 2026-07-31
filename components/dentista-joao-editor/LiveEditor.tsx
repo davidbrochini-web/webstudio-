@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import ContatosBarDJ from './ContatosBarDJ'
 import HeroSectionEditor from './HeroSectionEditor'
@@ -9,6 +10,8 @@ import CursosSectionEditor, { type Curso } from './CursosSectionEditor'
 import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
 import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
+import EditableText from '@/components/site-editor/EditableText'
+import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 interface SiteDados {
   id: string
@@ -24,6 +27,18 @@ interface SiteDados {
   status: 'rascunho' | 'publicado'
 }
 
+// Mesma ordem e nomes do menu real do site (components/dentista-joao/SiteNav.tsx)
+const PAGINAS = [
+  { id: 'home', label: 'Home' },
+  { id: 'a-clinica', label: 'A Clínica' },
+  { id: 'tratamentos', label: 'Tratamentos' },
+  { id: 'cursos', label: 'Cursos e Eventos' },
+  { id: 'equipe', label: 'Equipe' },
+  { id: 'faq', label: 'Dúvidas Frequentes' },
+  { id: 'contato', label: 'Contato' },
+] as const
+type PaginaId = typeof PAGINAS[number]['id']
+
 export default function LiveEditor({
   site, tratamentos, equipe, cursos, faq, fotos, readOnly,
 }: {
@@ -35,15 +50,15 @@ export default function LiveEditor({
   fotos: { id: string; url: string }[]
   readOnly: boolean
 }) {
+  const [pagina, setPagina] = useState<PaginaId>('home')
+
   return (
     <div className="min-h-screen bg-[var(--off)]">
       {/* Barra de topo (chrome do painel, não do site) */}
       <div className="bg-[var(--card-bg)] border-b border-[var(--border)] px-6 py-3 flex items-center justify-between gap-3 sticky top-0 z-30">
-        <div className="flex items-center gap-3">
-          <Link href="/app/projeto-especial" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">← Painel</Link>
-        </div>
-        <p className="text-xs text-[var(--muted)] text-center flex-1">
-          Clique em qualquer texto ou foto do site abaixo pra editar direto aqui
+        <Link href="/app/projeto-especial" className="text-sm text-[var(--muted)] hover:text-[var(--ink)] flex-shrink-0">← Painel</Link>
+        <p className="text-xs text-[var(--muted)] text-center flex-1 hidden sm:block">
+          Navegue pelas páginas do site abaixo e clique em qualquer texto ou foto pra editar
           {!readOnly && ' · as alterações aparecem no site na hora'}
         </p>
         <a
@@ -54,59 +69,140 @@ export default function LiveEditor({
         </a>
       </div>
 
+      {/* Navegação — espelha o menu real do site */}
+      <div className="bg-white border-b border-[var(--border)] sticky top-[49px] z-20 overflow-x-auto">
+        <div className="max-w-6xl mx-auto flex items-center px-4 gap-1">
+          {PAGINAS.map(p => (
+            <button
+              key={p.id}
+              onClick={() => setPagina(p.id)}
+              className={`relative px-4 py-3.5 text-sm font-semibold whitespace-nowrap transition-colors ${
+                pagina === p.id ? 'text-[#0B2B3C]' : 'text-slate-400 hover:text-[#0B2B3C]'
+              }`}
+            >
+              {p.label}
+              {pagina === p.id && (
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[#0EA5A0] rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Barra de contatos — aparece em toda página (igual ao rodapé real do site) */}
+      <ContatosBarDJ
+        siteId={site.id}
+        telefone={site.telefone} whatsapp={site.whatsapp}
+        instagramHandle={site.instagram_handle} endereco={site.endereco}
+        status={site.status} readOnly={readOnly}
+      />
+
       {/* Canvas do site — mesma identidade visual do site real */}
       <div className="max-w-6xl mx-auto my-6 rounded-2xl overflow-hidden border border-[var(--border)] shadow-lg bg-white">
 
-        <ContatosBarDJ
-          siteId={site.id}
-          telefone={site.telefone} whatsapp={site.whatsapp}
-          instagramHandle={site.instagram_handle} endereco={site.endereco}
-          status={site.status} readOnly={readOnly}
-        />
+        {pagina === 'home' && (
+          <>
+            <HeroSectionEditor
+              siteId={site.id}
+              heroTitle={site.hero_title || site.business_name}
+              heroSub={site.hero_sub || ''}
+              heroImagemUrl={site.hero_imagem_url}
+              readOnly={readOnly}
+            />
 
-        <HeroSectionEditor
-          siteId={site.id}
-          heroTitle={site.hero_title || site.business_name}
-          heroSub={site.hero_sub || ''}
-          heroImagemUrl={site.hero_imagem_url}
-          readOnly={readOnly}
-        />
+            {/* Faixa de números — fixa, não editável (combinar com a Omnidesign pra mudar) */}
+            <div className="bg-[#0B2B3C] px-5 py-6 border-t border-white/5">
+              <div className="max-w-4xl mx-auto grid grid-cols-4 gap-4 text-center text-white/50">
+                {['10+ Anos de experiência', '6 Especialidades', '100% Dedicação', '5★ Atendimento'].map(s => (
+                  <p key={s} className="text-[10px]">{s}</p>
+                ))}
+              </div>
+            </div>
 
-        {/* Faixa de números — fixa, não editável (combinar com a Omnidesign pra mudar) */}
-        <div className="bg-[#0B2B3C] px-5 py-6 border-t border-white/5">
-          <div className="max-w-4xl mx-auto grid grid-cols-4 gap-4 text-center text-white/50">
-            {['10+ Anos de experiência', '6 Especialidades', '100% Dedicação', '5★ Atendimento'].map(s => (
-              <p key={s} className="text-[10px]">{s}</p>
-            ))}
+            <BemVindoSectionEditor
+              siteId={site.id}
+              businessName={site.business_name}
+              tagline={site.tagline || ''}
+              foto={fotos[0] ?? null}
+              readOnly={readOnly}
+            />
+
+            <div className="px-6 py-3 bg-slate-50 text-center border-t border-slate-100">
+              <p className="text-xs text-slate-400">
+                A home também mostra prévias de Tratamentos, Cursos e Dúvidas Frequentes — edite em cada aba acima
+              </p>
+            </div>
+
+            {/* CTA final — fixo */}
+            <section className="px-6 py-14 text-center bg-[#0B2B3C]">
+              <p className="font-display font-extrabold text-xl text-white mb-3">Vamos cuidar do seu sorriso?</p>
+              <span className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">
+                Marcar consulta
+              </span>
+              <p className="text-white/30 text-[10px] mt-2">Seção fixa — não editável aqui</p>
+            </section>
+          </>
+        )}
+
+        {pagina === 'a-clinica' && (
+          <>
+            <div className="px-6 py-14 max-w-3xl mx-auto text-center">
+              <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Sobre nós</p>
+              <EditableText
+                as="p" readOnly={readOnly} multiline
+                value={site.tagline || ''}
+                placeholder="Texto institucional — conte a história e a filosofia de trabalho da clínica"
+                className="text-slate-600 leading-relaxed text-lg block"
+                onSave={async v => { await updateSiteFieldPE(site.id, 'tagline', v) }}
+              />
+              <p className="text-xs text-slate-400 mt-3">Esse mesmo texto aparece na seção &ldquo;Bem-vindo&rdquo; da Home</p>
+            </div>
+            <div className="px-6 pb-8 max-w-3xl mx-auto grid grid-cols-3 gap-4 text-center">
+              {['Missão', 'Visão', 'Valores'].map(t => (
+                <div key={t} className="p-4 bg-slate-50 rounded-xl">
+                  <p className="font-display font-bold text-[#0B2B3C] text-sm mb-1">{t}</p>
+                  <p className="text-[10px] text-slate-400">Texto fixo — avise a Omnidesign pra mudar</p>
+                </div>
+              ))}
+            </div>
+            <GaleriaSectionEditor siteId={site.id} fotosIniciais={fotos} readOnly={readOnly} />
+          </>
+        )}
+
+        {pagina === 'tratamentos' && (
+          <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} />
+        )}
+
+        {pagina === 'cursos' && (
+          <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} />
+        )}
+
+        {pagina === 'equipe' && (
+          <EquipeSectionEditor siteId={site.id} equipeInicial={equipe} readOnly={readOnly} />
+        )}
+
+        {pagina === 'faq' && (
+          <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} />
+        )}
+
+        {pagina === 'contato' && (
+          <div className="px-6 py-14 max-w-2xl mx-auto text-center">
+            <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Fale conosco</p>
+            <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] mb-4">Contato</h2>
+            <p className="text-slate-500 text-sm leading-relaxed mb-6">
+              Telefone, WhatsApp, Instagram e endereço são editados na barra logo abaixo do menu — aparecem em todas as páginas do site (rodapé) e aqui na página de Contato.
+            </p>
+            <div className="p-5 bg-slate-50 rounded-2xl mb-4">
+              <p className="text-sm text-slate-500">📋 O site também tem um formulário de contato — os pedidos enviados por ele aparecem em</p>
+              <Link href="/app/projeto-especial/leads" className="text-sm font-bold text-[#0EA5A0] hover:opacity-80">
+                Leads recebidos →
+              </Link>
+            </div>
+            <div className="p-5 bg-slate-50 rounded-2xl">
+              <p className="text-xs text-slate-400">O mapa da página de Contato usa o endereço cadastrado na barra acima — preencha com o endereço completo pra ele funcionar.</p>
+            </div>
           </div>
-        </div>
-
-        <BemVindoSectionEditor
-          siteId={site.id}
-          businessName={site.business_name}
-          tagline={site.tagline || ''}
-          foto={fotos[0] ?? null}
-          readOnly={readOnly}
-        />
-
-        <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} />
-
-        <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} />
-
-        <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} />
-
-        <EquipeSectionEditor siteId={site.id} equipeInicial={equipe} readOnly={readOnly} />
-
-        <GaleriaSectionEditor siteId={site.id} fotosIniciais={fotos} readOnly={readOnly} />
-
-        {/* CTA final — fixo */}
-        <section className="px-6 py-14 text-center bg-[#0B2B3C]">
-          <p className="font-display font-extrabold text-xl text-white mb-3">Vamos cuidar do seu sorriso?</p>
-          <span className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">
-            Marcar consulta
-          </span>
-          <p className="text-white/30 text-[10px] mt-2">Seção fixa — não editável aqui</p>
-        </section>
+        )}
       </div>
     </div>
   )
