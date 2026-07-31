@@ -21,30 +21,35 @@ export default async function HubLayout({ children }: { children: React.ReactNod
     if (tenant) {
       tenantNome = tenant.nome
 
-      const { data: subscriptions } = await supabase
-        .from('subscriptions')
-        .select('modulo')
-        .eq('tenant_id', tenant.id)
-        .eq('status', 'ativo')
-        .is('deleted_at', null)
+      // Projeto Especial: painel próprio, NÃO passa pelo catálogo de
+      // módulos (nunca cobrado por assinatura de módulo) — gate é só a
+      // flag do tenant, não uma subscription. Pula o loop de módulos do
+      // catálogo inteiro, mesmo que exista uma subscription 'site' de
+      // compatibilidade (o projeto especial tem editor próprio, mais
+      // completo que o módulo genérico "Site + Instagram").
+      if (!tenant.projeto_especial_slug) {
+        const { data: subscriptions } = await supabase
+          .from('subscriptions')
+          .select('modulo')
+          .eq('tenant_id', tenant.id)
+          .eq('status', 'ativo')
+          .is('deleted_at', null)
 
-      const ativos = new Set((subscriptions ?? []).map(s => s.modulo))
+        const ativos = new Set((subscriptions ?? []).map(s => s.modulo))
 
-      // 1 menu por módulo ativo — ativando/desativando aqui conforme a
-      // contratação, sem precisar tocar em código (decisão de produto,
-      // julho/2026). Segue a ordem do catálogo em lib/modules.ts.
-      for (const m of modules) {
-        if (!ativos.has(m.slug) || !m.href) continue
-        if (m.submenu?.length) {
-          navItems.push({ label: m.label, children: m.submenu })
-        } else {
-          navItems.push({ label: m.label, href: m.href })
+        // 1 menu por módulo ativo — ativando/desativando aqui conforme a
+        // contratação, sem precisar tocar em código (decisão de produto,
+        // julho/2026). Segue a ordem do catálogo em lib/modules.ts.
+        for (const m of modules) {
+          if (!ativos.has(m.slug) || !m.href) continue
+          if (m.submenu?.length) {
+            navItems.push({ label: m.label, children: m.submenu })
+          } else {
+            navItems.push({ label: m.label, href: m.href })
+          }
         }
       }
 
-      // Projeto Especial: painel próprio, NÃO passa pelo catálogo de
-      // módulos (nunca cobrado por assinatura de módulo) — gate é só a
-      // flag do tenant, não uma subscription.
       if (tenant.projeto_especial_slug) {
         navItems.push({
           label: '📥 Leads',

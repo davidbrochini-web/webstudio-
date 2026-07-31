@@ -25,6 +25,7 @@ function friendlyError(error: { message: string; code?: string }): string {
 const ALLOWED_SITE_FIELDS = [
   'business_name', 'tagline', 'hero_title', 'hero_sub', 'hero_imagem_url',
   'telefone', 'whatsapp', 'instagram_handle', 'endereco', 'status',
+  'missao', 'visao', 'valores',
 ] as const
 type SiteField = typeof ALLOWED_SITE_FIELDS[number]
 
