@@ -49,7 +49,7 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, f
           className="text-slate-500 leading-relaxed mb-2 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'tagline', v) }}
         />
-        <p className="text-xs text-slate-400">Esse texto também aparece na página "A Clínica"</p>
+        <p className="text-xs text-slate-400">Esse texto também aparece na página &ldquo;A Clínica&rdquo;</p>
         {erro && <p className="text-xs text-red-600 mt-2">{erro}</p>}
       </div>
     </section>

@@ -5,7 +5,7 @@ import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
 import { upsertTratamentoInline, deleteTratamentoInline, type TratamentoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
-interface Tratamento {
+export interface Tratamento {
   id: string; titulo: string; slug: string; descricao_curta: string; descricao_completa: string
   imagem_url: string | null; alt_text: string | null
   meta_titulo: string | null; meta_descricao: string | null; publicado: boolean
@@ -45,7 +45,7 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
         <EditableText
           as="p" readOnly={readOnly} value={t.titulo} placeholder="Nome do tratamento"
           className="font-display font-bold text-white text-sm leading-snug drop-shadow block"
-          onSave={v => salvar({ titulo: v, ...(t.slug ? {} : { slug: slugify(v) }) })}
+          onSave={v => salvar({ titulo: v })}
         />
         <EditableText
           as="p" readOnly={readOnly} value={t.descricao_curta} placeholder="Texto curto do card" multiline
@@ -73,6 +73,13 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
         <div className="absolute inset-0 bg-white p-4 overflow-y-auto text-left z-10">
           <button onClick={() => setExpandido(false)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 text-lg leading-none">×</button>
           <p className="text-[10px] font-bold text-[#0EA5A0] uppercase tracking-wider mb-2">Detalhes do tratamento</p>
+          <label className="block mb-2">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase">Endereço na URL (slug)</span>
+            <input defaultValue={t.slug} onBlur={e => { const v = slugify(e.target.value); if (v) salvar({ slug: v }) }}
+              placeholder="ex: clareamento-dental"
+              className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs font-mono" />
+            <span className="text-[9px] text-slate-400">Aparece em /tratamentos/{t.slug} — evite mudar depois de divulgado</span>
+          </label>
           <label className="block mb-2">
             <span className="text-[10px] font-semibold text-slate-400 uppercase">Descrição completa (página de detalhe)</span>
             <textarea defaultValue={t.descricao_completa} rows={3}

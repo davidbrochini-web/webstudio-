@@ -4,7 +4,7 @@ import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import { upsertFaqInline, deleteFaqInline, type FaqData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
-interface Faq { id: string; pergunta: string; resposta: string; categoria: string | null }
+export interface Faq { id: string; pergunta: string; resposta: string; categoria: string | null }
 
 export default function FaqSectionEditor({ siteId, faqIniciais, readOnly }: {
   siteId: string; faqIniciais: Faq[]; readOnly: boolean

@@ -40,12 +40,18 @@ function Form({ siteId, artigo, onCancel, upsertAction }: {
   const [slug, setSlug] = useState(artigo?.slug ?? '')
   const [slugManual, setSlugManual] = useState(!!artigo)
 
-  useEffect(() => {
-    if (!slugManual) setSlug(slugify(titulo))
-  }, [titulo, slugManual])
+  // Slug deriva do título só enquanto o usuário não editou manualmente.
+  // Calculado direto no onChange do título (não em useEffect) pra evitar
+  // o "setState síncrono dentro de effect" — cascata de renders extra
+  // sem necessidade, já que não há nada assíncrono ou externo aqui.
+  function onTituloChange(v: string) {
+    setTitulo(v)
+    if (!slugManual) setSlug(slugify(v))
+  }
 
   useEffect(() => {
     if (state.success) onCancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success])
 
   return (
@@ -56,7 +62,7 @@ function Form({ siteId, artigo, onCancel, upsertAction }: {
       {/* Título grande como editor real */}
       <div>
         <input
-          name="titulo" value={titulo} onChange={e => setTitulo(e.target.value)} required
+          name="titulo" value={titulo} onChange={e => onTituloChange(e.target.value)} required
           placeholder="Título do artigo"
           className="w-full text-2xl font-display font-bold text-[var(--ink)] bg-transparent border-0 border-b-2 border-[var(--border)] focus:border-[var(--brand)] focus:outline-none pb-2 placeholder:text-[var(--border)] transition-colors"
         />
@@ -192,7 +198,7 @@ export default function BlogEditor({ siteId, artigos, upsertAction, deleteAction
         <div className="border-2 border-dashed border-[var(--border)] rounded-2xl p-16 text-center">
           <p className="text-4xl mb-3">📄</p>
           <p className="font-display font-bold text-[var(--ink)] text-lg mb-1">Nenhum artigo ainda</p>
-          <p className="text-[var(--muted)] text-sm">Publique dicas e novidades da clínica — aparecem na seção "Novidades" do site.</p>
+          <p className="text-[var(--muted)] text-sm">Publique dicas e novidades da clínica — aparecem na seção &ldquo;Novidades&rdquo; do site.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
