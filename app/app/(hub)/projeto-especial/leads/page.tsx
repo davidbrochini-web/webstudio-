@@ -78,7 +78,7 @@ export default async function LeadsPage() {
                     <p className="text-sm text-[var(--muted)]">{l.contato}</p>
                     {l.mensagem && (
                       <p className="text-sm text-[var(--ink)] mt-2 bg-[var(--off)] rounded-xl px-3 py-2 italic">
-                        "{l.mensagem}"
+                        &ldquo;{l.mensagem}&rdquo;
                       </p>
                     )}
                   </div>

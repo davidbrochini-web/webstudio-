@@ -5,7 +5,7 @@ import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
 import { upsertEquipeInline, deleteEquipeInline, type EquipeData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
-interface Membro {
+export interface Membro {
   id: string; nome: string; foto_url: string | null; alt_text: string | null
   formacao: string | null; especialidade: string | null; bio: string | null
 }

@@ -11,6 +11,16 @@ function revalidateAll() {
   revalidatePath(SITE_PATH, 'layout')
 }
 
+/** Traduz o erro cru do Postgres pra algo que o cliente entenda —
+ *  em especial a violação de unique(site_id, slug), que aparece toda
+ *  vez que ele digita um slug já usado por outro item da mesma seção. */
+function friendlyError(error: { message: string; code?: string }): string {
+  if (error.code === '23505' || error.message.includes('duplicate key')) {
+    return 'Esse endereço de URL já está em uso por outro item. Escolha outro.'
+  }
+  return error.message
+}
+
 // ── Campos diretos da tabela sites ──────────────────────────────
 const ALLOWED_SITE_FIELDS = [
   'business_name', 'tagline', 'hero_title', 'hero_sub', 'hero_imagem_url',
@@ -21,7 +31,10 @@ type SiteField = typeof ALLOWED_SITE_FIELDS[number]
 export async function updateSiteFieldPE(siteId: string, field: SiteField, value: string) {
   if (!ALLOWED_SITE_FIELDS.includes(field)) throw new Error('Campo inválido.')
   const supabase = await createClient()
-  const cleanValue = field === 'whatsapp' || field === 'telefone' ? value : value
+  // whatsapp precisa ficar só com dígitos (usado direto em wa.me/{numero});
+  // telefone mantém a formatação como o cliente digitou (é só exibido, nunca
+  // usado como link cru — o link tel: já limpa na hora de renderizar)
+  const cleanValue = field === 'whatsapp' ? value.replace(/\D/g, '') : value
   const { error } = await supabase.from('sites').update({ [field]: cleanValue }).eq('id', siteId)
   if (error) throw new Error(error.message)
   revalidateAll()
@@ -40,7 +53,7 @@ export async function upsertTratamentoInline(siteId: string, id: string | null, 
   if (id) {
     const { data: row, error } = await supabase.from('site_tratamentos').update(data).eq('id', id)
       .select('id, titulo, slug, descricao_curta, descricao_completa, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(friendlyError(error))
     revalidateAll()
     return row
   }
@@ -48,7 +61,7 @@ export async function upsertTratamentoInline(siteId: string, id: string | null, 
   const { data: row, error } = await supabase.from('site_tratamentos')
     .insert({ site_id: siteId, ordem: (max?.ordem ?? -1) + 1, publicado: true, descricao_curta: '', descricao_completa: '', ...data })
     .select('id, titulo, slug, descricao_curta, descricao_completa, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(friendlyError(error))
   revalidateAll()
   return row
 }
@@ -56,7 +69,7 @@ export async function upsertTratamentoInline(siteId: string, id: string | null, 
 export async function deleteTratamentoInline(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('site_tratamentos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(friendlyError(error))
   revalidateAll()
 }
 
@@ -103,7 +116,7 @@ export async function upsertCursoInline(siteId: string, id: string | null, data:
   if (id) {
     const { data: row, error } = await supabase.from('site_cursos_eventos').update(data).eq('id', id)
       .select('id, titulo, slug, descricao, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(friendlyError(error))
     revalidateAll()
     return row
   }
@@ -111,7 +124,7 @@ export async function upsertCursoInline(siteId: string, id: string | null, data:
   const { data: row, error } = await supabase.from('site_cursos_eventos')
     .insert({ site_id: siteId, ordem: (max?.ordem ?? -1) + 1, publicado: true, descricao: '', ...data })
     .select('id, titulo, slug, descricao, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(friendlyError(error))
   revalidateAll()
   return row
 }
@@ -119,7 +132,7 @@ export async function upsertCursoInline(siteId: string, id: string | null, data:
 export async function deleteCursoInline(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('site_cursos_eventos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(friendlyError(error))
   revalidateAll()
 }
 

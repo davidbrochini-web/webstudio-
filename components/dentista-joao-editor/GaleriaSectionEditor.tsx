@@ -22,7 +22,7 @@ export default function GaleriaSectionEditor({ siteId, fotosIniciais, readOnly }
   return (
     <section className="px-6 py-14 bg-white">
       <div className="max-w-5xl mx-auto">
-        <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1">Página "A Clínica"</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1">Página &ldquo;A Clínica&rdquo;</p>
         <h3 className="font-display font-bold text-xl text-[#0B2B3C] mb-6">Galeria de fotos</h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

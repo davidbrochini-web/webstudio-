@@ -1,14 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import ContatosBarDJ from './ContatosBarDJ'
 import HeroSectionEditor from './HeroSectionEditor'
 import BemVindoSectionEditor from './BemVindoSectionEditor'
-import TratamentosSectionEditor from './TratamentosSectionEditor'
-import CursosSectionEditor from './CursosSectionEditor'
-import FaqSectionEditor from './FaqSectionEditor'
-import EquipeSectionEditor from './EquipeSectionEditor'
+import TratamentosSectionEditor, { type Tratamento } from './TratamentosSectionEditor'
+import CursosSectionEditor, { type Curso } from './CursosSectionEditor'
+import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
+import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
 
 interface SiteDados {
@@ -29,10 +28,10 @@ export default function LiveEditor({
   site, tratamentos, equipe, cursos, faq, fotos, readOnly,
 }: {
   site: SiteDados
-  tratamentos: any[]
-  equipe: any[]
-  cursos: any[]
-  faq: any[]
+  tratamentos: Tratamento[]
+  equipe: Membro[]
+  cursos: Curso[]
+  faq: Faq[]
   fotos: { id: string; url: string }[]
   readOnly: boolean
 }) {
