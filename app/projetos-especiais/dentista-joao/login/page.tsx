@@ -45,7 +45,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/app/projeto-especial/config')
+    router.push('/app/projeto-especial')
     router.refresh()
   }
 
