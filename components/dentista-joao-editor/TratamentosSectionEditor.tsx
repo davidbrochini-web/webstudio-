@@ -7,6 +7,7 @@ import { upsertTratamentoInline, deleteTratamentoInline, type TratamentoData } f
 
 export interface Tratamento {
   id: string; titulo: string; slug: string; descricao_curta: string; descricao_completa: string
+  beneficios: string | null; duracao: string | null; indicado_para: string | null
   imagem_url: string | null; alt_text: string | null
   meta_titulo: string | null; meta_descricao: string | null; publicado: boolean
 }
@@ -81,10 +82,33 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
             <span className="text-[9px] text-slate-400">Aparece em /tratamentos/{t.slug} — evite mudar depois de divulgado</span>
           </label>
           <label className="block mb-2">
-            <span className="text-[10px] font-semibold text-slate-400 uppercase">Descrição completa (página de detalhe)</span>
-            <textarea defaultValue={t.descricao_completa} rows={3}
+            <span className="text-[10px] font-semibold text-slate-400 uppercase">Texto completo (página de detalhe)</span>
+            <textarea defaultValue={t.descricao_completa} rows={4}
+              placeholder="Explique o tratamento em detalhes: como funciona, o que esperar, etc."
               onBlur={e => salvar({ descricao_completa: e.target.value })}
               className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+          </label>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <label className="block">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase">Duração</span>
+              <input defaultValue={t.duracao ?? ''} placeholder="ex: 40 min por sessão"
+                onBlur={e => salvar({ duracao: e.target.value })}
+                className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+            </label>
+            <label className="block">
+              <span className="text-[10px] font-semibold text-slate-400 uppercase">Indicado para</span>
+              <input defaultValue={t.indicado_para ?? ''} placeholder="ex: todas as idades"
+                onBlur={e => salvar({ indicado_para: e.target.value })}
+                className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+            </label>
+          </div>
+          <label className="block mb-2">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase">Benefícios (um por linha)</span>
+            <textarea defaultValue={t.beneficios ?? ''} rows={4}
+              placeholder={'Sorriso mais bonito\nAutoestima elevada\nProcedimento indolor'}
+              onBlur={e => salvar({ beneficios: e.target.value })}
+              className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+            <span className="text-[9px] text-slate-400">Aparece como lista com ✓ na página de detalhe</span>
           </label>
           <label className="block mb-2">
             <span className="text-[10px] font-semibold text-slate-400 uppercase">Título para o Google (SEO)</span>

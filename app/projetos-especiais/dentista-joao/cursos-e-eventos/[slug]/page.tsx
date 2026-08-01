@@ -8,7 +8,7 @@ async function getCursoEvento(siteId: string, slug: string) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('site_cursos_eventos')
-    .select('titulo, descricao, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, imagem_og')
+    .select('titulo, descricao, descricao_completa, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, imagem_og')
     .eq('site_id', siteId)
     .eq('slug', slug)
     .eq('publicado', true)
@@ -41,13 +41,37 @@ export default async function CursoEventoDetalhePage({ params }: { params: Promi
         {item.imagem_url && (
           <img src={item.imagem_url} alt={item.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
         )}
+
         {item.data_evento && (
-          <p className="text-sm font-bold text-[#0EA5A0] mb-2">
-            {new Date(item.data_evento + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
-          </p>
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0EA5A0] bg-[#0EA5A0]/10 px-3 py-1.5 rounded-full mb-3">
+            📅 {new Date(item.data_evento + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+          </span>
         )}
+
         <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-4">{item.titulo}</h1>
-        <div className="text-[15px] text-slate-600 leading-[1.8] whitespace-pre-wrap">{item.descricao}</div>
+
+        {/* Resumo de destaque */}
+        <p className="text-slate-500 text-base leading-relaxed mb-8 italic border-l-4 border-[#0EA5A0]/40 pl-4">
+          {item.descricao}
+        </p>
+
+        {/* Texto completo — se não tiver, cai no resumo mesmo */}
+        {item.descricao_completa && (
+          <div className="text-[15px] text-slate-600 leading-[1.8] whitespace-pre-wrap mb-10">
+            {item.descricao_completa}
+          </div>
+        )}
+
+        {/* CTA final */}
+        <div className="text-center pt-4 border-t border-slate-100">
+          <p className="text-slate-500 text-sm mb-4">Interessado em participar ou tem dúvidas?</p>
+          <a
+            href={`/projetos-especiais/dentista-joao/contato`}
+            className="inline-block bg-[#0B2B3C] hover:bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm transition-colors"
+          >
+            Falar com a clínica
+          </a>
+        </div>
       </article>
     </PageShell>
   )
