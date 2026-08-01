@@ -6,7 +6,7 @@ import EditableImage from '@/components/site-editor/EditableImage'
 import { upsertCursoInline, deleteCursoInline, type CursoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Curso {
-  id: string; titulo: string; slug: string; descricao: string; data_evento: string | null
+  id: string; titulo: string; slug: string; descricao: string; descricao_completa: string | null; data_evento: string | null
   imagem_url: string | null; alt_text: string | null
   meta_titulo: string | null; meta_descricao: string | null; publicado: boolean
 }
@@ -72,6 +72,14 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
         <div className="absolute inset-0 bg-white p-4 overflow-y-auto text-left z-10">
           <button onClick={() => setExpandido(false)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 text-lg leading-none">×</button>
           <p className="text-[10px] font-bold text-[#0EA5A0] uppercase tracking-wider mb-2">Detalhes do evento</p>
+          <p className="text-[9px] text-slate-400 mb-2">O texto de cima (no card) é o resumo. Aqui embaixo é o texto completo que aparece quando alguém clica pra ver mais.</p>
+          <label className="block mb-2">
+            <span className="text-[10px] font-semibold text-slate-400 uppercase">Texto completo (página de detalhe)</span>
+            <textarea defaultValue={c.descricao_completa ?? ''} rows={5}
+              placeholder="Programação, o que será abordado, público-alvo, carga horária, certificado, etc."
+              onBlur={e => salvar({ descricao_completa: e.target.value })}
+              className="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 text-xs" />
+          </label>
           <label className="block mb-2">
             <span className="text-[10px] font-semibold text-slate-400 uppercase">Endereço na URL (slug)</span>
             <input defaultValue={c.slug} onBlur={e => { const v = slugify(e.target.value); if (v) salvar({ slug: v }) }}

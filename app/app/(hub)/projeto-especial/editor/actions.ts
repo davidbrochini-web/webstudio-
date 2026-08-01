@@ -44,16 +44,19 @@ export async function updateSiteFieldPE(siteId: string, field: SiteField, value:
 // ── Tratamentos ──────────────────────────────────────────────────
 export interface TratamentoData {
   titulo: string; slug: string; descricao_curta: string; descricao_completa: string
+  beneficios: string | null; duracao: string | null; indicado_para: string | null
   imagem_url: string | null; alt_text: string | null
   meta_titulo: string | null; meta_descricao: string | null
   publicado: boolean
 }
 
+const TRATAMENTO_SELECT = 'id, titulo, slug, descricao_curta, descricao_completa, beneficios, duracao, indicado_para, imagem_url, alt_text, meta_titulo, meta_descricao, publicado'
+
 export async function upsertTratamentoInline(siteId: string, id: string | null, data: Partial<TratamentoData>) {
   const supabase = await createClient()
   if (id) {
     const { data: row, error } = await supabase.from('site_tratamentos').update(data).eq('id', id)
-      .select('id, titulo, slug, descricao_curta, descricao_completa, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
+      .select(TRATAMENTO_SELECT).single()
     if (error) throw new Error(friendlyError(error))
     revalidateAll()
     return row
@@ -61,7 +64,7 @@ export async function upsertTratamentoInline(siteId: string, id: string | null, 
   const { data: max } = await supabase.from('site_tratamentos').select('ordem').eq('site_id', siteId).order('ordem', { ascending: false }).limit(1).maybeSingle()
   const { data: row, error } = await supabase.from('site_tratamentos')
     .insert({ site_id: siteId, ordem: (max?.ordem ?? -1) + 1, publicado: true, descricao_curta: '', descricao_completa: '', ...data })
-    .select('id, titulo, slug, descricao_curta, descricao_completa, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
+    .select(TRATAMENTO_SELECT).single()
   if (error) throw new Error(friendlyError(error))
   revalidateAll()
   return row
@@ -107,16 +110,18 @@ export async function deleteEquipeInline(id: string) {
 
 // ── Cursos e Eventos ─────────────────────────────────────────────
 export interface CursoData {
-  titulo: string; slug: string; descricao: string; data_evento: string | null
+  titulo: string; slug: string; descricao: string; descricao_completa: string | null; data_evento: string | null
   imagem_url: string | null; alt_text: string | null
   meta_titulo: string | null; meta_descricao: string | null; publicado: boolean
 }
+
+const CURSO_SELECT = 'id, titulo, slug, descricao, descricao_completa, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado'
 
 export async function upsertCursoInline(siteId: string, id: string | null, data: Partial<CursoData>) {
   const supabase = await createClient()
   if (id) {
     const { data: row, error } = await supabase.from('site_cursos_eventos').update(data).eq('id', id)
-      .select('id, titulo, slug, descricao, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
+      .select(CURSO_SELECT).single()
     if (error) throw new Error(friendlyError(error))
     revalidateAll()
     return row
@@ -124,7 +129,7 @@ export async function upsertCursoInline(siteId: string, id: string | null, data:
   const { data: max } = await supabase.from('site_cursos_eventos').select('ordem').eq('site_id', siteId).order('ordem', { ascending: false }).limit(1).maybeSingle()
   const { data: row, error } = await supabase.from('site_cursos_eventos')
     .insert({ site_id: siteId, ordem: (max?.ordem ?? -1) + 1, publicado: true, descricao: '', ...data })
-    .select('id, titulo, slug, descricao, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado').single()
+    .select(CURSO_SELECT).single()
   if (error) throw new Error(friendlyError(error))
   revalidateAll()
   return row
