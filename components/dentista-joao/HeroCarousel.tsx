@@ -107,22 +107,10 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
           </Link>
         </div>
 
+        {/* Setas de navegação removidas por decisão do cliente — troca de
+            slide fica só por autoplay, swipe (mobile) e os dots abaixo. */}
         {slides.length > 1 && (
           <>
-            <button
-              onClick={() => go(index - 1, true)}
-              aria-label="Slide anterior"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all backdrop-blur-sm"
-            >
-              ‹
-            </button>
-            <button
-              onClick={() => go(index + 1, true)}
-              aria-label="Próximo slide"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white flex items-center justify-center transition-all backdrop-blur-sm"
-            >
-              ›
-            </button>
             <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
               {slides.map((s, i) => (
                 <button
