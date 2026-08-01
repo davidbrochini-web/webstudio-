@@ -28,11 +28,8 @@ export default async function AClinicaPage() {
       <section className="px-6 py-16 max-w-3xl mx-auto">
         <Reveal>
           <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-3">Sobre nós.</p>
-          <p className="text-slate-700 font-semibold leading-relaxed mb-4">
+          <p className="text-slate-700 font-semibold leading-relaxed">
             {site.tagline || 'Texto institucional a definir no levantamento com o cliente.'}
-          </p>
-          <p className="text-slate-500 leading-relaxed">
-            Cada paciente é muito especial para a nossa equipe, por isso primamos por um atendimento de qualidade, trazendo sempre a melhor solução buscando a plena satisfação de cada um dos nossos clientes.
           </p>
         </Reveal>
       </section>
@@ -52,45 +49,31 @@ export default async function AClinicaPage() {
         </section>
       )}
 
-      {/* Missão / Visão / Valores */}
-      <section className="px-6 py-14 bg-slate-50">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            {
-              titulo: 'Valores',
-              tipo: 'lista',
-              conteudo: ['Profissionalismo', 'Humanismo', 'Ética', 'Conhecimento', 'Comprometimento'],
-              nota: '(Exemplo — a confirmar no levantamento)',
-            },
-            {
-              titulo: 'Missão',
-              tipo: 'texto',
-              conteudo: 'Ser uma clínica que proporciona atendimento de excelência e alta resolutividade para nossos pacientes.',
-              nota: '(Exemplo — a confirmar no levantamento)',
-            },
-            {
-              titulo: 'Visão',
-              tipo: 'texto',
-              conteudo: 'Ser reconhecida como uma clínica de referência na qualidade do atendimento e tratamento realizado.',
-              nota: '(Exemplo — a confirmar no levantamento)',
-            },
-          ].map((card, i) => (
-            <Reveal key={card.titulo} delay={i * 100}>
-              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-6 shadow-sm h-full">
-                <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-3">{card.titulo}</h3>
-                {card.tipo === 'lista' ? (
-                  <ul className="text-sm text-slate-600 leading-relaxed flex flex-col gap-1.5">
-                    {(card.conteudo as string[]).map(v => <li key={v}>• {v}</li>)}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-slate-600 leading-relaxed italic">&ldquo;{card.conteudo}&rdquo;</p>
-                )}
-                <p className="text-xs text-slate-400 mt-3">{card.nota}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {/* Missão / Visão / Valores — editáveis pelo cliente no painel */}
+      {(site.missao || site.visao || site.valores) && (
+        <section className="px-6 py-14 bg-slate-50">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { titulo: 'Missão', conteudo: site.missao, tipo: 'texto' as const },
+              { titulo: 'Visão', conteudo: site.visao, tipo: 'texto' as const },
+              { titulo: 'Valores', conteudo: site.valores, tipo: 'lista' as const },
+            ].filter(c => c.conteudo).map((card, i) => (
+              <Reveal key={card.titulo} delay={i * 100}>
+                <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-6 shadow-sm h-full">
+                  <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-3">{card.titulo}</h3>
+                  {card.tipo === 'lista' ? (
+                    <ul className="text-sm text-slate-600 leading-relaxed flex flex-col gap-1.5">
+                      {card.conteudo!.split('\n').map(v => v.trim()).filter(Boolean).map(v => <li key={v}>• {v}</li>)}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-slate-600 leading-relaxed italic">&ldquo;{card.conteudo}&rdquo;</p>
+                  )}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Localização — info à esquerda + mapa FULL-WIDTH abaixo */}
       {site.endereco && (

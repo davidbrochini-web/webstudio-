@@ -37,6 +37,9 @@ export interface SiteEspecial {
   telefone: string | null
   endereco: string | null
   status: 'rascunho' | 'publicado'
+  missao: string | null
+  visao: string | null
+  valores: string | null
 }
 
 /** Busca o site — 404 se não existir. Não filtra por status aqui:
@@ -47,7 +50,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, whatsapp, instagram_handle, telefone, endereco, status')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

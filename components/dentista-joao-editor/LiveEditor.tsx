@@ -25,6 +25,9 @@ interface SiteDados {
   instagram_handle: string | null
   endereco: string | null
   status: 'rascunho' | 'publicado'
+  missao: string | null
+  visao: string | null
+  valores: string | null
 }
 
 // Mesma ordem e nomes do menu real do site (components/dentista-joao/SiteNav.tsx)
@@ -157,13 +160,38 @@ export default function LiveEditor({
               />
               <p className="text-xs text-slate-400 mt-3">Esse mesmo texto aparece na seção &ldquo;Bem-vindo&rdquo; da Home</p>
             </div>
-            <div className="px-6 pb-8 max-w-3xl mx-auto grid grid-cols-3 gap-4 text-center">
-              {['Missão', 'Visão', 'Valores'].map(t => (
-                <div key={t} className="p-4 bg-slate-50 rounded-xl">
-                  <p className="font-display font-bold text-[#0B2B3C] text-sm mb-1">{t}</p>
-                  <p className="text-[10px] text-slate-400">Texto fixo — avise a Omnidesign pra mudar</p>
-                </div>
-              ))}
+            <div className="px-6 pb-8 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Missão</p>
+                <EditableText
+                  as="p" readOnly={readOnly} multiline
+                  value={site.missao || ''}
+                  placeholder="O propósito da clínica — por que ela existe"
+                  className="text-sm text-slate-600 leading-relaxed italic block"
+                  onSave={async v => { await updateSiteFieldPE(site.id, 'missao', v) }}
+                />
+              </div>
+              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Visão</p>
+                <EditableText
+                  as="p" readOnly={readOnly} multiline
+                  value={site.visao || ''}
+                  placeholder="Onde a clínica quer chegar"
+                  className="text-sm text-slate-600 leading-relaxed italic block"
+                  onSave={async v => { await updateSiteFieldPE(site.id, 'visao', v) }}
+                />
+              </div>
+              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Valores</p>
+                <EditableText
+                  as="p" readOnly={readOnly} multiline
+                  value={site.valores || ''}
+                  placeholder={'Um por linha, ex:\nProfissionalismo\nÉtica\nComprometimento'}
+                  className="text-sm text-slate-600 leading-relaxed whitespace-pre-line block"
+                  onSave={async v => { await updateSiteFieldPE(site.id, 'valores', v) }}
+                />
+                <p className="text-[10px] text-slate-400 mt-2">Um valor por linha</p>
+              </div>
             </div>
             <GaleriaSectionEditor siteId={site.id} fotosIniciais={fotos} readOnly={readOnly} />
           </>
