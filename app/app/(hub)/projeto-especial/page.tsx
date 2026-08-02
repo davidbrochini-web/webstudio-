@@ -63,7 +63,7 @@ export default async function ProjetoEspecialHome() {
       </Link>
 
       {/* Editor + Blog + Agenda */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Link
           href="/app/projeto-especial/editor"
           className="group bg-[var(--card-bg)] border-2 border-[#0EA5A0]/30 hover:border-[#0EA5A0] rounded-2xl p-7 transition-all hover:shadow-lg"

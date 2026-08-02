@@ -44,7 +44,7 @@ function AddHorarioRow({ siteId, diaSemana, onDone }: { siteId: string; diaSeman
   }
 
   return (
-    <div className="flex items-center gap-2 mt-2">
+    <div className="flex flex-wrap items-center gap-2 mt-2">
       <input type="time" value={inicio} onChange={e => setInicio(e.target.value)}
         className="text-xs border border-[var(--border)] rounded-lg px-2 py-1.5 bg-[var(--page-bg)] text-[var(--ink)]" />
       <span className="text-[var(--muted)] text-xs">até</span>
@@ -141,7 +141,7 @@ export default function AgendaConfigForm({ siteId, config, horarios }: {
       <form action={formAction} className="flex flex-col gap-5">
         <input type="hidden" name="site_id" value={siteId} />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-1.5">
               Duração do slot (min)
@@ -170,7 +170,7 @@ export default function AgendaConfigForm({ siteId, config, horarios }: {
             <input type="number" name="janela_maxima_dias" defaultValue={config.janela_maxima_dias} min={1} required
               className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--page-bg)] text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]" />
           </div>
-          <div className="col-span-2">
+          <div className="sm:col-span-2">
             <label className="block text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-1.5">
               Máx. de agendamentos pendentes por telefone
             </label>
