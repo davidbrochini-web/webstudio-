@@ -42,11 +42,17 @@ export default async function HomePage() {
     }),
   }
 
+  // Fallback pro slide principal: se o cliente remover a foto do banner
+  // pelo Editor (EditableImage > Remover), o site não pode ficar sem
+  // nenhuma imagem no hero — mesma foto padrão usada como placeholder
+  // no preview do Editor (HeroSectionEditor), pra ficar consistente.
+  const HERO_FALLBACK = 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1200&q=60'
+
   const slides: CarouselSlide[] = [
     {
       titulo: site.hero_title || site.business_name,
       subtitulo: site.hero_sub || '',
-      imagem_url: site.hero_imagem_url,
+      imagem_url: site.hero_imagem_url || HERO_FALLBACK,
       ctaLabel: 'Marcar consulta',
       ctaHref: '/projetos-especiais/dentista-joao/contato',
     },
