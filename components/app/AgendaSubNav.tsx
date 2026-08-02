@@ -3,42 +3,34 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-// Tabs da seção Agenda. E3 (Tipos de Consulta) já é rota real; Bloqueios
-// e Agenda da Semana continuam "em breve" até E4/E5.
+// "Agenda" (calendário) é a página do dia a dia — fica primeiro e é a
+// própria raiz /agenda. Configurações é setup pontual, fica por último.
+// Pills grandes em vez de tabs finas: touch target maior, mais fácil
+// de acertar no mobile, visual menos "sistema".
 const TABS = [
-  { label: 'Configurações', href: '/app/projeto-especial/agenda', disponivel: true },
-  { label: 'Tipos de Consulta', href: '/app/projeto-especial/agenda/tipos-consulta', disponivel: true },
-  { label: 'Bloqueios', href: '/app/projeto-especial/agenda/bloqueios', disponivel: true },
-  { label: 'Agenda da Semana', href: '/app/projeto-especial/agenda/semana', disponivel: true },
+  { icon: '📅', label: 'Agenda', href: '/app/projeto-especial/agenda' },
+  { icon: '🩺', label: 'Tipos de Consulta', href: '/app/projeto-especial/agenda/tipos-consulta' },
+  { icon: '🚫', label: 'Bloqueios', href: '/app/projeto-especial/agenda/bloqueios' },
+  { icon: '⚙️', label: 'Configurações', href: '/app/projeto-especial/agenda/configuracoes' },
 ]
 
 export default function AgendaSubNav() {
   const pathname = usePathname()
   return (
-    <div className="flex items-center gap-1 mb-6 border-b border-[var(--border)] overflow-x-auto">
+    <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1">
       {TABS.map(tab => {
-        if (!tab.disponivel || !tab.href) {
-          return (
-            <span
-              key={tab.label}
-              title="Em breve"
-              className="text-sm font-medium px-3 py-2.5 border-b-2 border-transparent text-[var(--muted)]/50 whitespace-nowrap cursor-default"
-            >
-              {tab.label} <span className="text-[10px] align-super">em breve</span>
-            </span>
-          )
-        }
         const active = pathname === tab.href
         return (
           <Link
-            key={tab.label}
+            key={tab.href}
             href={tab.href}
-            className={`text-sm font-medium px-3 py-2.5 border-b-2 transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-full transition-colors whitespace-nowrap flex-shrink-0 ${
               active
-                ? 'border-[var(--brand)] text-[var(--ink)]'
-                : 'border-transparent text-[var(--muted)] hover:text-[var(--ink)]'
+                ? 'bg-[var(--brand)] text-white'
+                : 'bg-[var(--off)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--border)]/40'
             }`}
           >
+            <span>{tab.icon}</span>
             {tab.label}
           </Link>
         )
