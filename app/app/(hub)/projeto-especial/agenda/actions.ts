@@ -82,3 +82,44 @@ export async function deleteHorario(id: string) {
   if (error) throw new Error(error.message)
   revalidatePath(PATH)
 }
+
+// ── Tipos de consulta (E3) ────────────────────────────────────────
+const TIPOS_PATH = '/app/projeto-especial/agenda/tipos-consulta'
+
+export interface TipoConsultaData {
+  nome: string
+  duracao_minutos: number
+  ativo: boolean
+}
+
+export async function upsertTipoConsulta(siteId: string, id: string | null, data: TipoConsultaData) {
+  if (!data.nome.trim()) throw new Error('Preencha o nome do tipo de consulta.')
+  if (!data.duracao_minutos || data.duracao_minutos <= 0) throw new Error('Duração inválida.')
+
+  const supabase = await createClient()
+  if (id) {
+    const { error } = await supabase.from('agendamento_tipos_consulta').update(data).eq('id', id)
+    if (error) throw new Error(error.message)
+  } else {
+    const { count } = await supabase.from('agendamento_tipos_consulta')
+      .select('*', { count: 'exact', head: true }).eq('site_id', siteId)
+    const { error } = await supabase.from('agendamento_tipos_consulta')
+      .insert({ site_id: siteId, ordem: count ?? 0, ...data })
+    if (error) throw new Error(error.message)
+  }
+  revalidatePath(TIPOS_PATH)
+}
+
+export async function toggleTipoConsultaAtivo(id: string, ativo: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('agendamento_tipos_consulta').update({ ativo }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath(TIPOS_PATH)
+}
+
+export async function deleteTipoConsulta(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('agendamento_tipos_consulta').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath(TIPOS_PATH)
+}
