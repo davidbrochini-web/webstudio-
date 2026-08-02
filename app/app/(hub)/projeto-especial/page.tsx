@@ -9,16 +9,22 @@ export default async function ProjetoEspecialHome() {
   const supabase = await createClient()
 
   // Contadores pra mostrar no dashboard
-  const [{ count: totalLeads }, { count: leadsHoje }, { count: totalArtigos }, { count: totalTratamentos }] =
+  const hoje = new Date(new Date().setHours(0,0,0,0)).toISOString()
+  const [{ count: totalLeads }, { count: leadsHoje }, { count: totalArtigos }, { count: totalTratamentos },
+   { count: agHoje }, { count: agPendentes }] =
     await Promise.all([
       supabase.from('site_leads').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId),
       supabase.from('site_leads').select('*', { count: 'exact', head: true })
-        .eq('site_id', info.siteId)
-        .gte('created_at', new Date(new Date().setHours(0,0,0,0)).toISOString()),
+        .eq('site_id', info.siteId).gte('created_at', hoje),
       supabase.from('site_blog_posts').select('*', { count: 'exact', head: true })
         .eq('site_id', info.siteId).is('deleted_at', null).eq('publicado', true),
       supabase.from('site_tratamentos').select('*', { count: 'exact', head: true })
         .eq('site_id', info.siteId).is('deleted_at', null),
+      supabase.from('agendamentos').select('*', { count: 'exact', head: true })
+        .eq('site_id', info.siteId).eq('data', new Date().toISOString().slice(0, 10))
+        .neq('status', 'cancelado'),
+      supabase.from('agendamentos').select('*', { count: 'exact', head: true })
+        .eq('site_id', info.siteId).eq('status', 'pendente'),
     ])
 
   return (
@@ -112,6 +118,18 @@ export default async function ProjetoEspecialHome() {
             Configure dias, horários e regras de agendamento de consultas.
           </p>
           <div className="flex items-center gap-2">
+            {(agHoje ?? 0) > 0 && (
+              <>
+                <span className="text-xs font-semibold text-[var(--brand)]">{agHoje} hoje</span>
+                <span className="text-[var(--border)]">·</span>
+              </>
+            )}
+            {(agPendentes ?? 0) > 0 && (
+              <>
+                <span className="text-xs font-semibold text-amber-600">{agPendentes} pendente{agPendentes !== 1 ? 's' : ''}</span>
+                <span className="text-[var(--border)]">·</span>
+              </>
+            )}
             <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Configurar →</span>
           </div>
         </Link>

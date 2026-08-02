@@ -123,3 +123,46 @@ export async function deleteTipoConsulta(id: string) {
   if (error) throw new Error(error.message)
   revalidatePath(TIPOS_PATH)
 }
+
+// ── Bloqueios de datas (E4) ───────────────────────────────────────
+const BLOQUEIOS_PATH = '/app/projeto-especial/agenda/bloqueios'
+
+export interface BloqueioData {
+  data: string       // YYYY-MM-DD
+  hora_inicio: string | null
+  hora_fim: string | null
+  motivo: string | null
+}
+
+export async function criarBloqueio(siteId: string, data: BloqueioData) {
+  if (!data.data) throw new Error('Selecione a data.')
+  const supabase = await createClient()
+  const { error } = await supabase.from('agendamento_bloqueios')
+    .insert({ site_id: siteId, ...data })
+  if (error) {
+    if (error.code === '23514' || error.message.includes('janela_consistente'))
+      throw new Error('Informe horário de início e fim, ou deixe os dois vazios para bloquear o dia inteiro.')
+    throw new Error(error.message)
+  }
+  revalidatePath(BLOQUEIOS_PATH)
+}
+
+export async function deleteBloqueio(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('agendamento_bloqueios').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath(BLOQUEIOS_PATH)
+}
+
+// ── Agenda da Semana — ações em agendamentos (E5+E8) ──────────────
+const SEMANA_PATH = '/app/projeto-especial/agenda/semana'
+
+export type StatusAgendamento = 'pendente' | 'confirmado' | 'realizado' | 'cancelado' | 'falta'
+
+export async function mudarStatusAgendamento(id: string, status: StatusAgendamento) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('agendamentos').update({ status }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidatePath(SEMANA_PATH)
+  revalidatePath('/app/projeto-especial/agenda')
+}
