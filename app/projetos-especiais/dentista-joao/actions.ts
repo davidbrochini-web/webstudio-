@@ -69,7 +69,7 @@ export interface AgendamentoFormState {
 export async function criarAgendamentoPublico(_prev: AgendamentoFormState, formData: FormData): Promise<AgendamentoFormState> {
   const nome = (formData.get('nome') as string)?.trim()
   const telefone = (formData.get('telefone') as string)?.trim()
-  const email = (formData.get('email') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
   const mensagem = (formData.get('mensagem') as string)?.trim() || null
   const tipoConsultaId = (formData.get('tipo_consulta_id') as string) || null
   const data = formData.get('data') as string
@@ -84,18 +84,71 @@ export async function criarAgendamentoPublico(_prev: AgendamentoFormState, formD
   const site = await getSiteEspecial()
   const supabase = await createClient()
 
-  // Checar max pendentes por telefone
   const { data: config } = await supabase.from('agendamento_config')
-    .select('max_pendentes_por_telefone').eq('site_id', site.id).single()
-  if (config) {
-    const { count } = await supabase.from('agendamentos')
-      .select('*', { count: 'exact', head: true })
-      .eq('site_id', site.id)
-      .eq('paciente_telefone', telefone.replace(/\D/g, ''))
-      .eq('status', 'pendente')
-    if (count !== null && count >= config.max_pendentes_por_telefone) {
-      return { error: `Você já tem ${count} agendamento(s) pendente(s). Aguarde a confirmação antes de agendar novamente.` }
-    }
+    .select('duracao_slot_minutos, antecedencia_minima_horas, janela_maxima_dias, max_pendentes_por_telefone')
+    .eq('site_id', site.id).single()
+  if (!config) return { error: 'Agenda não configurada para este site.' }
+
+  // ── Revalidação server-side do slot ───────────────────────────
+  // O formulário calcula os horários disponíveis no navegador (JS do
+  // cliente), o que é só UX — nada impede alguém de mandar uma
+  // requisição direta com qualquer data/hora. Sem isso, dava pra
+  // agendar fora do horário de atendimento, em bloqueio, ou sem
+  // respeitar antecedência/janela (achado em auditoria: um POST cru
+  // conseguia criar agendamento às 03:00 sem nenhum horário configurado
+  // pra aquele dia). A constraint de unicidade no banco só impede
+  // *conflito* de slot — não valida se o slot é legítimo.
+  const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m }
+  const inicioMin = toMin(horaInicio)
+  const fimMin = toMin(horaFim)
+  if (fimMin - inicioMin !== config.duracao_slot_minutos) {
+    return { error: 'Horário inválido para a duração configurada.' }
+  }
+
+  const diaSemana = new Date(data + 'T00:00:00').getDay()
+  const { data: horariosDia } = await supabase.from('agendamento_horarios')
+    .select('hora_inicio, hora_fim')
+    .eq('site_id', site.id).eq('dia_semana', diaSemana).eq('ativo', true)
+  const dentroDoHorario = (horariosDia ?? []).some(h =>
+    inicioMin >= toMin(h.hora_inicio) && fimMin <= toMin(h.hora_fim)
+  )
+  if (!dentroDoHorario) return { error: 'Esse horário não está disponível. Escolha outro.' }
+
+  const { data: bloqueiosData } = await supabase.from('agendamento_bloqueios')
+    .select('hora_inicio, hora_fim').eq('site_id', site.id).eq('data', data)
+  const bloqueado = (bloqueiosData ?? []).some(b => {
+    if (!b.hora_inicio || !b.hora_fim) return true // dia inteiro
+    return inicioMin < toMin(b.hora_fim) && fimMin > toMin(b.hora_inicio)
+  })
+  if (bloqueado) return { error: 'Essa data/horário está bloqueado. Escolha outro.' }
+
+  const agora = new Date()
+  const slotDate = new Date(`${data}T${horaInicio}:00`)
+  const horasAte = (slotDate.getTime() - agora.getTime()) / (60 * 60 * 1000)
+  if (horasAte < config.antecedencia_minima_horas) {
+    return { error: `Agendamentos precisam ser feitos com pelo menos ${config.antecedencia_minima_horas}h de antecedência.` }
+  }
+  const maxDate = new Date()
+  maxDate.setDate(maxDate.getDate() + config.janela_maxima_dias)
+  if (slotDate > maxDate) {
+    return { error: `Só é possível agendar com até ${config.janela_maxima_dias} dias de antecedência.` }
+  }
+
+  if (tipoConsultaId) {
+    const { data: tipo } = await supabase.from('agendamento_tipos_consulta')
+      .select('id').eq('id', tipoConsultaId).eq('site_id', site.id).eq('ativo', true).maybeSingle()
+    if (!tipo) return { error: 'Tipo de consulta inválido.' }
+  }
+
+  // ── Máx. de pendentes por telefone ────────────────────────────
+  const telefoneLimpo = telefone.replace(/\D/g, '')
+  const { count } = await supabase.from('agendamentos')
+    .select('*', { count: 'exact', head: true })
+    .eq('site_id', site.id)
+    .eq('paciente_telefone', telefoneLimpo)
+    .eq('status', 'pendente')
+  if (count !== null && count >= config.max_pendentes_por_telefone) {
+    return { error: `Você já tem ${count} agendamento(s) pendente(s). Aguarde a confirmação antes de agendar novamente.` }
   }
 
   const { error } = await supabase.from('agendamentos').insert({
@@ -105,7 +158,7 @@ export async function criarAgendamentoPublico(_prev: AgendamentoFormState, formD
     hora_inicio: horaInicio,
     hora_fim: horaFim,
     paciente_nome: nome,
-    paciente_telefone: telefone.replace(/\D/g, ''),
+    paciente_telefone: telefoneLimpo,
     paciente_email: email,
     mensagem,
     status: 'pendente',
@@ -134,7 +187,7 @@ export interface OtpFormState {
 }
 
 export async function consultarAgendamentos(_prev: OtpFormState, formData: FormData): Promise<OtpFormState> {
-  const email = (formData.get('email') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
   const codigo = (formData.get('codigo') as string)?.trim()
   if (!email) return { error: 'Informe o e-mail.' }
   if (codigo !== '000000') return { error: 'Código inválido.' }
@@ -157,7 +210,7 @@ export interface CancelState { error?: string; success?: boolean }
 
 export async function cancelarAgendamentoPaciente(_prev: CancelState, formData: FormData): Promise<CancelState> {
   const id = formData.get('id') as string
-  const email = formData.get('email') as string
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
   if (!id || !email) return { error: 'Dados incompletos.' }
 
   const site = await getSiteEspecial()
