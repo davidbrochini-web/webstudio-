@@ -51,6 +51,10 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
               📸 Instagram
             </a>
           )}
+          <Link href={`${BASE}/login`} className="hover:opacity-80 flex items-center gap-1 border-l border-white/25 pl-3 sm:pl-5">
+            <span>🔑</span>
+            <span>Login</span>
+          </Link>
         </div>
       </div>
 
