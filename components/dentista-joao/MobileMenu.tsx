@@ -80,13 +80,20 @@ export default function MobileMenu() {
         </div>
 
         {/* CTA no drawer */}
-        <div className="p-5 border-t border-slate-100">
+        <div className="p-5 border-t border-slate-100 flex flex-col gap-3">
           <Link
             href={`${BASE}/contato`}
             onClick={() => setOpen(false)}
             className="block w-full text-center bg-[#0EA5A0] text-white font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-opacity"
           >
             Marcar Uma Consulta
+          </Link>
+          <Link
+            href={`${BASE}/login`}
+            onClick={() => setOpen(false)}
+            className="block w-full text-center text-slate-500 text-sm font-medium py-1 hover:text-[#0B2B3C] transition-colors"
+          >
+            🔑 Login administrativo
           </Link>
         </div>
       </nav>
