@@ -32,6 +32,10 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           setErro(null)
           try { await updateSiteFieldPE(siteId, 'hero_imagem_url', url) } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao salvar.') }
         }}
+        onRemove={async () => {
+          setErro(null)
+          try { await updateSiteFieldPE(siteId, 'hero_imagem_url', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
+        }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/90 via-[#0B2B3C]/55 to-transparent pointer-events-none" />
 
