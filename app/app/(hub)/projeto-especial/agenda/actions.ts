@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-const PATH = '/app/projeto-especial/agenda'
+const PATH = '/app/projeto-especial/agenda/configuracoes'
 
 export interface PEFormState {
   error?: string
@@ -155,7 +155,7 @@ export async function deleteBloqueio(id: string) {
 }
 
 // ── Agenda da Semana — ações em agendamentos (E5+E8) ──────────────
-const SEMANA_PATH = '/app/projeto-especial/agenda/semana'
+const SEMANA_PATH = '/app/projeto-especial/agenda'
 
 export type StatusAgendamento = 'pendente' | 'confirmado' | 'realizado' | 'cancelado' | 'falta'
 
@@ -164,5 +164,4 @@ export async function mudarStatusAgendamento(id: string, status: StatusAgendamen
   const { error } = await supabase.from('agendamentos').update({ status }).eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath(SEMANA_PATH)
-  revalidatePath('/app/projeto-especial/agenda')
 }
