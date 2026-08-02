@@ -60,6 +60,10 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           href: '/app/projeto-especial/editor',
         })
         navItems.push({
+          label: '🗓️ Agenda',
+          href: '/app/projeto-especial/agenda',
+        })
+        navItems.push({
           label: '✍️ Blog',
           href: '/app/projeto-especial/blog',
         })

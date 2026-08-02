@@ -62,8 +62,8 @@ export default async function ProjetoEspecialHome() {
         </div>
       </Link>
 
-      {/* Editor + Blog */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Editor + Blog + Agenda */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Link
           href="/app/projeto-especial/editor"
           className="group bg-[var(--card-bg)] border-2 border-[#0EA5A0]/30 hover:border-[#0EA5A0] rounded-2xl p-7 transition-all hover:shadow-lg"
@@ -97,6 +97,22 @@ export default async function ProjetoEspecialHome() {
             <span className="text-xs font-semibold text-[var(--brand)]">{totalArtigos ?? 0} publicados</span>
             <span className="text-[var(--border)]">·</span>
             <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Escrever →</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/app/projeto-especial/agenda"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-2xl p-7 transition-all hover:shadow-lg"
+        >
+          <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl mb-5">
+            🗓️
+          </div>
+          <h2 className="font-display font-bold text-[var(--ink)] text-lg mb-2">Agenda</h2>
+          <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">
+            Configure dias, horários e regras de agendamento de consultas.
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Configurar →</span>
           </div>
         </Link>
       </div>
