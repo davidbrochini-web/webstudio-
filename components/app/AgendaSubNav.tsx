@@ -8,8 +8,8 @@ import { usePathname } from 'next/navigation'
 const TABS = [
   { label: 'Configurações', href: '/app/projeto-especial/agenda', disponivel: true },
   { label: 'Tipos de Consulta', href: '/app/projeto-especial/agenda/tipos-consulta', disponivel: true },
-  { label: 'Bloqueios', href: null, disponivel: false },
-  { label: 'Agenda da Semana', href: null, disponivel: false },
+  { label: 'Bloqueios', href: '/app/projeto-especial/agenda/bloqueios', disponivel: true },
+  { label: 'Agenda da Semana', href: '/app/projeto-especial/agenda/semana', disponivel: true },
 ]
 
 export default function AgendaSubNav() {
