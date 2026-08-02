@@ -12,6 +12,12 @@ interface Props {
   placeholder?: string
 }
 
+// Fluxo explícito Editar → Salvar/Cancelar. Antes o campo salvava sozinho
+// no blur e cancelava só com Escape — no touch, tocar em qualquer lugar
+// fora do campo dispara blur (salva sem querer) e não existe tecla
+// Escape no teclado do celular (não tinha como cancelar). Agora: toca
+// pra editar, aparecem botões visíveis de Salvar e Cancelar, nada
+// acontece sozinho.
 export default function EditableText({ value, onSave, readOnly, as: Tag = 'span', className = '', multiline, placeholder }: Props) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
@@ -30,7 +36,7 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
   }, [editing, multiline])
 
   async function commit() {
-    if (draft === value) { setEditing(false); return }
+    if (draft === value) { setEditing(false); setError(null); return }
     setSaving(true)
     setError(null)
     try {
@@ -55,42 +61,46 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
 
   if (editing) {
     return (
-      <div className="inline-block w-full">
+      <span className="inline-block w-full align-top">
         {multiline ? (
           <textarea
             ref={textareaRef}
             value={draft}
             onChange={e => setDraft(e.target.value)}
-            onBlur={commit}
-            onKeyDown={e => { if (e.key === 'Escape') cancel() }}
-            rows={3}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1 resize-none text-current`}
+            rows={4}
+            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 resize-none text-current`}
           />
         ) : (
           <input
             ref={inputRef}
             value={draft}
             onChange={e => setDraft(e.target.value)}
-            onBlur={commit}
-            onKeyDown={e => {
-              if (e.key === 'Enter') { e.preventDefault(); commit() }
-              if (e.key === 'Escape') cancel()
-            }}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1 text-current`}
+            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 text-current`}
           />
         )}
-        {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
-      </div>
+        <span className="flex items-center gap-2 mt-1.5">
+          <button type="button" onClick={commit} disabled={saving}
+            className="text-xs font-bold text-white bg-[var(--brand)] rounded-full px-3.5 py-1.5 disabled:opacity-50">
+            {saving ? 'Salvando…' : '💾 Salvar'}
+          </button>
+          <button type="button" onClick={cancel} disabled={saving}
+            className="text-xs font-bold text-[var(--ink)] bg-[var(--off)] border border-[var(--border)] rounded-full px-3.5 py-1.5 disabled:opacity-50">
+            ✕ Cancelar
+          </button>
+        </span>
+        {error && <span className="block text-xs text-red-600 mt-1">{error}</span>}
+      </span>
     )
   }
 
   return (
     <Tag
       onClick={() => setEditing(true)}
-      className={`${className} cursor-pointer rounded-md px-0.5 -mx-0.5 outline-dashed outline-1 outline-transparent hover:outline-[var(--brand)] hover:bg-[var(--brand)]/5 transition-all ${saving ? 'opacity-50' : ''}`}
-      title="Clique para editar"
+      className={`${className} cursor-pointer rounded-md px-1 -mx-1 outline-dashed outline-1 outline-[var(--brand)]/40 bg-[var(--brand)]/[0.06] active:bg-[var(--brand)]/20 transition-colors`}
+      title="Toque para editar"
     >
-      {value || <span className="opacity-40 italic">{placeholder ?? 'Clique para editar'}</span>}
+      {value || <span className="opacity-40 italic">{placeholder ?? 'Toque para editar'}</span>}
+      <span className="inline-block ml-1.5 text-[0.7em] align-middle opacity-70">✏️</span>
     </Tag>
   )
 }
