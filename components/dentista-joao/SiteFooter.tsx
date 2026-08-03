@@ -5,16 +5,18 @@ import Link from 'next/link'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
-const LINKS = [
-  { label: 'A Clínica',          href: `${BASE}/a-clinica` },
-  { label: 'Tratamentos',        href: `${BASE}/tratamentos` },
-  { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos` },
-  { label: 'Equipe',             href: `${BASE}/equipe` },
-  { label: 'Dúvidas Frequentes', href: `${BASE}/duvidas-frequentes` },
-  { label: 'Contato',            href: `${BASE}/contato` },
-]
-
 export default function SiteFooter({ site }: { site: SiteEspecial }) {
+  // Mesmo gate de visibilidade do SiteNav — seção oculta no painel
+  // some do rodapé também.
+  const LINKS = [
+    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
+    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: site.secao_tratamentos_visivel },
+    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: site.secao_cursos_visivel },
+    { label: 'Equipe',             href: `${BASE}/equipe`, show: site.secao_equipe_visivel },
+    { label: 'Dúvidas Frequentes', href: `${BASE}/duvidas-frequentes`, show: site.secao_faq_visivel },
+    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+  ].filter(item => item.show)
+
   const waLink = site.whatsapp
     ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}?text=Olá%2C%20gostaria%20de%20agendar%20uma%20consulta`
     : null
