@@ -59,6 +59,19 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
     return <Tag className={className}>{value || placeholder}</Tag>
   }
 
+  // Em modo edição o input/textarea precisa de texto escuro sobre fundo
+  // branco, independente da cor original do campo (ex: títulos brancos
+  // sobre foto). Filtrar as classes de cor do className antes de passar
+  // pro input — no Tailwind v4 os cascade layers podem vencer inline
+  // styles, então não basta setar style={{color}} quando a className
+  // inclui text-white ou text-[#fff] ou text-slate-xxx/opacity.
+  const editClassName = className
+    .split(' ')
+    .filter(c => !/^text-(white|black|current|transparent|inherit|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|\[#)/.test(c))
+    .filter(c => !/^text-\[var\(/.test(c))
+    .filter(c => !/^opacity-/.test(c))
+    .join(' ')
+
   if (editing) {
     return (
       <span className="inline-block w-full align-top">
@@ -68,16 +81,14 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
             value={draft}
             onChange={e => setDraft(e.target.value)}
             rows={4}
-            style={{ color: '#0B2B3C' }}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 resize-none`}
+            className={`${editClassName} w-full bg-white text-[#0B2B3C] outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 resize-none`}
           />
         ) : (
           <input
             ref={inputRef}
             value={draft}
             onChange={e => setDraft(e.target.value)}
-            style={{ color: '#0B2B3C' }}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5`}
+            className={`${editClassName} w-full bg-white text-[#0B2B3C] outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5`}
           />
         )}
         <span className="flex items-center gap-2 mt-1.5">
