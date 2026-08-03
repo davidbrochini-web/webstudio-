@@ -31,7 +31,7 @@ export default function GaleriaSectionEditor({ siteId, fotosIniciais, readOnly }
               <EditableImage
                 src={f.url} siteId={siteId} readOnly={readOnly}
                 className="w-full aspect-square rounded-xl overflow-hidden"
-                alt=""
+                alt="" aspect={1}
                 onReplace={async (url) => {
                   setErro(null)
                   try { await replaceFoto(f.id, url); setFotos(fs => fs.map(x => x.id === f.id ? { ...x, url } : x)) }

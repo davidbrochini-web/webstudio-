@@ -25,6 +25,7 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
         src={heroImagemUrl || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1200&q=60'}
         siteId={siteId}
         readOnly={readOnly}
+        aspect={16 / 9}
         className="absolute inset-0 w-full h-full"
         alt=""
         badge="Foto do banner"

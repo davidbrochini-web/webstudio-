@@ -4,6 +4,7 @@
 
 import { useRef, useState } from 'react'
 import { uploadSiteFoto } from '@/lib/storage'
+import ImageCropModal from './ImageCropModal'
 
 interface Props {
   src: string
@@ -14,31 +15,50 @@ interface Props {
   className?: string
   alt?: string
   badge?: string
+  /** Proporção largura/altura do resultado final (ex: 4/3, 1 pra
+   *  quadrado, 16/9 pra banner). Usada pelo mini-editor de corte que
+   *  abre antes do upload. Padrão 4/3 se não informado. */
+  aspect?: number
 }
 
 // Barra de ações sempre visível (não depende de :hover — no touch/mobile
 // não existe hover, então o controle ficava invisível e ninguém achava
 // como trocar/remover a imagem). Ocupa uma faixa fixa embaixo da imagem.
-export default function EditableImage({ src, siteId, onReplace, onRemove, readOnly, className = '', alt = '', badge }: Props) {
+export default function EditableImage({ src, siteId, onReplace, onRemove, readOnly, className = '', alt = '', badge, aspect = 4 / 3 }: Props) {
   const [uploading, setUploading] = useState(false)
   const [removing, setRemoving] = useState(false)
   const [confirmando, setConfirmando] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [arquivoParaCortar, setArquivoParaCortar] = useState<File | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setError('Envie um arquivo de imagem (JPG, PNG, WEBP...).')
+      return
+    }
+    setError(null)
+    // Abre o mini-editor de corte antes de subir — pedido do cliente pra
+    // poder posicionar/enquadrar a foto na proporção certa do site em
+    // vez de subir a imagem inteira sem controle nenhum.
+    setArquivoParaCortar(file)
+    if (inputRef.current) inputRef.current.value = ''
+  }
+
+  async function handleCropConfirm(blob: Blob) {
+    setArquivoParaCortar(null)
     setUploading(true)
     setError(null)
     try {
-      const url = await uploadSiteFoto(siteId, file)
+      const croppedFile = new File([blob], 'foto.png', { type: 'image/png' })
+      const url = await uploadSiteFoto(siteId, croppedFile)
       await onReplace(url)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao enviar foto.')
     } finally {
       setUploading(false)
-      if (inputRef.current) inputRef.current.value = ''
     }
   }
 
@@ -95,7 +115,15 @@ export default function EditableImage({ src, siteId, onReplace, onRemove, readOn
         </div>
       )}
       {error && (
-        <p className="absolute -bottom-6 left-0 right-0 text-[11px] text-red-600 bg-white/90 px-1 rounded">{error}</p>
+        <p className="absolute -bottom-6 left-0 right-0 text-[11px] text-red-600 bg-white/90 px-1 rounded z-20">{error}</p>
+      )}
+      {arquivoParaCortar && (
+        <ImageCropModal
+          file={arquivoParaCortar}
+          aspect={aspect}
+          onConfirm={handleCropConfirm}
+          onCancel={() => setArquivoParaCortar(null)}
+        />
       )}
     </div>
   )
