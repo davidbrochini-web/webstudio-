@@ -37,6 +37,7 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
       <EditableImage
         src={t.imagem_url || 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=600&q=60'}
         siteId={siteId} readOnly={readOnly}
+        aspect={4 / 3}
         className="w-full aspect-[4/3]"
         alt={t.titulo}
         onReplace={(url) => salvar({ imagem_url: url })}

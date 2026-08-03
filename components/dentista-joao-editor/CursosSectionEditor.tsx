@@ -35,7 +35,7 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
     <div className="group relative border border-slate-100 rounded-2xl overflow-hidden hover:shadow-lg transition-all">
       <EditableImage
         src={c.imagem_url || 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=60'}
-        siteId={siteId} readOnly={readOnly} className="w-full aspect-[4/3]" alt=""
+        siteId={siteId} readOnly={readOnly} className="w-full aspect-[4/3]" alt="" aspect={4 / 3}
         onReplace={(url) => salvar({ imagem_url: url })}
       />
       <div className="p-5">

@@ -46,7 +46,7 @@ export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly, v
                 src={m.foto_url || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&q=60'}
                 siteId={siteId} readOnly={readOnly}
                 className="w-40 h-40 rounded-full mx-auto sm:mx-0 overflow-hidden"
-                alt={m.nome}
+                alt={m.nome} aspect={1}
                 onReplace={(url) => salvar(m, { foto_url: url })}
               />
               <div className="text-center sm:text-left">

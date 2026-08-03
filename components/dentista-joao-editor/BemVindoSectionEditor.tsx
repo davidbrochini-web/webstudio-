@@ -26,6 +26,7 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
         className="w-full aspect-[4/3] rounded-2xl border-4 border-[#0EA5A0]/20 shadow-lg overflow-hidden"
         alt=""
         badge="Foto de destaque"
+        aspect={4 / 3}
         onReplace={async (url) => {
           setErro(null)
           try {
@@ -64,6 +65,7 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
               readOnly={readOnly}
               className="w-40 h-16 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50"
               alt="Logo"
+              aspect={2.5}
               badge={logoUrl ? undefined : 'Sem logo — mostrando nome'}
               onReplace={async (url) => {
                 setErro(null)
