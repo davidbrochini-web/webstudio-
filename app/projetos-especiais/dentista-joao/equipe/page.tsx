@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
+import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -11,6 +12,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EquipePage() {
   const site = await getSiteEspecial()
+
+  if (!site.secao_equipe_visivel) {
+    return (
+      <PageShell site={site}>
+        <PageBanner title="Equipe" imageUrl={site.hero_imagem_url} />
+        <SecaoOcultaAviso />
+      </PageShell>
+    )
+  }
   const supabase = await createClient()
 
   const { data: equipe } = await supabase

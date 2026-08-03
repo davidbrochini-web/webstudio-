@@ -6,10 +6,11 @@ import EditableImage from '@/components/site-editor/EditableImage'
 import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
 import { replaceFoto, addFotoToPool } from '@/app/app/editor/actions'
 
-export default function BemVindoSectionEditor({ siteId, businessName, tagline, foto, readOnly }: {
+export default function BemVindoSectionEditor({ siteId, businessName, tagline, logoUrl, foto, readOnly }: {
   siteId: string
   businessName: string
   tagline: string
+  logoUrl: string | null
   foto: { id: string; url: string } | null
   readOnly: boolean
 }) {
@@ -49,7 +50,33 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, f
           className="text-slate-500 leading-relaxed mb-2 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'tagline', v) }}
         />
-        <p className="text-xs text-slate-400">Esse texto também aparece na página &ldquo;A Clínica&rdquo;</p>
+        <p className="text-xs text-slate-400 mb-5">Esse texto também aparece na página &ldquo;A Clínica&rdquo;</p>
+
+        {!readOnly && (
+          <div className="border-t border-slate-100 pt-5">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Logo do menu</p>
+            <p className="text-xs text-slate-400 mb-3">
+              Por padrão o menu do site mostra o nome da clínica escrito. Suba um PNG aqui pra usar sua logo no lugar.
+            </p>
+            <EditableImage
+              src={logoUrl || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=60'}
+              siteId={siteId}
+              readOnly={readOnly}
+              className="w-40 h-16 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50"
+              alt="Logo"
+              badge={logoUrl ? undefined : 'Sem logo — mostrando nome'}
+              onReplace={async (url) => {
+                setErro(null)
+                try { await updateSiteFieldPE(siteId, 'logo_url', url) } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao salvar.') }
+              }}
+              onRemove={logoUrl ? async () => {
+                setErro(null)
+                try { await updateSiteFieldPE(siteId, 'logo_url', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
+              } : undefined}
+            />
+          </div>
+        )}
+
         {erro && <p className="text-xs text-red-600 mt-2">{erro}</p>}
       </div>
     </section>

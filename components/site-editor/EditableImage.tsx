@@ -65,7 +65,7 @@ export default function EditableImage({ src, siteId, onReplace, onRemove, readOn
         </span>
       )}
       {!readOnly && (
-        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-1.5 px-2 py-2 bg-gradient-to-t from-black/75 via-black/40 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-1.5 px-2 py-2 bg-gradient-to-t from-black/75 via-black/40 to-transparent">
           {confirmando ? (
             <>
               <span className="text-[11px] text-white font-semibold">Remover foto?</span>

@@ -6,20 +6,30 @@ import { usePathname } from 'next/navigation'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
-const NAV_ITEMS = [
-  { label: 'Início',            href: BASE },
-  { label: 'A Clínica',         href: `${BASE}/a-clinica` },
-  { label: 'Tratamentos',       href: `${BASE}/tratamentos` },
-  { label: 'Cursos e Eventos',  href: `${BASE}/cursos-e-eventos` },
-  { label: 'Equipe',            href: `${BASE}/equipe` },
-  { label: 'Dúvidas Frequentes',href: `${BASE}/duvidas-frequentes` },
-  { label: 'Artigos',           href: `${BASE}/artigos` },
-  { label: 'Contato',           href: `${BASE}/contato` },
-]
+interface Flags {
+  tratamentos: boolean
+  cursos: boolean
+  equipe: boolean
+  faq: boolean
+  artigos: boolean
+}
 
-export default function MobileMenu() {
+export default function MobileMenu({ flags }: { flags: Flags }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+
+  // Seção marcada como oculta (VisibilidadeSecaoToggle no painel) some
+  // do menu — mas continua existindo no banco, só não aparece no site.
+  const NAV_ITEMS = [
+    { label: 'Início',             href: BASE, show: true },
+    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
+    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: flags.tratamentos },
+    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: flags.cursos },
+    { label: 'Equipe',             href: `${BASE}/equipe`, show: flags.equipe },
+    { label: 'Dúvidas Frequentes', href: `${BASE}/duvidas-frequentes`, show: flags.faq },
+    { label: 'Artigos',            href: `${BASE}/artigos`, show: flags.artigos },
+    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+  ].filter(item => item.show)
 
   return (
     <>

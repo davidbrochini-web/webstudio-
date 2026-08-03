@@ -32,6 +32,7 @@ export interface SiteEspecial {
   hero_title: string | null
   hero_sub: string | null
   hero_imagem_url: string | null
+  logo_url: string | null
   whatsapp: string | null
   instagram_handle: string | null
   telefone: string | null
@@ -40,6 +41,11 @@ export interface SiteEspecial {
   missao: string | null
   visao: string | null
   valores: string | null
+  secao_tratamentos_visivel: boolean
+  secao_cursos_visivel: boolean
+  secao_equipe_visivel: boolean
+  secao_faq_visivel: boolean
+  secao_artigos_visivel: boolean
 }
 
 /** Busca o site — 404 se não existir. Não filtra por status aqui:
@@ -50,7 +56,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

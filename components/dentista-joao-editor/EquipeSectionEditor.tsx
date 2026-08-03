@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertEquipeInline, deleteEquipeInline, type EquipeData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Membro {
@@ -10,8 +11,8 @@ export interface Membro {
   formacao: string | null; especialidade: string | null; bio: string | null
 }
 
-export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly }: {
-  siteId: string; equipeInicial: Membro[]; readOnly: boolean
+export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly, visivel }: {
+  siteId: string; equipeInicial: Membro[]; readOnly: boolean; visivel: boolean
 }) {
   const [itens, setItens] = useState(equipeInicial)
   const [adicionando, setAdicionando] = useState(false)
@@ -34,6 +35,7 @@ export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly }:
   return (
     <section className="px-6 py-16 bg-white">
       <div className="max-w-5xl mx-auto">
+        <VisibilidadeSecaoToggle siteId={siteId} campo="secao_equipe_visivel" visivel={visivel} readOnly={readOnly} />
         <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1 text-center">Página Equipe</p>
         <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-8">Equipe</h2>
 
