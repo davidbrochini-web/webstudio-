@@ -4,30 +4,41 @@ import MobileMenu from '@/components/dentista-joao/MobileMenu'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
-const NAV_ITEMS = [
-  { label: 'A Clínica',          href: `${BASE}/a-clinica` },
-  { label: 'Tratamentos',        href: `${BASE}/tratamentos` },
-  { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos` },
-  { label: 'Equipe',             href: `${BASE}/equipe` },
-  { label: 'Contato',            href: `${BASE}/contato` },
-]
-
 export default function SiteNav({ site }: { site: SiteEspecial }) {
   const waLink = site.whatsapp
     ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}?text=Olá%2C%20peguei%20esse%20contato%20no%20site`
     : null
 
+  // Seção marcada como oculta no painel (VisibilidadeSecaoToggle) some
+  // do menu — continua existindo no banco, só não aparece pro visitante.
+  const flags = {
+    tratamentos: site.secao_tratamentos_visivel,
+    cursos: site.secao_cursos_visivel,
+    equipe: site.secao_equipe_visivel,
+    faq: site.secao_faq_visivel,
+    artigos: site.secao_artigos_visivel,
+  }
+  const NAV_ITEMS = [
+    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
+    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: flags.tratamentos },
+    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: flags.cursos },
+    { label: 'Equipe',             href: `${BASE}/equipe`, show: flags.equipe },
+    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+  ].filter(item => item.show)
+
   return (
     <header className="sticky top-0 z-40 shadow-sm">
       {/* Barra superior — compacta no mobile, completa no desktop */}
       <div className="bg-[#0EA5A0] text-white text-xs px-4 sm:px-6 py-2 flex items-center justify-between gap-2">
-        <Link
-          href={`${BASE}/duvidas-frequentes`}
-          className="font-semibold uppercase tracking-wide hover:underline hidden sm:block"
-        >
-          Dúvidas Frequentes
-        </Link>
-        <div className="flex items-center gap-3 sm:gap-5 flex-wrap">
+        {flags.faq && (
+          <Link
+            href={`${BASE}/duvidas-frequentes`}
+            className="font-semibold uppercase tracking-wide hover:underline hidden sm:block"
+          >
+            Dúvidas Frequentes
+          </Link>
+        )}
+        <div className="flex items-center gap-3 sm:gap-5 flex-wrap ml-auto">
           {site.telefone && (
             <a href={`tel:${site.telefone.replace(/\D/g,'')}`} className="hover:opacity-80 flex items-center gap-1">
               <span>📞</span>
@@ -60,8 +71,15 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
 
       {/* Menu principal */}
       <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        <Link href={BASE} className="font-display font-bold text-base sm:text-lg text-[#0B2B3C] flex-shrink-0 truncate max-w-[160px] sm:max-w-none">
-          {site.business_name}
+        <Link href={BASE} className="flex-shrink-0 flex items-center max-w-[160px] sm:max-w-none">
+          {site.logo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={site.logo_url} alt={site.business_name} className="h-9 sm:h-11 w-auto object-contain" />
+          ) : (
+            <span className="font-display font-bold text-base sm:text-lg text-[#0B2B3C] truncate">
+              {site.business_name}
+            </span>
+          )}
         </Link>
 
         {/* Itens desktop */}
@@ -86,7 +104,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
             Marcar consulta
           </Link>
           {/* Hambúrguer — só aparece quando o menu de itens está oculto */}
-          <MobileMenu />
+          <MobileMenu flags={flags} />
         </div>
       </nav>
     </header>

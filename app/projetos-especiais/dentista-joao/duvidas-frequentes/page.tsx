@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
+import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 import Reveal from '@/components/dentista-joao/Reveal'
 import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 
@@ -13,6 +14,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DuvidasFrequentesPage() {
   const site = await getSiteEspecial()
+
+  if (!site.secao_faq_visivel) {
+    return (
+      <PageShell site={site}>
+        <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
+        <SecaoOcultaAviso />
+      </PageShell>
+    )
+  }
   const supabase = await createClient()
 
   const { data: faq } = await supabase

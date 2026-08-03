@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertTratamentoInline, deleteTratamentoInline, type TratamentoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Tratamento {
@@ -42,7 +43,7 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/90 via-[#0B2B3C]/20 to-transparent pointer-events-none" />
 
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className={`absolute bottom-0 left-0 right-0 p-4 ${!readOnly ? 'pb-14' : ''}`}>
         <EditableText
           as="p" readOnly={readOnly} value={t.titulo} placeholder="Nome do tratamento"
           className="font-display font-bold text-white text-sm leading-snug drop-shadow block"
@@ -56,16 +57,16 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
       </div>
 
       {!readOnly && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 right-2 z-20 flex gap-1">
           <button onClick={() => setExpandido(x => !x)}
-            className="w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 text-white text-xs flex items-center justify-center backdrop-blur-sm" title="Mais detalhes">
+            className="w-8 h-8 rounded-full bg-black/60 hover:bg-black/80 text-white text-sm flex items-center justify-center backdrop-blur-sm" title="Mais detalhes">
             ⚙
           </button>
           {confirmar ? (
-            <button onClick={() => onDelete(t.id)} className="text-[10px] font-bold bg-red-500 text-white px-2 rounded-full">Confirmar?</button>
+            <button onClick={() => onDelete(t.id)} className="text-[11px] font-bold bg-red-500 text-white px-2.5 rounded-full">Confirmar?</button>
           ) : (
-            <button onClick={() => setConfirmar(true)} onBlur={() => setConfirmar(false)}
-              className="w-7 h-7 rounded-full bg-black/50 hover:bg-red-500 text-white text-xs flex items-center justify-center backdrop-blur-sm">✕</button>
+            <button onClick={() => setConfirmar(true)}
+              className="w-8 h-8 rounded-full bg-black/60 hover:bg-red-500 text-white text-sm flex items-center justify-center backdrop-blur-sm">✕</button>
           )}
         </div>
       )}
@@ -126,8 +127,8 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, readOnly }: {
-  siteId: string; tratamentosIniciais: Tratamento[]; readOnly: boolean
+export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, readOnly, visivel }: {
+  siteId: string; tratamentosIniciais: Tratamento[]; readOnly: boolean; visivel: boolean
 }) {
   const [itens, setItens] = useState(tratamentosIniciais)
   const [adicionando, setAdicionando] = useState(false)
@@ -143,6 +144,7 @@ export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, 
   return (
     <section className="px-6 py-14 bg-[#0EA5A0]">
       <div className="max-w-5xl mx-auto">
+        <VisibilidadeSecaoToggle siteId={siteId} campo="secao_tratamentos_visivel" visivel={visivel} readOnly={readOnly} />
         <h2 className="font-display font-extrabold text-2xl text-white text-center mb-2">
           Áreas de <strong>Atuação</strong>
         </h2>

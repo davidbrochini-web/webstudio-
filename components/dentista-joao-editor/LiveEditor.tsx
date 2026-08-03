@@ -20,6 +20,7 @@ interface SiteDados {
   hero_title: string | null
   hero_sub: string | null
   hero_imagem_url: string | null
+  logo_url: string | null
   telefone: string | null
   whatsapp: string | null
   instagram_handle: string | null
@@ -28,6 +29,10 @@ interface SiteDados {
   missao: string | null
   visao: string | null
   valores: string | null
+  secao_tratamentos_visivel: boolean
+  secao_cursos_visivel: boolean
+  secao_equipe_visivel: boolean
+  secao_faq_visivel: boolean
 }
 
 // Mesma ordem e nomes do menu real do site (components/dentista-joao/SiteNav.tsx)
@@ -126,6 +131,7 @@ export default function LiveEditor({
               siteId={site.id}
               businessName={site.business_name}
               tagline={site.tagline || ''}
+              logoUrl={site.logo_url}
               foto={fotos[0] ?? null}
               readOnly={readOnly}
             />
@@ -198,19 +204,19 @@ export default function LiveEditor({
         )}
 
         {pagina === 'tratamentos' && (
-          <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} />
+          <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} visivel={site.secao_tratamentos_visivel} />
         )}
 
         {pagina === 'cursos' && (
-          <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} />
+          <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} visivel={site.secao_cursos_visivel} />
         )}
 
         {pagina === 'equipe' && (
-          <EquipeSectionEditor siteId={site.id} equipeInicial={equipe} readOnly={readOnly} />
+          <EquipeSectionEditor siteId={site.id} equipeInicial={equipe} readOnly={readOnly} visivel={site.secao_equipe_visivel} />
         )}
 
         {pagina === 'faq' && (
-          <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} />
+          <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} visivel={site.secao_faq_visivel} />
         )}
 
         {pagina === 'contato' && (

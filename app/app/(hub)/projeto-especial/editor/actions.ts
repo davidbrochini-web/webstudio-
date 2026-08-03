@@ -23,7 +23,7 @@ function friendlyError(error: { message: string; code?: string }): string {
 
 // ── Campos diretos da tabela sites ──────────────────────────────
 const ALLOWED_SITE_FIELDS = [
-  'business_name', 'tagline', 'hero_title', 'hero_sub', 'hero_imagem_url',
+  'business_name', 'tagline', 'hero_title', 'hero_sub', 'hero_imagem_url', 'logo_url',
   'telefone', 'whatsapp', 'instagram_handle', 'endereco', 'status',
   'missao', 'visao', 'valores',
 ] as const
@@ -37,6 +37,23 @@ export async function updateSiteFieldPE(siteId: string, field: SiteField, value:
   // usado como link cru — o link tel: já limpa na hora de renderizar)
   const cleanValue = field === 'whatsapp' ? value.replace(/\D/g, '') : value
   const { error } = await supabase.from('sites').update({ [field]: cleanValue }).eq('id', siteId)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+}
+
+// ── Visibilidade por seção (oculta do menu/Home/página sem apagar
+// o conteúdo — pedido: dar tempo de alimentar uma área aos poucos
+// sem ela ficar exposta no site) ────────────────────────────────
+const SECOES_TOGGLE = [
+  'secao_tratamentos_visivel', 'secao_cursos_visivel', 'secao_equipe_visivel',
+  'secao_faq_visivel', 'secao_artigos_visivel',
+] as const
+type SecaoToggle = typeof SECOES_TOGGLE[number]
+
+export async function toggleSecaoVisivel(siteId: string, campo: SecaoToggle, visivel: boolean) {
+  if (!SECOES_TOGGLE.includes(campo)) throw new Error('Seção inválida.')
+  const supabase = await createClient()
+  const { error } = await supabase.from('sites').update({ [campo]: visivel }).eq('id', siteId)
   if (error) throw new Error(error.message)
   revalidateAll()
 }

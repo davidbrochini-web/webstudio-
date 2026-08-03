@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
+import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertFaqInline, deleteFaqInline, type FaqData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Faq { id: string; pergunta: string; resposta: string; categoria: string | null }
 
-export default function FaqSectionEditor({ siteId, faqIniciais, readOnly }: {
-  siteId: string; faqIniciais: Faq[]; readOnly: boolean
+export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visivel }: {
+  siteId: string; faqIniciais: Faq[]; readOnly: boolean; visivel: boolean
 }) {
   const [itens, setItens] = useState(faqIniciais)
   const [aberto, setAberto] = useState<string | null>(itens[0]?.id ?? null)
@@ -31,6 +32,7 @@ export default function FaqSectionEditor({ siteId, faqIniciais, readOnly }: {
   return (
     <section className="px-5 sm:px-6 py-16 bg-slate-50">
       <div className="max-w-3xl mx-auto">
+        <VisibilidadeSecaoToggle siteId={siteId} campo="secao_faq_visivel" visivel={visivel} readOnly={readOnly} />
         <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2 text-center">Tire suas dúvidas</p>
         <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B2B3C] mb-2 text-center">Dúvidas Frequentes</h2>
         <p className="text-center text-slate-400 text-xs mb-8">Aparece na Home e na página Dúvidas Frequentes</p>

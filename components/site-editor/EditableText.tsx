@@ -68,14 +68,16 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
             value={draft}
             onChange={e => setDraft(e.target.value)}
             rows={4}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 resize-none text-current`}
+            style={{ color: '#0B2B3C' }}
+            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 resize-none`}
           />
         ) : (
           <input
             ref={inputRef}
             value={draft}
             onChange={e => setDraft(e.target.value)}
-            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5 text-current`}
+            style={{ color: '#0B2B3C' }}
+            className={`${className} w-full bg-white outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5`}
           />
         )}
         <span className="flex items-center gap-2 mt-1.5">

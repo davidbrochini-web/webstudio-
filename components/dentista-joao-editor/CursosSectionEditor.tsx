@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertCursoInline, deleteCursoInline, type CursoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Curso {
@@ -107,8 +108,8 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly }: {
-  siteId: string; cursosIniciais: Curso[]; readOnly: boolean
+export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, visivel }: {
+  siteId: string; cursosIniciais: Curso[]; readOnly: boolean; visivel: boolean
 }) {
   const [itens, setItens] = useState(cursosIniciais)
   const [adicionando, setAdicionando] = useState(false)
@@ -123,6 +124,7 @@ export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly }
 
   return (
     <section className="px-6 py-14 max-w-5xl mx-auto">
+      <VisibilidadeSecaoToggle siteId={siteId} campo="secao_cursos_visivel" visivel={visivel} readOnly={readOnly} />
       <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
         Agenda de <strong>Cursos e Palestras</strong>
       </h2>

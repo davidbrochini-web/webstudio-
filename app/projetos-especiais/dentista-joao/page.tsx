@@ -20,13 +20,20 @@ export default async function HomePage() {
   const site = await getSiteEspecial()
   const supabase = await createClient()
 
-  const [{ data: tratamentos }, { data: faqPrevia }, { data: cursos }, { data: artigos }, { data: fotos }] = await Promise.all([
+  const [{ data: tratamentosRaw }, { data: faqPreviaRaw }, { data: cursosRaw }, { data: artigosRaw }, { data: fotos }] = await Promise.all([
     supabase.from('site_tratamentos').select('slug, titulo, descricao_curta, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(6),
     supabase.from('site_faq').select('pergunta, resposta').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_cursos_eventos').select('slug, titulo, descricao, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_blog_posts').select('slug, titulo, resumo, capa_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(1),
   ])
+
+  // Seção marcada como oculta no painel (VisibilidadeSecaoToggle) some da
+  // Home também — os dados continuam no banco, só a prévia não aparece.
+  const tratamentos = site.secao_tratamentos_visivel ? tratamentosRaw : []
+  const faqPrevia = site.secao_faq_visivel ? faqPreviaRaw : []
+  const cursos = site.secao_cursos_visivel ? cursosRaw : []
+  const artigos = site.secao_artigos_visivel ? artigosRaw : []
 
   const jsonLd = {
     '@context': 'https://schema.org',
