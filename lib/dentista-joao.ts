@@ -70,4 +70,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
  *  e o sitemap.ts do projeto só emite URLs quando true). */
 export const SITE_INDEXAVEL = false
 
-export const SITE_URL_BASE = `https://omnidesign.com.br/projetos-especiais/${SITE_SLUG}`
+export const SITE_URL_BASE = `https://drjoaobucomaxilofacial.com.br`
+// Domínio próprio ativo desde 05/08/2026 (DNS + SSL confirmados,
+// rewrite no proxy.ts deixa a URL limpa — sem /projetos-especiais/...).
+// Se o domínio mudar de novo, só essa linha precisa mudar.

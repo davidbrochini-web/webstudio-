@@ -1,13 +1,17 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: 'Equipe' }
+  return {
+    title: 'Equipe',
+    description: `Conheça a equipe da ${site.business_name}: formação, especialidades e experiência de quem vai cuidar do seu sorriso.`,
+    alternates: { canonical: `${SITE_URL_BASE}/equipe` },
+  }
 }
 
 export default async function EquipePage() {

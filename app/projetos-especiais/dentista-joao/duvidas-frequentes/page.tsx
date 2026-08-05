@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
@@ -8,8 +8,11 @@ import Reveal from '@/components/dentista-joao/Reveal'
 import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = await getSiteEspecial()
-  return { title: 'Dúvidas Frequentes' }
+  return {
+    title: 'Dúvidas Frequentes',
+    description: 'Tire suas dúvidas sobre tratamentos, agendamento e cuidados odontológicos.',
+    alternates: { canonical: `${SITE_URL_BASE}/duvidas-frequentes` },
+  }
 }
 
 export default async function DuvidasFrequentesPage() {

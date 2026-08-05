@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 
 async function getPost(siteId: string, slug: string) {
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: post.meta_titulo ? { absolute: post.meta_titulo } : post.titulo,
     description: post.meta_descricao || post.resumo,
+    alternates: { canonical: `${SITE_URL_BASE}/artigos/${slug}` },
     openGraph: post.imagem_og ? { images: [post.imagem_og] } : undefined,
   }
 }

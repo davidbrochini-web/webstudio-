@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: site.business_name },
     description: site.tagline ?? undefined,
+    alternates: { canonical: SITE_URL_BASE },
   }
 }
 

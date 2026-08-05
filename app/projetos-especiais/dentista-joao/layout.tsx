@@ -14,6 +14,7 @@ import { getSiteEspecial, SITE_INDEXAVEL, SITE_URL_BASE } from '@/lib/dentista-j
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
   return {
+    metadataBase: new URL(SITE_URL_BASE),
     title: {
       default: site.business_name,
       template: `%s — ${site.business_name}`,
@@ -25,6 +26,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: site.business_name,
       type: 'website',
       locale: 'pt_BR',
+      url: SITE_URL_BASE,
+      ...(site.hero_imagem_url ? { images: [site.hero_imagem_url] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: site.business_name,
+      ...(site.tagline ? { description: site.tagline } : {}),
       ...(site.hero_imagem_url ? { images: [site.hero_imagem_url] } : {}),
     },
   }

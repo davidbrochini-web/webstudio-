@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 
 async function getTratamento(siteId: string, slug: string) {
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: tratamento.meta_titulo ? { absolute: tratamento.meta_titulo } : tratamento.titulo,
     description: tratamento.meta_descricao || tratamento.descricao_curta,
+    alternates: { canonical: `${SITE_URL_BASE}/tratamentos/${slug}` },
     openGraph: tratamento.imagem_og ? { images: [tratamento.imagem_og] } : undefined,
   }
 }

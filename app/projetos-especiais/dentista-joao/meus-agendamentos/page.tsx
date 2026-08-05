@@ -5,7 +5,11 @@ import PageBanner from '@/components/dentista-joao/PageBanner'
 import MeusAgendamentos from '@/components/dentista-joao/MeusAgendamentos'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'Meus Agendamentos' }
+  return {
+    title: 'Meus Agendamentos',
+    description: 'Consulte ou cancele seu agendamento.',
+    robots: { index: false, follow: true },
+  }
 }
 
 export default async function MeusAgendamentosPage() {
