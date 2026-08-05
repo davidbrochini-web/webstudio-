@@ -1,7 +1,26 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Domínios customizados dos Projetos Especiais → rewrite transparente
+// pra dentro do path real do site na app Next.js. Usa rewrite (não
+// redirect) pra manter a URL limpa no browser do paciente.
+const DOMAIN_MAP: Record<string, string> = {
+  'drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
+  'www.drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
+}
+
 export async function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl
+  const host = request.headers.get('host')?.replace(/:\d+$/, '') ?? ''
+
+  // ── Domínio customizado: rewrite pra dentro do projeto especial ──
+  const basePath = DOMAIN_MAP[host]
+  if (basePath && !pathname.startsWith(basePath) && !pathname.startsWith('/app') && !pathname.startsWith('/_next') && !pathname.startsWith('/api') && !pathname.includes('.')) {
+    const dest = new URL(`${basePath}${pathname === '/' ? '' : pathname}${search}`, request.url)
+    return NextResponse.rewrite(dest)
+  }
+
+  // ── Auth: protege /app e /admin ──────────────────────────────────
   let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -55,5 +74,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/app/:path*', '/login'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
