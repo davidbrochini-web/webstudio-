@@ -1,14 +1,17 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = await getSiteEspecial()
-  return { title: 'Cursos e Eventos' }
+  return {
+    title: 'Cursos e Eventos',
+    description: 'Confira os próximos cursos, palestras e eventos sobre saúde bucal promovidos pela clínica.',
+    alternates: { canonical: `${SITE_URL_BASE}/cursos-e-eventos` },
+  }
 }
 
 export default async function CursosEventosPage() {

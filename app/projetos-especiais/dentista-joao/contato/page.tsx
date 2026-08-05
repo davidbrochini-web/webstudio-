@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getSiteEspecial, formatTelefoneExibicao } from '@/lib/dentista-joao'
+import { getSiteEspecial, formatTelefoneExibicao, SITE_URL_BASE } from '@/lib/dentista-joao'
 import { getAgendamentoData } from '@/lib/agendamento-public'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
@@ -7,7 +7,12 @@ import AgendamentoForm from '@/components/dentista-joao/AgendamentoForm'
 import ContatoForm from '@/components/dentista-joao/ContatoForm'
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'Contato' }
+  const site = await getSiteEspecial()
+  return {
+    title: 'Contato',
+    description: `Entre em contato com a ${site.business_name} ou agende sua consulta direto pelo site.`,
+    alternates: { canonical: `${SITE_URL_BASE}/contato` },
+  }
 }
 
 export default async function ContatoPage() {

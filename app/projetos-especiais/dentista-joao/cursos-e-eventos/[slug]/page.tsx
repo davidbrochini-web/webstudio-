@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 
 async function getCursoEvento(siteId: string, slug: string) {
@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: item.meta_titulo ? { absolute: item.meta_titulo } : item.titulo,
     description: item.meta_descricao || item.descricao.slice(0, 160),
+    alternates: { canonical: `${SITE_URL_BASE}/cursos-e-eventos/${slug}` },
     openGraph: item.imagem_og ? { images: [item.imagem_og] } : undefined,
   }
 }

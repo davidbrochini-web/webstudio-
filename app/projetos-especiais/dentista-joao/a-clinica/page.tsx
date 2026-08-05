@@ -1,13 +1,17 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import Reveal from '@/components/dentista-joao/Reveal'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
-  return { title: 'A Clínica' }
+  return {
+    title: 'A Clínica',
+    description: site.tagline || `Conheça a ${site.business_name}: nossa missão, valores e a estrutura pensada pra cuidar do seu sorriso.`,
+    alternates: { canonical: `${SITE_URL_BASE}/a-clinica` },
+  }
 }
 
 export default async function AClinicaPage() {

@@ -1,15 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 import Reveal from '@/components/dentista-joao/Reveal'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = await getSiteEspecial()
-  return { title: 'Tratamentos' }
+  return {
+    title: 'Tratamentos',
+    description: 'Conheça os tratamentos odontológicos oferecidos, incluindo cirurgia e traumatologia bucomaxilofacial, implantes e mais.',
+    alternates: { canonical: `${SITE_URL_BASE}/tratamentos` },
+  }
 }
 
 export default async function TratamentosPage() {
