@@ -12,9 +12,17 @@ const BASE = '/projetos-especiais/casos-esquecidos'
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export async function generateStaticParams() {
-  const site = await getSiteEspecial()
-  const contos = await getAllContos(site.id)
-  return contos.map(c => ({ slug: c.slug }))
+  // Defensivo: se as env vars do Supabase não estiverem disponíveis no
+  // ambiente de build (ex: CI sem os secrets configurados), não trava o
+  // build — as páginas simplesmente renderizam sob demanda no primeiro
+  // acesso e entram no cache do ISR a partir daí (mesmo efeito prático).
+  try {
+    const site = await getSiteEspecial()
+    const contos = await getAllContos(site.id)
+    return contos.map(c => ({ slug: c.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
