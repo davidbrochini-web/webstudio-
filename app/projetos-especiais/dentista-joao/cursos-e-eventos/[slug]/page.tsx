@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 
 async function getCursoEvento(siteId: string, slug: string) {
@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CursoEventoDetalhePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const item = await getCursoEvento(site.id, slug)
   if (!item) notFound()
 
@@ -67,7 +68,7 @@ export default async function CursoEventoDetalhePage({ params }: { params: Promi
         <div className="text-center pt-4 border-t border-slate-100">
           <p className="text-slate-500 text-sm mb-4">Interessado em participar ou tem dúvidas?</p>
           <a
-            href={`/projetos-especiais/dentista-joao/contato`}
+            href={`${base}/contato`}
             className="inline-block bg-[var(--dj-secondary)] hover:bg-[var(--dj-primary)] text-white font-bold px-6 py-3 rounded-full text-sm transition-colors"
           >
             Falar com a clínica

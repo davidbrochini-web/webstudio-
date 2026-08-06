@@ -1,20 +1,23 @@
 import Link from 'next/link'
 
-const BASE = '/projetos-especiais/dentista-joao'
-
 /**
  * Banner das inner pages com breadcrumb (Home › [páginas] › atual).
  * `crumbs` são os níveis intermediários opcionais (ex: página de
  * detalhe de tratamento passa [{label:'Tratamentos', href:...}]).
+ * `base` vem de cada page.tsx (via getBasePath()) — garante que o link
+ * "Home" do breadcrumb segue a mesma regra de URL limpa que o resto do
+ * site (sem vazar /projetos-especiais/dentista-joao no domínio próprio).
  */
 export default function PageBanner({
   title,
   imageUrl,
   crumbs = [],
+  base,
 }: {
   title: string
   imageUrl?: string | null
   crumbs?: { label: string; href: string }[]
+  base: string
 }) {
   return (
     <section className="relative px-5 sm:px-6 py-16 sm:py-24 text-center overflow-hidden">
@@ -30,7 +33,7 @@ export default function PageBanner({
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--dj-secondary)]/85 to-[var(--dj-secondary)]/75" />
       <div className="relative hero-text-enter">
         <nav aria-label="breadcrumb" className="mb-3 text-xs sm:text-sm text-white/70">
-          <Link href={BASE} className="hover:text-white transition-colors">Home</Link>
+          <Link href={base || '/'} className="hover:text-white transition-colors">Home</Link>
           {crumbs.map(c => (
             <span key={c.href}>
               <span className="mx-2">›</span>

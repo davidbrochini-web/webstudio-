@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
@@ -17,11 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DuvidasFrequentesPage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
 
   if (!site.secao_faq_visivel) {
     return (
       <PageShell site={site}>
-        <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
+        <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} base={base} />
         <SecaoOcultaAviso />
       </PageShell>
     )
@@ -55,7 +56,7 @@ export default async function DuvidasFrequentesPage() {
   return (
     <PageShell site={site}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="Dúvidas Frequentes" imageUrl={site.hero_imagem_url} base={base} />
 
       {!faq?.length ? (
         <p className="text-center text-slate-500 py-16">Nenhuma dúvida cadastrada ainda.</p>

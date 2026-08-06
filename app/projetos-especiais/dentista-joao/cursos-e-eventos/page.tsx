@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
@@ -16,11 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CursosEventosPage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
 
   if (!site.secao_cursos_visivel) {
     return (
       <PageShell site={site}>
-        <PageBanner title="Cursos e Eventos" imageUrl={site.hero_imagem_url} />
+        <PageBanner title="Cursos e Eventos" imageUrl={site.hero_imagem_url} base={base} />
         <SecaoOcultaAviso />
       </PageShell>
     )
@@ -37,14 +38,14 @@ export default async function CursosEventosPage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="Cursos e Eventos" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="Cursos e Eventos" imageUrl={site.hero_imagem_url} base={base} />
       <section className="px-6 py-16 max-w-5xl mx-auto">
         {!itens?.length ? (
           <p className="text-slate-500">Nenhum curso ou evento publicado ainda.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {itens.map(c => (
-              <Link key={c.slug} href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] transition-colors">
+              <Link key={c.slug} href={`${base}/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] transition-colors">
                 {c.imagem_url && <img src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover" />}
                 <div className="p-5">
                   {c.data_evento && (

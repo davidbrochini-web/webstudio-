@@ -2,9 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Conto } from '@/lib/casos-esquecidos'
 
-const BASE = '/projetos-especiais/casos-esquecidos'
-
-export default function CaseCard({ conto, prefix = `${BASE}/contos`, priority = false }: { conto: Conto; prefix?: string; priority?: boolean }) {
+export default function CaseCard({ conto, prefix, priority = false }: { conto: Conto; prefix: string; priority?: boolean }) {
   // src relativo/absoluto vai direto pro Image — next/image resolve
   // caminho relativo (contos 001-006) contra o host atual sem problema.
   // imagemAbsoluta() é só pra metadata/OG, que exige URL totalmente

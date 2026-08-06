@@ -6,11 +6,10 @@ import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import { getAllContos, getCasosAgendados } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
-const BASE = '/projetos-especiais/casos-esquecidos'
 export const POR_PAGINA = 13
 
-export function hrefDaPagina(n: number): string {
-  return n <= 1 ? `${BASE}/contos` : `${BASE}/contos/pagina/${n}`
+function hrefDaPagina(base: string, n: number): string {
+  return n <= 1 ? `${base}/contos` : `${base}/contos/pagina/${n}`
 }
 
 function formatarDataAbertura(iso: string): string {
@@ -19,7 +18,7 @@ function formatarDataAbertura(iso: string): string {
   })
 }
 
-export default async function ContosArchive({ siteId, pagina }: { siteId: string; pagina: number }) {
+export default async function ContosArchive({ siteId, pagina, base }: { siteId: string; pagina: number; base: string }) {
   const [contos, agendados] = await Promise.all([
     getAllContos(siteId),
     getCasosAgendados(siteId),
@@ -48,7 +47,7 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
-      <Header />
+      <Header base={base} />
       <section>
         <div className="container">
           <div className="section-head">
@@ -58,7 +57,7 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
           </div>
           <div className="tema-nav" aria-label="Temas">
             {getAllTemas().map(t => (
-              <Link key={t.slug} href={`${BASE}/contos/tema/${t.slug}`} className="tema-tag">{t.nomeCurto}</Link>
+              <Link key={t.slug} href={`${base}/contos/tema/${t.slug}`} className="tema-tag">{t.nomeCurto}</Link>
             ))}
           </div>
           <div className="case-grid">
@@ -74,7 +73,7 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
               </article>
             ))}
             {contosPagina.map(conto => (
-              <CaseCard key={conto.id} conto={conto} />
+              <CaseCard key={conto.id} conto={conto} prefix={`${base}/contos`} />
             ))}
             {ehUltimaPagina && agendadosOrdenados.length === 0 && (
               <article className="case-card locked">
@@ -94,11 +93,11 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
               <p className="pagination-note">13 casos por página. Não foi coincidência.</p>
               <div className="pagination-links">
                 {paginaAtual > 1 && (
-                  <Link href={hrefDaPagina(paginaAtual - 1)} className="btn btn-ghost">&larr; Anterior</Link>
+                  <Link href={hrefDaPagina(base, paginaAtual - 1)} className="btn btn-ghost">&larr; Anterior</Link>
                 )}
                 <span className="pagination-status">Página {paginaAtual} de {totalPaginas}</span>
                 {paginaAtual < totalPaginas && (
-                  <Link href={hrefDaPagina(paginaAtual + 1)} className="btn btn-ghost">Próxima &rarr;</Link>
+                  <Link href={hrefDaPagina(base, paginaAtual + 1)} className="btn btn-ghost">Próxima &rarr;</Link>
                 )}
               </div>
             </nav>
@@ -115,7 +114,7 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
               <p style={{ color: 'var(--paper-dim)', marginTop: '0.75rem' }}>Os contos são gratuitos, mas levam tempo pra escrever. Compre o livro na Amazon ou faça uma doação via Pix.</p>
               <div className="hero-actions" style={{ marginTop: '1.5rem' }}>
                 <a className="btn btn-primary" href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Comprar o livro</a>
-                <Link className="btn btn-ghost" href={`${BASE}#apoio`}>Apoiar via Pix</Link>
+                <Link className="btn btn-ghost" href={`${base}#apoio`}>Apoiar via Pix</Link>
               </div>
             </div>
             <div className="qr-frame">
@@ -125,7 +124,7 @@ export default async function ContosArchive({ siteId, pagina }: { siteId: string
         </div>
       </section>
 
-      <Footer />
+      <Footer base={base} />
     </>
   )
 }

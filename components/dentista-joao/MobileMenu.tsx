@@ -5,8 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IconLogin } from '@/components/dentista-joao/icons'
 
-const BASE = '/projetos-especiais/dentista-joao'
-
 interface Flags {
   tratamentos: boolean
   cursos: boolean
@@ -15,21 +13,25 @@ interface Flags {
   artigos: boolean
 }
 
-export default function MobileMenu({ flags }: { flags: Flags }) {
+export default function MobileMenu({ flags, base }: { flags: Flags; base: string }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
   // Seção marcada como oculta (VisibilidadeSecaoToggle no painel) some
   // do menu — mas continua existindo no banco, só não aparece no site.
+  // `match` é sempre relativo (sem o prefixo interno) — usado só pra
+  // destacar o item ativo, funciona independente de `usePathname()`
+  // devolver o path interno ou o externo (o rewrite do proxy.ts se
+  // comporta diferente dependendo da versão/config do Next).
   const NAV_ITEMS = [
-    { label: 'Início',             href: BASE, show: true },
-    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
-    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: flags.tratamentos },
-    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: flags.cursos },
-    { label: 'Equipe',             href: `${BASE}/equipe`, show: flags.equipe },
-    { label: 'Dúvidas Frequentes', href: `${BASE}/duvidas-frequentes`, show: flags.faq },
-    { label: 'Artigos',            href: `${BASE}/artigos`, show: flags.artigos },
-    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+    { label: 'Início',             href: base || '/', match: '/', show: true },
+    { label: 'A Clínica',          href: `${base}/a-clinica`, match: '/a-clinica', show: true },
+    { label: 'Tratamentos',        href: `${base}/tratamentos`, match: '/tratamentos', show: flags.tratamentos },
+    { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, match: '/cursos-e-eventos', show: flags.cursos },
+    { label: 'Equipe',             href: `${base}/equipe`, match: '/equipe', show: flags.equipe },
+    { label: 'Dúvidas Frequentes', href: `${base}/duvidas-frequentes`, match: '/duvidas-frequentes', show: flags.faq },
+    { label: 'Artigos',            href: `${base}/artigos`, match: '/artigos', show: flags.artigos },
+    { label: 'Contato',            href: `${base}/contato`, match: '/contato', show: true },
   ].filter(item => item.show)
 
   return (
@@ -72,7 +74,12 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
         {/* Itens do menu */}
         <div className="flex-1 overflow-y-auto py-4">
           {NAV_ITEMS.map(item => {
-            const active = pathname === item.href
+            // Normaliza o pathname atual removendo o prefixo interno (se vier
+            // assim) antes de comparar — funciona tanto no domínio próprio
+            // (pathname já limpo) quanto no fallback .vercel.app (pathname
+            // com o prefixo completo).
+            const currentPath = (pathname || '/').replace('/projetos-especiais/dentista-joao', '') || '/'
+            const active = currentPath === item.match
             return (
               <Link
                 key={item.href}
@@ -93,14 +100,14 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
         {/* CTA no drawer */}
         <div className="p-5 border-t border-slate-100 flex flex-col gap-3">
           <Link
-            href={`${BASE}/contato`}
+            href={`${base}/contato`}
             onClick={() => setOpen(false)}
             className="block w-full text-center bg-[var(--dj-primary)] text-white font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-opacity"
           >
             Marcar Uma Consulta
           </Link>
           <Link
-            href={`${BASE}/login`}
+            href={`${base}/login`}
             onClick={() => setOpen(false)}
             className="w-full flex items-center justify-center gap-1.5 text-slate-500 text-sm font-medium py-1 hover:text-[var(--dj-secondary)] transition-colors"
           >

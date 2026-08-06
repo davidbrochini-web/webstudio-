@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getSiteEspecial, formatTelefoneExibicao, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, formatTelefoneExibicao, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import { getAgendamentoData } from '@/lib/agendamento-public'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
@@ -17,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContatoPage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const agData = await getAgendamentoData(site.id)
   const mapsQuery = site.endereco ? encodeURIComponent(site.endereco) : null
   const waLink = site.whatsapp ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}` : null
@@ -24,7 +25,7 @@ export default async function ContatoPage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="Contato" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="Contato" imageUrl={site.hero_imagem_url} base={base} />
 
       {/* Agendamento com slots reais — só aparece se a agenda estiver configurada */}
       {temAgenda && (

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import { texto } from '@/lib/textos-customizados'
 import PageShell from '@/components/dentista-joao/PageShell'
 import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/HeroCarousel'
@@ -20,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const supabase = await createClient()
 
   const [{ data: tratamentosRaw }, { data: faqPreviaRaw }, { data: cursosRaw }, { data: artigosRaw }, { data: fotos }] = await Promise.all([
@@ -63,14 +64,14 @@ export default async function HomePage() {
       subtitulo: site.hero_sub || '',
       imagem_url: site.hero_imagem_url || HERO_FALLBACK,
       ctaLabel: 'Marcar consulta',
-      ctaHref: '/projetos-especiais/dentista-joao/contato',
+      ctaHref: `${base}/contato`,
     },
     ...(tratamentos ?? []).slice(0, 2).map((t): CarouselSlide => ({
       titulo: t.titulo,
       subtitulo: t.descricao_curta,
       imagem_url: t.imagem_url,
       ctaLabel: 'Saiba Mais',
-      ctaHref: `/projetos-especiais/dentista-joao/tratamentos/${t.slug}`,
+      ctaHref: `${base}/tratamentos/${t.slug}`,
     })),
   ]
 
@@ -116,7 +117,7 @@ export default async function HomePage() {
             <p className="text-slate-500 leading-relaxed mb-6">
               {site.tagline || 'Conheça nossa filosofia de trabalho e nossa infraestrutura completa.'}
             </p>
-            <Link href="/projetos-especiais/dentista-joao/a-clinica" className="inline-block bg-[var(--dj-secondary)] text-white font-bold px-6 py-3 rounded-xl hover:bg-[var(--dj-primary)] transition-colors">
+            <Link href={`${base}/a-clinica`} className="inline-block bg-[var(--dj-secondary)] text-white font-bold px-6 py-3 rounded-xl hover:bg-[var(--dj-primary)] transition-colors">
               Conheça a Clínica
             </Link>
           </Reveal>
@@ -144,7 +145,7 @@ export default async function HomePage() {
                     className={i === 0 ? 'col-span-2 sm:col-span-1' : ''}
                   >
                     <Link
-                      href={`/projetos-especiais/dentista-joao/tratamentos/${t.slug}`}
+                      href={`${base}/tratamentos/${t.slug}`}
                       className="group relative block overflow-hidden rounded-2xl shadow-lg"
                     >
                       {/* Imagem de fundo */}
@@ -200,7 +201,7 @@ export default async function HomePage() {
             {cursos.map((c, i) => (
               <Link
                 key={c.slug}
-                href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`}
+                href={`${base}/cursos-e-eventos/${c.slug}`}
                 className="cursos-card group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] hover:shadow-lg transition-all flex-shrink-0 sm:flex-shrink sm:block"
               >
                 {c.imagem_url && (
@@ -220,7 +221,7 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="text-center">
-            <Link href="/projetos-especiais/dentista-joao/cursos-e-eventos" className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors">
+            <Link href={`${base}/cursos-e-eventos`} className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors">
               Ver todos os cursos e eventos
             </Link>
           </div>
@@ -242,7 +243,7 @@ export default async function HomePage() {
               </Reveal>
               <FaqAccordion itens={faqPrevia ?? []} />
               <div className="mt-8">
-                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors shadow-md">
+                <Link href={`${base}/duvidas-frequentes`} className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors shadow-md">
                   Ver todas as perguntas →
                 </Link>
               </div>
@@ -287,7 +288,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             {artigos.map((a, i) => (
               <Reveal key={a.slug} delay={i * 100}>
-                <Link href={`/projetos-especiais/dentista-joao/artigos/${a.slug}`} className="block group">
+                <Link href={`${base}/artigos/${a.slug}`} className="block group">
                   {a.capa_url && (
                     <div className="overflow-hidden rounded-2xl mb-3">
                       <img loading="lazy" decoding="async" src={a.capa_url} alt="" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -300,7 +301,7 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="text-center">
-            <Link href="/projetos-especiais/dentista-joao/artigos" className="inline-block border border-slate-200 text-[var(--dj-secondary)] font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-secondary)] hover:text-white transition-colors">
+            <Link href={`${base}/artigos`} className="inline-block border border-slate-200 text-[var(--dj-secondary)] font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-secondary)] hover:text-white transition-colors">
               Ver todos os artigos
             </Link>
           </div>
@@ -313,7 +314,7 @@ export default async function HomePage() {
           <h2 className="font-display font-extrabold text-2xl text-white mb-4">
             {texto(site.textos_customizados, 'home_cta_titulo', 'Vamos cuidar do seu sorriso?')}
           </h2>
-          <Link href="/projetos-especiais/dentista-joao/contato" className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
+          <Link href={`${base}/contato`} className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
             Marcar consulta
           </Link>
         </Reveal>

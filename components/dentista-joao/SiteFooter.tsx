@@ -4,18 +4,16 @@ import NewsletterForm from '@/components/dentista-joao/NewsletterForm'
 import Link from 'next/link'
 import { IconWhatsApp, IconInstagram } from '@/components/dentista-joao/icons'
 
-const BASE = '/projetos-especiais/dentista-joao'
-
-export default function SiteFooter({ site }: { site: SiteEspecial }) {
+export default function SiteFooter({ site, base }: { site: SiteEspecial; base: string }) {
   // Mesmo gate de visibilidade do SiteNav — seção oculta no painel
   // some do rodapé também.
   const LINKS = [
-    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
-    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: site.secao_tratamentos_visivel },
-    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: site.secao_cursos_visivel },
-    { label: 'Equipe',             href: `${BASE}/equipe`, show: site.secao_equipe_visivel },
-    { label: 'Dúvidas Frequentes', href: `${BASE}/duvidas-frequentes`, show: site.secao_faq_visivel },
-    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+    { label: 'A Clínica',          href: `${base}/a-clinica`, show: true },
+    { label: 'Tratamentos',        href: `${base}/tratamentos`, show: site.secao_tratamentos_visivel },
+    { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, show: site.secao_cursos_visivel },
+    { label: 'Equipe',             href: `${base}/equipe`, show: site.secao_equipe_visivel },
+    { label: 'Dúvidas Frequentes', href: `${base}/duvidas-frequentes`, show: site.secao_faq_visivel },
+    { label: 'Contato',            href: `${base}/contato`, show: true },
   ].filter(item => item.show)
 
   const waLink = site.whatsapp
@@ -37,7 +35,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
           Agende sua consulta e descubra o tratamento ideal para você.
         </p>
         <Link
-          href={`${BASE}/contato`}
+          href={`${base}/contato`}
           className="inline-block bg-white text-[var(--dj-secondary)] font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm"
         >
           Agendar Consulta →

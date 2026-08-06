@@ -4,9 +4,8 @@ import Image from 'next/image'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 
-const BASE = '/projetos-especiais/casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
@@ -35,6 +34,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const [recentContos, totalContos] = await Promise.all([
     getRecentContos(site.id, 3),
     getTotalContos(site.id),
@@ -78,7 +78,7 @@ export default async function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <Header />
+      <Header base={base} />
 
       <section id="contos" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
         <div className="container">
@@ -88,7 +88,7 @@ export default async function Home() {
             <p>Histórias curtas publicadas toda semana — contadas por quem sobreviveu, ou por quem não teve essa sorte.</p>
           </div>
 
-          <Link href={`${BASE}/contos`} className="archive-cta">
+          <Link href={`${base}/contos`} className="archive-cta">
             <span className="archive-cta-text">
               Não quer dormir essa noite?<br />
               <strong>{totalContos} casos</strong> estão abertos no arquivo.
@@ -98,11 +98,11 @@ export default async function Home() {
 
           <div className="case-grid">
             {recentContos.map((conto, i) => (
-              <CaseCard key={conto.id} conto={conto} priority={i === 0} />
+              <CaseCard key={conto.id} conto={conto} prefix={`${base}/contos`} priority={i === 0} />
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link className="btn btn-ghost" href={`${BASE}/contos`}>Ver todos os casos →</Link>
+            <Link className="btn btn-ghost" href={`${base}/contos`}>Ver todos os casos →</Link>
           </div>
         </div>
       </section>
@@ -117,7 +117,7 @@ export default async function Home() {
             </h2>
             <p className="hero-sub">Terror psicológico e investigação paranormal, escrito por D. Broch. Novos casos do universo publicados toda semana — de graça, aqui.</p>
             <div className="hero-actions">
-              <Link className="btn btn-primary" href={`${BASE}/contos`}>Ler os contos</Link>
+              <Link className="btn btn-primary" href={`${base}/contos`}>Ler os contos</Link>
               <a className="btn btn-ghost" href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Comprar o livro</a>
             </div>
           </div>
@@ -212,7 +212,7 @@ export default async function Home() {
             </details>
             <details className="faq-item">
               <summary>Com que frequência saem contos novos?</summary>
-              <p>Um novo conto de terror é publicado toda semana, sempre gratuito. O arquivo completo fica na <Link href={`${BASE}/contos`}>página de contos</Link>.</p>
+              <p>Um novo conto de terror é publicado toda semana, sempre gratuito. O arquivo completo fica na <Link href={`${base}/contos`}>página de contos</Link>.</p>
             </details>
           </div>
         </div>
@@ -239,7 +239,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <Footer />
+      <Footer base={base} />
     </>
   )
 }

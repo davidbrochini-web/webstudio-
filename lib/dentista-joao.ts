@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
+import { DOMAIN_MAP } from '@/lib/domain-map'
 
 /**
  * Projeto Especial #1 (HANDOFF_DEV_Projeto_Especial_01.md). Helper
@@ -71,6 +73,30 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
 }
 
 export const SITE_URL_BASE = `https://drjoaobucomaxilofacial.com.br`
+
+// Path interno onde as páginas realmente moram no Next.js.
+const INTERNAL_PATH = '/projetos-especiais/dentista-joao'
+
+/**
+ * Path a usar em TODO link interno do site (nav, footer, breadcrumbs,
+ * botões, cross-links entre páginas). No domínio próprio, retorna ''
+ * (string vazia) — o link fica limpo, ex: `${base}/tratamentos` vira
+ * simplesmente `/tratamentos`, sem vazar `/projetos-especiais/dentista-joao`
+ * pra URL que o visitante vê, pro Google indexar, ou pro sitemap.
+ * No domínio de fallback (*.vercel.app, sem o rewrite do proxy.ts),
+ * retorna o path interno completo, senão os links quebrariam lá.
+ *
+ * Importante: cada Server Component que monta um <Link href> precisa
+ * chamar isso (é barato — headers() é cacheado por request pelo Next).
+ * Client Components (ex: MobileMenu) recebem o valor já resolvido via
+ * prop, passado pelo Server Component pai.
+ */
+export async function getBasePath(): Promise<string> {
+  const h = await headers()
+  const host = h.get('host')?.replace(/:\d+$/, '') ?? ''
+  const isCustomDomain = Boolean(DOMAIN_MAP[host])
+  return isCustomDomain ? '' : INTERNAL_PATH
+}
 // Domínio próprio ativo desde 05/08/2026 (DNS + SSL confirmados,
 // rewrite no proxy.ts deixa a URL limpa — sem /projetos-especiais/...).
 // Se o domínio mudar de novo, só essa linha precisa mudar.

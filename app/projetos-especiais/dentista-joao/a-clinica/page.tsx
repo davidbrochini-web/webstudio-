@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import Reveal from '@/components/dentista-joao/Reveal'
@@ -16,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AClinicaPage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const supabase = await createClient()
 
   const { data: fotos } = await supabase
@@ -26,7 +27,7 @@ export default async function AClinicaPage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="A Clínica" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="A Clínica" imageUrl={site.hero_imagem_url} base={base} />
 
       {/* Sobre nós */}
       <section className="px-6 py-16 max-w-3xl mx-auto">

@@ -4,10 +4,9 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContosByTema, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContosByTema, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 import { getTema, getAllTemas } from '@/lib/temas-casos-esquecidos'
 
-const BASE = '/projetos-especiais/casos-esquecidos'
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export async function generateStaticParams() {
@@ -36,6 +35,7 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
   if (!tema) notFound()
 
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const contos = await getContosByTema(site.id, tema.slug)
 
   const breadcrumbSchema = {
@@ -51,11 +51,11 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <Header />
+      <Header base={base} />
       <section>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
-            <Link href={BASE}>Início</Link> <span>›</span> <Link href={`${BASE}/contos`}>Contos</Link> <span>›</span> <strong>{tema.nome}</strong>
+            <Link href={base || '/'}>Início</Link> <span>›</span> <Link href={`${base}/contos`}>Contos</Link> <span>›</span> <strong>{tema.nome}</strong>
           </nav>
           <div className="section-head">
             <span className="eyebrow">Arquivo de Casos — Grátis para ler</span>
@@ -67,17 +67,17 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
           </div>
           {contos.length > 0 ? (
             <div className="case-grid">
-              {contos.map(conto => <CaseCard key={conto.id} conto={conto} />)}
+              {contos.map(conto => <CaseCard key={conto.id} conto={conto} prefix={`${base}/contos`} />)}
             </div>
           ) : (
             <p style={{ color: 'var(--paper-dim)' }}>Nenhum caso arquivado neste tema ainda. Novos contos chegam toda semana.</p>
           )}
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link className="btn btn-ghost" href={`${BASE}/contos`}>Ver todos os contos de terror →</Link>
+            <Link className="btn btn-ghost" href={`${base}/contos`}>Ver todos os contos de terror →</Link>
           </div>
         </div>
       </section>
-      <Footer />
+      <Footer base={base} />
     </>
   )
 }
