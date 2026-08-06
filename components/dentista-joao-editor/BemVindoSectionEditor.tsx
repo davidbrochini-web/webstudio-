@@ -57,15 +57,15 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
           <div className="border-t border-slate-100 pt-5">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Logo do menu</p>
             <p className="text-xs text-slate-400 mb-3">
-              Por padrão o menu do site mostra o nome da clínica escrito. Suba um PNG aqui pra usar sua logo no lugar.
+              Por padrão o menu do site mostra o nome da clínica escrito. Suba um PNG aqui pra usar sua logo no lugar (formato quadrado — a barra do menu já está preparada pra esse formato, sem cortar a imagem).
             </p>
             <EditableImage
               src={logoUrl || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=60'}
               siteId={siteId}
               readOnly={readOnly}
-              className="w-40 h-16 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50"
+              className="w-24 h-24 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50"
               alt="Logo"
-              aspect={2.5}
+              aspect={1}
               badge={logoUrl ? undefined : 'Sem logo — mostrando nome'}
               onReplace={async (url) => {
                 setErro(null)
