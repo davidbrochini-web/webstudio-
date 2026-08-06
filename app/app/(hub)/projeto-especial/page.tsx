@@ -11,7 +11,7 @@ export default async function ProjetoEspecialHome() {
   // Contadores pra mostrar no dashboard
   const hoje = new Date(new Date().setHours(0,0,0,0)).toISOString()
   const [{ count: totalLeads }, { count: leadsHoje }, { count: totalArtigos }, { count: totalTratamentos },
-   { count: agHoje }, { count: agPendentes }] =
+   { count: agHoje }, { count: agPendentes }, { data: siteSeo }] =
     await Promise.all([
       supabase.from('site_leads').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId),
       supabase.from('site_leads').select('*', { count: 'exact', head: true })
@@ -25,6 +25,7 @@ export default async function ProjetoEspecialHome() {
         .neq('status', 'cancelado'),
       supabase.from('agendamentos').select('*', { count: 'exact', head: true })
         .eq('site_id', info.siteId).eq('status', 'pendente'),
+      supabase.from('sites').select('seo_indexavel').eq('id', info.siteId).single(),
     ])
 
   return (
@@ -131,6 +132,26 @@ export default async function ProjetoEspecialHome() {
               </>
             )}
             <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Configurar →</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/app/projeto-especial/seo"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-2xl p-7 transition-all hover:shadow-lg"
+        >
+          <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl mb-5">
+            🔍
+          </div>
+          <h2 className="font-display font-bold text-[var(--ink)] text-lg mb-2">SEO</h2>
+          <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">
+            Checklist pra aparecer bem no Google, e o interruptor que libera a indexação do site.
+          </p>
+          <div className="flex items-center gap-2">
+            <span className={`text-xs font-semibold ${siteSeo?.seo_indexavel ? 'text-[var(--brand)]' : 'text-amber-600'}`}>
+              {siteSeo?.seo_indexavel ? '🌍 visível no Google' : '🙈 oculto do Google'}
+            </span>
+            <span className="text-[var(--border)]">·</span>
+            <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Ver checklist →</span>
           </div>
         </Link>
       </div>

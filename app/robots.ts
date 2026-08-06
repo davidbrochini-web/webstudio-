@@ -1,18 +1,27 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
-import { SITE_INDEXAVEL as DJ_INDEXAVEL, SITE_URL_BASE as DJ_URL_BASE } from '@/lib/dentista-joao'
+import { createClient } from '@/lib/supabase/server'
+import { SITE_SLUG as DJ_SLUG, SITE_URL_BASE as DJ_URL_BASE } from '@/lib/dentista-joao'
 
-const DOMAIN_ROBOTS: Record<string, () => MetadataRoute.Robots> = {
-  'drjoaobucomaxilofacial.com.br': () => ({
+async function dentistaJoaoRobots(): Promise<MetadataRoute.Robots> {
+  const supabase = await createClient()
+  const { data: site } = await supabase
+    .from('sites').select('seo_indexavel').eq('slug', DJ_SLUG).is('deleted_at', null).single()
+  const indexavel = site?.seo_indexavel ?? false
+  return {
     rules: {
       userAgent: '*',
-      allow: DJ_INDEXAVEL ? '/' : undefined,
-      disallow: DJ_INDEXAVEL ? ['/app', '/login', '/meus-agendamentos'] : '/',
+      allow: indexavel ? '/' : undefined,
+      disallow: indexavel ? ['/app', '/login', '/meus-agendamentos'] : '/',
     },
     sitemap: `${DJ_URL_BASE}/sitemap.xml`,
-  }),
+  }
 }
-DOMAIN_ROBOTS['www.drjoaobucomaxilofacial.com.br'] = DOMAIN_ROBOTS['drjoaobucomaxilofacial.com.br']
+
+const DOMAIN_ROBOTS: Record<string, () => Promise<MetadataRoute.Robots>> = {
+  'drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
+  'www.drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
+}
 
 export const dynamic = 'force-dynamic'
 
