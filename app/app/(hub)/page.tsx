@@ -18,9 +18,13 @@ export default async function AppHome() {
 
   // Projeto especial: usuário só tem acesso a isso — redireciona direto
   // pro painel de conteúdo sem mostrar a grade de módulos (não faz sentido
-  // mostrar "Cadastros não contratado" pra ele).
-  if (tenant?.projeto_especial_slug) {
+  // mostrar "Cadastros não contratado" pra ele). Cada projeto especial
+  // tem seu próprio painel — rota depende do slug.
+  if (tenant?.projeto_especial_slug === 'dentista-joao') {
     redirect('/app/projeto-especial')
+  }
+  if (tenant?.projeto_especial_slug === 'casos-esquecidos') {
+    redirect('/app/casos-esquecidos')
   }
 
   if (!tenant) {

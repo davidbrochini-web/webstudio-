@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 import dentistaJoaoSitemap from '@/app/projetos-especiais/dentista-joao/sitemap'
+import casosEsquecidosSitemap from '@/app/projetos-especiais/casos-esquecidos/sitemap'
 
 const BASE_URL = 'https://omnidesign.com.br'
 
@@ -10,6 +11,8 @@ const BASE_URL = 'https://omnidesign.com.br'
 const DOMAIN_SITEMAPS: Record<string, () => Promise<MetadataRoute.Sitemap>> = {
   'drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
   'www.drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
+  'casosesquecidos.com.br': casosEsquecidosSitemap,
+  'www.casosesquecidos.com.br': casosEsquecidosSitemap,
 }
 
 export const dynamic = 'force-dynamic'

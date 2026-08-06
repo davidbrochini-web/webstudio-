@@ -50,7 +50,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         }
       }
 
-      if (tenant.projeto_especial_slug) {
+      if (tenant.projeto_especial_slug === 'dentista-joao') {
         navItems.push({
           label: '📥 Leads',
           href: '/app/projeto-especial/leads',
@@ -70,6 +70,17 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         navItems.push({
           label: '🔍 SEO',
           href: '/app/projeto-especial/seo',
+        })
+      }
+
+      if (tenant.projeto_especial_slug === 'casos-esquecidos') {
+        navItems.push({
+          label: '📖 Casos',
+          href: '/app/casos-esquecidos',
+        })
+        navItems.push({
+          label: '✍️ Novo caso',
+          href: '/app/casos-esquecidos/novo',
         })
       }
     }

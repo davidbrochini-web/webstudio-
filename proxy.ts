@@ -7,6 +7,11 @@ import { NextResponse, type NextRequest } from 'next/server'
 const DOMAIN_MAP: Record<string, string> = {
   'drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
   'www.drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
+  // Casos Esquecidos (Projeto Especial #2) — entrada preparada, mas o
+  // DNS de casosesquecidos.com.br ainda aponta pro projeto Vercel antigo
+  // até o David validar o site migrado. Ver HANDOFF-casosesquecidos.
+  'casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
+  'www.casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
 }
 
 export async function proxy(request: NextRequest) {
