@@ -5,10 +5,9 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
-const BASE = '/projetos-especiais/casos-esquecidos'
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export async function generateStaticParams() {
@@ -58,6 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ContoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const site = await getSiteEspecial()
+  const base = await getBasePath()
   const conto = await getContoBySlug(site.id, slug)
   if (!conto) notFound()
 
@@ -103,22 +103,22 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJson }} />
-      <Header />
+      <Header base={base} />
 
       <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
-            <Link href={BASE}>Início</Link> <span>›</span> <Link href={`${BASE}/contos`}>Contos</Link> <span>›</span> <strong>{conto.titulo}</strong>
+            <Link href={base || '/'}>Início</Link> <span>›</span> <Link href={`${base}/contos`}>Contos</Link> <span>›</span> <strong>{conto.titulo}</strong>
           </nav>
           <span className="case-number">Caso Nº {String(conto.numero).padStart(3, '0')} — Arquivo aberto</span>
           <h1>{conto.titulo}</h1>
-          <p className="byline">Por <Link href={`${BASE}/sobre`} style={{ color: 'var(--gold)' }}>D. Broch</Link> · Arquivado em {dataFormatada}</p>
+          <p className="byline">Por <Link href={`${base}/sobre`} style={{ color: 'var(--gold)' }}>D. Broch</Link> · Arquivado em {dataFormatada}</p>
           {conto.temas && conto.temas.length > 0 && (
             <div className="tema-tags">
               {conto.temas.map(t => {
                 const tema = getTema(t)
                 return tema ? (
-                  <Link key={t} href={`${BASE}/contos/tema/${t}`} className="tema-tag">{tema.nomeCurto}</Link>
+                  <Link key={t} href={`${base}/contos/tema/${t}`} className="tema-tag">{tema.nomeCurto}</Link>
                 ) : null
               })}
             </div>
@@ -146,13 +146,13 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
       {(anterior || proximo) && (
         <nav className="story-adjacent-nav container" aria-label="Navegação entre casos">
           {anterior ? (
-            <Link href={`${BASE}/contos/${anterior.slug}`} className="adjacent-link adjacent-prev">
+            <Link href={`${base}/contos/${anterior.slug}`} className="adjacent-link adjacent-prev">
               <span className="adjacent-label">← Caso anterior</span>
               <span className="adjacent-title">{anterior.titulo}</span>
             </Link>
           ) : <span />}
           {proximo ? (
-            <Link href={`${BASE}/contos/${proximo.slug}`} className="adjacent-link adjacent-next">
+            <Link href={`${base}/contos/${proximo.slug}`} className="adjacent-link adjacent-next">
               <span className="adjacent-label">Próximo caso →</span>
               <span className="adjacent-title">{proximo.titulo}</span>
             </Link>
@@ -164,7 +164,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
         <section className="container related-cases">
           <span className="eyebrow">Outros casos do arquivo</span>
           <div className="case-grid">
-            {relacionados.map(r => <CaseCard key={r.slug} conto={r} />)}
+            {relacionados.map(r => <CaseCard key={r.slug} conto={r} prefix={`${base}/contos`} />)}
           </div>
         </section>
       )}
@@ -174,11 +174,11 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
         <p style={{ color: 'var(--paper-dim)' }}>Os contos são gratuitos, mas levam tempo pra escrever. Se este te tirou o sono, considere apoiar o trabalho.</p>
         <div className="story-end-actions">
           <a className="btn btn-primary" href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Comprar o livro na Amazon</a>
-          <Link className="btn btn-ghost" href={`${BASE}#apoio`}>Apoiar via Pix</Link>
+          <Link className="btn btn-ghost" href={`${base}#apoio`}>Apoiar via Pix</Link>
         </div>
       </div>
 
-      <Footer />
+      <Footer base={base} />
     </>
   )
 }

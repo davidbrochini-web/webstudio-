@@ -3,9 +3,7 @@ import type { SiteEspecial } from '@/lib/dentista-joao'
 import MobileMenu from '@/components/dentista-joao/MobileMenu'
 import { IconPhone, IconWhatsApp, IconInstagram, IconLogin } from '@/components/dentista-joao/icons'
 
-const BASE = '/projetos-especiais/dentista-joao'
-
-export default function SiteNav({ site }: { site: SiteEspecial }) {
+export default function SiteNav({ site, base }: { site: SiteEspecial; base: string }) {
   const waLink = site.whatsapp
     ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}?text=Olá%2C%20peguei%20esse%20contato%20no%20site`
     : null
@@ -20,11 +18,11 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
     artigos: site.secao_artigos_visivel,
   }
   const NAV_ITEMS = [
-    { label: 'A Clínica',          href: `${BASE}/a-clinica`, show: true },
-    { label: 'Tratamentos',        href: `${BASE}/tratamentos`, show: flags.tratamentos },
-    { label: 'Cursos e Eventos',   href: `${BASE}/cursos-e-eventos`, show: flags.cursos },
-    { label: 'Equipe',             href: `${BASE}/equipe`, show: flags.equipe },
-    { label: 'Contato',            href: `${BASE}/contato`, show: true },
+    { label: 'A Clínica',          href: `${base}/a-clinica`, show: true },
+    { label: 'Tratamentos',        href: `${base}/tratamentos`, show: flags.tratamentos },
+    { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, show: flags.cursos },
+    { label: 'Equipe',             href: `${base}/equipe`, show: flags.equipe },
+    { label: 'Contato',            href: `${base}/contato`, show: true },
   ].filter(item => item.show)
 
   return (
@@ -33,7 +31,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
       <div className="bg-[var(--dj-primary)] text-white text-xs px-4 sm:px-6 py-2 flex items-center justify-between gap-2">
         {flags.faq && (
           <Link
-            href={`${BASE}/duvidas-frequentes`}
+            href={`${base}/duvidas-frequentes`}
             className="font-semibold uppercase tracking-wide hover:underline hidden sm:block"
           >
             Dúvidas Frequentes
@@ -63,7 +61,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
               <span className="hidden sm:inline">Instagram</span>
             </a>
           )}
-          <Link href={`${BASE}/login`} className="hover:opacity-80 flex items-center gap-1.5 border-l border-white/25 pl-3 sm:pl-5">
+          <Link href={`${base}/login`} className="hover:opacity-80 flex items-center gap-1.5 border-l border-white/25 pl-3 sm:pl-5">
             <IconLogin className="w-3.5 h-3.5" />
             <span>Login</span>
           </Link>
@@ -73,7 +71,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
       {/* Menu principal — barra um pouco mais alta que o padrão pra
           acomodar logo quadrado/emblema sem espremer os detalhes */}
       <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-20 sm:h-24 flex items-center justify-between gap-4">
-        <Link href={BASE} className="flex-shrink-0 flex items-center max-w-[160px] sm:max-w-none">
+        <Link href={base || '/'} className="flex-shrink-0 flex items-center max-w-[160px] sm:max-w-none">
           {site.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={site.logo_url} alt={site.business_name} className="h-14 sm:h-[4.5rem] w-auto object-contain" />
@@ -100,13 +98,13 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* CTA — oculto no mobile pequeno pra não colidir com logo */}
           <Link
-            href={`${BASE}/contato`}
+            href={`${base}/contato`}
             className="hidden sm:inline-block text-sm font-bold text-white bg-[var(--dj-secondary)] px-4 py-2.5 rounded-full hover:bg-[var(--dj-primary)] transition-colors whitespace-nowrap"
           >
             Marcar consulta
           </Link>
           {/* Hambúrguer — só aparece quando o menu de itens está oculto */}
-          <MobileMenu flags={flags} />
+          <MobileMenu flags={flags} base={base} />
         </div>
       </nav>
     </header>

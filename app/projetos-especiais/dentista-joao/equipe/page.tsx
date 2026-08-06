@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
@@ -16,11 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EquipePage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
 
   if (!site.secao_equipe_visivel) {
     return (
       <PageShell site={site}>
-        <PageBanner title="Equipe" imageUrl={site.hero_imagem_url} />
+        <PageBanner title="Equipe" imageUrl={site.hero_imagem_url} base={base} />
         <SecaoOcultaAviso />
       </PageShell>
     )
@@ -36,7 +37,7 @@ export default async function EquipePage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="Equipe" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="Equipe" imageUrl={site.hero_imagem_url} base={base} />
       <section className="px-6 py-16 max-w-5xl mx-auto">
         {!equipe?.length ? (
           <p className="text-slate-500">Equipe a cadastrar.</p>

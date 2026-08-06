@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createPublicClient } from '@/lib/supabase/public'
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
+import { DOMAIN_MAP } from '@/lib/domain-map'
 import {
   SITE_SLUG,
   SITE_URL_BASE,
@@ -25,6 +27,25 @@ import {
  */
 export { SITE_SLUG, SITE_URL_BASE, imagemAbsoluta, slugify, markdownToHtml, htmlToText, estimarTempoLeitura }
 export type { Conto }
+
+// Path interno onde as páginas realmente moram no Next.js.
+const INTERNAL_PATH = '/projetos-especiais/casos-esquecidos'
+
+/**
+ * Path a usar em TODO link interno do site (nav, footer, cards, etc).
+ * No domínio próprio, retorna '' — link fica limpo, ex: `${base}/contos`
+ * vira `/contos`, sem vazar `/projetos-especiais/casos-esquecidos` pra
+ * URL que o visitante vê, pro Google indexar, ou pro sitemap. No domínio
+ * de fallback (*.vercel.app, sem o rewrite do proxy.ts), retorna o path
+ * interno completo, senão os links quebrariam lá.
+ * Mesmo padrão de lib/dentista-joao.ts getBasePath().
+ */
+export async function getBasePath(): Promise<string> {
+  const h = await headers()
+  const host = h.get('host')?.replace(/:\d+$/, '') ?? ''
+  const isCustomDomain = Boolean(DOMAIN_MAP[host])
+  return isCustomDomain ? '' : INTERNAL_PATH
+}
 
 export interface SiteEspecial {
   id: string

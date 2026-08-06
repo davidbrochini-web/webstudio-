@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
@@ -17,11 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TratamentosPage() {
   const site = await getSiteEspecial()
+  const base = await getBasePath()
 
   if (!site.secao_tratamentos_visivel) {
     return (
       <PageShell site={site}>
-        <PageBanner title="Tratamentos" imageUrl={site.hero_imagem_url} />
+        <PageBanner title="Tratamentos" imageUrl={site.hero_imagem_url} base={base} />
         <SecaoOcultaAviso />
       </PageShell>
     )
@@ -38,7 +39,7 @@ export default async function TratamentosPage() {
 
   return (
     <PageShell site={site}>
-      <PageBanner title="Tratamentos" imageUrl={site.hero_imagem_url} />
+      <PageBanner title="Tratamentos" imageUrl={site.hero_imagem_url} base={base} />
 
       {/* Introdução */}
       <section className="px-6 py-10 text-center max-w-2xl mx-auto">
@@ -82,7 +83,7 @@ export default async function TratamentosPage() {
                       <p className="text-slate-500 leading-relaxed text-sm mb-6">{t.descricao_completa}</p>
                     )}
                     <Link
-                      href={`/projetos-especiais/dentista-joao/tratamentos/${t.slug}`}
+                      href={`${base}/tratamentos/${t.slug}`}
                       className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
                     >
                       Saiba Mais

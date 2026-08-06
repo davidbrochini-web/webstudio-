@@ -1,18 +1,12 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { DOMAIN_MAP } from '@/lib/domain-map'
 
 // Domínios customizados dos Projetos Especiais → rewrite transparente
 // pra dentro do path real do site na app Next.js. Usa rewrite (não
 // redirect) pra manter a URL limpa no browser do paciente.
-const DOMAIN_MAP: Record<string, string> = {
-  'drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
-  'www.drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
-  // Casos Esquecidos (Projeto Especial #2) — entrada preparada, mas o
-  // DNS de casosesquecidos.com.br ainda aponta pro projeto Vercel antigo
-  // até o David validar o site migrado. Ver HANDOFF-casosesquecidos.
-  'casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
-  'www.casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
-}
+// Mapeamento em lib/domain-map.ts (fonte única, reaproveitada pelos
+// componentes que geram links — ver lib/dentista-joao.ts getBasePath()).
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
