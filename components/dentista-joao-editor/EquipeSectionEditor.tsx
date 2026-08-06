@@ -36,8 +36,8 @@ export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly, v
     <section className="px-6 py-16 bg-white">
       <div className="max-w-5xl mx-auto">
         <VisibilidadeSecaoToggle siteId={siteId} campo="secao_equipe_visivel" visivel={visivel} readOnly={readOnly} />
-        <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1 text-center">Página Equipe</p>
-        <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-8">Equipe</h2>
+        <p className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-1 text-center">Página Equipe</p>
+        <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] text-center mb-8">Equipe</h2>
 
         <div className="flex flex-col gap-10">
           {itens.map(m => (
@@ -51,10 +51,10 @@ export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly, v
               />
               <div className="text-center sm:text-left">
                 <EditableText as="p" readOnly={readOnly} value={m.nome} placeholder="Nome completo"
-                  className="font-display font-bold text-xl text-[#0B2B3C] block"
+                  className="font-display font-bold text-xl text-[var(--dj-secondary)] block"
                   onSave={v => salvar(m, { nome: v })} />
                 <EditableText as="p" readOnly={readOnly} value={m.especialidade ?? ''} placeholder="Especialidade"
-                  className="text-sm text-[#0EA5A0] font-semibold mt-0.5 block"
+                  className="text-sm text-[var(--dj-primary)] font-semibold mt-0.5 block"
                   onSave={v => salvar(m, { especialidade: v })} />
                 <EditableText as="p" readOnly={readOnly} value={m.formacao ?? ''} placeholder="Formação"
                   className="text-sm text-slate-500 mt-1 block"
@@ -73,7 +73,7 @@ export default function EquipeSectionEditor({ siteId, equipeInicial, readOnly, v
 
         {!readOnly && (
           <button onClick={adicionar} disabled={adicionando}
-            className="mt-6 w-full py-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#0EA5A0] text-slate-400 hover:text-[#0EA5A0] text-sm font-semibold transition-colors">
+            className="mt-6 w-full py-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[var(--dj-primary)] text-slate-400 hover:text-[var(--dj-primary)] text-sm font-semibold transition-colors">
             {adicionando ? 'Adicionando…' : '+ Novo profissional'}
           </button>
         )}

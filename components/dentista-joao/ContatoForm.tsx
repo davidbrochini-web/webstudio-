@@ -10,7 +10,7 @@ export default function ContatoForm() {
     return (
       <div className="text-center py-10">
         <p className="text-3xl mb-3">✅</p>
-        <p className="font-display font-bold text-lg text-[#0B2B3C] mb-1">Solicitação enviada!</p>
+        <p className="font-display font-bold text-lg text-[var(--dj-secondary)] mb-1">Solicitação enviada!</p>
         <p className="text-sm text-slate-500">Entraremos em contato pra confirmar o melhor horário.</p>
       </div>
     )
@@ -38,7 +38,7 @@ export default function ContatoForm() {
       <button
         type="submit"
         disabled={pending}
-        className="bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 self-start"
+        className="bg-[var(--dj-primary)] text-white font-bold px-6 py-3.5 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 self-start"
       >
         {pending ? 'Enviando...' : 'Solicitar consulta'}
       </button>

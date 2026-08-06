@@ -28,9 +28,12 @@ export default async function AgendaConfiguracoesPage() {
         <span className="text-[var(--ink)] font-medium">Configurações</span>
       </div>
 
-      <h1 className="font-display font-extrabold text-3xl text-[var(--ink)] mb-1">Agenda</h1>
-      <p className="text-[var(--muted)] text-sm mb-8">
-        Configure a duração dos atendimentos e os dias/horários em que a clínica recebe pacientes.
+      <h1 className="font-display font-extrabold text-3xl text-[var(--ink)] mb-1">Agenda — Horários</h1>
+      <p className="text-[var(--muted)] text-sm mb-2">
+        Aqui você define os dias e horários em que a clínica atende (seção &quot;Dias e horários de atendimento&quot; logo abaixo) e as regras gerais: duração de cada consulta, intervalo entre elas e antecedência mínima pra agendar.
+      </p>
+      <p className="text-[var(--muted)] text-xs mb-8">
+        Falta cadastrar os tipos de consulta? <Link href="/app/projeto-especial/agenda/tipos-consulta" className="text-[var(--brand)] font-semibold hover:underline">Configure aqui</Link>.
       </p>
 
       <AgendaSubNav />

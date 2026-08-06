@@ -31,7 +31,7 @@ export default async function AClinicaPage() {
       {/* Sobre nós */}
       <section className="px-6 py-16 max-w-3xl mx-auto">
         <Reveal>
-          <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-3">Sobre nós.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-3">Sobre nós.</p>
           <p className="text-slate-700 font-semibold leading-relaxed">
             {site.tagline || 'Texto institucional a definir no levantamento com o cliente.'}
           </p>
@@ -63,8 +63,8 @@ export default async function AClinicaPage() {
               { titulo: 'Valores', conteudo: site.valores, tipo: 'lista' as const },
             ].filter(c => c.conteudo).map((card, i) => (
               <Reveal key={card.titulo} delay={i * 100}>
-                <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-6 shadow-sm h-full">
-                  <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-3">{card.titulo}</h3>
+                <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-6 shadow-sm h-full">
+                  <h3 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-3">{card.titulo}</h3>
                   {card.tipo === 'lista' ? (
                     <ul className="text-sm text-slate-600 leading-relaxed flex flex-col gap-1.5">
                       {card.conteudo!.split('\n').map(v => v.trim()).filter(Boolean).map(v => <li key={v}>• {v}</li>)}
@@ -84,7 +84,7 @@ export default async function AClinicaPage() {
         <section className="py-14">
           <Reveal>
             <div className="px-6 max-w-5xl mx-auto mb-8">
-              <h2 className="font-display font-bold text-xl text-[#0B2B3C] mb-3">Localização</h2>
+              <h2 className="font-display font-bold text-xl text-[var(--dj-secondary)] mb-3">Localização</h2>
               <p className="text-sm text-slate-600 mb-1">📍 {site.endereco}</p>
               {site.telefone && <p className="text-sm text-slate-500">📞 {site.telefone}</p>}
             </div>

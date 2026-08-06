@@ -44,15 +44,15 @@ export default async function CursoEventoDetalhePage({ params }: { params: Promi
         )}
 
         {item.data_evento && (
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0EA5A0] bg-[#0EA5A0]/10 px-3 py-1.5 rounded-full mb-3">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--dj-primary)] bg-[var(--dj-primary)]/10 px-3 py-1.5 rounded-full mb-3">
             📅 {new Date(item.data_evento + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
           </span>
         )}
 
-        <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-4">{item.titulo}</h1>
+        <h1 className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-4">{item.titulo}</h1>
 
         {/* Resumo de destaque */}
-        <p className="text-slate-500 text-base leading-relaxed mb-8 italic border-l-4 border-[#0EA5A0]/40 pl-4">
+        <p className="text-slate-500 text-base leading-relaxed mb-8 italic border-l-4 border-[var(--dj-primary)]/40 pl-4">
           {item.descricao}
         </p>
 
@@ -68,7 +68,7 @@ export default async function CursoEventoDetalhePage({ params }: { params: Promi
           <p className="text-slate-500 text-sm mb-4">Interessado em participar ou tem dúvidas?</p>
           <a
             href={`/projetos-especiais/dentista-joao/contato`}
-            className="inline-block bg-[#0B2B3C] hover:bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm transition-colors"
+            className="inline-block bg-[var(--dj-secondary)] hover:bg-[var(--dj-primary)] text-white font-bold px-6 py-3 rounded-full text-sm transition-colors"
           >
             Falar com a clínica
           </a>

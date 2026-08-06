@@ -22,8 +22,8 @@ export default function GaleriaSectionEditor({ siteId, fotosIniciais, readOnly }
   return (
     <section className="px-6 py-14 bg-white">
       <div className="max-w-5xl mx-auto">
-        <p className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-1">Página &ldquo;A Clínica&rdquo;</p>
-        <h3 className="font-display font-bold text-xl text-[#0B2B3C] mb-6">Galeria de fotos</h3>
+        <p className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-1">Página &ldquo;A Clínica&rdquo;</p>
+        <h3 className="font-display font-bold text-xl text-[var(--dj-secondary)] mb-6">Galeria de fotos</h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {fotos.map((f, i) => (
@@ -55,7 +55,7 @@ export default function GaleriaSectionEditor({ siteId, fotosIniciais, readOnly }
           ))}
 
           {!readOnly && (
-            <label className="aspect-square rounded-xl border-2 border-dashed border-slate-200 hover:border-[#0EA5A0] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-colors text-slate-400 hover:text-[#0EA5A0]">
+            <label className="aspect-square rounded-xl border-2 border-dashed border-slate-200 hover:border-[var(--dj-primary)] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-colors text-slate-400 hover:text-[var(--dj-primary)]">
               <span className="text-2xl">{adicionando ? '…' : '+'}</span>
               <span className="text-xs font-semibold">Adicionar foto</span>
               <input

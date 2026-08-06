@@ -85,8 +85,8 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
         ))}
 
         {/* Gradiente duplo (fixo, por cima de todas as imagens) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/90 via-[#0B2B3C]/55 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--dj-secondary)]/90 via-[var(--dj-secondary)]/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--dj-secondary)]/60 via-transparent to-transparent" />
 
         {/* Texto — key no index força re-animação a cada troca */}
         <div
@@ -101,7 +101,7 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
           </p>
           <Link
             href={slides[index].ctaHref}
-            className="self-start bg-white text-[#0B2B3C] font-bold px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-full hover:opacity-90 transition-opacity text-sm sm:text-base shadow-lg shadow-black/20"
+            className="self-start bg-white text-[var(--dj-secondary)] font-bold px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-full hover:opacity-90 transition-opacity text-sm sm:text-base shadow-lg shadow-black/20"
           >
             {slides[index].ctaLabel}
           </Link>

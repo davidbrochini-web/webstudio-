@@ -38,12 +38,12 @@ export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visive
         <EditableTextoCustomizado
           siteId={siteId} readOnly={readOnly} chave="home_faq_eyebrow"
           valor={textos.home_faq_eyebrow ?? 'Tire suas dúvidas'}
-          as="p" className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2 text-center block"
+          as="p" className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2 text-center block"
         />
         <EditableTextoCustomizado
           siteId={siteId} readOnly={readOnly} chave="home_faq_titulo"
           valor={textos.home_faq_titulo ?? 'Dúvidas Frequentes'}
-          as="h2" className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B2B3C] mb-2 text-center block"
+          as="h2" className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--dj-secondary)] mb-2 text-center block"
         />
         <p className="text-center text-slate-400 text-xs mb-8">Aparece na Home e na página Dúvidas Frequentes</p>
 
@@ -56,13 +56,13 @@ export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visive
                   onClick={() => setAberto(open ? null : f.id)}
                   className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
                 >
-                  <span className={`font-display font-bold text-sm transition-colors flex-1 ${open ? 'text-[#0EA5A0]' : 'text-[#0B2B3C]'}`}>
+                  <span className={`font-display font-bold text-sm transition-colors flex-1 ${open ? 'text-[var(--dj-primary)]' : 'text-[var(--dj-secondary)]'}`}>
                     {readOnly ? f.pergunta : (
                       <EditableText as="span" readOnly={readOnly} value={f.pergunta} placeholder="Pergunta"
                         className="block" onSave={v => salvar(f, { pergunta: v })} />
                     )}
                   </span>
-                  <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${open ? 'border-[#0EA5A0] bg-[#0EA5A0] text-white rotate-45' : 'border-slate-200 text-slate-400'}`}>+</span>
+                  <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${open ? 'border-[var(--dj-primary)] bg-[var(--dj-primary)] text-white rotate-45' : 'border-slate-200 text-slate-400'}`}>+</span>
                 </button>
                 <div style={{ maxHeight: open ? '400px' : '0', transition: 'max-height 0.35s ease' }} className="overflow-hidden">
                   <div className="px-5 pb-5">
@@ -82,7 +82,7 @@ export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visive
 
         {!readOnly && (
           <button onClick={adicionar} disabled={adicionando}
-            className="mt-4 w-full py-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#0EA5A0] text-slate-400 hover:text-[#0EA5A0] text-sm font-semibold transition-colors">
+            className="mt-4 w-full py-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[var(--dj-primary)] text-slate-400 hover:text-[var(--dj-primary)] text-sm font-semibold transition-colors">
             {adicionando ? 'Adicionando…' : '+ Nova pergunta'}
           </button>
         )}

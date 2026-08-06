@@ -16,7 +16,7 @@ export default function SeoIndexToggle({ siteId, indexavel }: { siteId: string; 
 
   return (
     <div className={`rounded-2xl border-2 p-5 transition-colors ${
-      estado ? 'border-[#0EA5A0] bg-[#0EA5A0]/5' : 'border-slate-300 bg-[var(--off)]'
+      estado ? 'border-[var(--dj-primary)] bg-[var(--dj-primary)]/5' : 'border-slate-300 bg-[var(--off)]'
     }`}>
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
@@ -44,7 +44,7 @@ export default function SeoIndexToggle({ siteId, indexavel }: { siteId: string; 
           <button
             onClick={() => setConfirmando(true)}
             disabled={pending}
-            className={`relative w-16 h-9 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 ${estado ? 'bg-[#0EA5A0]' : 'bg-slate-300'}`}
+            className={`relative w-16 h-9 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 ${estado ? 'bg-[var(--dj-primary)]' : 'bg-slate-300'}`}
           >
             <span className={`absolute top-1 w-7 h-7 rounded-full bg-white shadow transition-all ${estado ? 'right-1' : 'left-1'}`} />
           </button>

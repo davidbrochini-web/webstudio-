@@ -50,7 +50,7 @@ export default async function ArtigoDetalhePage({ params }: { params: Promise<{ 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article className="px-6 py-16 max-w-3xl mx-auto">
         {post.capa_url && <img src={post.capa_url} alt={post.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />}
-        <h1 className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-4">{post.titulo}</h1>
+        <h1 className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-4">{post.titulo}</h1>
         <p className="text-base text-slate-500 leading-relaxed mb-8">{post.resumo}</p>
         <div className="text-[15px] text-slate-600 leading-[1.8] whitespace-pre-wrap">{post.conteudo}</div>
       </article>

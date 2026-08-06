@@ -2,7 +2,7 @@
  *  acima, igual ao efeito visual do drfabiosato.com.br. O `flip` inverte
  *  pra usar também no final da seção (ondas pra baixo). */
 export default function WaveDivider({
-  fill = '#0EA5A0',
+  fill = 'var(--dj-primary)',
   bg = 'white',
   flip = false,
 }: {

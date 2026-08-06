@@ -38,9 +38,9 @@ export default function VisibilidadeSecaoToggle({ siteId, campo, visivel, readOn
 
   return (
     <div className={`flex items-center justify-between gap-3 mb-6 rounded-xl px-4 py-3 border-2 transition-colors ${
-      estado ? 'border-[#0EA5A0]/30 bg-[#0EA5A0]/5' : 'border-amber-400 bg-amber-50'
+      estado ? 'border-[var(--dj-primary)]/30 bg-[var(--dj-primary)]/5' : 'border-amber-400 bg-amber-50'
     }`}>
-      <span className={`text-sm font-bold ${estado ? 'text-[#0B2B3C]' : 'text-amber-700'}`}>
+      <span className={`text-sm font-bold ${estado ? 'text-[var(--dj-secondary)]' : 'text-amber-700'}`}>
         {estado ? '👁️ Visível no site' : '🙈 Oculto — só aparece pra você aqui no painel'}
       </span>
       <button
@@ -48,7 +48,7 @@ export default function VisibilidadeSecaoToggle({ siteId, campo, visivel, readOn
         disabled={pending}
         onClick={alternar}
         title={estado ? 'Ocultar esta seção do site' : 'Tornar esta seção visível no site'}
-        className={`relative w-14 h-8 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 ${estado ? 'bg-[#0EA5A0]' : 'bg-slate-300'}`}
+        className={`relative w-14 h-8 rounded-full flex-shrink-0 transition-colors disabled:opacity-50 ${estado ? 'bg-[var(--dj-primary)]' : 'bg-slate-300'}`}
       >
         <span className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-all ${estado ? 'right-1' : 'left-1'}`} />
       </button>

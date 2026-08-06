@@ -22,10 +22,10 @@ export default function FaqAccordion({ itens }: { itens: Item[] }) {
               className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
               aria-expanded={open}
             >
-              <span className={`font-display font-bold text-sm transition-colors ${open ? 'text-[#0EA5A0]' : 'text-[#0B2B3C]'}`}>
+              <span className={`font-display font-bold text-sm transition-colors ${open ? 'text-[var(--dj-primary)]' : 'text-[var(--dj-secondary)]'}`}>
                 {f.pergunta}
               </span>
-              <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${open ? 'border-[#0EA5A0] bg-[#0EA5A0] text-white rotate-45' : 'border-slate-200 text-slate-400'}`}>
+              <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${open ? 'border-[var(--dj-primary)] bg-[var(--dj-primary)] text-white rotate-45' : 'border-slate-200 text-slate-400'}`}>
                 +
               </span>
             </button>

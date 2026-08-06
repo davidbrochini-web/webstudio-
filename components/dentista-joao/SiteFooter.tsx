@@ -26,10 +26,10 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
     : null
 
   return (
-    <footer className="bg-[#0B2B3C] text-white/70 text-sm">
+    <footer className="bg-[var(--dj-secondary)] text-white/70 text-sm">
 
       {/* Faixa CTA acima do footer */}
-      <div className="bg-[#0EA5A0] px-5 sm:px-6 py-10 text-center">
+      <div className="bg-[var(--dj-primary)] px-5 sm:px-6 py-10 text-center">
         <p className="font-display font-extrabold text-white text-2xl sm:text-3xl mb-2">
           Pronto para sorrir com confiança?
         </p>
@@ -38,7 +38,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
         </p>
         <Link
           href={`${BASE}/contato`}
-          className="inline-block bg-white text-[#0B2B3C] font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm"
+          className="inline-block bg-white text-[var(--dj-secondary)] font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm"
         >
           Agendar Consulta →
         </Link>
@@ -49,19 +49,19 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
         {/* Coluna 1 — identidade + contatos */}
         <div className="sm:col-span-2 lg:col-span-1">
           <p className="font-display font-extrabold text-white text-xl leading-tight">{site.business_name}</p>
-          <p className="text-[#0EA5A0] text-[10px] font-bold uppercase tracking-widest mt-0.5 mb-4">Clínica Odontológica</p>
+          <p className="text-[var(--dj-primary)] text-[10px] font-bold uppercase tracking-widest mt-0.5 mb-4">Clínica Odontológica</p>
           <p className="text-white/60 text-sm leading-relaxed mb-5">
             {site.tagline
               ? (site.tagline.length > 110 ? site.tagline.slice(0, 110) + '…' : site.tagline)
               : 'Atendimento humanizado e tratamentos de excelência para toda a família.'}
           </p>
-          <div className="w-10 h-0.5 bg-[#0EA5A0] mb-5 rounded-full" />
+          <div className="w-10 h-0.5 bg-[var(--dj-primary)] mb-5 rounded-full" />
           <ul className="flex flex-col gap-3">
             {site.telefone && (
               <li>
                 <a href={`tel:${site.telefone.replace(/\D/g, '')}`}
                   className="flex items-center gap-2.5 hover:text-white transition-colors group">
-                  <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#0EA5A0] flex items-center justify-center text-sm transition-colors flex-shrink-0">📞</span>
+                  <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-[var(--dj-primary)] flex items-center justify-center text-sm transition-colors flex-shrink-0">📞</span>
                   <span>{site.telefone}</span>
                 </a>
               </li>
@@ -87,13 +87,13 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
         {/* Coluna 2 — links */}
         <div>
           <p className="font-display font-bold text-white mb-1 text-base">Navegação</p>
-          <div className="w-8 h-0.5 bg-[#0EA5A0] mb-5 rounded-full" />
+          <div className="w-8 h-0.5 bg-[var(--dj-primary)] mb-5 rounded-full" />
           <ul className="flex flex-col gap-2.5">
             {LINKS.map(l => (
               <li key={l.href}>
                 <Link href={l.href}
                   className="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-1.5">
-                  <span className="w-1 h-1 rounded-full bg-[#0EA5A0] flex-shrink-0" />
+                  <span className="w-1 h-1 rounded-full bg-[var(--dj-primary)] flex-shrink-0" />
                   {l.label}
                 </Link>
               </li>
@@ -103,7 +103,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
           {((site.instagram_visivel && site.instagram_handle) || waLink) && (
             <div className="mt-8">
               <p className="font-display font-bold text-white mb-1 text-base">Siga-nos</p>
-              <div className="w-8 h-0.5 bg-[#0EA5A0] mb-4 rounded-full" />
+              <div className="w-8 h-0.5 bg-[var(--dj-primary)] mb-4 rounded-full" />
               <div className="flex gap-3">
                 {site.instagram_visivel && site.instagram_handle && (
                   <a href={`https://instagram.com/${site.instagram_handle.replace('@', '')}`}
@@ -128,7 +128,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
         {/* Coluna 3 — newsletter */}
         <div>
           <p className="font-display font-bold text-white mb-1 text-base">Newsletter</p>
-          <div className="w-8 h-0.5 bg-[#0EA5A0] mb-5 rounded-full" />
+          <div className="w-8 h-0.5 bg-[var(--dj-primary)] mb-5 rounded-full" />
           <p className="text-white/60 text-sm mb-5 leading-relaxed">
             Receba dicas de saúde bucal e novidades da clínica direto no seu e-mail.
           </p>
@@ -139,7 +139,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
         {mapsQuery ? (
           <div>
             <p className="font-display font-bold text-white mb-1 text-base">Localização</p>
-            <div className="w-8 h-0.5 bg-[#0EA5A0] mb-5 rounded-full" />
+            <div className="w-8 h-0.5 bg-[var(--dj-primary)] mb-5 rounded-full" />
             <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg aspect-[4/3]">
               <iframe
                 src={mapsQuery}
@@ -157,7 +157,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
           /* placeholder elegante enquanto endereço real não chega */
           <div>
             <p className="font-display font-bold text-white mb-1 text-base">Localização</p>
-            <div className="w-8 h-0.5 bg-[#0EA5A0] mb-5 rounded-full" />
+            <div className="w-8 h-0.5 bg-[var(--dj-primary)] mb-5 rounded-full" />
             <div className="rounded-xl bg-white/5 border border-white/10 aspect-[4/3] flex flex-col items-center justify-center gap-2 text-white/30">
               <span className="text-3xl">🗺️</span>
               <span className="text-xs">Endereço em breve</span>
@@ -169,7 +169,7 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
       {/* Barra inferior */}
       <div className="border-t border-white/10 px-5 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/30">
         <span>© {new Date().getFullYear()} {site.business_name}. Todos os direitos reservados.</span>
-        <span>Site desenvolvido por <span className="text-[#0EA5A0] font-semibold">Omnidesign</span></span>
+        <span>Site desenvolvido por <span className="text-[var(--dj-primary)] font-semibold">Omnidesign</span></span>
       </div>
     </footer>
   )

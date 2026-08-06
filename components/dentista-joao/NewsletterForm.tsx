@@ -18,7 +18,7 @@ export default function NewsletterForm() {
       <button
         type="submit"
         disabled={pending}
-        className="bg-[#0EA5A0] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60"
+        className="bg-[var(--dj-primary)] text-white text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60"
       >
         {pending ? 'Enviando...' : 'Inscrever-se'}
       </button>
