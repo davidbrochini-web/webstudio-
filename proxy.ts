@@ -8,13 +8,25 @@ import { DOMAIN_MAP } from '@/lib/domain-map'
 // Mapeamento em lib/domain-map.ts (fonte única, reaproveitada pelos
 // componentes que geram links — ver lib/dentista-joao.ts getBasePath()).
 
+// Projetos especiais que NÃO têm login próprio (usam o /login global da
+// plataforma de propósito — ver PROJETO_ESPECIAL_CASOS_ESQUECIDOS.md,
+// seção 9: "quem administra aqui é o próprio David/D. Broch, não um
+// cliente leigo"). Sem essa exceção, o rewrite pega o /login também e
+// manda pra .../login dentro do projeto, que não existe → 404 (bug real
+// encontrado em revisão: toda página prefetchava /login e dava 404 no
+// domínio próprio do Casos Esquecidos). Dentista João tem login próprio
+// (/projetos-especiais/dentista-joao/login existe de verdade), por isso
+// não entra nessa lista — o rewrite deve continuar pegando o /login dele.
+const SEM_LOGIN_PROPRIO = new Set(['/projetos-especiais/casos-esquecidos'])
+
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const host = request.headers.get('host')?.replace(/:\d+$/, '') ?? ''
 
   // ── Domínio customizado: rewrite pra dentro do projeto especial ──
   const basePath = DOMAIN_MAP[host]
-  if (basePath && !pathname.startsWith(basePath) && !pathname.startsWith('/app') && !pathname.startsWith('/_next') && !pathname.startsWith('/api') && !pathname.includes('.')) {
+  const ehLoginSemDono = pathname === '/login' && basePath && SEM_LOGIN_PROPRIO.has(basePath)
+  if (basePath && !ehLoginSemDono && !pathname.startsWith(basePath) && !pathname.startsWith('/app') && !pathname.startsWith('/_next') && !pathname.startsWith('/api') && !pathname.includes('.')) {
     const dest = new URL(`${basePath}${pathname === '/' ? '' : pathname}${search}`, request.url)
     return NextResponse.rewrite(dest)
   }
