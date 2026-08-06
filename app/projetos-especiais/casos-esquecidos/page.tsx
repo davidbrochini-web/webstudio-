@@ -1,13 +1,26 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getRecentContos, getTotalContos } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE } from '@/lib/casos-esquecidos'
 
 const BASE = '/projetos-especiais/casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+
+// title.absolute quebra a herança do template do layout raiz da
+// plataforma (%s | Omnidesign) — sem isso, como a home não define
+// título próprio, o title.default do layout do projeto especial sobe
+// e pega o template do avô, vazando "| Omnidesign" no <title> (bug
+// achado na verificação final pós-migração; as outras páginas do CE já
+// tinham metadata própria com template do próprio layout, então só a
+// home era afetada).
+export const metadata: Metadata = {
+  title: { absolute: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch' },
+  alternates: { canonical: SITE_URL_BASE },
+}
 
 export default async function Home() {
   const site = await getSiteEspecial()
