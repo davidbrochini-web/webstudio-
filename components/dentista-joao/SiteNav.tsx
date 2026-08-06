@@ -57,10 +57,10 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
             <a
               href={`https://instagram.com/${site.instagram_handle.replace('@','')}`}
               target="_blank" rel="noopener noreferrer"
-              className="hover:opacity-80 hidden sm:flex items-center gap-1.5"
+              className="hover:opacity-80 flex items-center gap-1.5"
             >
               <IconInstagram className="w-3.5 h-3.5" />
-              <span>Instagram</span>
+              <span className="hidden sm:inline">Instagram</span>
             </a>
           )}
           <Link href={`${BASE}/login`} className="hover:opacity-80 flex items-center gap-1.5 border-l border-white/25 pl-3 sm:pl-5">

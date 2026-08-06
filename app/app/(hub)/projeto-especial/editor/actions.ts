@@ -35,7 +35,18 @@ export async function updateSiteFieldPE(siteId: string, field: SiteField, value:
   // whatsapp precisa ficar só com dígitos (usado direto em wa.me/{numero});
   // telefone mantém a formatação como o cliente digitou (é só exibido, nunca
   // usado como link cru — o link tel: já limpa na hora de renderizar)
-  const cleanValue = field === 'whatsapp' ? value.replace(/\D/g, '') : value
+  let cleanValue = field === 'whatsapp' ? value.replace(/\D/g, '') : value
+
+  // instagram_handle vira link (instagram.com/{handle}) — validar formato
+  // pra não deixar salvar algo tipo o nome completo do cliente por engano
+  // (já aconteceu: "DR JOÃO VICTOR PIMENTA" acabou indo pra esse campo).
+  if (field === 'instagram_handle' && cleanValue.trim() !== '') {
+    cleanValue = cleanValue.trim().replace(/^@/, '')
+    if (!/^[a-zA-Z0-9._]{1,30}$/.test(cleanValue)) {
+      throw new Error('Usuário do Instagram inválido — use só o @usuario (sem espaços), ex: joaovictor.odonto')
+    }
+  }
+
   const { error } = await supabase.from('sites').update({ [field]: cleanValue }).eq('id', siteId)
   if (error) throw new Error(error.message)
   revalidateAll()
