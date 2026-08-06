@@ -37,28 +37,33 @@ CREATE TRIGGER trg_contos_updated_at
 
 ALTER TABLE contos ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY contos_public_read ON contos
+CREATE POLICY contos_select ON contos
   FOR SELECT
-  USING (publicado = true AND data_publicacao <= now());
-
-CREATE POLICY contos_tenant_manage ON contos
-  FOR ALL
   USING (
-    site_id IN (
-      SELECT s.id FROM sites s
-      JOIN memberships m ON m.tenant_id = s.tenant_id
-      WHERE m.user_id = auth.uid()
-    )
-    OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_super_admin = true)
-  )
-  WITH CHECK (
-    site_id IN (
-      SELECT s.id FROM sites s
-      JOIN memberships m ON m.tenant_id = s.tenant_id
-      WHERE m.user_id = auth.uid()
-    )
-    OR EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_super_admin = true)
+    is_admin_of_site(site_id) OR is_super_admin()
+    OR (publicado = true AND data_publicacao <= now())
   );
+
+CREATE POLICY contos_insert ON contos
+  FOR INSERT
+  WITH CHECK (is_admin_of_site(site_id) OR is_super_admin());
+
+CREATE POLICY contos_update ON contos
+  FOR UPDATE
+  USING (is_admin_of_site(site_id) OR is_super_admin());
+
+CREATE POLICY contos_delete ON contos
+  FOR DELETE
+  USING (is_admin_of_site(site_id) OR is_super_admin());
+
+-- NOTA: a primeira versão desta migration usava uma policy FOR ALL com
+-- EXISTS direto em `memberships`. Isso quebrava leitura anônima (site
+-- público) com "permission denied for table memberships" — Postgres
+-- avalia TODAS as policies permissivas de SELECT, mesmo quando outra
+-- policy já libera a linha, e `anon` não tem GRANT em `memberships`.
+-- Fix: usar os helpers SECURITY DEFINER já existentes na plataforma
+-- (is_admin_of_site / is_super_admin — mesmo padrão de site_tratamentos
+-- e as demais tabelas de conteúdo), que bypassa o problema de grant.
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON contos TO authenticated;
 GRANT SELECT ON contos TO anon;
