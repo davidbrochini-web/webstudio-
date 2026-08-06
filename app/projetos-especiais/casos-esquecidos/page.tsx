@@ -17,9 +17,20 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 // achado na verificação final pós-migração; as outras páginas do CE já
 // tinham metadata própria com template do próprio layout, então só a
 // home era afetada).
+//
+// og:image e alternates.types (RSS) também precisam ser repetidos
+// aqui: a metadata de página substitui o objeto inteiro do layout por
+// chave (não faz merge profundo), então "alternates" e "openGraph" do
+// layout somem assim que a página define os seus próprios.
 export const metadata: Metadata = {
   title: { absolute: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch' },
-  alternates: { canonical: SITE_URL_BASE },
+  alternates: {
+    canonical: SITE_URL_BASE,
+    types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },
+  },
+  openGraph: {
+    images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: 'Casos Esquecidos — Contos e Livros de Terror' }],
+  },
 }
 
 export default async function Home() {
