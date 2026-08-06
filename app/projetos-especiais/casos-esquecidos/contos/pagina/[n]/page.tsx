@@ -2,7 +2,7 @@ import ContosArchive from '@/components/casos-esquecidos/ContosArchive'
 import { getSiteEspecial } from '@/lib/casos-esquecidos'
 import { notFound } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export default async function ContosPaginaPage({ params }: { params: Promise<{ n: string }> }) {
   const { n } = await params

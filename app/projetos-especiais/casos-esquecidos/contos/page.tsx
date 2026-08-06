@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import ContosArchive from '@/components/casos-esquecidos/ContosArchive'
 import { getSiteEspecial, SITE_URL_BASE } from '@/lib/casos-esquecidos'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export const metadata: Metadata = {
   title: 'Contos de Terror — Histórias de Terror Grátis Toda Semana',

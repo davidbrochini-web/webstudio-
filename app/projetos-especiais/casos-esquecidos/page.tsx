@@ -7,7 +7,7 @@ import { getSiteEspecial, getRecentContos, getTotalContos } from '@/lib/casos-es
 
 const BASE = '/projetos-especiais/casos-esquecidos'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export default async function Home() {
   const site = await getSiteEspecial()

@@ -5,11 +5,17 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContoBySlug, getContosRelacionados, getContoAdjacente, imagemAbsoluta, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, SITE_URL_BASE } from '@/lib/casos-esquecidos'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
 const BASE = '/projetos-especiais/casos-esquecidos'
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+
+export async function generateStaticParams() {
+  const site = await getSiteEspecial()
+  const contos = await getAllContos(site.id)
+  return contos.map(c => ({ slug: c.slug }))
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -80,7 +86,10 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
     ],
   })
 
-  const banner = imagemAbsoluta(conto.imagem_url)
+  // Banner na página usa o valor cru — relativo funciona direto contra
+  // o host atual. imagemAbsoluta() só é necessária pra metadata/OG/
+  // JSON-LD acima, que exigem URL totalmente qualificada.
+  const banner = conto.imagem_url
 
   return (
     <>

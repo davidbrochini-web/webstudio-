@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 import { notFound } from 'next/navigation'
 import {
   SITE_SLUG,
@@ -35,7 +36,7 @@ export interface SiteEspecial {
 }
 
 export async function getSiteEspecial(): Promise<SiteEspecial> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data: site } = await supabase
     .from('sites')
     .select('id, tenant_id, business_name, tagline, status, seo_indexavel')
@@ -53,7 +54,7 @@ export async function getSiteId(): Promise<string> {
 }
 
 export async function getAllContos(siteId: string): Promise<Conto[]> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data, error } = await supabase
     .from('contos')
     .select('*')
@@ -65,7 +66,7 @@ export async function getAllContos(siteId: string): Promise<Conto[]> {
 }
 
 export async function getContoBySlug(siteId: string, slug: string): Promise<Conto | null> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data, error } = await supabase
     .from('contos')
     .select('*')
@@ -78,7 +79,7 @@ export async function getContoBySlug(siteId: string, slug: string): Promise<Cont
 }
 
 export async function getRecentContos(siteId: string, limit = 3): Promise<Conto[]> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data, error } = await supabase
     .from('contos')
     .select('*')
@@ -91,7 +92,7 @@ export async function getRecentContos(siteId: string, limit = 3): Promise<Conto[
 }
 
 export async function getTotalContos(siteId: string): Promise<number> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { count, error } = await supabase
     .from('contos')
     .select('*', { count: 'exact', head: true })
@@ -102,7 +103,7 @@ export async function getTotalContos(siteId: string): Promise<number> {
 }
 
 export async function getContosByTema(siteId: string, tema: string): Promise<Conto[]> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data, error } = await supabase
     .from('contos')
     .select('*')
@@ -116,7 +117,7 @@ export async function getContosByTema(siteId: string, tema: string): Promise<Con
 
 export async function getContosRelacionados(siteId: string, temas: string[], numeroAtual: number, limit = 3): Promise<Conto[]> {
   if (!temas || temas.length === 0) return []
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data, error } = await supabase
     .from('contos')
     .select('*')
@@ -136,7 +137,7 @@ export async function getContosRelacionados(siteId: string, temas: string[], num
 }
 
 export async function getContoAdjacente(siteId: string, numero: number, direcao: 'anterior' | 'proximo'): Promise<Conto | null> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const query = supabase
     .from('contos')
     .select('*')
@@ -153,7 +154,7 @@ export async function getContoAdjacente(siteId: string, numero: number, direcao:
 export type CasoAgendado = { numero: number; titulo: string; data_publicacao: string }
 
 export async function getCasosAgendados(siteId: string): Promise<CasoAgendado[]> {
-  const supabase = await createClient()
+  const supabase = await createPublicClient()
   const { data, error } = await supabase.rpc('casos_agendados_publicos', { p_site_id: siteId })
   if (error) throw error
   return data || []

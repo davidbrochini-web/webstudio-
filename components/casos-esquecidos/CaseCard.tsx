@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Conto, imagemAbsoluta } from '@/lib/casos-esquecidos'
+import { Conto } from '@/lib/casos-esquecidos'
 
 const BASE = '/projetos-especiais/casos-esquecidos'
 
 export default function CaseCard({ conto, prefix = `${BASE}/contos`, priority = false }: { conto: Conto; prefix?: string; priority?: boolean }) {
-  const img = imagemAbsoluta(conto.imagem_url)
+  // src relativo/absoluto vai direto pro Image — next/image resolve
+  // caminho relativo (contos 001-006) contra o host atual sem problema.
+  // imagemAbsoluta() é só pra metadata/OG, que exige URL totalmente
+  // qualificada (ver contos/[slug]/page.tsx).
+  const img = conto.imagem_url
   return (
     <article className="case-card">
       {img && (

@@ -5,10 +5,14 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import { getSiteEspecial, getContosByTema, SITE_URL_BASE } from '@/lib/casos-esquecidos'
-import { getTema } from '@/lib/temas-casos-esquecidos'
+import { getTema, getAllTemas } from '@/lib/temas-casos-esquecidos'
 
 const BASE = '/projetos-especiais/casos-esquecidos'
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+
+export async function generateStaticParams() {
+  return getAllTemas().map(t => ({ tema: t.slug }))
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ tema: string }> }): Promise<Metadata> {
   const { tema: temaSlug } = await params
