@@ -58,6 +58,12 @@ function AddHorarioRow({ siteId, diaSemana, onDone }: { siteId: string; diaSeman
         Cancelar
       </button>
       {erro && <span className="text-xs text-red-600">{erro}</span>}
+      {fim <= inicio && (
+        <span className="w-full text-[11px] text-[var(--muted)] mt-1">
+          Esse horário cruza a meia-noite — vamos dividir automaticamente em dois blocos
+          ({inicio}–23:59 nesse dia, e 00:00–{fim} no dia seguinte). Pra trabalhar 24h, use 00:00 até 23:59.
+        </span>
+      )}
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
 import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertCursoInline, deleteCursoInline, type CursoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
@@ -108,8 +109,9 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, visivel }: {
+export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, visivel, textos }: {
   siteId: string; cursosIniciais: Curso[]; readOnly: boolean; visivel: boolean
+  textos: Record<string, string>
 }) {
   const [itens, setItens] = useState(cursosIniciais)
   const [adicionando, setAdicionando] = useState(false)
@@ -125,10 +127,17 @@ export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, 
   return (
     <section className="px-6 py-14 max-w-5xl mx-auto">
       <VisibilidadeSecaoToggle siteId={siteId} campo="secao_cursos_visivel" visivel={visivel} readOnly={readOnly} />
-      <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
-        Agenda de <strong>Cursos e Palestras</strong>
-      </h2>
-      <p className="text-center text-slate-500 text-sm mb-8">Aparece na Home e na página Cursos e Eventos</p>
+      <EditableTextoCustomizado
+        siteId={siteId} readOnly={readOnly} chave="home_cursos_titulo"
+        valor={textos.home_cursos_titulo ?? 'Agenda de Cursos e Palestras'}
+        as="h2" className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2 block"
+      />
+      <EditableTextoCustomizado
+        siteId={siteId} readOnly={readOnly} chave="home_cursos_subtitulo"
+        valor={textos.home_cursos_subtitulo ?? 'Também atuamos como palestrantes em instituições de ensino e eventos.'}
+        as="p" className="text-center text-slate-500 text-sm mb-2 block"
+      />
+      <p className="text-center text-slate-400 text-xs mb-6">Aparece na Home e na página Cursos e Eventos</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {itens.map(c => (
