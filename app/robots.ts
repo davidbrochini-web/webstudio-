@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { SITE_SLUG as DJ_SLUG, SITE_URL_BASE as DJ_URL_BASE } from '@/lib/dentista-joao'
+import { SITE_SLUG as CE_SLUG, SITE_URL_BASE as CE_URL_BASE } from '@/lib/casos-esquecidos'
 
 async function dentistaJoaoRobots(): Promise<MetadataRoute.Robots> {
   const supabase = await createClient()
@@ -18,9 +19,26 @@ async function dentistaJoaoRobots(): Promise<MetadataRoute.Robots> {
   }
 }
 
+async function casosEsquecidosRobots(): Promise<MetadataRoute.Robots> {
+  const supabase = await createClient()
+  const { data: site } = await supabase
+    .from('sites').select('seo_indexavel').eq('slug', CE_SLUG).is('deleted_at', null).single()
+  const indexavel = site?.seo_indexavel ?? false
+  return {
+    rules: {
+      userAgent: '*',
+      allow: indexavel ? '/' : undefined,
+      disallow: indexavel ? ['/app', '/login'] : '/',
+    },
+    sitemap: `${CE_URL_BASE}/sitemap.xml`,
+  }
+}
+
 const DOMAIN_ROBOTS: Record<string, () => Promise<MetadataRoute.Robots>> = {
   'drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
   'www.drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
+  'casosesquecidos.com.br': casosEsquecidosRobots,
+  'www.casosesquecidos.com.br': casosEsquecidosRobots,
 }
 
 export const dynamic = 'force-dynamic'
