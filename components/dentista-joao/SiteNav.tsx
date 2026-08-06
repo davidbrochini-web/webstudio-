@@ -70,12 +70,13 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
         </div>
       </div>
 
-      {/* Menu principal */}
-      <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      {/* Menu principal — barra um pouco mais alta que o padrão pra
+          acomodar logo quadrado/emblema sem espremer os detalhes */}
+      <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-20 sm:h-24 flex items-center justify-between gap-4">
         <Link href={BASE} className="flex-shrink-0 flex items-center max-w-[160px] sm:max-w-none">
           {site.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={site.logo_url} alt={site.business_name} className="h-9 sm:h-11 w-auto object-contain" />
+            <img src={site.logo_url} alt={site.business_name} className="h-14 sm:h-[4.5rem] w-auto object-contain" />
           ) : (
             <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] truncate">
               {site.business_name}
