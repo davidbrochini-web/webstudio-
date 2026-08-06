@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { getSiteEspecial, SITE_INDEXAVEL, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 
 /**
  * SEO base de todo o site do projeto especial. As páginas filhas só
@@ -7,9 +7,10 @@ import { getSiteEspecial, SITE_INDEXAVEL, SITE_URL_BASE } from '@/lib/dentista-j
  * OpenGraph default e template de título vêm daqui (Next faz merge:
  * campo não definido na filha herda do layout).
  *
- * Pra liberar a indexação quando o conteúdo real for aprovado, mudar
- * APENAS `SITE_INDEXAVEL` em lib/dentista-joao.ts (kill-switch único —
- * os robots por página antigos foram removidos de propósito).
+ * Indexação controlada por `sites.seo_indexavel` (toggle na aba SEO
+ * do painel — Admin > SEO). Antes era uma constante fixa no código;
+ * virou campo de banco pra dar controle ao cliente sem precisar de
+ * deploy toda vez que o conteúdo ficar pronto pra ir pro Google.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s — ${site.business_name}`,
     },
     description: site.tagline ?? undefined,
-    robots: { index: SITE_INDEXAVEL, follow: SITE_INDEXAVEL },
+    robots: { index: site.seo_indexavel, follow: site.seo_indexavel },
     alternates: { canonical: SITE_URL_BASE },
     openGraph: {
       siteName: site.business_name,

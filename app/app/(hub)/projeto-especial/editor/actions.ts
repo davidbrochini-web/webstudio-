@@ -186,3 +186,12 @@ export async function deleteFaqInline(id: string) {
   if (error) throw new Error(error.message)
   revalidateAll()
 }
+
+// ── SEO (E15-ish, aba SEO do painel) ──────────────────────────────
+export async function toggleSeoIndexavel(siteId: string, indexavel: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('sites').update({ seo_indexavel: indexavel }).eq('id', siteId)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+  revalidatePath('/app/projeto-especial/seo')
+}

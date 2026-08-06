@@ -46,6 +46,7 @@ export interface SiteEspecial {
   secao_equipe_visivel: boolean
   secao_faq_visivel: boolean
   secao_artigos_visivel: boolean
+  seo_indexavel: boolean
 }
 
 /** Busca o site — 404 se não existir. Não filtra por status aqui:
@@ -56,7 +57,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, seo_indexavel')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()
@@ -64,11 +65,6 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   if (!site) notFound()
   return site as SiteEspecial
 }
-
-/** Kill-switch único de indexação — flipar pra true quando o cliente
- *  aprovar o conteúdo real (herda pra todas as páginas via layout.tsx,
- *  e o sitemap.ts do projeto só emite URLs quando true). */
-export const SITE_INDEXAVEL = false
 
 export const SITE_URL_BASE = `https://drjoaobucomaxilofacial.com.br`
 // Domínio próprio ativo desde 05/08/2026 (DNS + SSL confirmados,
