@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { IconLogin } from '@/components/dentista-joao/icons'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
@@ -101,9 +102,10 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
           <Link
             href={`${BASE}/login`}
             onClick={() => setOpen(false)}
-            className="block w-full text-center text-slate-500 text-sm font-medium py-1 hover:text-[#0B2B3C] transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 text-slate-500 text-sm font-medium py-1 hover:text-[#0B2B3C] transition-colors"
           >
-            🔑 Login administrativo
+            <IconLogin className="w-3.5 h-3.5" />
+            Login administrativo
           </Link>
         </div>
       </nav>

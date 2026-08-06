@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
 import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertTratamentoInline, deleteTratamentoInline, type TratamentoData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
@@ -128,8 +129,9 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
   )
 }
 
-export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, readOnly, visivel }: {
+export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, readOnly, visivel, textos }: {
   siteId: string; tratamentosIniciais: Tratamento[]; readOnly: boolean; visivel: boolean
+  textos: Record<string, string>
 }) {
   const [itens, setItens] = useState(tratamentosIniciais)
   const [adicionando, setAdicionando] = useState(false)
@@ -146,10 +148,17 @@ export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, 
     <section className="px-6 py-14 bg-[#0EA5A0]">
       <div className="max-w-5xl mx-auto">
         <VisibilidadeSecaoToggle siteId={siteId} campo="secao_tratamentos_visivel" visivel={visivel} readOnly={readOnly} />
-        <h2 className="font-display font-extrabold text-2xl text-white text-center mb-2">
-          Áreas de <strong>Atuação</strong>
-        </h2>
-        <p className="text-center text-white/80 text-sm mb-8">Aparece na Home e na página Tratamentos</p>
+        <EditableTextoCustomizado
+          siteId={siteId} readOnly={readOnly} chave="home_areas_titulo"
+          valor={textos.home_areas_titulo ?? 'Áreas de Atuação'}
+          as="h2" className="font-display font-extrabold text-2xl text-white text-center mb-2 block"
+        />
+        <EditableTextoCustomizado
+          siteId={siteId} readOnly={readOnly} chave="home_areas_subtitulo"
+          valor={textos.home_areas_subtitulo ?? 'Trabalhamos com inovação, dedicação e tecnologia para garantir o melhor tratamento aos nossos pacientes.'}
+          as="p" className="text-center text-white/80 text-sm mb-2 block"
+        />
+        <p className="text-center text-white/50 text-xs mb-8">Aparece na Home e na página Tratamentos</p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {itens.map(t => (

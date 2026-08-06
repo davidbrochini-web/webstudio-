@@ -35,6 +35,7 @@ export interface SiteEspecial {
   logo_url: string | null
   whatsapp: string | null
   instagram_handle: string | null
+  instagram_visivel: boolean
   telefone: string | null
   endereco: string | null
   status: 'rascunho' | 'publicado'
@@ -47,6 +48,7 @@ export interface SiteEspecial {
   secao_faq_visivel: boolean
   secao_artigos_visivel: boolean
   seo_indexavel: boolean
+  textos_customizados: Record<string, string>
 }
 
 /** Busca o site — 404 se não existir. Não filtra por status aqui:
@@ -57,7 +59,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, seo_indexavel')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, instagram_visivel, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, seo_indexavel, textos_customizados')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

@@ -2,6 +2,7 @@ import type { SiteEspecial } from '@/lib/dentista-joao'
 import { formatTelefoneExibicao } from '@/lib/dentista-joao'
 import NewsletterForm from '@/components/dentista-joao/NewsletterForm'
 import Link from 'next/link'
+import { IconWhatsApp, IconInstagram } from '@/components/dentista-joao/icons'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
@@ -99,24 +100,24 @@ export default function SiteFooter({ site }: { site: SiteEspecial }) {
             ))}
           </ul>
           {/* Redes sociais */}
-          {(site.instagram_handle || waLink) && (
+          {((site.instagram_visivel && site.instagram_handle) || waLink) && (
             <div className="mt-8">
               <p className="font-display font-bold text-white mb-1 text-base">Siga-nos</p>
               <div className="w-8 h-0.5 bg-[#0EA5A0] mb-4 rounded-full" />
               <div className="flex gap-3">
-                {site.instagram_handle && (
+                {site.instagram_visivel && site.instagram_handle && (
                   <a href={`https://instagram.com/${site.instagram_handle.replace('@', '')}`}
                     target="_blank" rel="noopener noreferrer"
                     title="Instagram"
-                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-gradient-to-br hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#dc2743] flex items-center justify-center text-lg transition-all">
-                    📸
+                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-gradient-to-br hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#dc2743] flex items-center justify-center transition-all">
+                    <IconInstagram className="w-4.5 h-4.5" />
                   </a>
                 )}
                 {waLink && (
                   <a href={waLink} target="_blank" rel="noopener noreferrer"
                     title="WhatsApp"
-                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-[#25D366] flex items-center justify-center text-lg transition-all">
-                    💬
+                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-[#25D366] flex items-center justify-center transition-all">
+                    <IconWhatsApp className="w-4.5 h-4.5" />
                   </a>
                 )}
               </div>

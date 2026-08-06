@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
+import { texto } from '@/lib/textos-customizados'
 import PageShell from '@/components/dentista-joao/PageShell'
 import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/HeroCarousel'
 import Reveal from '@/components/dentista-joao/Reveal'
@@ -58,7 +59,7 @@ export default async function HomePage() {
 
   const slides: CarouselSlide[] = [
     {
-      titulo: site.hero_title || site.business_name,
+      titulo: site.hero_title ?? site.business_name,
       subtitulo: site.hero_sub || '',
       imagem_url: site.hero_imagem_url || HERO_FALLBACK,
       ctaLabel: 'Marcar consulta',
@@ -81,18 +82,23 @@ export default async function HomePage() {
       <HeroCarousel slides={slides} />
 
       {/* Faixa de números/credenciais — imediatamente após o hero, mesmo
-          padrão de clínicas de referência pra transmitir confiança rápido */}
+          padrão de clínicas de referência pra transmitir confiança rápido.
+          Textos editáveis via sites.textos_customizados (chaves home_stat1..4) */}
       <div className="bg-[#0B2B3C] px-5 sm:px-6 py-8">
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center text-white">
           {[
-            { numero: '10+', label: 'Anos de experiência' },
-            { numero: '6',   label: 'Especialidades' },
-            { numero: '100%', label: 'Dedicação ao paciente' },
-            { numero: '5★',  label: 'Atendimento humanizado' },
+            { chave: 'home_stat1', numero: '10+', label: 'Anos de experiência' },
+            { chave: 'home_stat2', numero: '6',   label: 'Especialidades' },
+            { chave: 'home_stat3', numero: '100%', label: 'Dedicação ao paciente' },
+            { chave: 'home_stat4', numero: '5★',  label: 'Atendimento humanizado' },
           ].map(stat => (
-            <div key={stat.label}>
-              <p className="font-display font-extrabold text-2xl sm:text-3xl text-[#0EA5A0]">{stat.numero}</p>
-              <p className="text-xs sm:text-sm text-white/60 mt-1 leading-snug">{stat.label}</p>
+            <div key={stat.chave}>
+              <p className="font-display font-extrabold text-2xl sm:text-3xl text-[#0EA5A0]">
+                {texto(site.textos_customizados, `${stat.chave}_numero`, stat.numero)}
+              </p>
+              <p className="text-xs sm:text-sm text-white/60 mt-1 leading-snug">
+                {texto(site.textos_customizados, `${stat.chave}_label`, stat.label)}
+              </p>
             </div>
           ))}
         </div>
@@ -125,10 +131,10 @@ export default async function HomePage() {
             <div className="max-w-5xl mx-auto">
               <Reveal>
                 <h2 className="font-display font-extrabold text-2xl text-white text-center mb-2">
-                  Áreas de <strong className="font-extrabold">Atuação</strong>
+                  {texto(site.textos_customizados, 'home_areas_titulo', 'Áreas de Atuação')}
                 </h2>
                 <p className="text-center text-white/80 text-sm mb-10">
-                  Trabalhamos com inovação, dedicação e tecnologia para garantir o melhor tratamento aos nossos pacientes.
+                  {texto(site.textos_customizados, 'home_areas_subtitulo', 'Trabalhamos com inovação, dedicação e tecnologia para garantir o melhor tratamento aos nossos pacientes.')}
                 </p>
               </Reveal>
               {/* Grade estilo revista — imagem full com overlay e título sobreposto */}
@@ -183,10 +189,10 @@ export default async function HomePage() {
         <section className="px-6 py-16 max-w-5xl mx-auto">
           <Reveal>
             <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
-              Agenda de <strong>Cursos e Palestras</strong>
+              {texto(site.textos_customizados, 'home_cursos_titulo', 'Agenda de Cursos e Palestras')}
             </h2>
             <p className="text-center text-slate-500 text-sm mb-10">
-              Também atuamos como palestrantes em instituições de ensino e eventos.
+              {texto(site.textos_customizados, 'home_cursos_subtitulo', 'Também atuamos como palestrantes em instituições de ensino e eventos.')}
             </p>
           </Reveal>
           {/* Mobile: scroll horizontal tipo carrossel; tablet+: grid normal */}
@@ -227,9 +233,11 @@ export default async function HomePage() {
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_300px] gap-12 items-start">
             <div>
               <Reveal>
-                <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Tire suas dúvidas</p>
+                <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">
+                  {texto(site.textos_customizados, 'home_faq_eyebrow', 'Tire suas dúvidas')}
+                </p>
                 <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[#0B2B3C] mb-8 leading-tight">
-                  Dúvidas<br className="hidden sm:block" /> Frequentes
+                  {texto(site.textos_customizados, 'home_faq_titulo', 'Dúvidas Frequentes')}
                 </h2>
               </Reveal>
               <FaqAccordion itens={faqPrevia ?? []} />
@@ -270,10 +278,10 @@ export default async function HomePage() {
         <section className="px-6 py-16 max-w-5xl mx-auto">
           <Reveal>
             <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
-              Novidades <strong>Clínicas</strong>
+              {texto(site.textos_customizados, 'home_novidades_titulo', 'Novidades Clínicas')}
             </h2>
             <p className="text-center text-slate-500 text-sm mb-10">
-              Acompanhe nossos artigos e fique atualizado com os principais temas da área.
+              {texto(site.textos_customizados, 'home_novidades_subtitulo', 'Acompanhe nossos artigos e fique atualizado com os principais temas da área.')}
             </p>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
@@ -302,7 +310,9 @@ export default async function HomePage() {
       {/* CTA final */}
       <section className="px-6 py-16 text-center bg-[#0B2B3C]">
         <Reveal>
-          <h2 className="font-display font-extrabold text-2xl text-white mb-4">Vamos cuidar do seu sorriso?</h2>
+          <h2 className="font-display font-extrabold text-2xl text-white mb-4">
+            {texto(site.textos_customizados, 'home_cta_titulo', 'Vamos cuidar do seu sorriso?')}
+          </h2>
           <Link href="/projetos-especiais/dentista-joao/contato" className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
             Marcar consulta
           </Link>

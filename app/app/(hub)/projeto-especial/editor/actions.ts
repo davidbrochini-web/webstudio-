@@ -41,6 +41,31 @@ export async function updateSiteFieldPE(siteId: string, field: SiteField, value:
   revalidateAll()
 }
 
+// ── Textos customizados (qualquer heading/subtítulo hardcoded do site,
+// sem precisar de coluna nova por campo — ver lib/textos-customizados.ts)
+export async function updateTextoCustomizado(siteId: string, chave: string, valor: string) {
+  if (!chave || !/^[a-z0-9_]+$/.test(chave)) throw new Error('Chave de texto inválida.')
+  const supabase = await createClient()
+  const { data: atual, error: fetchError } = await supabase
+    .from('sites').select('textos_customizados').eq('id', siteId).single()
+  if (fetchError) throw new Error(fetchError.message)
+
+  const novo = { ...(atual?.textos_customizados ?? {}), [chave]: valor }
+  const { error } = await supabase.from('sites').update({ textos_customizados: novo }).eq('id', siteId)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+}
+
+// ── Instagram: visível/oculto, independente do handle estar preenchido
+// (pedido: o cliente liga/desliga o ícone quando quiser, sem precisar
+// apagar o link cadastrado)
+export async function updateInstagramVisivel(siteId: string, visivel: boolean) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('sites').update({ instagram_visivel: visivel }).eq('id', siteId)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+}
+
 // ── Visibilidade por seção (oculta do menu/Home/página sem apagar
 // o conteúdo — pedido: dar tempo de alimentar uma área aos poucos
 // sem ela ficar exposta no site) ────────────────────────────────

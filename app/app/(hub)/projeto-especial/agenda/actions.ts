@@ -59,6 +59,29 @@ export interface HorarioData {
 
 export async function upsertHorario(siteId: string, id: string | null, data: HorarioData) {
   const supabase = await createClient()
+
+  // Plantão que cruza a meia-noite (ex: 22:00–06:00): a tabela guarda
+  // hora_inicio/hora_fim dentro do MESMO dia (constraint hora_fim >
+  // hora_inicio no banco), então uma faixa assim não cabe numa linha só.
+  // Em vez de rejeitar com um erro confuso, dividimos automaticamente em
+  // dois blocos — hoje até 23:59:59, e do dia seguinte até o horário de
+  // fim — reaproveitando o suporte que já existe pra múltiplos horários
+  // no mesmo dia. Só se aplica ao adicionar (não a editar uma linha
+  // existente, que já representa um único bloco dentro de um dia).
+  if (!id && data.hora_fim <= data.hora_inicio) {
+    const proximoDia = (data.dia_semana + 1) % 7
+    const { error: e1 } = await supabase.from('agendamento_horarios').insert({
+      site_id: siteId, dia_semana: data.dia_semana, hora_inicio: data.hora_inicio, hora_fim: '23:59:59', ativo: data.ativo,
+    })
+    if (e1) throw new Error(friendlyError(e1))
+    const { error: e2 } = await supabase.from('agendamento_horarios').insert({
+      site_id: siteId, dia_semana: proximoDia, hora_inicio: '00:00:00', hora_fim: data.hora_fim, ativo: data.ativo,
+    })
+    if (e2) throw new Error(friendlyError(e2))
+    revalidatePath(PATH)
+    return
+  }
+
   if (id) {
     const { error } = await supabase.from('agendamento_horarios').update(data).eq('id', id)
     if (error) throw new Error(friendlyError(error))

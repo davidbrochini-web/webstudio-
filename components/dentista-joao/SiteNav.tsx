@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { SiteEspecial } from '@/lib/dentista-joao'
 import MobileMenu from '@/components/dentista-joao/MobileMenu'
+import { IconPhone, IconWhatsApp, IconInstagram, IconLogin } from '@/components/dentista-joao/icons'
 
 const BASE = '/projetos-especiais/dentista-joao'
 
@@ -40,30 +41,30 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
         )}
         <div className="flex items-center gap-3 sm:gap-5 flex-wrap ml-auto">
           {site.telefone && (
-            <a href={`tel:${site.telefone.replace(/\D/g,'')}`} className="hover:opacity-80 flex items-center gap-1">
-              <span>📞</span>
+            <a href={`tel:${site.telefone.replace(/\D/g,'')}`} className="hover:opacity-80 flex items-center gap-1.5">
+              <IconPhone className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{site.telefone}</span>
               <span className="sm:hidden">Ligar</span>
             </a>
           )}
           {waLink && (
-            <a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
-              <span>💬</span>
-              <span className="hidden sm:inline"> WhatsApp</span>
-              <span className="sm:hidden"> WhatsApp</span>
+            <a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 flex items-center gap-1.5">
+              <IconWhatsApp className="w-3.5 h-3.5" />
+              <span>WhatsApp</span>
             </a>
           )}
-          {site.instagram_handle && (
+          {site.instagram_visivel && site.instagram_handle && (
             <a
               href={`https://instagram.com/${site.instagram_handle.replace('@','')}`}
               target="_blank" rel="noopener noreferrer"
-              className="hover:opacity-80 hidden sm:block"
+              className="hover:opacity-80 hidden sm:flex items-center gap-1.5"
             >
-              📸 Instagram
+              <IconInstagram className="w-3.5 h-3.5" />
+              <span>Instagram</span>
             </a>
           )}
-          <Link href={`${BASE}/login`} className="hover:opacity-80 flex items-center gap-1 border-l border-white/25 pl-3 sm:pl-5">
-            <span>🔑</span>
+          <Link href={`${BASE}/login`} className="hover:opacity-80 flex items-center gap-1.5 border-l border-white/25 pl-3 sm:pl-5">
+            <IconLogin className="w-3.5 h-3.5" />
             <span>Login</span>
           </Link>
         </div>

@@ -11,6 +11,7 @@ import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
 import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
 import EditableText from '@/components/site-editor/EditableText'
+import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
 import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 interface SiteDados {
@@ -24,6 +25,7 @@ interface SiteDados {
   telefone: string | null
   whatsapp: string | null
   instagram_handle: string | null
+  instagram_visivel: boolean
   endereco: string | null
   status: 'rascunho' | 'publicado'
   missao: string | null
@@ -33,6 +35,7 @@ interface SiteDados {
   secao_cursos_visivel: boolean
   secao_equipe_visivel: boolean
   secao_faq_visivel: boolean
+  textos_customizados: Record<string, string>
 }
 
 // Mesma ordem e nomes do menu real do site (components/dentista-joao/SiteNav.tsx)
@@ -97,12 +100,15 @@ export default function LiveEditor({
         </div>
       </div>
 
-      {/* Barra de contatos — aparece em toda página (igual ao rodapé real do site) */}
+      {/* Barra de contatos — global do site, não da seção da aba atual.
+          Recolhida fora de Home/Contato pra não brigar visualmente com
+          os controles específicos de cada seção (ex: toggle de visibilidade). */}
       <ContatosBarDJ
         siteId={site.id}
         telefone={site.telefone} whatsapp={site.whatsapp}
-        instagramHandle={site.instagram_handle} endereco={site.endereco}
+        instagramHandle={site.instagram_handle} instagramVisivel={site.instagram_visivel} endereco={site.endereco}
         status={site.status} readOnly={readOnly}
+        defaultExpanded={pagina === 'home' || pagina === 'contato'}
       />
 
       {/* Canvas do site — mesma identidade visual do site real */}
@@ -118,11 +124,30 @@ export default function LiveEditor({
               readOnly={readOnly}
             />
 
-            {/* Faixa de números — fixa, não editável (combinar com a Omnidesign pra mudar) */}
+            {/* Faixa de números — editável (pedido explícito do cliente:
+                antes era fixa, agora abre pra customização) */}
             <div className="bg-[#0B2B3C] px-5 py-6 border-t border-white/5">
-              <div className="max-w-4xl mx-auto grid grid-cols-4 gap-4 text-center text-white/50">
-                {['10+ Anos de experiência', '6 Especialidades', '100% Dedicação', '5★ Atendimento'].map(s => (
-                  <p key={s} className="text-[10px]">{s}</p>
+              <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-white">
+                {[
+                  { chave: 'home_stat1', numero: '10+', label: 'Anos de experiência' },
+                  { chave: 'home_stat2', numero: '6', label: 'Especialidades' },
+                  { chave: 'home_stat3', numero: '100%', label: 'Dedicação' },
+                  { chave: 'home_stat4', numero: '5★', label: 'Atendimento' },
+                ].map(s => (
+                  <div key={s.chave}>
+                    <EditableTextoCustomizado
+                      siteId={site.id} readOnly={readOnly}
+                      chave={`${s.chave}_numero`}
+                      valor={site.textos_customizados?.[`${s.chave}_numero`] ?? s.numero}
+                      className="font-display font-extrabold text-lg text-[#0EA5A0] block"
+                    />
+                    <EditableTextoCustomizado
+                      siteId={site.id} readOnly={readOnly}
+                      chave={`${s.chave}_label`}
+                      valor={site.textos_customizados?.[`${s.chave}_label`] ?? s.label}
+                      className="text-[10px] text-white/60 block"
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -138,17 +163,23 @@ export default function LiveEditor({
 
             <div className="px-6 py-3 bg-slate-50 text-center border-t border-slate-100">
               <p className="text-xs text-slate-400">
-                A home também mostra prévias de Tratamentos, Cursos e Dúvidas Frequentes — edite em cada aba acima
+                A home também mostra prévias de Tratamentos, Cursos e Dúvidas Frequentes — edite o conteúdo em cada aba acima (os títulos dessas seções também ficam editáveis lá)
               </p>
             </div>
 
-            {/* CTA final — fixo */}
+            {/* CTA final — editável (pedido explícito do cliente) */}
             <section className="px-6 py-14 text-center bg-[#0B2B3C]">
-              <p className="font-display font-extrabold text-xl text-white mb-3">Vamos cuidar do seu sorriso?</p>
+              <EditableTextoCustomizado
+                siteId={site.id} readOnly={readOnly}
+                chave="home_cta_titulo"
+                valor={site.textos_customizados?.home_cta_titulo ?? 'Vamos cuidar do seu sorriso?'}
+                as="p"
+                className="font-display font-extrabold text-xl text-white mb-3 block"
+              />
               <span className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">
                 Marcar consulta
               </span>
-              <p className="text-white/30 text-[10px] mt-2">Seção fixa — não editável aqui</p>
+              <p className="text-white/30 text-[10px] mt-2">Botão fixo — não editável aqui</p>
             </section>
           </>
         )}
@@ -204,11 +235,11 @@ export default function LiveEditor({
         )}
 
         {pagina === 'tratamentos' && (
-          <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} visivel={site.secao_tratamentos_visivel} />
+          <TratamentosSectionEditor siteId={site.id} tratamentosIniciais={tratamentos} readOnly={readOnly} visivel={site.secao_tratamentos_visivel} textos={site.textos_customizados ?? {}} />
         )}
 
         {pagina === 'cursos' && (
-          <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} visivel={site.secao_cursos_visivel} />
+          <CursosSectionEditor siteId={site.id} cursosIniciais={cursos} readOnly={readOnly} visivel={site.secao_cursos_visivel} textos={site.textos_customizados ?? {}} />
         )}
 
         {pagina === 'equipe' && (
@@ -216,7 +247,7 @@ export default function LiveEditor({
         )}
 
         {pagina === 'faq' && (
-          <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} visivel={site.secao_faq_visivel} />
+          <FaqSectionEditor siteId={site.id} faqIniciais={faq} readOnly={readOnly} visivel={site.secao_faq_visivel} textos={site.textos_customizados ?? {}} />
         )}
 
         {pagina === 'contato' && (

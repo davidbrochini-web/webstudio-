@@ -2,13 +2,15 @@
 
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
+import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
 import VisibilidadeSecaoToggle from './VisibilidadeSecaoToggle'
 import { upsertFaqInline, deleteFaqInline, type FaqData } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 export interface Faq { id: string; pergunta: string; resposta: string; categoria: string | null }
 
-export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visivel }: {
+export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visivel, textos }: {
   siteId: string; faqIniciais: Faq[]; readOnly: boolean; visivel: boolean
+  textos: Record<string, string>
 }) {
   const [itens, setItens] = useState(faqIniciais)
   const [aberto, setAberto] = useState<string | null>(itens[0]?.id ?? null)
@@ -33,8 +35,16 @@ export default function FaqSectionEditor({ siteId, faqIniciais, readOnly, visive
     <section className="px-5 sm:px-6 py-16 bg-slate-50">
       <div className="max-w-3xl mx-auto">
         <VisibilidadeSecaoToggle siteId={siteId} campo="secao_faq_visivel" visivel={visivel} readOnly={readOnly} />
-        <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2 text-center">Tire suas dúvidas</p>
-        <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B2B3C] mb-2 text-center">Dúvidas Frequentes</h2>
+        <EditableTextoCustomizado
+          siteId={siteId} readOnly={readOnly} chave="home_faq_eyebrow"
+          valor={textos.home_faq_eyebrow ?? 'Tire suas dúvidas'}
+          as="p" className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2 text-center block"
+        />
+        <EditableTextoCustomizado
+          siteId={siteId} readOnly={readOnly} chave="home_faq_titulo"
+          valor={textos.home_faq_titulo ?? 'Dúvidas Frequentes'}
+          as="h2" className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B2B3C] mb-2 text-center block"
+        />
         <p className="text-center text-slate-400 text-xs mb-8">Aparece na Home e na página Dúvidas Frequentes</p>
 
         <div className="flex flex-col gap-3">
