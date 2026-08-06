@@ -43,7 +43,7 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
         alt={t.titulo}
         onReplace={(url) => salvar({ imagem_url: url })}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/90 via-[#0B2B3C]/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--dj-secondary)]/90 via-[var(--dj-secondary)]/20 to-transparent pointer-events-none" />
 
       <div className={`absolute bottom-0 left-0 right-0 p-4 ${!readOnly ? 'pb-14' : ''}`}>
         <EditableText
@@ -76,7 +76,7 @@ function Card({ siteId, t, readOnly, onUpdate, onDelete }: {
       {expandido && !readOnly && (
         <div className="absolute inset-0 bg-white p-4 overflow-y-auto text-left z-10">
           <button onClick={() => setExpandido(false)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 text-lg leading-none">×</button>
-          <p className="text-[10px] font-bold text-[#0EA5A0] uppercase tracking-wider mb-2">Detalhes do tratamento</p>
+          <p className="text-[10px] font-bold text-[var(--dj-primary)] uppercase tracking-wider mb-2">Detalhes do tratamento</p>
           <label className="block mb-2">
             <span className="text-[10px] font-semibold text-slate-400 uppercase">Endereço na URL (slug)</span>
             <input defaultValue={t.slug} onBlur={e => { const v = slugify(e.target.value); if (v) salvar({ slug: v }) }}
@@ -145,7 +145,7 @@ export default function TratamentosSectionEditor({ siteId, tratamentosIniciais, 
   }
 
   return (
-    <section className="px-6 py-14 bg-[#0EA5A0]">
+    <section className="px-6 py-14 bg-[var(--dj-primary)]">
       <div className="max-w-5xl mx-auto">
         <VisibilidadeSecaoToggle siteId={siteId} campo="secao_tratamentos_visivel" visivel={visivel} readOnly={readOnly} />
         <EditableTextoCustomizado

@@ -127,7 +127,7 @@ export default function AgendamentoForm({ config, horarios, bloqueios, ocupados,
     return (
       <div className="text-center py-10">
         <p className="text-3xl mb-3">✅</p>
-        <p className="font-display font-bold text-lg text-[#0B2B3C] mb-1">Agendamento solicitado!</p>
+        <p className="font-display font-bold text-lg text-[var(--dj-secondary)] mb-1">Agendamento solicitado!</p>
         <p className="text-sm text-slate-500 max-w-md mx-auto">
           Você receberá uma confirmação assim que a clínica aprovar seu horário.
           Caso precise consultar ou cancelar, acesse &quot;Meus Agendamentos&quot;.
@@ -174,8 +174,8 @@ export default function AgendamentoForm({ config, horarios, bloqueios, ocupados,
                 <button key={day} type="button" onClick={() => onDateChange(day)}
                   className={`flex flex-col items-center rounded-xl px-3 py-2 border text-xs transition-all ${
                     active
-                      ? 'bg-[#0d7377] text-white border-[#0d7377]'
-                      : 'bg-white text-slate-700 border-slate-200 hover:border-[#0EA5A0]'
+                      ? 'bg-[var(--dj-primary)] text-white border-[var(--dj-primary)]'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-[var(--dj-primary)]'
                   }`}>
                   <span className="font-semibold">{d.getDate()}</span>
                   <span className="text-[10px] uppercase">{d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')}</span>
@@ -202,8 +202,8 @@ export default function AgendamentoForm({ config, horarios, bloqueios, ocupados,
                   <button key={s.hora_inicio} type="button" onClick={() => setSelectedSlot(s)}
                     className={`rounded-lg px-3 py-2 text-sm font-medium border transition-all ${
                       active
-                        ? 'bg-[#0d7377] text-white border-[#0d7377]'
-                        : 'bg-white text-slate-700 border-slate-200 hover:border-[#0EA5A0]'
+                        ? 'bg-[var(--dj-primary)] text-white border-[var(--dj-primary)]'
+                        : 'bg-white text-slate-700 border-slate-200 hover:border-[var(--dj-primary)]'
                     }`}>
                     {s.hora_inicio}
                   </button>
@@ -226,7 +226,7 @@ export default function AgendamentoForm({ config, horarios, bloqueios, ocupados,
       {state.error && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{state.error}</p>}
 
       <button type="submit" disabled={pending || !selectedSlot}
-        className="bg-[#0d7377] hover:bg-[#0b6163] text-white font-semibold rounded-xl px-6 py-3 text-sm disabled:opacity-50 transition-colors">
+        className="bg-[var(--dj-primary)] hover:bg-[var(--dj-primary)] text-white font-semibold rounded-xl px-6 py-3 text-sm disabled:opacity-50 transition-colors">
         {pending ? 'Enviando…' : 'Solicitar agendamento'}
       </button>
     </form>

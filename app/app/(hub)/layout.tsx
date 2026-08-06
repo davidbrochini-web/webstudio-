@@ -71,6 +71,10 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           label: '🔍 SEO',
           href: '/app/projeto-especial/seo',
         })
+        navItems.push({
+          label: '🎨 Cores',
+          href: '/app/projeto-especial/cores',
+        })
       }
 
       if (tenant.projeto_especial_slug === 'casos-esquecidos') {

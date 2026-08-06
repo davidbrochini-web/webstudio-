@@ -41,7 +41,7 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
       />
       <div className="p-5">
         <EditableText as="p" readOnly={readOnly} value={c.titulo} placeholder="Título do evento"
-          className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 block"
+          className="font-display font-bold text-base text-[var(--dj-secondary)] mb-1.5 block"
           onSave={v => salvar({ titulo: v })} />
         <EditableText as="p" readOnly={readOnly} value={c.descricao} placeholder="Descrição do evento" multiline
           className="text-sm text-slate-500 leading-relaxed block mb-2"
@@ -73,7 +73,7 @@ function CursoCard({ siteId, c, readOnly, onUpdate, onDelete }: {
       {expandido && !readOnly && (
         <div className="absolute inset-0 bg-white p-4 overflow-y-auto text-left z-10">
           <button onClick={() => setExpandido(false)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-700 text-lg leading-none">×</button>
-          <p className="text-[10px] font-bold text-[#0EA5A0] uppercase tracking-wider mb-2">Detalhes do evento</p>
+          <p className="text-[10px] font-bold text-[var(--dj-primary)] uppercase tracking-wider mb-2">Detalhes do evento</p>
           <p className="text-[9px] text-slate-400 mb-2">O texto de cima (no card) é o resumo. Aqui embaixo é o texto completo que aparece quando alguém clica pra ver mais.</p>
           <label className="block mb-2">
             <span className="text-[10px] font-semibold text-slate-400 uppercase">Texto completo (página de detalhe)</span>
@@ -130,7 +130,7 @@ export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, 
       <EditableTextoCustomizado
         siteId={siteId} readOnly={readOnly} chave="home_cursos_titulo"
         valor={textos.home_cursos_titulo ?? 'Agenda de Cursos e Palestras'}
-        as="h2" className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2 block"
+        as="h2" className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] text-center mb-2 block"
       />
       <EditableTextoCustomizado
         siteId={siteId} readOnly={readOnly} chave="home_cursos_subtitulo"
@@ -149,7 +149,7 @@ export default function CursosSectionEditor({ siteId, cursosIniciais, readOnly, 
 
         {!readOnly && (
           <button onClick={adicionar} disabled={adicionando}
-            className="aspect-[4/3] sm:aspect-auto rounded-2xl border-2 border-dashed border-slate-200 hover:border-[#0EA5A0] text-slate-400 hover:text-[#0EA5A0] flex flex-col items-center justify-center gap-1.5 transition-colors min-h-[220px]">
+            className="aspect-[4/3] sm:aspect-auto rounded-2xl border-2 border-dashed border-slate-200 hover:border-[var(--dj-primary)] text-slate-400 hover:text-[var(--dj-primary)] flex flex-col items-center justify-center gap-1.5 transition-colors min-h-[220px]">
             <span className="text-2xl">{adicionando ? '…' : '+'}</span>
             <span className="text-xs font-semibold">Novo evento</span>
           </button>

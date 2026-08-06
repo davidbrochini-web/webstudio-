@@ -66,6 +66,18 @@ export async function updateInstagramVisivel(siteId: string, visivel: boolean) {
   revalidateAll()
 }
 
+// ── Cores customizadas (item pedido pelo cliente: paleta do site
+// seguindo a paleta do logo) ────────────────────────────────────
+export async function updateCores(siteId: string, corPrimaria: string, corSecundaria: string) {
+  const hex = /^#[0-9a-fA-F]{6}$/
+  if (!hex.test(corPrimaria) || !hex.test(corSecundaria)) throw new Error('Cor inválida — use o formato #RRGGBB.')
+  const supabase = await createClient()
+  const { error } = await supabase.from('sites')
+    .update({ cor_primaria: corPrimaria, cor_secundaria: corSecundaria }).eq('id', siteId)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+}
+
 // ── Visibilidade por seção (oculta do menu/Home/página sem apagar
 // o conteúdo — pedido: dar tempo de alimentar uma área aos poucos
 // sem ela ficar exposta no site) ────────────────────────────────

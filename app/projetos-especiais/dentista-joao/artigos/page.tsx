@@ -46,7 +46,7 @@ export default async function ArtigosPage() {
             {posts.map(p => (
               <Link key={p.slug} href={`/projetos-especiais/dentista-joao/artigos/${p.slug}`} className="block group">
                 {p.capa_url && <img src={p.capa_url} alt="" className="w-full aspect-[16/10] object-cover rounded-2xl mb-4" />}
-                <h2 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 leading-snug">{p.titulo}</h2>
+                <h2 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-1.5 leading-snug">{p.titulo}</h2>
                 <p className="text-sm text-slate-500 leading-relaxed">{p.resumo}</p>
               </Link>
             ))}

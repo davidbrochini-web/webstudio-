@@ -74,7 +74,7 @@ export default async function TratamentosPage() {
 
                   {/* Texto */}
                   <Reveal delay={150}>
-                    <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] mb-4">
+                    <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] mb-4">
                       {t.titulo}
                     </h2>
                     <p className="text-slate-600 leading-relaxed mb-3">{t.descricao_curta}</p>
@@ -83,7 +83,7 @@ export default async function TratamentosPage() {
                     )}
                     <Link
                       href={`/projetos-especiais/dentista-joao/tratamentos/${t.slug}`}
-                      className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
+                      className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
                     >
                       Saiba Mais
                     </Link>

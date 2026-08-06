@@ -16,7 +16,7 @@ export default function WhatsAppFloat({ whatsapp }: { whatsapp: string | null })
   return (
     <div className="fixed bottom-6 right-5 sm:right-6 z-50 flex flex-row-reverse items-center gap-3">
       {/* Label (desktop: aparece no hover via CSS) */}
-      <span className="wa-label hidden sm:block bg-[#0B2B3C] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md opacity-0 translate-x-2 pointer-events-none">
+      <span className="wa-label hidden sm:block bg-[var(--dj-secondary)] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md opacity-0 translate-x-2 pointer-events-none">
         Fale conosco
       </span>
 

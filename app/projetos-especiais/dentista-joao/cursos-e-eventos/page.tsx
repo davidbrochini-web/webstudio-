@@ -44,15 +44,15 @@ export default async function CursosEventosPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {itens.map(c => (
-              <Link key={c.slug} href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[#0EA5A0] transition-colors">
+              <Link key={c.slug} href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] transition-colors">
                 {c.imagem_url && <img src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover" />}
                 <div className="p-5">
                   {c.data_evento && (
-                    <p className="text-xs font-bold text-[#0EA5A0] mb-1.5">
+                    <p className="text-xs font-bold text-[var(--dj-primary)] mb-1.5">
                       {new Date(c.data_evento + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                     </p>
                   )}
-                  <h2 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5">{c.titulo}</h2>
+                  <h2 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-1.5">{c.titulo}</h2>
                   <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{c.descricao}</p>
                 </div>
               </Link>

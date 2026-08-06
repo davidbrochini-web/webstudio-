@@ -27,7 +27,7 @@ export default function PageBanner({
           className="absolute inset-0 w-full h-full object-cover blur-sm scale-110"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0B2B3C]/85 to-[#0B2B3C]/75" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--dj-secondary)]/85 to-[var(--dj-secondary)]/75" />
       <div className="relative hero-text-enter">
         <nav aria-label="breadcrumb" className="mb-3 text-xs sm:text-sm text-white/70">
           <Link href={BASE} className="hover:text-white transition-colors">Home</Link>
@@ -41,7 +41,7 @@ export default function PageBanner({
           <span className="text-white">{title}</span>
         </nav>
         <h1 className="font-display font-extrabold text-2xl sm:text-4xl text-white">{title}</h1>
-        <div className="mt-4 mx-auto h-1 w-16 rounded-full bg-[#0EA5A0]" />
+        <div className="mt-4 mx-auto h-1 w-16 rounded-full bg-[var(--dj-primary)]" />
       </div>
     </section>
   )

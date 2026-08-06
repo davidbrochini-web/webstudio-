@@ -45,7 +45,7 @@ export default function ContatosBarDJ({ siteId, telefone, whatsapp, instagramHan
 
   if (!expandido) {
     return (
-      <div className="bg-[#0B2B3C] px-5 sm:px-6 py-2">
+      <div className="bg-[var(--dj-secondary)] px-5 sm:px-6 py-2">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button type="button" onClick={() => setExpandido(true)}
             className="text-xs text-white/50 hover:text-white/80 transition-colors flex items-center gap-1.5">
@@ -60,7 +60,7 @@ export default function ContatosBarDJ({ siteId, telefone, whatsapp, instagramHan
   }
 
   return (
-    <div className="bg-[#0B2B3C] px-5 sm:px-6 py-4">
+    <div className="bg-[var(--dj-secondary)] px-5 sm:px-6 py-4">
       <div className="max-w-4xl mx-auto flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
         <div className="flex items-center gap-2">
           <IconPhone className="w-3.5 h-3.5 text-white/40" />
@@ -80,7 +80,7 @@ export default function ContatosBarDJ({ siteId, telefone, whatsapp, instagramHan
             <button type="button" disabled={igPending} onClick={alternarInstagram}
               title={igVisivel ? 'Ícone do Instagram visível no site — clique pra ocultar' : 'Ícone do Instagram oculto no site — clique pra mostrar'}
               className={`ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors disabled:opacity-50 ${
-                igVisivel ? 'bg-[#0EA5A0]/20 text-[#0EA5A0]' : 'bg-white/10 text-white/40'
+                igVisivel ? 'bg-[var(--dj-primary)]/20 text-[var(--dj-primary)]' : 'bg-white/10 text-white/40'
               }`}>
               {igVisivel ? 'visível' : 'oculto'}
             </button>
@@ -107,10 +107,10 @@ export default function ContatosBarDJ({ siteId, telefone, whatsapp, instagramHan
                 setStatusAtual(v)
                 try { await updateSiteFieldPE(siteId, 'status', v) } catch (err) { setErro(err instanceof Error ? err.message : 'Erro ao salvar.') }
               }}
-              className="text-xs font-bold bg-white/10 text-white rounded-full px-2.5 py-1 border-0 focus:outline-none focus:ring-1 focus:ring-[#0EA5A0] cursor-pointer"
+              className="text-xs font-bold bg-white/10 text-white rounded-full px-2.5 py-1 border-0 focus:outline-none focus:ring-1 focus:ring-[var(--dj-primary)] cursor-pointer"
             >
-              <option value="rascunho" className="text-[#0B2B3C]">Rascunho</option>
-              <option value="publicado" className="text-[#0B2B3C]">Publicado</option>
+              <option value="rascunho" className="text-[var(--dj-secondary)]">Rascunho</option>
+              <option value="publicado" className="text-[var(--dj-secondary)]">Publicado</option>
             </select>
           )}
           {defaultExpanded === false && (

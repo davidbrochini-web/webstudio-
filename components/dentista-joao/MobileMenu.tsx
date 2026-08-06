@@ -40,9 +40,9 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
         aria-label="Abrir menu"
         className="lg:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-slate-100 transition-colors"
       >
-        <span className="block w-5 h-0.5 bg-[#0B2B3C]" />
-        <span className="block w-5 h-0.5 bg-[#0B2B3C]" />
-        <span className="block w-5 h-0.5 bg-[#0B2B3C]" />
+        <span className="block w-5 h-0.5 bg-[var(--dj-secondary)]" />
+        <span className="block w-5 h-0.5 bg-[var(--dj-secondary)]" />
+        <span className="block w-5 h-0.5 bg-[var(--dj-secondary)]" />
       </button>
 
       {/* Overlay */}
@@ -58,7 +58,7 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
         className={`fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-2xl flex flex-col transition-transform duration-300 lg:hidden ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Cabeçalho do drawer */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-[#0B2B3C]">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-[var(--dj-secondary)]">
           <span className="font-display font-bold text-white">Menu</span>
           <button
             onClick={() => setOpen(false)}
@@ -80,8 +80,8 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
                 onClick={() => setOpen(false)}
                 className={`flex items-center px-6 py-3.5 text-sm font-medium border-l-4 transition-colors ${
                   active
-                    ? 'border-[#0EA5A0] text-[#0B2B3C] bg-[#0EA5A0]/5'
-                    : 'border-transparent text-slate-600 hover:text-[#0B2B3C] hover:bg-slate-50'
+                    ? 'border-[var(--dj-primary)] text-[var(--dj-secondary)] bg-[var(--dj-primary)]/5'
+                    : 'border-transparent text-slate-600 hover:text-[var(--dj-secondary)] hover:bg-slate-50'
                 }`}
               >
                 {item.label}
@@ -95,14 +95,14 @@ export default function MobileMenu({ flags }: { flags: Flags }) {
           <Link
             href={`${BASE}/contato`}
             onClick={() => setOpen(false)}
-            className="block w-full text-center bg-[#0EA5A0] text-white font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-opacity"
+            className="block w-full text-center bg-[var(--dj-primary)] text-white font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-opacity"
           >
             Marcar Uma Consulta
           </Link>
           <Link
             href={`${BASE}/login`}
             onClick={() => setOpen(false)}
-            className="w-full flex items-center justify-center gap-1.5 text-slate-500 text-sm font-medium py-1 hover:text-[#0B2B3C] transition-colors"
+            className="w-full flex items-center justify-center gap-1.5 text-slate-500 text-sm font-medium py-1 hover:text-[var(--dj-secondary)] transition-colors"
           >
             <IconLogin className="w-3.5 h-3.5" />
             Login administrativo

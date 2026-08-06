@@ -10,7 +10,7 @@ export default async function EditorPage() {
   const [{ data: site }, { data: tratamentos }, { data: equipe }, { data: cursos }, { data: faq }, { data: fotos }] =
     await Promise.all([
       supabase.from('sites')
-        .select('id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, telefone, whatsapp, instagram_handle, instagram_visivel, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, textos_customizados')
+        .select('id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, telefone, whatsapp, instagram_handle, instagram_visivel, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, textos_customizados, cor_primaria, cor_secundaria')
         .eq('id', info.siteId).single(),
       supabase.from('site_tratamentos')
         .select('id, titulo, slug, descricao_curta, descricao_completa, beneficios, duracao, indicado_para, imagem_url, alt_text, meta_titulo, meta_descricao, publicado')

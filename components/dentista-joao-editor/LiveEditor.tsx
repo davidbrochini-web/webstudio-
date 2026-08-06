@@ -36,6 +36,8 @@ interface SiteDados {
   secao_equipe_visivel: boolean
   secao_faq_visivel: boolean
   textos_customizados: Record<string, string>
+  cor_primaria: string
+  cor_secundaria: string
 }
 
 // Mesma ordem e nomes do menu real do site (components/dentista-joao/SiteNav.tsx)
@@ -74,7 +76,7 @@ export default function LiveEditor({
         </p>
         <a
           href="/projetos-especiais/dentista-joao" target="_blank" rel="noopener noreferrer"
-          className="text-xs font-semibold text-[#0EA5A0] px-3 py-1.5 rounded-lg border border-[#0EA5A0]/30 hover:bg-[#0EA5A0]/10 transition-colors whitespace-nowrap flex-shrink-0"
+          className="text-xs font-semibold text-[var(--dj-primary)] px-3 py-1.5 rounded-lg border border-[var(--dj-primary)]/30 hover:bg-[var(--dj-primary)]/10 transition-colors whitespace-nowrap flex-shrink-0"
         >
           Abrir site →
         </a>
@@ -88,12 +90,12 @@ export default function LiveEditor({
               key={p.id}
               onClick={() => setPagina(p.id)}
               className={`relative px-4 py-3.5 text-sm font-semibold whitespace-nowrap transition-colors ${
-                pagina === p.id ? 'text-[#0B2B3C]' : 'text-slate-400 hover:text-[#0B2B3C]'
+                pagina === p.id ? 'text-[var(--dj-secondary)]' : 'text-slate-400 hover:text-[var(--dj-secondary)]'
               }`}
             >
               {p.label}
               {pagina === p.id && (
-                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[#0EA5A0] rounded-full" />
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-[var(--dj-primary)] rounded-full" />
               )}
             </button>
           ))}
@@ -111,8 +113,16 @@ export default function LiveEditor({
         defaultExpanded={pagina === 'home' || pagina === 'contato'}
       />
 
-      {/* Canvas do site — mesma identidade visual do site real */}
-      <div className="max-w-6xl mx-auto my-6 rounded-2xl overflow-hidden border border-[var(--border)] shadow-lg bg-white">
+      {/* Canvas do site — mesma identidade visual do site real, incluindo
+          a paleta customizada (aba Cores), pra edição e site real nunca
+          divergirem visualmente */}
+      <div
+        className="max-w-6xl mx-auto my-6 rounded-2xl overflow-hidden border border-[var(--border)] shadow-lg bg-white"
+        style={{
+          '--dj-primary': site.cor_primaria || '#0EA5A0',
+          '--dj-secondary': site.cor_secundaria || '#0B2B3C',
+        } as React.CSSProperties}
+      >
 
         {pagina === 'home' && (
           <>
@@ -126,7 +136,7 @@ export default function LiveEditor({
 
             {/* Faixa de números — editável (pedido explícito do cliente:
                 antes era fixa, agora abre pra customização) */}
-            <div className="bg-[#0B2B3C] px-5 py-6 border-t border-white/5">
+            <div className="bg-[var(--dj-secondary)] px-5 py-6 border-t border-white/5">
               <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-white">
                 {[
                   { chave: 'home_stat1', numero: '10+', label: 'Anos de experiência' },
@@ -139,7 +149,7 @@ export default function LiveEditor({
                       siteId={site.id} readOnly={readOnly}
                       chave={`${s.chave}_numero`}
                       valor={site.textos_customizados?.[`${s.chave}_numero`] ?? s.numero}
-                      className="font-display font-extrabold text-lg text-[#0EA5A0] block"
+                      className="font-display font-extrabold text-lg text-[var(--dj-primary)] block"
                     />
                     <EditableTextoCustomizado
                       siteId={site.id} readOnly={readOnly}
@@ -168,7 +178,7 @@ export default function LiveEditor({
             </div>
 
             {/* CTA final — editável (pedido explícito do cliente) */}
-            <section className="px-6 py-14 text-center bg-[#0B2B3C]">
+            <section className="px-6 py-14 text-center bg-[var(--dj-secondary)]">
               <EditableTextoCustomizado
                 siteId={site.id} readOnly={readOnly}
                 chave="home_cta_titulo"
@@ -176,7 +186,7 @@ export default function LiveEditor({
                 as="p"
                 className="font-display font-extrabold text-xl text-white mb-3 block"
               />
-              <span className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">
+              <span className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">
                 Marcar consulta
               </span>
               <p className="text-white/30 text-[10px] mt-2">Botão fixo — não editável aqui</p>
@@ -187,7 +197,7 @@ export default function LiveEditor({
         {pagina === 'a-clinica' && (
           <>
             <div className="px-6 py-14 max-w-3xl mx-auto text-center">
-              <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Sobre nós</p>
+              <p className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2">Sobre nós</p>
               <EditableText
                 as="p" readOnly={readOnly} multiline
                 value={site.tagline || ''}
@@ -198,8 +208,8 @@ export default function LiveEditor({
               <p className="text-xs text-slate-400 mt-3">Esse mesmo texto aparece na seção &ldquo;Bem-vindo&rdquo; da Home</p>
             </div>
             <div className="px-6 pb-8 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Missão</p>
+              <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Missão</p>
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.missao || ''}
@@ -208,8 +218,8 @@ export default function LiveEditor({
                   onSave={async v => { await updateSiteFieldPE(site.id, 'missao', v) }}
                 />
               </div>
-              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Visão</p>
+              <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Visão</p>
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.visao || ''}
@@ -218,8 +228,8 @@ export default function LiveEditor({
                   onSave={async v => { await updateSiteFieldPE(site.id, 'visao', v) }}
                 />
               </div>
-              <div className="bg-white border-l-4 border-[#0EA5A0] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[#0B2B3C] text-sm mb-2">Valores</p>
+              <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
+                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Valores</p>
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.valores || ''}
@@ -252,14 +262,14 @@ export default function LiveEditor({
 
         {pagina === 'contato' && (
           <div className="px-6 py-14 max-w-2xl mx-auto text-center">
-            <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">Fale conosco</p>
-            <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] mb-4">Contato</h2>
+            <p className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2">Fale conosco</p>
+            <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] mb-4">Contato</h2>
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
               Telefone, WhatsApp, Instagram e endereço são editados na barra logo abaixo do menu — aparecem em todas as páginas do site (rodapé) e aqui na página de Contato.
             </p>
             <div className="p-5 bg-slate-50 rounded-2xl mb-4">
               <p className="text-sm text-slate-500">📋 O site também tem um formulário de contato — os pedidos enviados por ele aparecem em</p>
-              <Link href="/app/projeto-especial/leads" className="text-sm font-bold text-[#0EA5A0] hover:opacity-80">
+              <Link href="/app/projeto-especial/leads" className="text-sm font-bold text-[var(--dj-primary)] hover:opacity-80">
                 Leads recebidos →
               </Link>
             </div>

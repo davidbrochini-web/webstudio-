@@ -38,7 +38,7 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           try { await updateSiteFieldPE(siteId, 'hero_imagem_url', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3C]/90 via-[#0B2B3C]/55 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--dj-secondary)]/90 via-[var(--dj-secondary)]/55 to-transparent pointer-events-none" />
 
       <div className="relative h-full max-w-4xl mx-auto px-5 sm:px-6 flex flex-col justify-center">
         <EditableText
@@ -56,7 +56,7 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           className="text-white/85 text-sm sm:text-base max-w-md mb-6 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'hero_sub', v) }}
         />
-        <span className="self-start bg-white text-[#0B2B3C] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg opacity-70">
+        <span className="self-start bg-white text-[var(--dj-secondary)] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg opacity-70">
           Marcar consulta
         </span>
         <p className="text-white/40 text-[10px] mt-2">Botão fixo — não editável aqui</p>

@@ -50,8 +50,8 @@ export default async function EquipePage() {
                   <div className="w-40 h-40 rounded-full bg-slate-100 mx-auto sm:mx-0 flex items-center justify-center text-4xl text-slate-300">👤</div>
                 )}
                 <div className="text-center sm:text-left">
-                  <h2 className="font-display font-bold text-xl text-[#0B2B3C]">{p.nome}</h2>
-                  {p.especialidade && <p className="text-sm text-[#0EA5A0] font-semibold mt-0.5">{p.especialidade}</p>}
+                  <h2 className="font-display font-bold text-xl text-[var(--dj-secondary)]">{p.nome}</h2>
+                  {p.especialidade && <p className="text-sm text-[var(--dj-primary)] font-semibold mt-0.5">{p.especialidade}</p>}
                   {p.formacao && <p className="text-sm text-slate-500 mt-1">{p.formacao}</p>}
                   {p.bio && <p className="text-sm text-slate-600 leading-relaxed mt-3">{p.bio}</p>}
                 </div>

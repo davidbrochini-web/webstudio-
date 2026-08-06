@@ -30,7 +30,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
   return (
     <header className="sticky top-0 z-40 shadow-sm">
       {/* Barra superior — compacta no mobile, completa no desktop */}
-      <div className="bg-[#0EA5A0] text-white text-xs px-4 sm:px-6 py-2 flex items-center justify-between gap-2">
+      <div className="bg-[var(--dj-primary)] text-white text-xs px-4 sm:px-6 py-2 flex items-center justify-between gap-2">
         {flags.faq && (
           <Link
             href={`${BASE}/duvidas-frequentes`}
@@ -77,7 +77,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={site.logo_url} alt={site.business_name} className="h-9 sm:h-11 w-auto object-contain" />
           ) : (
-            <span className="font-display font-bold text-base sm:text-lg text-[#0B2B3C] truncate">
+            <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] truncate">
               {site.business_name}
             </span>
           )}
@@ -89,7 +89,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
             <Link
               key={item.href}
               href={item.href}
-              className="nav-underline text-sm font-medium text-slate-600 hover:text-[#0B2B3C] transition-colors whitespace-nowrap"
+              className="nav-underline text-sm font-medium text-slate-600 hover:text-[var(--dj-secondary)] transition-colors whitespace-nowrap"
             >
               {item.label}
             </Link>
@@ -100,7 +100,7 @@ export default function SiteNav({ site }: { site: SiteEspecial }) {
           {/* CTA — oculto no mobile pequeno pra não colidir com logo */}
           <Link
             href={`${BASE}/contato`}
-            className="hidden sm:inline-block text-sm font-bold text-white bg-[#0B2B3C] px-4 py-2.5 rounded-full hover:bg-[#0EA5A0] transition-colors whitespace-nowrap"
+            className="hidden sm:inline-block text-sm font-bold text-white bg-[var(--dj-secondary)] px-4 py-2.5 rounded-full hover:bg-[var(--dj-primary)] transition-colors whitespace-nowrap"
           >
             Marcar consulta
           </Link>

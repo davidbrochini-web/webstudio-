@@ -26,9 +26,12 @@ export default async function TiposConsultaPage() {
         <span className="text-[var(--ink)] font-medium">Tipos de Consulta</span>
       </div>
 
-      <h1 className="font-display font-extrabold text-3xl text-[var(--ink)] mb-1">Agenda</h1>
-      <p className="text-[var(--muted)] text-sm mb-8">
-        Configure a duração dos atendimentos e os dias/horários em que a clínica recebe pacientes.
+      <h1 className="font-display font-extrabold text-3xl text-[var(--ink)] mb-1">Agenda — Tipos de Consulta</h1>
+      <p className="text-[var(--muted)] text-sm mb-2">
+        São as opções que o paciente escolhe ao agendar pelo site (ex: Avaliação, Retorno, Cirurgia) — cada uma com sua própria duração.
+      </p>
+      <p className="text-[var(--muted)] text-xs mb-8">
+        Ainda falta configurar os dias/horários de atendimento? <Link href="/app/projeto-especial/agenda/configuracoes" className="text-[var(--brand)] font-semibold hover:underline">Configure aqui</Link>.
       </p>
 
       <AgendaSubNav />

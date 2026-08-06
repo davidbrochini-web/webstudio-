@@ -23,7 +23,7 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
         src={fotoAtual?.url || 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=800&q=60'}
         siteId={siteId}
         readOnly={readOnly}
-        className="w-full aspect-[4/3] rounded-2xl border-4 border-[#0EA5A0]/20 shadow-lg overflow-hidden"
+        className="w-full aspect-[4/3] rounded-2xl border-4 border-[var(--dj-primary)]/20 shadow-lg overflow-hidden"
         alt=""
         badge="Foto de destaque"
         aspect={4 / 3}
@@ -41,7 +41,7 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
           as="p" readOnly={readOnly}
           value={businessName}
           placeholder="Nome da clínica"
-          className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-4 block"
+          className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-4 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'business_name', v) }}
         />
         <EditableText

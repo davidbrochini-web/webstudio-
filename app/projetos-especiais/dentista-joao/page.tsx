@@ -84,7 +84,7 @@ export default async function HomePage() {
       {/* Faixa de números/credenciais — imediatamente após o hero, mesmo
           padrão de clínicas de referência pra transmitir confiança rápido.
           Textos editáveis via sites.textos_customizados (chaves home_stat1..4) */}
-      <div className="bg-[#0B2B3C] px-5 sm:px-6 py-8">
+      <div className="bg-[var(--dj-secondary)] px-5 sm:px-6 py-8">
         <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center text-white">
           {[
             { chave: 'home_stat1', numero: '10+', label: 'Anos de experiência' },
@@ -93,7 +93,7 @@ export default async function HomePage() {
             { chave: 'home_stat4', numero: '5★',  label: 'Atendimento humanizado' },
           ].map(stat => (
             <div key={stat.chave}>
-              <p className="font-display font-extrabold text-2xl sm:text-3xl text-[#0EA5A0]">
+              <p className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--dj-primary)]">
                 {texto(site.textos_customizados, `${stat.chave}_numero`, stat.numero)}
               </p>
               <p className="text-xs sm:text-sm text-white/60 mt-1 leading-snug">
@@ -108,15 +108,15 @@ export default async function HomePage() {
       {fotos?.[0] && (
         <section className="px-6 py-16 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <Reveal>
-            <img loading="lazy" decoding="async" src={fotos[0].url} alt="" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[#0EA5A0]/20 shadow-lg" />
+            <img loading="lazy" decoding="async" src={fotos[0].url} alt="" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[var(--dj-primary)]/20 shadow-lg" />
           </Reveal>
           <Reveal delay={150}>
             <h2 className="font-display font-bold text-2xl text-slate-400 mb-1">Bem-vindo à</h2>
-            <p className="font-display font-extrabold text-3xl text-[#0B2B3C] mb-4">{site.business_name}</p>
+            <p className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-4">{site.business_name}</p>
             <p className="text-slate-500 leading-relaxed mb-6">
               {site.tagline || 'Conheça nossa filosofia de trabalho e nossa infraestrutura completa.'}
             </p>
-            <Link href="/projetos-especiais/dentista-joao/a-clinica" className="inline-block bg-[#0B2B3C] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#0EA5A0] transition-colors">
+            <Link href="/projetos-especiais/dentista-joao/a-clinica" className="inline-block bg-[var(--dj-secondary)] text-white font-bold px-6 py-3 rounded-xl hover:bg-[var(--dj-primary)] transition-colors">
               Conheça a Clínica
             </Link>
           </Reveal>
@@ -126,8 +126,8 @@ export default async function HomePage() {
       {/* Áreas de Atuação — seção com ondas */}
       {!!tratamentos?.length && (
         <>
-          <WaveDivider fill="#0EA5A0" bg="white" />
-          <section className="px-6 py-16 bg-[#0EA5A0]">
+          <WaveDivider fill="var(--dj-primary)" bg="white" />
+          <section className="px-6 py-16 bg-[var(--dj-primary)]">
             <div className="max-w-5xl mx-auto">
               <Reveal>
                 <h2 className="font-display font-extrabold text-2xl text-white text-center mb-2">
@@ -159,9 +159,9 @@ export default async function HomePage() {
                         <div className={`w-full bg-white/20 ${i === 0 ? 'aspect-[3/2] sm:aspect-[4/3]' : 'aspect-[4/3]'}`} />
                       )}
                       {/* Overlay gradiente sempre visível na base */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B2B3C]/90 via-[#0B2B3C]/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--dj-secondary)]/90 via-[var(--dj-secondary)]/20 to-transparent" />
                       {/* Hover: teal suave */}
-                      <div className="absolute inset-0 bg-[#0EA5A0]/0 group-hover:bg-[#0EA5A0]/20 transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-[var(--dj-primary)]/0 group-hover:bg-[var(--dj-primary)]/20 transition-colors duration-300" />
                       {/* Texto */}
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <p className="font-display font-bold text-white text-sm leading-snug drop-shadow">
@@ -170,7 +170,7 @@ export default async function HomePage() {
                         <p className="text-white/80 text-xs mt-1 line-clamp-2 leading-snug hidden group-hover:block">
                           {t.descricao_curta}
                         </p>
-                        <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-wider text-[#0EA5A0] opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="mt-2 inline-block text-[10px] font-bold uppercase tracking-wider text-[var(--dj-primary)] opacity-0 group-hover:opacity-100 transition-opacity">
                           Saiba Mais →
                         </span>
                       </div>
@@ -180,7 +180,7 @@ export default async function HomePage() {
               </div>
             </div>
           </section>
-          <WaveDivider fill="#0EA5A0" bg="white" flip />
+          <WaveDivider fill="var(--dj-primary)" bg="white" flip />
         </>
       )}
 
@@ -188,7 +188,7 @@ export default async function HomePage() {
       {!!cursos?.length && (
         <section className="px-6 py-16 max-w-5xl mx-auto">
           <Reveal>
-            <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
+            <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] text-center mb-2">
               {texto(site.textos_customizados, 'home_cursos_titulo', 'Agenda de Cursos e Palestras')}
             </h2>
             <p className="text-center text-slate-500 text-sm mb-10">
@@ -201,7 +201,7 @@ export default async function HomePage() {
               <Link
                 key={c.slug}
                 href={`/projetos-especiais/dentista-joao/cursos-e-eventos/${c.slug}`}
-                className="cursos-card group border border-slate-100 rounded-2xl overflow-hidden hover:border-[#0EA5A0] hover:shadow-lg transition-all flex-shrink-0 sm:flex-shrink sm:block"
+                className="cursos-card group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] hover:shadow-lg transition-all flex-shrink-0 sm:flex-shrink sm:block"
               >
                 {c.imagem_url && (
                   <div className="overflow-hidden">
@@ -210,17 +210,17 @@ export default async function HomePage() {
                 )}
                 <div className="p-5">
                   {/* Badge de índice */}
-                  <span className="inline-block bg-[#0EA5A0]/10 text-[#0EA5A0] text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2">
+                  <span className="inline-block bg-[var(--dj-primary)]/10 text-[var(--dj-primary)] text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2">
                     Evento {i + 1}
                   </span>
-                  <h3 className="font-display font-bold text-base text-[#0B2B3C] mb-1.5 group-hover:text-[#0EA5A0] transition-colors">{c.titulo}</h3>
+                  <h3 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-1.5 group-hover:text-[var(--dj-primary)] transition-colors">{c.titulo}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{c.descricao}</p>
                 </div>
               </Link>
             ))}
           </div>
           <div className="text-center">
-            <Link href="/projetos-especiais/dentista-joao/cursos-e-eventos" className="inline-block bg-[#0B2B3C] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[#0EA5A0] transition-colors">
+            <Link href="/projetos-especiais/dentista-joao/cursos-e-eventos" className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors">
               Ver todos os cursos e eventos
             </Link>
           </div>
@@ -233,16 +233,16 @@ export default async function HomePage() {
           <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[1fr_300px] gap-12 items-start">
             <div>
               <Reveal>
-                <p className="text-[#0EA5A0] font-bold text-xs uppercase tracking-widest mb-2">
+                <p className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2">
                   {texto(site.textos_customizados, 'home_faq_eyebrow', 'Tire suas dúvidas')}
                 </p>
-                <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[#0B2B3C] mb-8 leading-tight">
+                <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--dj-secondary)] mb-8 leading-tight">
                   {texto(site.textos_customizados, 'home_faq_titulo', 'Dúvidas Frequentes')}
                 </h2>
               </Reveal>
               <FaqAccordion itens={faqPrevia ?? []} />
               <div className="mt-8">
-                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[#0B2B3C] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[#0EA5A0] transition-colors shadow-md">
+                <Link href="/projetos-especiais/dentista-joao/duvidas-frequentes" className="inline-block bg-[var(--dj-secondary)] text-white font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-primary)] transition-colors shadow-md">
                   Ver todas as perguntas →
                 </Link>
               </div>
@@ -251,20 +251,20 @@ export default async function HomePage() {
               <Reveal className="hidden md:flex flex-col items-center gap-6">
                 {/* Foto maior com moldura decorativa */}
                 <div className="relative w-full max-w-[280px]">
-                  <div className="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-[#0EA5A0]/40" />
-                  <div className="absolute -bottom-3 -right-3 w-full h-full rounded-3xl bg-[#0B2B3C]/10" />
+                  <div className="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-[var(--dj-primary)]/40" />
+                  <div className="absolute -bottom-3 -right-3 w-full h-full rounded-3xl bg-[var(--dj-secondary)]/10" />
                   <img loading="lazy" decoding="async"
                     src={site.hero_imagem_url}
                     alt={site.business_name}
                     className="relative w-full aspect-[3/4] rounded-3xl object-cover shadow-2xl border-4 border-white"
                   />
                   {/* Chip de destaque */}
-                  <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[#0EA5A0] text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
+                  <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[var(--dj-primary)] text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg whitespace-nowrap">
                     ✦ Atendimento humanizado
                   </div>
                 </div>
                 <div className="mt-8 text-center">
-                  <p className="font-display font-bold text-[#0B2B3C] text-base">{site.business_name}</p>
+                  <p className="font-display font-bold text-[var(--dj-secondary)] text-base">{site.business_name}</p>
                   <p className="text-slate-400 text-xs mt-0.5">Clínica Odontológica</p>
                 </div>
               </Reveal>
@@ -277,7 +277,7 @@ export default async function HomePage() {
       {!!artigos?.length && (
         <section className="px-6 py-16 max-w-5xl mx-auto">
           <Reveal>
-            <h2 className="font-display font-extrabold text-2xl text-[#0B2B3C] text-center mb-2">
+            <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] text-center mb-2">
               {texto(site.textos_customizados, 'home_novidades_titulo', 'Novidades Clínicas')}
             </h2>
             <p className="text-center text-slate-500 text-sm mb-10">
@@ -293,14 +293,14 @@ export default async function HomePage() {
                       <img loading="lazy" decoding="async" src={a.capa_url} alt="" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                   )}
-                  <h3 className="font-display font-bold text-sm text-[#0B2B3C] mb-1 leading-snug group-hover:text-[#0EA5A0] transition-colors">{a.titulo}</h3>
+                  <h3 className="font-display font-bold text-sm text-[var(--dj-secondary)] mb-1 leading-snug group-hover:text-[var(--dj-primary)] transition-colors">{a.titulo}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{a.resumo}</p>
                 </Link>
               </Reveal>
             ))}
           </div>
           <div className="text-center">
-            <Link href="/projetos-especiais/dentista-joao/artigos" className="inline-block border border-slate-200 text-[#0B2B3C] font-bold text-sm px-6 py-3 rounded-full hover:bg-[#0B2B3C] hover:text-white transition-colors">
+            <Link href="/projetos-especiais/dentista-joao/artigos" className="inline-block border border-slate-200 text-[var(--dj-secondary)] font-bold text-sm px-6 py-3 rounded-full hover:bg-[var(--dj-secondary)] hover:text-white transition-colors">
               Ver todos os artigos
             </Link>
           </div>
@@ -308,12 +308,12 @@ export default async function HomePage() {
       )}
 
       {/* CTA final */}
-      <section className="px-6 py-16 text-center bg-[#0B2B3C]">
+      <section className="px-6 py-16 text-center bg-[var(--dj-secondary)]">
         <Reveal>
           <h2 className="font-display font-extrabold text-2xl text-white mb-4">
             {texto(site.textos_customizados, 'home_cta_titulo', 'Vamos cuidar do seu sorriso?')}
           </h2>
-          <Link href="/projetos-especiais/dentista-joao/contato" className="inline-block bg-[#0EA5A0] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
+          <Link href="/projetos-especiais/dentista-joao/contato" className="inline-block bg-[var(--dj-primary)] text-white font-bold px-6 py-3.5 rounded-full hover:opacity-90 transition-opacity">
             Marcar consulta
           </Link>
         </Reveal>

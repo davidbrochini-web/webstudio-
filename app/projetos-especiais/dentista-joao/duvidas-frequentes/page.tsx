@@ -65,7 +65,7 @@ export default async function DuvidasFrequentesPage() {
             <div key={categoria} className="mb-10">
               {porCategoria.size > 1 && (
                 <Reveal>
-                  <h2 className="text-xs font-bold uppercase tracking-wide text-[#0EA5A0] mb-4">{categoria}</h2>
+                  <h2 className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-4">{categoria}</h2>
                 </Reveal>
               )}
               <Reveal>
