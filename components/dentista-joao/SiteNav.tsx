@@ -101,8 +101,22 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
       <nav className="relative bg-white border-b border-slate-100 px-4 sm:px-6 h-16 sm:h-20 flex items-center gap-4">
         {centralizado ? (
           <>
-            {/* Desktop: metade dos itens à esquerda, empurrando o resto
-                pra direita (flex-1 = ocupa o espaço disponível) */}
+            {/* Espelho invisível do bloco CTA+hambúrguer do lado direito
+                (mesma marcação, só oculto) — sem isso o centro do bloco
+                de itens ficava puxado pra esquerda, porque só o lado
+                direito tinha aquele bloco ocupando espaço. Com o espelho
+                dos dois lados, o centro fica exato em qualquer largura. */}
+            <div className="flex items-center gap-3 flex-shrink-0 invisible" aria-hidden="true">
+              <span className="hidden sm:inline-block text-sm font-bold px-4 py-2.5 rounded-full whitespace-nowrap">
+                {texto(t, 'nav_cta', 'Marcar consulta')}
+              </span>
+              <span className="lg:hidden flex flex-col gap-1.5 p-2">
+                <span className="block w-5 h-0.5" />
+                <span className="block w-5 h-0.5" />
+                <span className="block w-5 h-0.5" />
+              </span>
+            </div>
+
             {/* Bloco único centralizado: itens da esquerda + logo + itens
                 da direita ficam colados, e o BLOCO INTEIRO é centralizado
                 na barra — não cada metade isolada nas bordas (era isso
