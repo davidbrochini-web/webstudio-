@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import LeadStatusSelect from '@/components/admin/LeadStatusSelect'
-import ArchiveLeadButton from '@/components/admin/ArchiveLeadButton'
-import LeadPotencialCard from '@/components/admin/LeadPotencialCard'
+import LeadsPotenciaisList from '@/components/admin/LeadsPotenciaisList'
+import type { LeadPotencialRowData } from '@/components/admin/LeadPotencialRow'
 
 export default async function GerenciarLeadsPage() {
   const supabase = await createClient()
@@ -68,46 +67,25 @@ export default async function GerenciarLeadsPage() {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {leads.map((l) => {
+        <LeadsPotenciaisList
+          leads={leads.map((l): LeadPotencialRowData => {
             const criador = Array.isArray(l.criador) ? l.criador[0] : l.criador
-            return (
-              <div key={l.id} className="bg-white rounded-2xl border border-[var(--border)] p-5">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <p className="font-bold text-[var(--ink)] text-base">{l.nome}</p>
-                      {l.segmento && (
-                        <span className="text-[10px] font-semibold text-[var(--muted)] bg-[var(--off)] px-2 py-0.5 rounded-full">
-                          {l.segmento}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-sm text-[var(--muted)]">
-                      {l.telefone && <span>📞 {l.telefone}</span>}
-                      {l.email && <span>✉️ {l.email}</span>}
-                    </div>
-                    <p className="text-[11px] text-[var(--muted)] mt-1">
-                      Cadastrado por {criador?.nome ?? 'alguém da equipe'} · {new Date(l.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                    <LeadStatusSelect id={l.id} status={l.status} />
-                    <ArchiveLeadButton id={l.id} />
-                  </div>
-                </div>
-
-                <LeadPotencialCard
-                  id={l.id}
-                  notas={l.notas}
-                  textoEnvio={l.texto_envio}
-                  analisePdfUrl={l.analise_pdf_url}
-                  propostaPdfUrl={l.proposta_pdf_url}
-                />
-              </div>
-            )
+            return {
+              id: l.id,
+              nome: l.nome,
+              telefone: l.telefone,
+              email: l.email,
+              segmento: l.segmento,
+              notas: l.notas,
+              texto_envio: l.texto_envio,
+              analise_pdf_url: l.analise_pdf_url,
+              proposta_pdf_url: l.proposta_pdf_url,
+              status: l.status,
+              created_at: l.created_at,
+              criadorNome: criador?.nome ?? null,
+            }
           })}
-        </div>
+        />
       )}
     </div>
   )
