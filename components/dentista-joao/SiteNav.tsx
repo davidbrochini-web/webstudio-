@@ -22,6 +22,8 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
     { label: 'Tratamentos',        href: `${base}/tratamentos`, show: flags.tratamentos },
     { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, show: flags.cursos },
     { label: 'Equipe',             href: `${base}/equipe`, show: flags.equipe },
+    { label: 'Dúvidas Frequentes', href: `${base}/duvidas-frequentes`, show: flags.faq },
+    { label: 'Artigos',            href: `${base}/artigos`, show: flags.artigos },
     { label: 'Contato',            href: `${base}/contato`, show: true },
   ].filter(item => item.show)
 

@@ -76,8 +76,20 @@ export default function EditableImage({ src, siteId, onReplace, onRemove, readOn
     }
   }
 
+  // O wrapper precisa de position (relative/absolute/fixed/sticky) pra
+  // servir de container dos filhos absolutos (img, badge, botões). Só
+  // força "relative" quando o caller não trouxe nenhuma classe de
+  // posição própria — senão ela SEMPRE vencia (Tailwind decide por
+  // ordem interna do CSS gerado, não pela ordem das classes no HTML),
+  // quebrando qualquer uso como banner full-bleed (ex: HeroSectionEditor
+  // passa "absolute inset-0 w-full h-full" esperando que isso valha).
+  // Bug real: hero_title/hero_sub ficavam sem o overlay escuro por
+  // trás, texto branco quase invisível sobre foto clara — cliente não
+  // conseguia nem ver que dava pra editar ali.
+  const temClassePosicao = /(^|\s)(absolute|fixed|sticky|static|relative)(\s|$)/.test(className)
+
   return (
-    <div className={`relative ${className}`}>
+    <div className={`${temClassePosicao ? '' : 'relative'} ${className}`}>
       <img src={src} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
       {badge && (
         <span className="absolute top-2 left-2 z-10 text-[10px] font-bold text-white bg-black/50 backdrop-blur px-2 py-0.5 rounded-full">
