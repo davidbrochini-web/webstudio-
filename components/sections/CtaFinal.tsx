@@ -1,5 +1,7 @@
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
+import LeadFormOmnidesign from './LeadFormOmnidesign'
+
 export default function CtaFinal() {
   return (
     <section id="contato" className="grad-bg py-20 px-6 text-center">
@@ -19,6 +21,9 @@ export default function CtaFinal() {
         >
           💬 Chamar no WhatsApp agora
         </a>
+
+        <p className="text-sm text-white/60 mt-8 mb-1">Ou, se preferir, preenche o formulário:</p>
+        <LeadFormOmnidesign />
       </div>
     </section>
   )

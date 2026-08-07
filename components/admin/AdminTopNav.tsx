@@ -9,6 +9,13 @@ const NAV: DarkNavItem[] = [
       { label: 'Demos ativas', href: '/admin/tenants/demos' },
     ],
   },
+  {
+    label: 'CRM',
+    children: [
+      { label: 'Leads do site', href: '/admin/crm/leads-site' },
+      { label: 'Leads potenciais', href: '/admin/crm/leads-potenciais' },
+    ],
+  },
 ]
 
 export default function AdminTopNav({ email }: { email: string }) {
