@@ -64,7 +64,7 @@ function TenantForm({
           className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--page-bg)] text-[var(--ink)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)]"
         >
           <option value="trial">Trial</option>
-          <option value="site">Site (R$149/mês)</option>
+          <option value="site">Site (sob consulta)</option>
           <option value="site+modulos">Site + módulos</option>
           <option value="modulos">Só módulos</option>
         </select>
