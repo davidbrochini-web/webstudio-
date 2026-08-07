@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { SiteEspecial } from '@/lib/dentista-joao'
 import MobileMenu from '@/components/dentista-joao/MobileMenu'
 import { IconPhone, IconWhatsApp, IconInstagram, IconLogin } from '@/components/dentista-joao/icons'
+import { texto } from '@/lib/textos-customizados'
 
 export default function SiteNav({ site, base }: { site: SiteEspecial; base: string }) {
   const waLink = site.whatsapp
@@ -17,14 +18,15 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
     faq: site.secao_faq_visivel,
     artigos: site.secao_artigos_visivel,
   }
+  const t = site.textos_customizados
   const NAV_ITEMS = [
-    { label: 'A Clínica',          href: `${base}/a-clinica`, show: true },
-    { label: 'Tratamentos',        href: `${base}/tratamentos`, show: flags.tratamentos },
-    { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, show: flags.cursos },
-    { label: 'Equipe',             href: `${base}/equipe`, show: flags.equipe },
-    { label: 'Dúvidas Frequentes', href: `${base}/duvidas-frequentes`, show: flags.faq },
-    { label: 'Artigos',            href: `${base}/artigos`, show: flags.artigos },
-    { label: 'Contato',            href: `${base}/contato`, show: true },
+    { label: texto(t, 'nav_a_clinica', 'A Clínica'),          href: `${base}/a-clinica`, show: true },
+    { label: texto(t, 'nav_tratamentos', 'Tratamentos'),        href: `${base}/tratamentos`, show: flags.tratamentos },
+    { label: texto(t, 'nav_cursos', 'Cursos e Eventos'),   href: `${base}/cursos-e-eventos`, show: flags.cursos },
+    { label: texto(t, 'nav_equipe', 'Equipe'),             href: `${base}/equipe`, show: flags.equipe },
+    { label: texto(t, 'nav_faq', 'Dúvidas Frequentes'), href: `${base}/duvidas-frequentes`, show: flags.faq },
+    { label: texto(t, 'nav_artigos', 'Artigos'),            href: `${base}/artigos`, show: flags.artigos },
+    { label: texto(t, 'nav_contato', 'Contato'),           href: `${base}/contato`, show: true },
   ].filter(item => item.show)
 
   return (
@@ -36,7 +38,7 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
             href={`${base}/duvidas-frequentes`}
             className="font-semibold uppercase tracking-wide hover:underline hidden sm:block"
           >
-            Dúvidas Frequentes
+            {texto(t, 'nav_faq', 'Dúvidas Frequentes')}
           </Link>
         )}
         <div className="flex items-center gap-3 sm:gap-5 flex-wrap ml-auto">
@@ -103,10 +105,10 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
             href={`${base}/contato`}
             className="hidden sm:inline-block text-sm font-bold text-white bg-[var(--dj-secondary)] px-4 py-2.5 rounded-full hover:bg-[var(--dj-primary)] transition-colors whitespace-nowrap"
           >
-            Marcar consulta
+            {texto(t, 'nav_cta', 'Marcar consulta')}
           </Link>
           {/* Hambúrguer — só aparece quando o menu de itens está oculto */}
-          <MobileMenu flags={flags} base={base} />
+          <MobileMenu flags={flags} base={base} textos={t} />
         </div>
       </nav>
     </header>

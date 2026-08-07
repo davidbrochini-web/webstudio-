@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import ContatosBarDJ from './ContatosBarDJ'
+import MenuLabelsEditor from './MenuLabelsEditor'
 import HeroSectionEditor from './HeroSectionEditor'
 import BemVindoSectionEditor from './BemVindoSectionEditor'
 import TratamentosSectionEditor, { type Tratamento } from './TratamentosSectionEditor'
@@ -12,6 +13,7 @@ import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
+import { texto } from '@/lib/textos-customizados'
 import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 interface SiteDados {
@@ -113,6 +115,15 @@ export default function LiveEditor({
         defaultExpanded={pagina === 'home' || pagina === 'contato'}
       />
 
+      {/* Nomes do menu — chrome global (aparece em toda página), cliente
+          pediu pra poder trocar o texto sem mexer na URL/rota. */}
+      <MenuLabelsEditor
+        siteId={site.id}
+        textos={site.textos_customizados}
+        readOnly={readOnly}
+        defaultExpanded={pagina === 'home'}
+      />
+
       {/* Canvas do site — mesma identidade visual do site real, incluindo
           a paleta customizada (aba Cores), pra edição e site real nunca
           divergirem visualmente */}
@@ -197,7 +208,12 @@ export default function LiveEditor({
         {pagina === 'a-clinica' && (
           <>
             <div className="px-6 py-14 max-w-3xl mx-auto text-center">
-              <p className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2">Sobre nós</p>
+              <EditableTextoCustomizado
+                siteId={site.id} chave="aclinica_eyebrow"
+                valor={texto(site.textos_customizados, 'aclinica_eyebrow', 'Sobre nós.')}
+                readOnly={readOnly} as="p"
+                className="text-[var(--dj-primary)] font-bold text-xs uppercase tracking-widest mb-2 block"
+              />
               <EditableText
                 as="p" readOnly={readOnly} multiline
                 value={site.tagline || ''}
@@ -209,7 +225,12 @@ export default function LiveEditor({
             </div>
             <div className="px-6 pb-8 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Missão</p>
+                <EditableTextoCustomizado
+                  siteId={site.id} chave="aclinica_missao_titulo"
+                  valor={texto(site.textos_customizados, 'aclinica_missao_titulo', 'Missão')}
+                  readOnly={readOnly} as="p"
+                  className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2 block"
+                />
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.missao || ''}
@@ -219,7 +240,12 @@ export default function LiveEditor({
                 />
               </div>
               <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Visão</p>
+                <EditableTextoCustomizado
+                  siteId={site.id} chave="aclinica_visao_titulo"
+                  valor={texto(site.textos_customizados, 'aclinica_visao_titulo', 'Visão')}
+                  readOnly={readOnly} as="p"
+                  className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2 block"
+                />
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.visao || ''}
@@ -229,7 +255,12 @@ export default function LiveEditor({
                 />
               </div>
               <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-5 shadow-sm">
-                <p className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2">Valores</p>
+                <EditableTextoCustomizado
+                  siteId={site.id} chave="aclinica_valores_titulo"
+                  valor={texto(site.textos_customizados, 'aclinica_valores_titulo', 'Valores')}
+                  readOnly={readOnly} as="p"
+                  className="font-display font-bold text-[var(--dj-secondary)] text-sm mb-2 block"
+                />
                 <EditableText
                   as="p" readOnly={readOnly} multiline
                   value={site.valores || ''}
@@ -267,6 +298,41 @@ export default function LiveEditor({
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
               Telefone, WhatsApp, Instagram e endereço são editados na barra logo abaixo do menu — aparecem em todas as páginas do site (rodapé) e aqui na página de Contato.
             </p>
+            <div className="p-5 bg-slate-50 rounded-2xl mb-4 text-left">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Textos desta página</p>
+              <div className="flex flex-col gap-3 text-sm">
+                <div>
+                  <p className="text-[10px] text-slate-400 mb-0.5">Título (com agenda configurada)</p>
+                  <EditableTextoCustomizado siteId={site.id} chave="contato_agenda_titulo"
+                    valor={texto(site.textos_customizados, 'contato_agenda_titulo', 'Agende sua consulta')}
+                    readOnly={readOnly} as="span" className="text-slate-700 font-medium" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 mb-0.5">Subtítulo (com agenda configurada)</p>
+                  <EditableTextoCustomizado siteId={site.id} chave="contato_agenda_subtitulo"
+                    valor={texto(site.textos_customizados, 'contato_agenda_subtitulo', 'Escolha o dia e horário disponível. Após o envio, a clínica confirmará seu agendamento.')}
+                    readOnly={readOnly} as="span" multiline className="text-slate-700" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 mb-0.5">Título do formulário (quando já tem agenda)</p>
+                  <EditableTextoCustomizado siteId={site.id} chave="contato_form_titulo_com_agenda"
+                    valor={texto(site.textos_customizados, 'contato_form_titulo_com_agenda', 'Ou envie uma mensagem')}
+                    readOnly={readOnly} as="span" className="text-slate-700 font-medium" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 mb-0.5">Título do formulário (sem agenda ainda)</p>
+                  <EditableTextoCustomizado siteId={site.id} chave="contato_form_titulo_sem_agenda"
+                    valor={texto(site.textos_customizados, 'contato_form_titulo_sem_agenda', 'Marque sua consulta!')}
+                    readOnly={readOnly} as="span" className="text-slate-700 font-medium" />
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 mb-0.5">Frase ao lado dos contatos</p>
+                  <EditableTextoCustomizado siteId={site.id} chave="contato_lateral_titulo"
+                    valor={texto(site.textos_customizados, 'contato_lateral_titulo', 'Entre em contato com a equipe e tire todas as suas dúvidas!')}
+                    readOnly={readOnly} as="span" multiline className="text-slate-700" />
+                </div>
+              </div>
+            </div>
             <div className="p-5 bg-slate-50 rounded-2xl mb-4">
               <p className="text-sm text-slate-500">📋 O site também tem um formulário de contato — os pedidos enviados por ele aparecem em</p>
               <Link href="/app/projeto-especial/leads" className="text-sm font-bold text-[var(--dj-primary)] hover:opacity-80">

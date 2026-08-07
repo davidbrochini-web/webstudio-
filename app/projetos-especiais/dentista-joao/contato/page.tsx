@@ -5,6 +5,7 @@ import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import AgendamentoForm from '@/components/dentista-joao/AgendamentoForm'
 import ContatoForm from '@/components/dentista-joao/ContatoForm'
+import { texto } from '@/lib/textos-customizados'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -30,8 +31,8 @@ export default async function ContatoPage() {
       {/* Agendamento com slots reais — só aparece se a agenda estiver configurada */}
       {temAgenda && (
         <section className="px-6 py-16 max-w-3xl mx-auto">
-          <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] mb-2 text-center">Agende sua consulta</h2>
-          <p className="text-slate-500 mb-8 text-center">Escolha o dia e horário disponível. Após o envio, a clínica confirmará seu agendamento.</p>
+          <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] mb-2 text-center">{texto(site.textos_customizados, 'contato_agenda_titulo', 'Agende sua consulta')}</h2>
+          <p className="text-slate-500 mb-8 text-center">{texto(site.textos_customizados, 'contato_agenda_subtitulo', 'Escolha o dia e horário disponível. Após o envio, a clínica confirmará seu agendamento.')}</p>
           <AgendamentoForm
             config={agData.config!}
             horarios={agData.horarios}
@@ -46,7 +47,9 @@ export default async function ContatoPage() {
         {/* Formulário de contato livre (continua existindo — decisão de produto) */}
         <div>
           <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] mb-2">
-            {temAgenda ? 'Ou envie uma mensagem' : 'Marque sua consulta!'}
+            {temAgenda
+              ? texto(site.textos_customizados, 'contato_form_titulo_com_agenda', 'Ou envie uma mensagem')
+              : texto(site.textos_customizados, 'contato_form_titulo_sem_agenda', 'Marque sua consulta!')}
           </h2>
           <p className="text-slate-500 mb-8">
             {temAgenda
@@ -58,7 +61,7 @@ export default async function ContatoPage() {
 
         {/* Bloco de informações + mapa */}
         <div>
-          <h3 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-4">Entre em contato com a equipe e tire todas as suas dúvidas!</h3>
+          <h3 className="font-display font-bold text-base text-[var(--dj-secondary)] mb-4">{texto(site.textos_customizados, 'contato_lateral_titulo', 'Entre em contato com a equipe e tire todas as suas dúvidas!')}</h3>
 
           {site.endereco && (
             <div className="mb-4">

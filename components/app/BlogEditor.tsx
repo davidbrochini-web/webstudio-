@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState, useEffect } from 'react'
+import EditableImage from '@/components/site-editor/EditableImage'
 
 interface Artigo {
   id: string
@@ -39,6 +40,7 @@ function Form({ siteId, artigo, onCancel, upsertAction }: {
   const [titulo, setTitulo] = useState(artigo?.titulo ?? '')
   const [slug, setSlug] = useState(artigo?.slug ?? '')
   const [slugManual, setSlugManual] = useState(!!artigo)
+  const [capaUrl, setCapaUrl] = useState(artigo?.capa_url ?? '')
 
   // Slug deriva do título só enquanto o usuário não editou manualmente.
   // Calculado direto no onChange do título (não em useEffect) pra evitar
@@ -103,20 +105,31 @@ function Form({ siteId, artigo, onCancel, upsertAction }: {
           className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--page-bg)] text-sm text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)] resize-y transition-all leading-relaxed font-mono" />
       </div>
 
-      {/* Imagem de capa */}
-      <div className="grid grid-cols-2 gap-4 p-5 bg-[var(--off)] rounded-2xl">
-        <div className="col-span-2">
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-3">Imagem de capa</p>
-        </div>
+      {/* Imagem de capa — upload real com recorte (mesmo padrão do resto
+          do site), não mais um campo de colar URL. O valor só é
+          persistido quando o formulário inteiro é salvo (EditableImage
+          só cuida do upload/corte aqui, guarda em state local). */}
+      <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-4 p-5 bg-[var(--off)] rounded-2xl items-start">
         <div>
-          <label className="block text-xs text-[var(--muted)] mb-1.5">URL da imagem</label>
-          <input name="capa_url" type="url" defaultValue={artigo?.capa_url ?? ''} placeholder="https://..."
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition-all" />
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-3">Imagem de capa</p>
+          <input type="hidden" name="capa_url" value={capaUrl} />
+          <EditableImage
+            src={capaUrl || 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&q=60'}
+            siteId={siteId}
+            readOnly={false}
+            aspect={16 / 10}
+            className="w-full aspect-[16/10] rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--card-bg)]"
+            alt=""
+            badge={capaUrl ? undefined : 'Sem imagem — usando placeholder'}
+            onReplace={async (url) => { setCapaUrl(url) }}
+            onRemove={async () => { setCapaUrl('') }}
+          />
         </div>
         <div>
           <label className="block text-xs text-[var(--muted)] mb-1.5">Descrição (acessibilidade)</label>
           <input name="alt_text" defaultValue={artigo?.alt_text ?? ''} placeholder="O que aparece na foto"
             className="w-full px-3.5 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--brand)] transition-all" />
+          <p className="text-[11px] text-[var(--muted)] mt-2">Usada por leitores de tela e nas prévias de redes sociais — descreva o que aparece na foto em poucas palavras.</p>
         </div>
       </div>
 

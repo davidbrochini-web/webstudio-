@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { IconLogin } from '@/components/dentista-joao/icons'
+import { texto, type TextosCustomizados } from '@/lib/textos-customizados'
 
 interface Flags {
   tratamentos: boolean
@@ -13,7 +14,7 @@ interface Flags {
   artigos: boolean
 }
 
-export default function MobileMenu({ flags, base }: { flags: Flags; base: string }) {
+export default function MobileMenu({ flags, base, textos }: { flags: Flags; base: string; textos?: TextosCustomizados | null }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
 
@@ -25,13 +26,13 @@ export default function MobileMenu({ flags, base }: { flags: Flags; base: string
   // comporta diferente dependendo da versão/config do Next).
   const NAV_ITEMS = [
     { label: 'Início',             href: base || '/', match: '/', show: true },
-    { label: 'A Clínica',          href: `${base}/a-clinica`, match: '/a-clinica', show: true },
-    { label: 'Tratamentos',        href: `${base}/tratamentos`, match: '/tratamentos', show: flags.tratamentos },
-    { label: 'Cursos e Eventos',   href: `${base}/cursos-e-eventos`, match: '/cursos-e-eventos', show: flags.cursos },
-    { label: 'Equipe',             href: `${base}/equipe`, match: '/equipe', show: flags.equipe },
-    { label: 'Dúvidas Frequentes', href: `${base}/duvidas-frequentes`, match: '/duvidas-frequentes', show: flags.faq },
-    { label: 'Artigos',            href: `${base}/artigos`, match: '/artigos', show: flags.artigos },
-    { label: 'Contato',            href: `${base}/contato`, match: '/contato', show: true },
+    { label: texto(textos, 'nav_a_clinica', 'A Clínica'),          href: `${base}/a-clinica`, match: '/a-clinica', show: true },
+    { label: texto(textos, 'nav_tratamentos', 'Tratamentos'),        href: `${base}/tratamentos`, match: '/tratamentos', show: flags.tratamentos },
+    { label: texto(textos, 'nav_cursos', 'Cursos e Eventos'),   href: `${base}/cursos-e-eventos`, match: '/cursos-e-eventos', show: flags.cursos },
+    { label: texto(textos, 'nav_equipe', 'Equipe'),             href: `${base}/equipe`, match: '/equipe', show: flags.equipe },
+    { label: texto(textos, 'nav_faq', 'Dúvidas Frequentes'), href: `${base}/duvidas-frequentes`, match: '/duvidas-frequentes', show: flags.faq },
+    { label: texto(textos, 'nav_artigos', 'Artigos'),            href: `${base}/artigos`, match: '/artigos', show: flags.artigos },
+    { label: texto(textos, 'nav_contato', 'Contato'),           href: `${base}/contato`, match: '/contato', show: true },
   ].filter(item => item.show)
 
   return (
@@ -104,7 +105,7 @@ export default function MobileMenu({ flags, base }: { flags: Flags; base: string
             onClick={() => setOpen(false)}
             className="block w-full text-center bg-[var(--dj-primary)] text-white font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-opacity"
           >
-            Marcar Uma Consulta
+            {texto(textos, 'nav_cta', 'Marcar consulta')}
           </Link>
           <Link
             href={`${base}/login`}

@@ -4,6 +4,7 @@ import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import Reveal from '@/components/dentista-joao/Reveal'
+import { texto } from '@/lib/textos-customizados'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -32,7 +33,7 @@ export default async function AClinicaPage() {
       {/* Sobre nós */}
       <section className="px-6 py-16 max-w-3xl mx-auto">
         <Reveal>
-          <p className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-3">Sobre nós.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-[var(--dj-primary)] mb-3">{texto(site.textos_customizados, 'aclinica_eyebrow', 'Sobre nós.')}</p>
           <p className="text-slate-700 font-semibold leading-relaxed">
             {site.tagline || 'Texto institucional a definir no levantamento com o cliente.'}
           </p>
@@ -59,9 +60,9 @@ export default async function AClinicaPage() {
         <section className="px-6 py-14 bg-slate-50">
           <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { titulo: 'Missão', conteudo: site.missao, tipo: 'texto' as const },
-              { titulo: 'Visão', conteudo: site.visao, tipo: 'texto' as const },
-              { titulo: 'Valores', conteudo: site.valores, tipo: 'lista' as const },
+              { titulo: texto(site.textos_customizados, 'aclinica_missao_titulo', 'Missão'), conteudo: site.missao, tipo: 'texto' as const },
+              { titulo: texto(site.textos_customizados, 'aclinica_visao_titulo', 'Visão'), conteudo: site.visao, tipo: 'texto' as const },
+              { titulo: texto(site.textos_customizados, 'aclinica_valores_titulo', 'Valores'), conteudo: site.valores, tipo: 'lista' as const },
             ].filter(c => c.conteudo).map((card, i) => (
               <Reveal key={card.titulo} delay={i * 100}>
                 <div className="bg-white border-l-4 border-[var(--dj-primary)] rounded-r-2xl p-6 shadow-sm h-full">
