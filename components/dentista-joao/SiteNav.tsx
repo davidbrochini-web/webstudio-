@@ -29,6 +29,27 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
     { label: texto(t, 'nav_contato', 'Contato'),           href: `${base}/contato`, show: true },
   ].filter(item => item.show)
 
+  const centralizado = site.logo_posicao === 'centro'
+  // Só usado no modo centralizado — divide os itens nos dois lados do
+  // logo (metade à esquerda, metade à direita, quantidade sempre igual
+  // ou com 1 a mais do lado esquerdo se for ímpar).
+  const meio = Math.ceil(NAV_ITEMS.length / 2)
+  const itensEsquerda = centralizado ? NAV_ITEMS.slice(0, meio) : NAV_ITEMS
+  const itensDireita = centralizado ? NAV_ITEMS.slice(meio) : []
+
+  const linkClass = 'nav-underline text-sm font-medium text-slate-600 hover:text-[var(--dj-secondary)] transition-colors whitespace-nowrap'
+
+  const logo = site.logo_url ? (
+    <div className="w-[68px] h-[68px] sm:w-[104px] sm:h-[104px] bg-white rounded-2xl p-1.5 shadow-xl border-2 border-[var(--dj-primary)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-cover rounded-xl" />
+    </div>
+  ) : (
+    <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] whitespace-nowrap">
+      {site.business_name}
+    </span>
+  )
+
   return (
     <header className="sticky top-0 z-40 shadow-sm">
       {/* Barra superior — compacta no mobile, completa no desktop */}
@@ -73,40 +94,54 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
       </div>
 
       {/* Menu principal — mais baixa que antes (o logo não precisa mais
-          caber inteiro dentro dela: agora "vaza" pra fora como medalhão) */}
-      <nav className="relative bg-white border-b border-slate-100 px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
-        {/* Espaço reservado no fluxo normal pro logo (que é position:absolute
-            logo abaixo) — sem isso os itens do menu invadiriam por baixo dele */}
-        <div className="w-20 sm:w-28 flex-shrink-0" aria-hidden="true" />
-
-        {/* Logo — medalhão maior que a própria barra, com moldura própria,
-            sobrepondo o banner logo abaixo (pedido do cliente: destacar
-            mais, "vazar" pra fora em vez de ficar preso e pequeno) */}
-        <Link href={base || '/'} className="absolute left-4 sm:left-6 top-2.5 sm:top-3 z-10">
-          {site.logo_url ? (
-            <div className="w-[76px] h-[76px] sm:w-[104px] sm:h-[104px] bg-white rounded-2xl p-1.5 shadow-xl border-2 border-[var(--dj-primary)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-cover rounded-xl" />
+          caber inteiro dentro dela: agora "vaza" pra fora como medalhão).
+          Duas disposições possíveis (site.logo_posicao, escolhido no
+          painel): esquerda (canto, como era) ou centro (itens do menu
+          divididos nos dois lados do logo). */}
+      <nav className="relative bg-white border-b border-slate-100 px-4 sm:px-6 h-16 sm:h-20 flex items-center gap-4">
+        {centralizado ? (
+          <>
+            {/* Desktop: metade dos itens à esquerda, empurrando o resto
+                pra direita (flex-1 = ocupa o espaço disponível) */}
+            <div className="hidden lg:flex flex-1 items-center gap-5 xl:gap-7">
+              {itensEsquerda.map(item => (
+                <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
+              ))}
             </div>
-          ) : (
-            <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] whitespace-nowrap">
-              {site.business_name}
-            </span>
-          )}
-        </Link>
+            {/* Mobile/tablet: sem itens visíveis aqui (vão pro menu
+                hambúrguer) — só um respiro flexível pra empurrar o
+                hambúrguer pra direita, igual ao space que os itens da
+                esquerda dariam no desktop */}
+            <div className="lg:hidden flex-1" aria-hidden="true" />
 
-        {/* Itens desktop */}
-        <div className="hidden lg:flex items-center gap-5 xl:gap-7">
-          {NAV_ITEMS.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="nav-underline text-sm font-medium text-slate-600 hover:text-[var(--dj-secondary)] transition-colors whitespace-nowrap"
-            >
-              {item.label}
+            <Link href={base || '/'} className="absolute left-1/2 -translate-x-1/2 top-2.5 sm:top-3 z-10">
+              {logo}
             </Link>
-          ))}
-        </div>
+
+            <div className="hidden lg:flex items-center gap-5 xl:gap-7">
+              {itensDireita.map(item => (
+                <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Espaço reservado no fluxo normal pro logo (que é
+                position:absolute logo abaixo) — sem isso os itens do
+                menu invadiriam por baixo dele */}
+            <div className="w-16 sm:w-28 flex-shrink-0" aria-hidden="true" />
+
+            <Link href={base || '/'} className="absolute left-4 sm:left-6 top-2.5 sm:top-3 z-10">
+              {logo}
+            </Link>
+
+            <div className="hidden lg:flex flex-1 items-center gap-5 xl:gap-7">
+              {NAV_ITEMS.map(item => (
+                <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* CTA — oculto no mobile pequeno pra não colidir com logo */}

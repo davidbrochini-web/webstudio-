@@ -25,7 +25,7 @@ function friendlyError(error: { message: string; code?: string }): string {
 const ALLOWED_SITE_FIELDS = [
   'business_name', 'tagline', 'hero_title', 'hero_sub', 'hero_imagem_url', 'logo_url',
   'telefone', 'whatsapp', 'instagram_handle', 'endereco', 'status',
-  'missao', 'visao', 'valores',
+  'missao', 'visao', 'valores', 'logo_posicao',
 ] as const
 type SiteField = typeof ALLOWED_SITE_FIELDS[number]
 
@@ -36,6 +36,10 @@ export async function updateSiteFieldPE(siteId: string, field: SiteField, value:
   // telefone mantém a formatação como o cliente digitou (é só exibido, nunca
   // usado como link cru — o link tel: já limpa na hora de renderizar)
   let cleanValue = field === 'whatsapp' ? value.replace(/\D/g, '') : value
+
+  if (field === 'logo_posicao' && !['esquerda', 'centro'].includes(value)) {
+    throw new Error('Posição inválida.')
+  }
 
   // instagram_handle vira link (instagram.com/{handle}) — validar formato
   // pra não deixar salvar algo tipo o nome completo do cliente por engano

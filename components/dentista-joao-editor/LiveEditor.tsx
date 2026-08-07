@@ -24,6 +24,7 @@ interface SiteDados {
   hero_sub: string | null
   hero_imagem_url: string | null
   logo_url: string | null
+  logo_posicao: 'esquerda' | 'centro'
   telefone: string | null
   whatsapp: string | null
   instagram_handle: string | null
@@ -187,6 +188,7 @@ export default function LiveEditor({
               businessName={site.business_name}
               tagline={site.tagline || ''}
               logoUrl={site.logo_url}
+              logoPosicao={site.logo_posicao}
               foto={fotos[0] ?? null}
               readOnly={readOnly}
             />

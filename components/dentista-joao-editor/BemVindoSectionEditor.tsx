@@ -6,16 +6,30 @@ import EditableImage from '@/components/site-editor/EditableImage'
 import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
 import { replaceFoto, addFotoToPool } from '@/app/app/editor/actions'
 
-export default function BemVindoSectionEditor({ siteId, businessName, tagline, logoUrl, foto, readOnly }: {
+export default function BemVindoSectionEditor({ siteId, businessName, tagline, logoUrl, logoPosicao, foto, readOnly }: {
   siteId: string
   businessName: string
   tagline: string
   logoUrl: string | null
+  logoPosicao: 'esquerda' | 'centro'
   foto: { id: string; url: string } | null
   readOnly: boolean
 }) {
   const [erro, setErro] = useState<string | null>(null)
   const [fotoAtual, setFotoAtual] = useState(foto)
+  const [posicao, setPosicao] = useState(logoPosicao)
+  const [salvandoPosicao, setSalvandoPosicao] = useState(false)
+
+  async function trocarPosicao(nova: 'esquerda' | 'centro') {
+    if (nova === posicao) return
+    const anterior = posicao
+    setPosicao(nova)
+    setSalvandoPosicao(true)
+    setErro(null)
+    try { await updateSiteFieldPE(siteId, 'logo_posicao', nova) }
+    catch (e) { setPosicao(anterior); setErro(e instanceof Error ? e.message : 'Erro ao salvar.') }
+    finally { setSalvandoPosicao(false) }
+  }
 
   return (
     <section className="px-6 py-14 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -76,6 +90,27 @@ export default function BemVindoSectionEditor({ siteId, businessName, tagline, l
                 try { await updateSiteFieldPE(siteId, 'logo_url', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
               } : undefined}
             />
+
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mt-5 mb-2">Posição do logo no menu</p>
+            <div className="flex gap-2">
+              <button type="button" disabled={salvandoPosicao} onClick={() => trocarPosicao('esquerda')}
+                className={`text-xs font-semibold px-3.5 py-2 rounded-xl border-2 transition-colors disabled:opacity-50 ${
+                  posicao === 'esquerda'
+                    ? 'border-[var(--dj-primary)] bg-[var(--dj-primary)]/10 text-[var(--dj-secondary)]'
+                    : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                }`}>
+                📍 Canto esquerdo
+              </button>
+              <button type="button" disabled={salvandoPosicao} onClick={() => trocarPosicao('centro')}
+                className={`text-xs font-semibold px-3.5 py-2 rounded-xl border-2 transition-colors disabled:opacity-50 ${
+                  posicao === 'centro'
+                    ? 'border-[var(--dj-primary)] bg-[var(--dj-primary)]/10 text-[var(--dj-secondary)]'
+                    : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                }`}>
+                🎯 Centralizado
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-2">No centro, os itens do menu se dividem nos dois lados do logo. Muda na hora — dá pra ver no site real.</p>
           </div>
         )}
 
