@@ -9,6 +9,10 @@ export default async function HubLayout({ children }: { children: React.ReactNod
   let tenantNome = ''
   const navItems: DarkNavItem[] = [{ label: 'Dashboard', href: '/app' }]
 
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('foto_perfil_url').eq('id', user.id).single()
+    : { data: null }
+
   if (user) {
     const { data: membership } = await supabase
       .from('memberships')
@@ -92,7 +96,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
 
   return (
     <>
-      <DarkTopNav items={navItems} email={user?.email ?? ''} badge={tenantNome} homeHref="/app" />
+      <DarkTopNav items={navItems} email={user?.email ?? ''} badge={tenantNome} homeHref="/app" fotoUrl={profile?.foto_perfil_url} />
       <main className="px-6 py-10">
         <div className="max-w-3xl mx-auto">{children}</div>
       </main>

@@ -31,11 +31,37 @@ export async function uploadSiteFoto(siteId: string, file: File): Promise<string
 }
 
 /**
- * Sobe uma imagem de conto pro bucket `contos-imagens` (Projeto Especial
- * #2 — Casos Esquecidos), mesmo padrão de path `{siteId}/...` do
- * site-fotos (a policy do bucket usa is_admin_of_site() sobre o primeiro
- * segmento do path).
+ * Sobe um PDF (análise ou proposta) de um lead potencial pro bucket
+ * `leads-pdfs` (PRIVADO — documento comercial interno, diferente dos
+ * buckets públicos de foto). Path `{leadId}/{tipo}-{timestamp}.pdf`.
  */
+export async function uploadLeadPdf(leadId: string, tipo: 'analise' | 'proposta', file: File): Promise<string> {
+  if (file.type !== 'application/pdf') {
+    throw new Error('Envie um arquivo PDF.')
+  }
+  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    throw new Error(`Arquivo muito grande — o limite é ${MAX_SIZE_MB}MB.`)
+  }
+
+  const supabase = createClient()
+  const path = `${leadId}/${tipo}-${Date.now()}.pdf`
+
+  const { error } = await supabase.storage.from('leads-pdfs').upload(path, file, {
+    cacheControl: '3600',
+    upsert: true,
+  })
+  if (error) throw new Error(`Erro ao enviar PDF: ${error.message}`)
+
+  // Bucket privado: não tem URL pública. Gera signed URL válida por 1
+  // ano — tempo suficiente pra não precisar re-gerar toda hora, mas
+  // ainda expira (não é um link público permanente).
+  const { data, error: signError } = await supabase.storage
+    .from('leads-pdfs')
+    .createSignedUrl(path, 60 * 60 * 24 * 365)
+  if (signError || !data) throw new Error(`PDF enviado, mas erro ao gerar link: ${signError?.message}`)
+
+  return data.signedUrl
+}
 export async function uploadContoImagem(siteId: string, file: File): Promise<string> {
   if (!file.type.startsWith('image/')) {
     throw new Error('Envie um arquivo de imagem (JPG, PNG, WEBP...).')

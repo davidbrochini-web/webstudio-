@@ -55,7 +55,7 @@ function NavDropdown({ item, active }: { item: DarkNavItem; active: boolean }) {
   )
 }
 
-function UserMenu({ email }: { email: string }) {
+function UserMenu({ email, fotoUrl }: { email: string; fotoUrl?: string | null }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -83,9 +83,14 @@ function UserMenu({ email }: { email: string }) {
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-white/10 hover:bg-white/5 transition-colors"
       >
-        <span className="w-7 h-7 rounded-full bg-[var(--brand)] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-          {initials}
-        </span>
+        {fotoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={fotoUrl} alt="" className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
+        ) : (
+          <span className="w-7 h-7 rounded-full bg-[var(--brand)] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
+            {initials}
+          </span>
+        )}
         <span className="text-sm text-white/80 max-w-[160px] truncate">{email}</span>
       </button>
       {open && (
@@ -117,11 +122,13 @@ export default function DarkTopNav({
   email,
   badge,
   homeHref,
+  fotoUrl,
 }: {
   items: DarkNavItem[]
   email: string
   badge: string
   homeHref: string
+  fotoUrl?: string | null
 }) {
   const pathname = usePathname()
 
@@ -160,7 +167,7 @@ export default function DarkTopNav({
         </div>
       </div>
       <div className="flex-shrink-0">
-        <UserMenu email={email} />
+        <UserMenu email={email} fotoUrl={fotoUrl} />
       </div>
     </nav>
   )

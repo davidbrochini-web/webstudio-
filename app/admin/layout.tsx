@@ -8,9 +8,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  const { data: profile } = user
+    ? await supabase.from('profiles').select('foto_perfil_url').eq('id', user.id).single()
+    : { data: null }
+
   return (
     <div className="min-h-screen bg-[var(--off)]">
-      <AdminTopNav email={user?.email ?? ''} />
+      <AdminTopNav email={user?.email ?? ''} fotoUrl={profile?.foto_perfil_url} />
       <main className="px-6 py-10">
         <div className="max-w-5xl mx-auto">{children}</div>
       </main>
