@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { updateLeadCampos, updateLeadPdfs } from '@/app/admin/crm/actions'
 import { uploadLeadPdf } from '@/lib/storage'
 import LeadAssetsPanel from '@/components/admin/LeadAssetsPanel'
+import LeadHistorico from '@/components/admin/LeadHistorico'
 
 function CampoEditavel({
   id,
@@ -127,22 +128,25 @@ export default function LeadPotencialCard({
   imagensPortfolio: string[]
 }) {
   return (
-    <div className="pt-3 border-t border-[var(--border)] grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="flex flex-col gap-3">
-        <div>
-          <p className="text-[11px] font-semibold text-[var(--muted)] mb-1">Observação</p>
-          <CampoEditavel id={id} campo="notas" valorInicial={notas} placeholder="Observação sobre o lead..." />
+    <div className="pt-3 border-t border-[var(--border)]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-3">
+          <div>
+            <p className="text-[11px] font-semibold text-[var(--muted)] mb-1">Observação</p>
+            <CampoEditavel id={id} campo="notas" valorInicial={notas} placeholder="Observação sobre o lead..." />
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold text-[var(--muted)] mb-1">Texto a enviar</p>
+            <CampoEditavel id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} />
+          </div>
         </div>
-        <div>
-          <p className="text-[11px] font-semibold text-[var(--muted)] mb-1">Texto a enviar</p>
-          <CampoEditavel id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} />
+        <div className="flex flex-col gap-3 lg:border-l lg:border-[var(--border)] lg:pl-4">
+          <UploadPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
+          <UploadPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
+          <LeadAssetsPanel id={id} logoUrl={logoUrl} imagensPortfolio={imagensPortfolio} />
         </div>
       </div>
-      <div className="flex flex-col gap-3 lg:border-l lg:border-[var(--border)] lg:pl-4">
-        <UploadPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
-        <UploadPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
-        <LeadAssetsPanel id={id} logoUrl={logoUrl} imagensPortfolio={imagensPortfolio} />
-      </div>
+      <LeadHistorico leadId={id} />
     </div>
   )
 }

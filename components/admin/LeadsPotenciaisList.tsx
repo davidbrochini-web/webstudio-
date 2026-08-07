@@ -19,6 +19,8 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
   // Padrão: mostra só os "Novo" — é o que precisa de atenção primeiro.
   // Os outros status ficam a um clique, não escondidos.
   const [statusAtivo, setStatusAtivo] = useState<typeof STATUS_TABS[number]['value']>('novo')
+  // Pedido do David: se organizar pra saber o que falta gerar proposta.
+  const [somentePropostaPendente, setSomentePropostaPendente] = useState(false)
 
   const contagem = useMemo(() => {
     const c: Record<string, number> = { todos: leads.length }
@@ -26,11 +28,14 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
     return c
   }, [leads])
 
+  const semPropostaCount = useMemo(() => leads.filter(l => !l.proposta_pdf_url).length, [leads])
+
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase()
     return leads.filter(l => {
       const passaStatus = statusAtivo === 'todos' || l.status === statusAtivo
       if (!passaStatus) return false
+      if (somentePropostaPendente && l.proposta_pdf_url) return false
       if (!termo) return true
       return (
         l.nome.toLowerCase().includes(termo) ||
@@ -40,11 +45,11 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
         l.telefone?.toLowerCase().includes(termo)
       )
     })
-  }, [leads, busca, statusAtivo])
+  }, [leads, busca, statusAtivo, somentePropostaPendente])
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-3">
         {STATUS_TABS.map(tab => {
           const ativo = statusAtivo === tab.value
           const qtd = contagem[tab.value] ?? 0
@@ -64,6 +69,16 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
         })}
       </div>
 
+      <label className="inline-flex items-center gap-2 mb-4 text-xs font-semibold text-[var(--muted)] cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={somentePropostaPendente}
+          onChange={e => setSomentePropostaPendente(e.target.checked)}
+          className="accent-[var(--brand)]"
+        />
+        Só sem proposta gerada ({semPropostaCount})
+      </label>
+
       {leads.length > 5 && (
         <input
           value={busca}
@@ -75,7 +90,7 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
 
       {!filtrados.length ? (
         <p className="text-sm text-[var(--muted)] text-center py-10">
-          {busca ? <>Nenhum lead encontrado pra &ldquo;{busca}&rdquo;.</> : 'Nenhum lead nesse status.'}
+          {busca ? <>Nenhum lead encontrado pra &ldquo;{busca}&rdquo;.</> : 'Nenhum lead nesse filtro.'}
         </p>
       ) : (
         <div className="flex flex-col gap-2">
