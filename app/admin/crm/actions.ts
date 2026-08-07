@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { requireSuperAdmin } from '@/lib/supabase/guards'
 import { revalidatePath } from 'next/cache'
 
-const STATUS_VALIDOS = ['novo', 'contatado', 'sem_interesse', 'convertido']
+const STATUS_VALIDOS = ['novo', 'contatado', 'em_negociacao', 'sem_interesse', 'convertido', 'perdido']
 
 export interface LeadFormState {
   error?: string
@@ -60,6 +60,8 @@ export async function createLeadPotencial(
   const telefone = (formData.get('telefone') as string)?.trim() || null
   const email = (formData.get('email') as string)?.trim() || null
   const segmento = (formData.get('segmento') as string)?.trim() || null
+  const bairro = (formData.get('bairro') as string)?.trim() || null
+  const endereco = (formData.get('endereco') as string)?.trim() || null
   const notas = (formData.get('notas') as string)?.trim() || null
   const texto_envio = (formData.get('texto_envio') as string)?.trim() || null
 
@@ -72,6 +74,8 @@ export async function createLeadPotencial(
     telefone,
     email,
     segmento,
+    bairro,
+    endereco,
     notas,
     texto_envio,
     origem: 'manual',
@@ -83,6 +87,25 @@ export async function createLeadPotencial(
 
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
   return { success: true, id: data.id }
+}
+
+/**
+ * Atribui (ou remove) o responsável por tocar um lead — diferente de
+ * created_by, que é fixo desde a criação. Qualquer super-admin pode
+ * reatribuir (não só quem já é o responsável atual).
+ */
+export async function updateLeadResponsavel(id: string, responsavelId: string | null) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('leads_omnidesign')
+    .update({ responsavel_id: responsavelId })
+    .eq('id', id)
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
 
 /**
