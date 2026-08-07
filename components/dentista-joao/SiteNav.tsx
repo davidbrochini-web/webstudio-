@@ -103,25 +103,32 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
           <>
             {/* Desktop: metade dos itens à esquerda, empurrando o resto
                 pra direita (flex-1 = ocupa o espaço disponível) */}
-            <div className="hidden lg:flex flex-1 items-center gap-5 xl:gap-7">
-              {itensEsquerda.map(item => (
-                <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
-              ))}
-            </div>
-            {/* Mobile/tablet: sem itens visíveis aqui (vão pro menu
-                hambúrguer) — só um respiro flexível pra empurrar o
-                hambúrguer pra direita, igual ao space que os itens da
-                esquerda dariam no desktop */}
-            <div className="lg:hidden flex-1" aria-hidden="true" />
+            {/* Bloco único centralizado: itens da esquerda + logo + itens
+                da direita ficam colados, e o BLOCO INTEIRO é centralizado
+                na barra — não cada metade isolada nas bordas (era isso
+                que ficava esquisito/espaçado demais antes). */}
+            <div className="flex-1 flex items-center justify-center gap-5 xl:gap-7 h-full">
+              <div className="hidden lg:flex items-center gap-5 xl:gap-7">
+                {itensEsquerda.map(item => (
+                  <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
+                ))}
+              </div>
 
-            <Link href={base || '/'} className="absolute left-1/2 -translate-x-1/2 top-2.5 sm:top-3 z-10">
-              {logo}
-            </Link>
+              {/* Espaço reservado pro logo, sempre no centro exato deste
+                  bloco (funciona igual com ou sem itens ao lado — no
+                  mobile/tablet os itens somem e só sobra isso, ainda
+                  assim centralizado) */}
+              <div className="relative w-14 sm:w-20 lg:w-28 h-full flex-shrink-0" aria-hidden="true">
+                <Link href={base || '/'} className="absolute left-1/2 -translate-x-1/2 top-2.5 sm:top-3 z-10">
+                  {logo}
+                </Link>
+              </div>
 
-            <div className="hidden lg:flex items-center gap-5 xl:gap-7">
-              {itensDireita.map(item => (
-                <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
-              ))}
+              <div className="hidden lg:flex items-center gap-5 xl:gap-7">
+                {itensDireita.map(item => (
+                  <Link key={item.href} href={item.href} className={linkClass}>{item.label}</Link>
+                ))}
+              </div>
             </div>
           </>
         ) : (
