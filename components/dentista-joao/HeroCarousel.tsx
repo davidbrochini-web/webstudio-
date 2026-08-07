@@ -60,7 +60,12 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* Camada de imagens — todas montadas, crossfade por opacidade */}
+        {/* Camada de imagens — todas montadas, crossfade por opacidade.
+            Duas camadas por slide: fundo desfocado (preenche a faixa
+            toda, sem sobra vazia) + imagem real inteira por cima, sem
+            cortar nada (object-contain) — resolve o problema de fotos
+            com texto/logo perto da borda sendo cortadas em monitores
+            largos, sem deixar tarja preta/vazia dos lados. */}
         {slides.map((s, i) => (
           <div
             key={s.titulo}
@@ -70,16 +75,26 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
             }`}
           >
             {s.imagem_url && (
-              <img
-                src={s.imagem_url}
-                alt=""
-                loading={i === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-                {...(i === 0 ? { fetchPriority: 'high' as const } : {})}
-                className={`absolute inset-0 w-full h-full object-cover hero-kenburns ${
-                  i === index ? 'hero-kenburns-active' : ''
-                }`}
-              />
+              <>
+                <img
+                  src={s.imagem_url}
+                  alt=""
+                  aria-hidden="true"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  className={`absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70 hero-kenburns ${
+                    i === index ? 'hero-kenburns-active' : ''
+                  }`}
+                />
+                <img
+                  src={s.imagem_url}
+                  alt=""
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  {...(i === 0 ? { fetchPriority: 'high' as const } : {})}
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+              </>
             )}
           </div>
         ))}
