@@ -110,7 +110,7 @@ export default function TenantsManager({ initialTenants }: { initialTenants: Ten
           onClick={() => setFormMode('new')}
           className="mb-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg grad-bg text-white text-sm font-semibold hover:opacity-90 transition-opacity"
         >
-          + Novo tenant
+          + Novo cliente
         </button>
       )}
 

@@ -51,7 +51,7 @@ export default async function TenantsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display font-extrabold text-2xl text-[var(--ink)]">
-          Tenants
+          Clientes
         </h1>
         {!!demoCount && (
           <Link href="/admin/tenants/demos" className="text-sm text-[var(--muted)] hover:text-[var(--ink)]">

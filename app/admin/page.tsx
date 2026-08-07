@@ -31,7 +31,7 @@ export default async function AdminHome() {
   const ativos = reais.filter(t => t.status === 'ativo').length
 
   const cards: StatCard[] = [
-    { label: 'Tenants ativos', value: ativos, sub: `de ${reais.length} no total`, color: 'border-l-[var(--green)] text-[var(--green)]' },
+    { label: 'Clientes ativos', value: ativos, sub: `de ${reais.length} no total`, color: 'border-l-[var(--green)] text-[var(--green)]' },
     { label: 'Total de tenants', value: reais.length, sub: 'clientes reais', color: 'border-l-blue-500 text-blue-600' },
     { label: 'Demos ativas', value: demos.length, sub: 'testando agora', color: 'border-l-amber-500 text-amber-600' },
     { label: 'Sites publicados', value: sitesPublicados ?? 0, sub: 'no ar', color: 'border-l-purple-500 text-purple-600' },

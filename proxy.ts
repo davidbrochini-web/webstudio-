@@ -56,7 +56,7 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isProtected = path.startsWith('/admin') || path.startsWith('/app')
+  const isProtected = path.startsWith('/admin') || path.startsWith('/app') || path === '/primeiro-acesso'
 
   // Sem sessão tentando entrar em área protegida → manda pro login
   if (isProtected && !user) {
@@ -64,6 +64,24 @@ export async function proxy(request: NextRequest) {
     url.pathname = '/login'
     url.searchParams.set('redirect', path)
     return NextResponse.redirect(url)
+  }
+
+  // Sessão ativa com must_change_password=true → trava em /primeiro-acesso
+  // até trocar a senha (e opcionalmente subir foto). Pedido do David:
+  // contas criadas pra outras pessoas da equipe (ex: Andressa) não podem
+  // seguir usando a senha provisória que ele definiu na criação.
+  if (isProtected && user && path !== '/primeiro-acesso') {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('must_change_password')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.must_change_password) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/primeiro-acesso'
+      return NextResponse.redirect(url)
+    }
   }
 
   // Com sessão tentando /admin sem ser super-admin → devolve pro /app
