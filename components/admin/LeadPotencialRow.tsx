@@ -20,6 +20,8 @@ export interface LeadPotencialRowData {
   texto_envio: string | null
   analise_pdf_url: string | null
   proposta_pdf_url: string | null
+  logoUrl: string | null
+  imagensPortfolio: string[]
   status: string
   created_at: string
   criadorNome: string | null
@@ -95,6 +97,8 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
             textoEnvio={lead.texto_envio}
             analisePdfUrl={lead.analise_pdf_url}
             propostaPdfUrl={lead.proposta_pdf_url}
+            logoUrl={lead.logoUrl}
+            imagensPortfolio={lead.imagensPortfolio}
           />
         </div>
       )}
