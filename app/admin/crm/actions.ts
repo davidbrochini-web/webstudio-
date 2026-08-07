@@ -128,6 +128,139 @@ export async function updateLeadPdfs(id: string, campo: 'analise_pdf_url' | 'pro
 }
 
 /**
+ * Gera o PDF de proposta automaticamente a partir dos dados do lead
+ * (nome, segmento, bairro, avaliação Google) + logo/fotos que o
+ * comercial subiu antes. Renderiza no servidor com @react-pdf/renderer,
+ * sobe pro bucket leads-pdfs e grava em proposta_pdf_url — mesmo
+ * campo usado pelo upload manual, só que preenchido automaticamente.
+ */
+export async function gerarPropostaPdf(id: string): Promise<{ error?: string; url?: string }> {
+  try {
+    await requireSuperAdmin()
+  } catch {
+    return { error: 'Acesso negado.' }
+  }
+
+  const supabase = await createClient()
+  const { data: lead, error: fetchError } = await supabase
+    .from('leads_omnidesign')
+    .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio')
+    .eq('id', id)
+    .single()
+
+  if (fetchError || !lead) return { error: 'Lead não encontrado.' }
+
+  try {
+    const { renderToBuffer } = await import('@react-pdf/renderer')
+    const { default: PropostaDocument } = await import('@/components/pdf/PropostaDocument')
+
+    const buffer = await renderToBuffer(
+      PropostaDocument({
+        lead: {
+          nome: lead.nome,
+          segmento: lead.segmento,
+          bairro: lead.bairro,
+          endereco: lead.endereco,
+          telefone: lead.telefone,
+          notaGoogle: lead.nota_google,
+          avaliacoesGoogle: lead.avaliacoes_google,
+          logoUrl: lead.logo_url,
+          imagensPortfolio: lead.imagens_portfolio ?? [],
+        },
+      })
+    )
+
+    const path = `${id}/proposta-${Date.now()}.pdf`
+    const { error: uploadError } = await supabase.storage
+      .from('leads-pdfs')
+      .upload(path, buffer, { contentType: 'application/pdf', upsert: true })
+
+    if (uploadError) return { error: `Erro ao salvar PDF: ${uploadError.message}` }
+
+    const { data: signedData, error: signError } = await supabase.storage
+      .from('leads-pdfs')
+      .createSignedUrl(path, 60 * 60 * 24 * 365)
+
+    if (signError || !signedData) return { error: `PDF gerado, mas erro ao criar link: ${signError?.message}` }
+
+    const { error: updateError } = await supabase
+      .from('leads_omnidesign')
+      .update({ proposta_pdf_url: signedData.signedUrl })
+      .eq('id', id)
+
+    if (updateError) return { error: `PDF gerado, mas erro ao salvar no lead: ${updateError.message}` }
+
+    revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+    return { url: signedData.signedUrl }
+  } catch (err) {
+    return { error: err instanceof Error ? `Erro ao gerar PDF: ${err.message}` : 'Erro ao gerar PDF.' }
+  }
+}
+
+/**
+ * Grava a URL do logo do lead (upload feito no client).
+ */
+export async function updateLeadLogo(id: string, url: string) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('leads_omnidesign').update({ logo_url: url }).eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
+ * Adiciona uma foto de portfólio (append no array) — upload feito
+ * no client, essa action só registra a URL.
+ */
+export async function addLeadImagemPortfolio(id: string, url: string) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { data: lead, error: fetchError } = await supabase
+    .from('leads_omnidesign')
+    .select('imagens_portfolio')
+    .eq('id', id)
+    .single()
+  if (fetchError) throw new Error(fetchError.message)
+
+  const atual = lead?.imagens_portfolio ?? []
+  const { error } = await supabase
+    .from('leads_omnidesign')
+    .update({ imagens_portfolio: [...atual, url] })
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
+ * Remove uma foto de portfólio pelo índice.
+ */
+export async function removeLeadImagemPortfolio(id: string, index: number) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { data: lead, error: fetchError } = await supabase
+    .from('leads_omnidesign')
+    .select('imagens_portfolio')
+    .eq('id', id)
+    .single()
+  if (fetchError) throw new Error(fetchError.message)
+
+  const atual = (lead?.imagens_portfolio ?? []) as string[]
+  const nova = atual.filter((_, i) => i !== index)
+  const { error } = await supabase
+    .from('leads_omnidesign')
+    .update({ imagens_portfolio: nova })
+    .eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
  * Atualiza campos de acompanhamento de um lead potencial (notas,
  * texto de envio) — usado na tela de gerenciamento.
  */

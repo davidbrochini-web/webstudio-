@@ -83,3 +83,35 @@ export async function uploadContoImagem(siteId: string, file: File): Promise<str
   const { data } = supabase.storage.from('contos-imagens').getPublicUrl(path)
   return data.publicUrl
 }
+
+/**
+ * Sobe uma imagem de lead (logo ou foto de portfólio) pro bucket
+ * `leads-imagens` (PRIVADO, diferente de contos-imagens/site-fotos
+ * que são públicos — isso é material de prospecção, não conteúdo
+ * de site publicado). Path `{leadId}/{tipo}-{timestamp}.ext`.
+ */
+export async function uploadLeadImagem(leadId: string, tipo: 'logo' | 'portfolio', file: File): Promise<string> {
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Envie um arquivo de imagem (JPG, PNG, WEBP...).')
+  }
+  if (file.size > 8 * 1024 * 1024) {
+    throw new Error('Imagem muito grande — o limite é 8MB.')
+  }
+
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg'
+  const path = `${leadId}/${tipo}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+
+  const { error } = await supabase.storage.from('leads-imagens').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+  })
+  if (error) throw new Error(`Erro ao enviar imagem: ${error.message}`)
+
+  const { data, error: signError } = await supabase.storage
+    .from('leads-imagens')
+    .createSignedUrl(path, 60 * 60 * 24 * 365)
+  if (signError || !data) throw new Error(`Imagem enviada, mas erro ao gerar link: ${signError?.message}`)
+
+  return data.signedUrl
+}

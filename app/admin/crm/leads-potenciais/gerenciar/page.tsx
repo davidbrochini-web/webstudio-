@@ -11,7 +11,8 @@ export default async function GerenciarLeadsPage() {
     .select(`
       id, nome, telefone, email, segmento, bairro, endereco,
       nota_google, avaliacoes_google, notas, texto_envio,
-      analise_pdf_url, proposta_pdf_url, status, created_at,
+      analise_pdf_url, proposta_pdf_url, logo_url, imagens_portfolio,
+      status, created_at,
       created_by, responsavel_id,
       criador:profiles!leads_omnidesign_created_by_fkey ( nome )
     `)
@@ -96,6 +97,8 @@ export default async function GerenciarLeadsPage() {
               texto_envio: l.texto_envio,
               analise_pdf_url: l.analise_pdf_url,
               proposta_pdf_url: l.proposta_pdf_url,
+              logoUrl: l.logo_url,
+              imagensPortfolio: l.imagens_portfolio ?? [],
               status: l.status,
               created_at: l.created_at,
               criadorNome: criador?.nome ?? null,

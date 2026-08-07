@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { updateLeadCampos, updateLeadPdfs } from '@/app/admin/crm/actions'
 import { uploadLeadPdf } from '@/lib/storage'
+import LeadAssetsPanel from '@/components/admin/LeadAssetsPanel'
 
 function CampoEditavel({
   id,
@@ -114,12 +115,16 @@ export default function LeadPotencialCard({
   textoEnvio,
   analisePdfUrl,
   propostaPdfUrl,
+  logoUrl,
+  imagensPortfolio,
 }: {
   id: string
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
   propostaPdfUrl: string | null
+  logoUrl: string | null
+  imagensPortfolio: string[]
 }) {
   return (
     <div className="pt-3 border-t border-[var(--border)] grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -136,6 +141,7 @@ export default function LeadPotencialCard({
       <div className="flex flex-col gap-3 lg:border-l lg:border-[var(--border)] lg:pl-4">
         <UploadPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
         <UploadPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
+        <LeadAssetsPanel id={id} logoUrl={logoUrl} imagensPortfolio={imagensPortfolio} />
       </div>
     </div>
   )
