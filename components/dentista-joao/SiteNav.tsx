@@ -72,15 +72,24 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
         </div>
       </div>
 
-      {/* Menu principal — barra um pouco mais alta que o padrão pra
-          acomodar logo quadrado/emblema sem espremer os detalhes */}
-      <nav className="bg-white border-b border-slate-100 px-4 sm:px-6 h-20 sm:h-24 flex items-center justify-between gap-4">
-        <Link href={base || '/'} className="flex-shrink-0 flex items-center max-w-[160px] sm:max-w-none">
+      {/* Menu principal — mais baixa que antes (o logo não precisa mais
+          caber inteiro dentro dela: agora "vaza" pra fora como medalhão) */}
+      <nav className="relative bg-white border-b border-slate-100 px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
+        {/* Espaço reservado no fluxo normal pro logo (que é position:absolute
+            logo abaixo) — sem isso os itens do menu invadiriam por baixo dele */}
+        <div className="w-20 sm:w-28 flex-shrink-0" aria-hidden="true" />
+
+        {/* Logo — medalhão maior que a própria barra, com moldura própria,
+            sobrepondo o banner logo abaixo (pedido do cliente: destacar
+            mais, "vazar" pra fora em vez de ficar preso e pequeno) */}
+        <Link href={base || '/'} className="absolute left-4 sm:left-6 top-2.5 sm:top-3 z-10">
           {site.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={site.logo_url} alt={site.business_name} className="h-14 sm:h-[4.5rem] w-auto object-contain" />
+            <div className="w-[76px] h-[76px] sm:w-[104px] sm:h-[104px] bg-white rounded-2xl p-1.5 shadow-xl border-2 border-[var(--dj-primary)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-cover rounded-xl" />
+            </div>
           ) : (
-            <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] truncate">
+            <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] whitespace-nowrap">
               {site.business_name}
             </span>
           )}
