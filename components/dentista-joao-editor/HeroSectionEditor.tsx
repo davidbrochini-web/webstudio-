@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
+import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
 import { updateSiteFieldPE } from '@/app/app/(hub)/projeto-especial/editor/actions'
+import { texto } from '@/lib/textos-customizados'
 
 interface Props {
   siteId: string
@@ -11,12 +13,15 @@ interface Props {
   heroSub: string
   heroImagemUrl: string | null
   readOnly: boolean
+  textos?: Record<string, string> | null
 }
 
 /** Espelha o banner principal (HeroCarousel) do site real — aqui sem
- *  autoplay/crossfade, só o primeiro slide, que é o único editável
- *  (os demais slides do carrossel real vêm dos tratamentos). */
-export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImagemUrl, readOnly }: Props) {
+ *  autoplay/crossfade, só o primeiro slide, que é o único com texto
+ *  editável (os demais slides do carrossel real vêm dos 2 primeiros
+ *  tratamentos cadastrados — pra mudar o texto/foto deles, é na aba
+ *  Tratamentos, não aqui). */
+export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImagemUrl, readOnly, textos }: Props) {
   const [erro, setErro] = useState<string | null>(null)
 
   return (
@@ -56,10 +61,15 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           className="text-white/85 text-sm sm:text-base max-w-md mb-6 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'hero_sub', v) }}
         />
-        <span className="self-start bg-white text-[var(--dj-secondary)] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg opacity-70">
-          Marcar consulta
-        </span>
-        <p className="text-white/40 text-[10px] mt-2">Botão fixo — não editável aqui</p>
+        <div className="self-start">
+          <EditableTextoCustomizado
+            siteId={siteId} chave="nav_cta"
+            valor={texto(textos, 'nav_cta', 'Marcar consulta')}
+            readOnly={readOnly} as="span"
+            className="bg-white text-[var(--dj-secondary)] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg inline-block"
+          />
+        </div>
+        <p className="text-white/40 text-[10px] mt-2">Esse texto também é o do botão do menu (mesmo em toda página) — mudar aqui muda lá também</p>
       </div>
 
       {erro && <p className="absolute bottom-2 left-2 text-xs text-red-300 bg-black/60 px-2 py-1 rounded">{erro}</p>}

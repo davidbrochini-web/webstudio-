@@ -63,7 +63,7 @@ export default async function HomePage() {
       titulo: site.hero_title ?? site.business_name,
       subtitulo: site.hero_sub || '',
       imagem_url: site.hero_imagem_url || HERO_FALLBACK,
-      ctaLabel: 'Marcar consulta',
+      ctaLabel: texto(site.textos_customizados, 'nav_cta', 'Marcar consulta'),
       ctaHref: `${base}/contato`,
     },
     ...(tratamentos ?? []).slice(0, 2).map((t): CarouselSlide => ({

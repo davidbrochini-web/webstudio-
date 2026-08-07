@@ -143,7 +143,16 @@ export default function LiveEditor({
               heroSub={site.hero_sub || ''}
               heroImagemUrl={site.hero_imagem_url}
               readOnly={readOnly}
+              textos={site.textos_customizados}
             />
+
+            {/* Aviso: os outros 2 slides do carrossel da Home vêm dos 2
+                primeiros tratamentos cadastrados — não são editáveis aqui */}
+            <div className="bg-amber-50 border-y border-amber-200 px-5 sm:px-6 py-3 text-xs text-amber-800 flex items-center gap-2 flex-wrap">
+              <span>💡</span>
+              <span>Esse banner é só o 1º de 3 no site real. Os outros 2 vêm automaticamente dos 2 primeiros tratamentos cadastrados — pra mudar a foto/texto deles, edite na</span>
+              <button type="button" onClick={() => setPagina('tratamentos')} className="font-bold underline hover:opacity-70">aba Tratamentos</button>
+            </div>
 
             {/* Faixa de números — editável (pedido explícito do cliente:
                 antes era fixa, agora abre pra customização) */}
