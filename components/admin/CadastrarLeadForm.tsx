@@ -126,6 +126,18 @@ export default function CadastrarLeadForm() {
           placeholder="Segmento (ex: dentista, advocacia)"
           className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm outline-none focus:border-[var(--brand)]"
         />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input
+            name="bairro"
+            placeholder="Bairro"
+            className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm outline-none focus:border-[var(--brand)]"
+          />
+          <input
+            name="endereco"
+            placeholder="Endereço"
+            className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm outline-none focus:border-[var(--brand)]"
+          />
+        </div>
         <textarea
           name="notas"
           placeholder="Observação"

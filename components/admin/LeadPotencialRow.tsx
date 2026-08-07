@@ -4,6 +4,7 @@ import { useState } from 'react'
 import LeadStatusSelect from '@/components/admin/LeadStatusSelect'
 import ArchiveLeadButton from '@/components/admin/ArchiveLeadButton'
 import LeadPotencialCard from '@/components/admin/LeadPotencialCard'
+import ResponsavelSelect, { type Membro } from '@/components/admin/ResponsavelSelect'
 
 export interface LeadPotencialRowData {
   id: string
@@ -11,6 +12,10 @@ export interface LeadPotencialRowData {
   telefone: string | null
   email: string | null
   segmento: string | null
+  bairro: string | null
+  endereco: string | null
+  notaGoogle: number | null
+  avaliacoesGoogle: number | null
   notas: string | null
   texto_envio: string | null
   analise_pdf_url: string | null
@@ -18,9 +23,10 @@ export interface LeadPotencialRowData {
   status: string
   created_at: string
   criadorNome: string | null
+  responsavelId: string | null
 }
 
-export default function LeadPotencialRow({ lead }: { lead: LeadPotencialRowData }) {
+export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencialRowData; membros: Membro[] }) {
   const [aberto, setAberto] = useState(false)
 
   const temAnalise = Boolean(lead.analise_pdf_url)
@@ -43,6 +49,16 @@ export default function LeadPotencialRow({ lead }: { lead: LeadPotencialRowData 
                 {lead.segmento}
               </span>
             )}
+            {lead.bairro && (
+              <span className="text-[10px] font-semibold text-[var(--brand)] bg-green-50 px-2 py-0.5 rounded-full flex-shrink-0">
+                📍 {lead.bairro}
+              </span>
+            )}
+            {lead.notaGoogle != null && (
+              <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full flex-shrink-0">
+                ⭐ {lead.notaGoogle} ({lead.avaliacoesGoogle ?? 0})
+              </span>
+            )}
           </div>
           <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)] mt-0.5">
             {lead.telefone && <span>{lead.telefone}</span>}
@@ -61,14 +77,16 @@ export default function LeadPotencialRow({ lead }: { lead: LeadPotencialRowData 
           </span>
         </div>
 
-        <div className="flex-shrink-0" onClick={e => e.stopPropagation()}>
+        <div className="flex flex-col items-end gap-1.5 flex-shrink-0" onClick={e => e.stopPropagation()}>
           <LeadStatusSelect id={lead.id} status={lead.status} />
+          <ResponsavelSelect id={lead.id} responsavelId={lead.responsavelId} membros={membros} />
         </div>
       </button>
 
       {aberto && (
         <div className="px-5 pb-5">
-          <div className="flex justify-end mb-2">
+          <div className="flex items-center justify-between mb-2">
+            {lead.endereco && <p className="text-xs text-[var(--muted)]">📍 {lead.endereco}</p>}
             <ArchiveLeadButton id={lead.id} />
           </div>
           <LeadPotencialCard

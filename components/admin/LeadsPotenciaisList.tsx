@@ -2,16 +2,19 @@
 
 import { useMemo, useState } from 'react'
 import LeadPotencialRow, { type LeadPotencialRowData } from '@/components/admin/LeadPotencialRow'
+import type { Membro } from '@/components/admin/ResponsavelSelect'
 
 const STATUS_TABS = [
   { value: 'novo', label: 'Novo' },
   { value: 'contatado', label: 'Contatado' },
+  { value: 'em_negociacao', label: 'Em negociação' },
   { value: 'sem_interesse', label: 'Sem interesse' },
   { value: 'convertido', label: 'Convertido' },
+  { value: 'perdido', label: 'Perdido' },
   { value: 'todos', label: 'Todos' },
 ] as const
 
-export default function LeadsPotenciaisList({ leads }: { leads: LeadPotencialRowData[] }) {
+export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPotencialRowData[]; membros: Membro[] }) {
   const [busca, setBusca] = useState('')
   // Padrão: mostra só os "Novo" — é o que precisa de atenção primeiro.
   // Os outros status ficam a um clique, não escondidos.
@@ -32,6 +35,7 @@ export default function LeadsPotenciaisList({ leads }: { leads: LeadPotencialRow
       return (
         l.nome.toLowerCase().includes(termo) ||
         l.segmento?.toLowerCase().includes(termo) ||
+        l.bairro?.toLowerCase().includes(termo) ||
         l.email?.toLowerCase().includes(termo) ||
         l.telefone?.toLowerCase().includes(termo)
       )
@@ -64,7 +68,7 @@ export default function LeadsPotenciaisList({ leads }: { leads: LeadPotencialRow
         <input
           value={busca}
           onChange={e => setBusca(e.target.value)}
-          placeholder="Buscar por nome, segmento, telefone ou e-mail..."
+          placeholder="Buscar por nome, segmento, bairro, telefone ou e-mail..."
           className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-white text-sm outline-none focus:border-[var(--brand)] mb-4"
         />
       )}
@@ -75,7 +79,7 @@ export default function LeadsPotenciaisList({ leads }: { leads: LeadPotencialRow
         </p>
       ) : (
         <div className="flex flex-col gap-2">
-          {filtrados.map(lead => <LeadPotencialRow key={lead.id} lead={lead} />)}
+          {filtrados.map(lead => <LeadPotencialRow key={lead.id} lead={lead} membros={membros} />)}
         </div>
       )}
     </div>

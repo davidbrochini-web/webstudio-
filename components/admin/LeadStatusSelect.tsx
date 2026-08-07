@@ -6,15 +6,19 @@ import { updateLeadStatus } from '@/app/admin/crm/actions'
 const STATUS_LABELS: Record<string, string> = {
   novo: 'Novo',
   contatado: 'Contatado',
+  em_negociacao: 'Em negociação',
   sem_interesse: 'Sem interesse',
   convertido: 'Convertido',
+  perdido: 'Perdido',
 }
 
 const STATUS_COLORS: Record<string, string> = {
   novo: 'bg-blue-50 text-blue-700 border-blue-200',
   contatado: 'bg-amber-50 text-amber-700 border-amber-200',
+  em_negociacao: 'bg-purple-50 text-purple-700 border-purple-200',
   sem_interesse: 'bg-gray-100 text-gray-500 border-gray-200',
   convertido: 'bg-green-50 text-green-700 border-green-200',
+  perdido: 'bg-red-50 text-red-600 border-red-200',
 }
 
 export default function LeadStatusSelect({ id, status }: { id: string; status: string }) {

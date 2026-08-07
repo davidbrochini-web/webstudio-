@@ -9,17 +9,28 @@ export default async function GerenciarLeadsPage() {
   const { data: leads } = await supabase
     .from('leads_omnidesign')
     .select(`
-      id, nome, telefone, email, segmento, notas, texto_envio,
+      id, nome, telefone, email, segmento, bairro, endereco,
+      nota_google, avaliacoes_google, notas, texto_envio,
       analise_pdf_url, proposta_pdf_url, status, created_at,
-      created_by, criador:profiles!leads_omnidesign_created_by_fkey ( nome )
+      created_by, responsavel_id,
+      criador:profiles!leads_omnidesign_created_by_fkey ( nome )
     `)
     .eq('origem', 'manual')
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .limit(200)
 
+  // Time comercial pra atribuir responsável — hoje é qualquer
+  // super-admin (não existe role restrita ainda, ver memória do
+  // projeto sobre o modelo de acesso).
+  const { data: membrosData } = await supabase
+    .from('profiles')
+    .select('id, nome')
+    .eq('is_super_admin', true)
+    .order('nome')
+
   const total = leads?.length ?? 0
-  const emAberto = leads?.filter(l => l.status === 'novo' || l.status === 'contatado').length ?? 0
+  const emAberto = leads?.filter(l => l.status === 'novo' || l.status === 'contatado' || l.status === 'em_negociacao').length ?? 0
   const convertidos = leads?.filter(l => l.status === 'convertido').length ?? 0
 
   return (
@@ -68,6 +79,7 @@ export default async function GerenciarLeadsPage() {
         </div>
       ) : (
         <LeadsPotenciaisList
+          membros={membrosData ?? []}
           leads={leads.map((l): LeadPotencialRowData => {
             const criador = Array.isArray(l.criador) ? l.criador[0] : l.criador
             return {
@@ -76,6 +88,10 @@ export default async function GerenciarLeadsPage() {
               telefone: l.telefone,
               email: l.email,
               segmento: l.segmento,
+              bairro: l.bairro,
+              endereco: l.endereco,
+              notaGoogle: l.nota_google,
+              avaliacoesGoogle: l.avaliacoes_google,
               notas: l.notas,
               texto_envio: l.texto_envio,
               analise_pdf_url: l.analise_pdf_url,
@@ -83,6 +99,7 @@ export default async function GerenciarLeadsPage() {
               status: l.status,
               created_at: l.created_at,
               criadorNome: criador?.nome ?? null,
+              responsavelId: l.responsavel_id,
             }
           })}
         />
