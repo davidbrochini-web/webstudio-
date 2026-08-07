@@ -20,6 +20,7 @@ export interface LeadPotencialRowData {
   texto_envio: string | null
   analise_pdf_url: string | null
   proposta_pdf_url: string | null
+  propostaGeradaEm: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
   status: string
@@ -74,8 +75,11 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
           <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${temAnalise ? 'bg-green-50 text-[var(--brand)]' : 'bg-[var(--off)] text-[var(--muted)]'}`}>
             Análise
           </span>
-          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${temProposta ? 'bg-green-50 text-[var(--brand)]' : 'bg-[var(--off)] text-[var(--muted)]'}`}>
-            Proposta
+          <span
+            className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${temProposta ? 'bg-green-50 text-[var(--brand)]' : 'bg-amber-50 text-amber-700'}`}
+            title={lead.propostaGeradaEm ? `Gerada em ${new Date(lead.propostaGeradaEm).toLocaleDateString('pt-BR')}` : undefined}
+          >
+            {temProposta ? '✓ Proposta' : 'Proposta pendente'}
           </span>
         </div>
 

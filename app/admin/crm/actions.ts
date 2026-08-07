@@ -13,9 +13,39 @@ export interface LeadFormState {
 }
 
 /**
+ * Registra um evento no log do lead. Chamado internamente por outras
+ * actions — nunca exposto direto pro client. Log é append-only, sem
+ * update/delete (RLS só tem policy de select+insert).
+ */
+async function registrarEvento(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  params: {
+    leadId: string
+    evento: 'lead_criado' | 'status_alterado' | 'proposta_gerada' | 'responsavel_alterado'
+    statusAnterior?: string | null
+    statusNovo?: string | null
+    detalhe?: string | null
+    criadoPor?: string | null
+  }
+) {
+  await supabase.from('leads_omnidesign_log').insert({
+    lead_id: params.leadId,
+    evento: params.evento,
+    status_anterior: params.statusAnterior ?? null,
+    status_novo: params.statusNovo ?? null,
+    detalhe: params.detalhe ?? null,
+    criado_por: params.criadoPor ?? null,
+  })
+}
+
+/**
  * Atualiza o status de qualquer lead (site ou manual). RLS já
  * restringe UPDATE a super-admin, mas checamos aqui também pra dar
  * uma mensagem de erro decente em vez de um 42501 cru.
+ *
+ * Registra no log a transição (status_anterior -> status_novo) com
+ * data e quem fez — pedido do David pra ter histórico completo, não
+ * só a última mudança.
  */
 export async function updateLeadStatus(id: string, status: string) {
   await requireSuperAdmin()
@@ -25,12 +55,24 @@ export async function updateLeadStatus(id: string, status: string) {
   }
 
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: atual } = await supabase.from('leads_omnidesign').select('status').eq('id', id).single()
+
   const { error } = await supabase
     .from('leads_omnidesign')
     .update({ status })
     .eq('id', id)
 
   if (error) throw new Error(error.message)
+
+  await registrarEvento(supabase, {
+    leadId: id,
+    evento: 'status_alterado',
+    statusAnterior: atual?.status ?? null,
+    statusNovo: status,
+    criadoPor: user?.id,
+  })
 
   revalidatePath('/admin/crm/leads-site')
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
@@ -85,6 +127,8 @@ export async function createLeadPotencial(
 
   if (error) return { error: error.message }
 
+  await registrarEvento(supabase, { leadId: data.id, evento: 'lead_criado', criadoPor: user.id })
+
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
   return { success: true, id: data.id }
 }
@@ -98,12 +142,27 @@ export async function updateLeadResponsavel(id: string, responsavelId: string | 
   await requireSuperAdmin()
 
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   const { error } = await supabase
     .from('leads_omnidesign')
     .update({ responsavel_id: responsavelId })
     .eq('id', id)
 
   if (error) throw new Error(error.message)
+
+  let nomeResponsavel: string | null = null
+  if (responsavelId) {
+    const { data: perfil } = await supabase.from('profiles').select('nome').eq('id', responsavelId).single()
+    nomeResponsavel = perfil?.nome ?? null
+  }
+
+  await registrarEvento(supabase, {
+    leadId: id,
+    evento: 'responsavel_alterado',
+    detalhe: nomeResponsavel ?? 'Sem responsável',
+    criadoPor: user?.id,
+  })
 
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
@@ -142,6 +201,7 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
   }
 
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
   const { data: lead, error: fetchError } = await supabase
     .from('leads_omnidesign')
     .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio')
@@ -183,12 +243,15 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
 
     if (signError || !signedData) return { error: `PDF gerado, mas erro ao criar link: ${signError?.message}` }
 
+    const agora = new Date().toISOString()
     const { error: updateError } = await supabase
       .from('leads_omnidesign')
-      .update({ proposta_pdf_url: signedData.signedUrl })
+      .update({ proposta_pdf_url: signedData.signedUrl, proposta_gerada_em: agora })
       .eq('id', id)
 
     if (updateError) return { error: `PDF gerado, mas erro ao salvar no lead: ${updateError.message}` }
+
+    await registrarEvento(supabase, { leadId: id, evento: 'proposta_gerada', criadoPor: user?.id })
 
     revalidatePath('/admin/crm/leads-potenciais/gerenciar')
     return { url: signedData.signedUrl }
@@ -261,9 +324,22 @@ export async function removeLeadImagemPortfolio(id: string, index: number) {
 }
 
 /**
- * Atualiza campos de acompanhamento de um lead potencial (notas,
- * texto de envio) — usado na tela de gerenciamento.
+ * Busca o histórico de eventos de um lead, mais recente primeiro,
+ * com nome de quem fez cada coisa.
  */
+export async function getLeadLog(leadId: string) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leads_omnidesign_log')
+    .select('id, evento, status_anterior, status_novo, detalhe, criado_em, autor:profiles!leads_omnidesign_log_criado_por_fkey ( nome )')
+    .eq('lead_id', leadId)
+    .order('criado_em', { ascending: false })
+
+  if (error) throw new Error(error.message)
+  return data
+}
 export async function updateLeadCampos(id: string, campos: { notas?: string; texto_envio?: string }) {
   await requireSuperAdmin()
 
