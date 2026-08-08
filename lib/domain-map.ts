@@ -10,4 +10,9 @@ export const DOMAIN_MAP: Record<string, string> = {
   'www.drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
   'casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
   'www.casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',
+  // Colégio Elite: entrada comentada até o domínio elite.g12.br ser
+  // migrado de verdade (ver PROJETO_ESPECIAL_COLEGIO_ELITE.md) — por
+  // enquanto o site só existe no fallback .vercel.app, pra homologação.
+  // 'elite.g12.br': '/projetos-especiais/colegio-elite',
+  // 'www.elite.g12.br': '/projetos-especiais/colegio-elite',
 }

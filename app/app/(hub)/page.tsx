@@ -26,6 +26,9 @@ export default async function AppHome() {
   if (tenant?.projeto_especial_slug === 'casos-esquecidos') {
     redirect('/app/casos-esquecidos')
   }
+  if (tenant?.projeto_especial_slug === 'colegio-elite') {
+    redirect('/app/colegio-elite')
+  }
 
   if (!tenant) {
     return (
