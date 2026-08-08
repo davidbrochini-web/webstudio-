@@ -1,6 +1,7 @@
 import SiteNav from '@/components/colegio-elite/SiteNav'
 import SiteFooter from '@/components/colegio-elite/SiteFooter'
 import WhatsAppFloat from '@/components/colegio-elite/WhatsAppFloat'
+import TopLinksBar from '@/components/colegio-elite/TopLinksBar'
 import type { SiteEspecial } from '@/lib/colegio-elite'
 import { getBasePath } from '@/lib/colegio-elite'
 
@@ -17,6 +18,7 @@ export default async function PageShell({ site, children }: { site: SiteEspecial
         '--ce-secondary': site.cor_secundaria || '#0F1F3D',
       } as React.CSSProperties}
     >
+      <TopLinksBar />
       <SiteNav site={site} base={base} />
       <main>{children}</main>
       <SiteFooter site={site} base={base} />

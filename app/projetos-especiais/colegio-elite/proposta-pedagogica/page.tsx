@@ -27,7 +27,7 @@ export default async function PropostaPedagogicaPage() {
           <p className="text-xs font-bold uppercase tracking-wide text-[var(--ce-primary)] mb-3">
             {texto(site.textos_customizados, 'proposta_eyebrow', 'Sobre nós.')}
           </p>
-          <p className="text-slate-700 leading-relaxed">
+          <p className="text-slate-700 leading-relaxed whitespace-pre-line">
             {site.tagline || 'O Colégio Elite propõe uma educação renovada e inovadora, adaptada aos novos tempos, estabelecendo o aluno como protagonista na aprendizagem.'}
           </p>
         </Reveal>

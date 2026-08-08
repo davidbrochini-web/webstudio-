@@ -5,6 +5,7 @@ import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/colegio-elite
 import { texto } from '@/lib/textos-customizados'
 import PageShell from '@/components/colegio-elite/PageShell'
 import Reveal from '@/components/colegio-elite/Reveal'
+import InstagramFeedStrip from '@/components/colegio-elite/InstagramFeedStrip'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -22,11 +23,12 @@ export default async function HomePage() {
   const base = await getBasePath()
   const supabase = await createClient()
 
-  const [{ data: diferenciaisRaw }, { data: segmentosRaw }, { data: faqPreviaRaw }, { data: artigosRaw }] = await Promise.all([
+  const [{ data: diferenciaisRaw }, { data: segmentosRaw }, { data: faqPreviaRaw }, { data: artigosRaw }, { data: fotosRaw }] = await Promise.all([
     supabase.from('site_diferenciais').select('icone, titulo, texto').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(5),
-    supabase.from('site_segmentos_ensino').select('slug, titulo, resumo, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
+    supabase.from('site_segmentos_ensino').select('slug, titulo, resumo, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(4),
     supabase.from('site_faq').select('pergunta, resposta').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_blog_posts').select('slug, titulo, resumo, capa_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
+    supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(8),
   ])
 
   const diferenciais = site.secao_diferenciais_visivel ? diferenciaisRaw : []
@@ -78,6 +80,8 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <InstagramFeedStrip site={site} fotos={(fotosRaw ?? []).map(f => f.url)} />
+
       {/* Diferenciais */}
       {!!diferenciais?.length && (
         <section className="px-5 sm:px-6 py-16 bg-[var(--ce-primary)]">
@@ -105,10 +109,26 @@ export default async function HomePage() {
         <Reveal>
           <p className="text-[var(--ce-primary)] font-bold text-xs uppercase tracking-widest mb-3">Bem-vindo ao</p>
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--ce-secondary)] mb-4">{site.business_name}</h2>
-          <p className="text-slate-600 leading-relaxed">
+          <p className="text-slate-600 leading-relaxed whitespace-pre-line">
             {site.tagline}
           </p>
         </Reveal>
+
+        {/* Badges rápidos — mesma faixa de ícones do site original, logo
+            abaixo do texto de proposta */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
+          {[
+            { icon: '🎓', label: 'Professores Qualificados' },
+            { icon: '🧪', label: 'Laboratórios equipados' },
+            { icon: '💻', label: 'Sistema Informatizado' },
+            { icon: '🛡️', label: 'Segurança 24 Horas' },
+          ].map(b => (
+            <div key={b.label} className="flex flex-col items-center gap-2">
+              <span className="text-2xl">{b.icon}</span>
+              <span className="text-xs font-semibold text-slate-500 leading-tight">{b.label}</span>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Segmentos de ensino */}
@@ -119,7 +139,7 @@ export default async function HomePage() {
               {texto(site.textos_customizados, 'home_ensino_titulo', 'Nossos Segmentos de Ensino')}
             </h2>
             <p className="text-center text-slate-500 text-sm mb-10">Do maternal ao Ensino Médio, uma formação contínua e sólida</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {segmentos.map((s, i) => (
                 <Reveal key={s.slug} delay={i * 80}>
                   <Link href={`${base}/ensino/${s.slug}`} className="group block rounded-2xl overflow-hidden shadow-lg bg-white h-full">
