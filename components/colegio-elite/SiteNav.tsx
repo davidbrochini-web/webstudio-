@@ -33,9 +33,9 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
   const linkClass = 'nav-underline text-sm font-medium text-slate-600 hover:text-[var(--ce-secondary)] transition-colors whitespace-nowrap'
 
   const logo = site.logo_url ? (
-    <div className="w-[68px] h-[68px] sm:w-[104px] sm:h-[104px] bg-white rounded-2xl p-1.5 shadow-xl border-2 border-[var(--ce-primary)]">
+    <div className="h-[46px] sm:h-[64px] px-3 sm:px-4 bg-white rounded-2xl shadow-xl border-2 border-[var(--ce-primary)] flex items-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-cover rounded-xl" />
+      <img src={site.logo_url} alt={site.business_name} className="h-full w-auto object-contain" />
     </div>
   ) : (
     <span className="font-display font-bold text-base sm:text-lg text-[var(--ce-secondary)] whitespace-nowrap">
@@ -106,7 +106,7 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
                 ))}
               </div>
 
-              <div className="relative w-14 sm:w-20 lg:w-28 h-full flex-shrink-0" aria-hidden="true">
+              <div className="relative w-[120px] sm:w-[170px] h-full flex-shrink-0" aria-hidden="true">
                 <Link href={base || '/'} className="absolute left-1/2 -translate-x-1/2 top-2.5 sm:top-3 z-10">
                   {logo}
                 </Link>
@@ -121,7 +121,7 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
           </>
         ) : (
           <>
-            <div className="w-16 sm:w-28 flex-shrink-0" aria-hidden="true" />
+            <div className="w-[110px] sm:w-[160px] flex-shrink-0" aria-hidden="true" />
             <Link href={base || '/'} className="absolute left-4 sm:left-6 top-2.5 sm:top-3 z-10">
               {logo}
             </Link>
