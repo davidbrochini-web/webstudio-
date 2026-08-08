@@ -155,6 +155,94 @@ export async function enviarCodigoAcesso(params: { email: string; codigo: string
   })
 }
 
+// ── 4. Lembrete de agendamento (24h e 1h) — paciente + admin ─────────
+// Disparado por cron (Supabase pg_cron + pg_net, ver
+// supabase/migrations/0040_lembretes_e_resumo_diario.sql e
+// app/api/cron/lembretes-agendamento/route.ts). Idempotente por
+// natureza (a rota só chama isso uma vez por agendamento, marcando
+// lembrete_24h_enviado_em/lembrete_1h_enviado_em) — aqui é só o envio.
+export async function notificarLembretePaciente(params: {
+  email: string
+  nome: string
+  data: string
+  horaInicio: string
+  horaFim: string
+  janela: '24h' | '1h'
+}): Promise<void> {
+  const label = params.janela === '24h' ? 'amanhã' : 'daqui a 1 hora'
+  await sendEmail({
+    from: FROM,
+    to: params.email,
+    subject: params.janela === '24h' ? 'Lembrete: sua consulta é amanhã' : 'Lembrete: sua consulta é daqui a 1 hora',
+    html: WRAPPER(`Sua consulta é ${label} ⏰`, `
+      <p style="margin:0 0 12px;font-size:14px;color:#444;">Olá, ${escapeHtml(params.nome)}. Só lembrando:</p>
+      <p style="margin:0;font-size:15px;color:#2a2a2a;font-weight:bold;">${formatDataHora(params.data, params.horaInicio, params.horaFim)}</p>
+      <p style="margin:16px 0 0;font-size:14px;color:#444;">Se precisar cancelar ou reagendar, use a página "Meus Agendamentos" no site.</p>
+    `),
+  })
+}
+
+export async function notificarLembreteAdmin(params: {
+  emailDestino: string | null
+  nomePaciente: string
+  telefone: string
+  data: string
+  horaInicio: string
+  horaFim: string
+  janela: '24h' | '1h'
+}): Promise<void> {
+  if (!params.emailDestino) return
+  const label = params.janela === '24h' ? 'amanhã' : 'em 1 hora'
+  await sendEmail({
+    from: FROM,
+    to: params.emailDestino,
+    subject: `Lembrete: consulta ${label} — ${params.nomePaciente}`,
+    html: WRAPPER(`Consulta ${label} ⏰`, `
+      <p style="margin:0 0 8px;font-size:14px;color:#444;"><strong>Paciente:</strong> ${escapeHtml(params.nomePaciente)}</p>
+      <p style="margin:0 0 8px;font-size:14px;color:#444;"><strong>Telefone:</strong> ${escapeHtml(params.telefone)}</p>
+      <p style="margin:0;font-size:14px;color:#444;"><strong>Data/hora:</strong> ${formatDataHora(params.data, params.horaInicio, params.horaFim)}</p>
+    `),
+  })
+}
+
+// ── 5. Resumo diário — pro admin, todo dia às 6h (BRT) ────────────────
+export interface AgendamentoResumo {
+  paciente_nome: string
+  hora_inicio: string
+  hora_fim: string
+  tipo_consulta_nome: string | null
+}
+
+export async function notificarResumoDiario(params: {
+  emailDestino: string | null
+  data: string
+  agendamentos: AgendamentoResumo[]
+}): Promise<void> {
+  if (!params.emailDestino) return
+
+  const dataFmt = new Date(params.data + 'T00:00:00').toLocaleDateString('pt-BR', {
+    weekday: 'long', day: '2-digit', month: 'long',
+  })
+
+  const linhas = params.agendamentos.length
+    ? params.agendamentos.map(a => `
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#2a2a2a;font-weight:bold;white-space:nowrap;">${a.hora_inicio.slice(0, 5)}–${a.hora_fim.slice(0, 5)}</td>
+          <td style="padding:8px 0 8px 12px;font-size:14px;color:#444;">${escapeHtml(a.paciente_nome)}${a.tipo_consulta_nome ? ` <span style="color:#999;">· ${escapeHtml(a.tipo_consulta_nome)}</span>` : ''}</td>
+        </tr>`).join('')
+    : `<p style="margin:0;font-size:14px;color:#999;">Nenhuma consulta confirmada pra hoje.</p>`
+
+  await sendEmail({
+    from: FROM,
+    to: params.emailDestino,
+    subject: `Agenda de hoje (${params.agendamentos.length}) — ${dataFmt}`,
+    html: WRAPPER(`Bom dia! Sua agenda de hoje`, `
+      <p style="margin:0 0 16px;font-size:13px;color:#666;text-transform:capitalize;">${dataFmt}</p>
+      ${params.agendamentos.length ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${linhas}</table>` : linhas}
+    `),
+  })
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
