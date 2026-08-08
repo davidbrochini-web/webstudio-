@@ -130,6 +130,26 @@ export default async function HomePage() {
         )}
       </section>
 
+      {/* Mesmo painel do lado direito do desktop, mas em faixa horizontal
+          embaixo do banner — no mobile não tem espaço pra sobrepor a foto */}
+      {(medio || fundamental || infantil) && (
+        <div className="lg:hidden bg-[var(--ce-secondary)] px-4 py-6">
+          <div className="grid grid-cols-3 gap-3 max-w-xl mx-auto">
+            {[
+              { seg: medio, icon: '🎓' },
+              { seg: fundamental, icon: '📐' },
+              { seg: infantil, icon: '🧸' },
+            ].filter(x => x.seg).map(({ seg, icon }) => (
+              <div key={seg!.slug} className="text-center">
+                <span className="text-2xl block mb-1.5">{icon}</span>
+                <p className="font-display font-bold text-white text-xs leading-snug mb-1">{seg!.titulo}</p>
+                <p className="text-white/70 text-[10px] leading-relaxed">{seg!.resumo}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <InstagramFeedStrip site={site} fotos={IG_PHOTOS} />
 
       {/* 2 — Proposta, com o texto inteiro (inclui Sistema Bilíngue) */}
