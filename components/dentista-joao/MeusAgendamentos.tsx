@@ -2,8 +2,8 @@
 
 import { useActionState, useState } from 'react'
 import {
-  consultarAgendamentos, cancelarAgendamentoPaciente,
-  type OtpFormState, type CancelState,
+  consultarAgendamentos, cancelarAgendamentoPaciente, solicitarCodigoAcesso,
+  type OtpFormState, type CancelState, type SolicitarCodigoState,
 } from '@/app/projetos-especiais/dentista-joao/actions'
 
 const STATUS_LABELS: Record<string, { label: string; cor: string }> = {
@@ -43,32 +43,65 @@ function CancelButton({ id, email }: { id: string; email: string }) {
   )
 }
 
+function SolicitarCodigo({ email, onEnviado }: { email: string; onEnviado: () => void }) {
+  const [state, formAction, pending] = useActionState<SolicitarCodigoState, FormData>(solicitarCodigoAcesso, {})
+
+  if (state.success) {
+    return (
+      <p className="text-sm text-emerald-700 bg-emerald-50 rounded-xl px-4 py-2.5">
+        Código enviado! Confira seu e-mail (e a caixa de spam) — vale por 10 minutos.
+        <button type="button" onClick={onEnviado} className="block mt-1 text-xs font-semibold underline">
+          Já recebi, quero digitar o código
+        </button>
+      </p>
+    )
+  }
+
+  return (
+    <form action={formAction} className="flex flex-col gap-2">
+      <input type="hidden" name="email" value={email} />
+      {state.error && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{state.error}</p>}
+      <button type="submit" disabled={pending || !email}
+        className="bg-[var(--dj-primary)] text-white font-semibold rounded-xl px-6 py-3 text-sm disabled:opacity-50 transition-colors">
+        {pending ? 'Enviando…' : 'Enviar código por e-mail'}
+      </button>
+    </form>
+  )
+}
+
 export default function MeusAgendamentos() {
   const [state, formAction, pending] = useActionState<OtpFormState, FormData>(consultarAgendamentos, {})
   const [email, setEmail] = useState('')
+  const [codigoEnviado, setCodigoEnviado] = useState(false)
 
   return (
     <div className="max-w-lg mx-auto">
       {!state.agendamentos ? (
         <>
           <p className="text-sm text-slate-500 mb-6">
-            Informe o e-mail usado no agendamento e o código de verificação para consultar seus horários.
+            Informe o e-mail usado no agendamento para receber um código de acesso e consultar seus horários.
           </p>
-          <form action={formAction} className="flex flex-col gap-4">
-            <input name="email" type="email" required placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)}
+          <div className="flex flex-col gap-4">
+            <input name="email-lookup" type="email" required placeholder="E-mail" value={email}
+              onChange={e => { setEmail(e.target.value); setCodigoEnviado(false) }}
               className="px-4 py-3 rounded-xl border border-slate-200 text-sm" />
-            <input name="codigo" required placeholder="Código de verificação" maxLength={6}
-              className="px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono tracking-widest text-center"
-              autoComplete="one-time-code" />
-            <p className="text-xs text-slate-400">
-              Na fase atual, use o código <strong>000000</strong> para acessar.
-            </p>
-            {state.error && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{state.error}</p>}
-            <button type="submit" disabled={pending}
-              className="bg-[var(--dj-primary)] hover:bg-[var(--dj-primary)] text-white font-semibold rounded-xl px-6 py-3 text-sm disabled:opacity-50 transition-colors">
-              {pending ? 'Consultando…' : 'Consultar agendamentos'}
-            </button>
-          </form>
+
+            {!codigoEnviado ? (
+              <SolicitarCodigo email={email} onEnviado={() => setCodigoEnviado(true)} />
+            ) : (
+              <form action={formAction} className="flex flex-col gap-4">
+                <input type="hidden" name="email" value={email} />
+                <input name="codigo" required placeholder="Código recebido por e-mail" maxLength={6}
+                  className="px-4 py-3 rounded-xl border border-slate-200 text-sm font-mono tracking-widest text-center"
+                  autoComplete="one-time-code" />
+                {state.error && <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-2.5">{state.error}</p>}
+                <button type="submit" disabled={pending}
+                  className="bg-[var(--dj-primary)] hover:bg-[var(--dj-primary)] text-white font-semibold rounded-xl px-6 py-3 text-sm disabled:opacity-50 transition-colors">
+                  {pending ? 'Consultando…' : 'Consultar agendamentos'}
+                </button>
+              </form>
+            )}
+          </div>
         </>
       ) : (
         <>

@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { notificarAgendamentoConfirmadoPaciente } from '@/lib/dentista-joao-email'
 
 const PATH = '/app/projeto-especial/agenda/configuracoes'
 
@@ -184,7 +185,29 @@ export type StatusAgendamento = 'pendente' | 'confirmado' | 'realizado' | 'cance
 
 export async function mudarStatusAgendamento(id: string, status: StatusAgendamento) {
   const supabase = await createClient()
+
+  // Busca dados do paciente ANTES do update — precisamos deles pro
+  // e-mail de confirmação, e depois do update não teríamos como saber
+  // se essa mudança específica foi a que confirmou (evita reenviar
+  // e-mail em toda edição futura de um agendamento já confirmado).
+  const { data: antes } = await supabase.from('agendamentos')
+    .select('status, paciente_nome, paciente_email, data, hora_inicio, hora_fim')
+    .eq('id', id).single()
+
   const { error } = await supabase.from('agendamentos').update({ status }).eq('id', id)
   if (error) throw new Error(error.message)
+
+  // Notifica o paciente só na transição pra "confirmado" (não em toda
+  // edição) — best-effort, não bloqueia a ação do admin.
+  if (status === 'confirmado' && antes && antes.status !== 'confirmado' && antes.paciente_email) {
+    notificarAgendamentoConfirmadoPaciente({
+      email: antes.paciente_email,
+      nome: antes.paciente_nome,
+      data: antes.data,
+      horaInicio: antes.hora_inicio,
+      horaFim: antes.hora_fim,
+    }).catch(err => console.error('[dentista-joao] falha ao notificar confirmação:', err))
+  }
+
   revalidatePath(SEMANA_PATH)
 }
