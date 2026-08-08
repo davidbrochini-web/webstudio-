@@ -140,6 +140,25 @@ body {
   .hero-text-enter { animation: none; }
 }
 
+/* ── Hero drone flyover (colegio-elite/page.tsx — Home) ──────────────
+   Zoom + pan lento e contínuo simulando o drone sobrevoando a escola.
+   Diferente do .hero-kenburns (que é um único zoom que para no fim):
+   aqui é looping, alternando direção, pra ficar em segundo plano o
+   tempo todo sem "travar" numa posição final. */
+.ce-hero-drone {
+  animation: ce-drone-flyover 26s ease-in-out infinite alternate;
+  transform-origin: 55% 45%;
+  will-change: transform;
+}
+@keyframes ce-drone-flyover {
+  0%   { transform: scale(1.06) translate(0%, 0%); }
+  50%  { transform: scale(1.16) translate(-2.2%, -1.6%); }
+  100% { transform: scale(1.08) translate(1.6%, 1.2%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ce-hero-drone { animation: none; }
+}
+
 /* Sublinhado animado do menu desktop (dentista-joao/SiteNav.tsx) */
 .nav-underline {
   position: relative;

@@ -58,7 +58,7 @@ export default async function HomePage() {
         <img
           src={site.hero_imagem_url || HERO_FALLBACK}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          className="ce-hero-drone absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/60 to-transparent" />
         <div className="relative max-w-4xl mx-auto px-5 sm:px-6 py-16">
