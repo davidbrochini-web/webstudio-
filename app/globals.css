@@ -140,34 +140,11 @@ body {
   .hero-text-enter { animation: none; }
 }
 
-/* ── Hero drone rise (colegio-elite/page.tsx — Home) ──────────────────
-   Pedido do cliente: começar embaixo (pátio/playground) e subir até
-   mostrar rua/prédios. IMPORTANTE: `object-fit: cover` recorta a
-   imagem ANTES de qualquer `transform` — animar scale/translate só
-   move dentro da fatia já cortada, nunca revela o que ficou de fora
-   do corte (foi o bug da primeira tentativa: o pátio simplesmente não
-   estava mais renderizado, então nenhum transform conseguia trazê-lo
-   de volta). A forma certa de "percorrer" a foto é animar o próprio
-   `object-position` — isso sim redefine qual fatia da imagem original
-   é usada no corte, quadro a quadro. Scale leve junto só pra dar um
-   respiro de zoom, sem carregar o peso do movimento (isso agora é
-   100% do object-position). */
-.ce-hero-drone {
-  animation: ce-drone-rise 32s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
-  object-position: 50% 45%;
-  transform: scale(1.08);
-  will-change: object-position, transform;
-}
-@keyframes ce-drone-rise {
-  0%   { object-position: 50% 100%; transform: scale(1.14); }
-  25%  { object-position: 50% 70%;  transform: scale(1.10); }
-  50%  { object-position: 50% 42%;  transform: scale(1.07); }
-  75%  { object-position: 50% 16%;  transform: scale(1.10); }
-  100% { object-position: 50% 0%;   transform: scale(1.14); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ce-hero-drone { animation: none; }
-}
+/* Hero drone rise do colegio-elite: removido daqui — a animação virou
+   100% JavaScript (components/colegio-elite/HeroDroneImage.tsx),
+   porque Safari/WebKit não anima `object-position` via CSS de forma
+   confiável (não rodava em vários iPhones). Ver o componente pra
+   detalhes. */
 
 /* Sublinhado animado do menu desktop (dentista-joao/SiteNav.tsx) */
 .nav-underline {
