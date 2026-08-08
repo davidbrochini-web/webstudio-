@@ -162,14 +162,14 @@ export default async function HomePage() {
         <Reveal delay={100}>
           <div className="grid grid-cols-2 gap-6">
             {[
-              { icon: '🎓', label: 'Professores Qualificados' },
-              { icon: '🧪', label: 'Laboratórios equipados' },
-              { icon: '💻', label: 'Sistema Informatizado' },
-              { icon: '🛡️', label: 'Segurança 24 Horas' },
+              { iconKey: 'badge1_icon', labelKey: 'badge1_label', icon: '🎓', label: 'Professores Qualificados' },
+              { iconKey: 'badge2_icon', labelKey: 'badge2_label', icon: '🧪', label: 'Laboratórios equipados' },
+              { iconKey: 'badge3_icon', labelKey: 'badge3_label', icon: '💻', label: 'Sistema Informatizado' },
+              { iconKey: 'badge4_icon', labelKey: 'badge4_label', icon: '🛡️', label: 'Segurança 24 Horas' },
             ].map(b => (
-              <div key={b.label} className="flex items-center gap-3">
-                <span className="text-2xl flex-shrink-0">{b.icon}</span>
-                <span className="text-sm font-semibold text-[var(--ce-secondary)] leading-tight">{b.label}</span>
+              <div key={b.labelKey} className="flex items-center gap-3">
+                <span className="text-2xl flex-shrink-0">{texto(site.textos_customizados, b.iconKey, b.icon)}</span>
+                <span className="text-sm font-semibold text-[var(--ce-secondary)] leading-tight">{texto(site.textos_customizados, b.labelKey, b.label)}</span>
               </div>
             ))}
           </div>
