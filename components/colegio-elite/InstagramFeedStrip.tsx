@@ -48,7 +48,7 @@ export default function InstagramFeedStrip({ site, fotos }: { site: SiteEspecial
       </div>
 
       <p className="text-center text-xs text-slate-400 mt-5 px-6">
-        Prévia com fotos da escola — o feed em tempo real do Instagram entra assim que a integração for habilitada.
+        Posts reais do Instagram do colégio — a sincronização automática entra assim que a integração com a API for habilitada.
       </p>
     </section>
   )
