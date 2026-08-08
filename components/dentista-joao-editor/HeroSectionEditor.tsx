@@ -52,6 +52,10 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           placeholder="Título de destaque"
           className="font-display font-extrabold text-2xl sm:text-4xl text-white mb-3 max-w-xl leading-tight block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'hero_title', v) }}
+          onRemove={async () => {
+            setErro(null)
+            try { await updateSiteFieldPE(siteId, 'hero_title', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
+          }}
         />
         <EditableText
           as="p" readOnly={readOnly}
@@ -60,6 +64,10 @@ export default function HeroSectionEditor({ siteId, heroTitle, heroSub, heroImag
           multiline
           className="text-white/85 text-sm sm:text-base max-w-md mb-6 block"
           onSave={async v => { await updateSiteFieldPE(siteId, 'hero_sub', v) }}
+          onRemove={async () => {
+            setErro(null)
+            try { await updateSiteFieldPE(siteId, 'hero_sub', '') } catch (e) { setErro(e instanceof Error ? e.message : 'Erro ao remover.') }
+          }}
         />
         <div className="self-start">
           <EditableTextoCustomizado

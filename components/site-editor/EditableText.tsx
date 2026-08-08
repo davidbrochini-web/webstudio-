@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 interface Props {
   value: string
   onSave: (value: string) => Promise<void>
+  onRemove?: () => Promise<void>
   readOnly?: boolean
   as?: 'h1' | 'h2' | 'h3' | 'p' | 'span' | 'div'
   className?: string
@@ -18,7 +19,7 @@ interface Props {
 // Escape no teclado do celular (não tinha como cancelar). Agora: toca
 // pra editar, aparecem botões visíveis de Salvar e Cancelar, nada
 // acontece sozinho.
-export default function EditableText({ value, onSave, readOnly, as: Tag = 'span', className = '', multiline, placeholder }: Props) {
+export default function EditableText({ value, onSave, onRemove, readOnly, as: Tag = 'span', className = '', multiline, placeholder }: Props) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(value)
   const [saving, setSaving] = useState(false)
@@ -44,6 +45,26 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
       setEditing(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao salvar.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // Ação explícita, separada de "apagar tudo e salvar" — evita ambiguidade
+  // (campo vazio por engano vs. decisão real de deixar sem texto) e dá um
+  // ponto único no código pra tratar a ausência do campo (ver HeroCarousel:
+  // esconde o <h1>/<p> por completo em vez de renderizar vazio com margem
+  // sobrando). Só aparece quando o caller passa onRemove E já tem valor.
+  async function remove() {
+    if (!onRemove) return
+    setSaving(true)
+    setError(null)
+    try {
+      await onRemove()
+      setDraft('')
+      setEditing(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao remover.')
     } finally {
       setSaving(false)
     }
@@ -91,7 +112,7 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
             className={`${editClassName} w-full bg-white text-[#0B2B3C] outline-none ring-2 ring-[var(--brand)] rounded-md px-2 py-1.5`}
           />
         )}
-        <span className="flex items-center gap-2 mt-1.5">
+        <span className="flex items-center gap-2 mt-1.5 flex-wrap">
           <button type="button" onClick={commit} disabled={saving}
             className="text-xs font-bold text-white bg-[var(--brand)] rounded-full px-3.5 py-1.5 disabled:opacity-50">
             {saving ? 'Salvando…' : '💾 Salvar'}
@@ -100,6 +121,12 @@ export default function EditableText({ value, onSave, readOnly, as: Tag = 'span'
             className="text-xs font-bold text-[var(--ink)] bg-[var(--off)] border border-[var(--border)] rounded-full px-3.5 py-1.5 disabled:opacity-50">
             ✕ Cancelar
           </button>
+          {onRemove && value && (
+            <button type="button" onClick={remove} disabled={saving}
+              className="text-xs font-bold text-white bg-red-600/90 hover:bg-red-600 rounded-full px-3.5 py-1.5 disabled:opacity-50">
+              🗑️ Remover
+            </button>
+          )}
         </span>
         {error && <span className="block text-xs text-red-600 mt-1">{error}</span>}
       </span>
