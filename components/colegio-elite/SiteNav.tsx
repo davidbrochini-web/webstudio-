@@ -33,9 +33,9 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
   const linkClass = 'nav-underline text-sm font-medium text-slate-600 hover:text-[var(--ce-secondary)] transition-colors whitespace-nowrap'
 
   const logo = site.logo_url ? (
-    <div className="h-[46px] sm:h-[64px] px-3 sm:px-4 bg-white rounded-2xl shadow-xl border-2 border-[var(--ce-primary)] flex items-center">
+    <div className="w-[108px] h-[46px] sm:w-[150px] sm:h-[64px] px-2.5 py-1.5 bg-white rounded-2xl shadow-xl border-2 border-[var(--ce-primary)] flex items-center justify-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={site.logo_url} alt={site.business_name} className="h-full w-auto object-contain" />
+      <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-contain" />
     </div>
   ) : (
     <span className="font-display font-bold text-base sm:text-lg text-[var(--ce-secondary)] whitespace-nowrap">
