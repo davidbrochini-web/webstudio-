@@ -7,6 +7,7 @@ import PageShell from '@/components/colegio-elite/PageShell'
 import Reveal from '@/components/colegio-elite/Reveal'
 import ContatoForm from '@/components/colegio-elite/ContatoForm'
 import InstagramFeedStrip from '@/components/colegio-elite/InstagramFeedStrip'
+import HeroDroneImage from '@/components/colegio-elite/HeroDroneImage'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -79,12 +80,11 @@ export default async function HomePage() {
       {/* 1 — Banner aéreo com animação de sobrevoo (baixo → cima) +
              painel lateral fixo com os segmentos (estático, com
              transparência, sobre a foto que continua se movendo atrás) */}
-      <section className="relative overflow-hidden min-h-[480px] sm:min-h-[620px] lg:min-h-[700px] flex items-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <section className="relative overflow-hidden min-h-[420px] sm:min-h-[620px] lg:min-h-[700px] flex items-center">
+        <HeroDroneImage
           src={site.hero_imagem_url || HERO_FALLBACK}
           alt=""
-          className="ce-hero-drone absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full"
         />
         <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 140px 40px rgba(15,31,61,0.35)' }} />
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/50 to-transparent lg:to-[var(--ce-secondary)]/10" />
