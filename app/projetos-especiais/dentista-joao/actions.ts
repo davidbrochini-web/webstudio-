@@ -2,6 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial } from '@/lib/dentista-joao'
+import {
+  notificarLeadNovo,
+  notificarAgendamentoRecebidoPaciente,
+  notificarAgendamentoNovoAdmin,
+  enviarCodigoAcesso,
+} from '@/lib/dentista-joao-email'
 
 export interface ContatoFormState {
   error?: string
@@ -33,6 +39,18 @@ export async function enviarSolicitacaoConsulta(_prev: ContatoFormState, formDat
   })
 
   if (error) return { error: `Erro ao enviar: ${error.message}` }
+
+  // Notificação por e-mail é best-effort — nunca bloqueia o envio do
+  // lead, que já está gravado no banco (visível em "Leads recebidos"
+  // mesmo se o e-mail falhar).
+  notificarLeadNovo({
+    emailDestino: site.email_notificacoes,
+    nome: `${nome} ${sobrenome}`,
+    contato: email || telefone,
+    origem: 'Formulário de contato',
+    mensagem: telefone && email ? `Telefone: ${telefone}` : null,
+  }).catch(err => console.error('[dentista-joao] falha ao notificar lead novo:', err))
+
   return { success: true }
 }
 
@@ -57,6 +75,17 @@ export async function inscreverNewsletter(_prev: ContatoFormState, formData: For
   })
 
   if (error) return { error: `Erro ao inscrever: ${error.message}` }
+
+  // Notifica o admin que alguém se inscreveu — diferente do disparo
+  // automático PRO inscrito (esse continua fora de escopo, ver
+  // comentário acima da função).
+  notificarLeadNovo({
+    emailDestino: site.email_notificacoes,
+    nome,
+    contato: email,
+    origem: 'Inscrição na newsletter',
+  }).catch(err => console.error('[dentista-joao] falha ao notificar inscrição newsletter:', err))
+
   return { success: true }
 }
 
@@ -151,6 +180,13 @@ export async function criarAgendamentoPublico(_prev: AgendamentoFormState, formD
     return { error: `Você já tem ${count} agendamento(s) pendente(s). Aguarde a confirmação antes de agendar novamente.` }
   }
 
+  let tipoConsultaNome: string | null = null
+  if (tipoConsultaId) {
+    const { data: tipoInfo } = await supabase.from('agendamento_tipos_consulta')
+      .select('nome').eq('id', tipoConsultaId).maybeSingle()
+    tipoConsultaNome = tipoInfo?.nome ?? null
+  }
+
   const { error } = await supabase.from('agendamentos').insert({
     site_id: site.id,
     tipo_consulta_id: tipoConsultaId || null,
@@ -169,10 +205,60 @@ export async function criarAgendamentoPublico(_prev: AgendamentoFormState, formD
       return { error: 'Este horário acabou de ser reservado por outra pessoa. Escolha outro.' }
     return { error: `Erro ao agendar: ${error.message}` }
   }
+
+  // E-mails best-effort — paciente sabe que a solicitação chegou,
+  // admin sabe que tem algo pra confirmar na Agenda da Semana.
+  notificarAgendamentoRecebidoPaciente({
+    email, nome, data, horaInicio, horaFim, tipoConsulta: tipoConsultaNome,
+  }).catch(err => console.error('[dentista-joao] falha ao notificar paciente (recebido):', err))
+
+  notificarAgendamentoNovoAdmin({
+    emailDestino: site.email_notificacoes,
+    nomePaciente: nome, telefone: telefoneLimpo, data, horaInicio, horaFim,
+  }).catch(err => console.error('[dentista-joao] falha ao notificar admin (novo agendamento):', err))
+
   return { success: true }
 }
 
 // ── Meus Agendamentos (E10+E11) ──────────────────────────────────
+
+// Passo 1: pede o código de 6 dígitos por e-mail. Não revela se o
+// e-mail tem ou não agendamentos (evita enumeração) — sempre responde
+// sucesso; se o e-mail não tiver nada, o passo 2 só retorna lista vazia.
+export interface SolicitarCodigoState {
+  error?: string
+  success?: boolean
+}
+
+export async function solicitarCodigoAcesso(_prev: SolicitarCodigoState, formData: FormData): Promise<SolicitarCodigoState> {
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
+  if (!email) return { error: 'Informe o e-mail.' }
+
+  const site = await getSiteEspecial()
+  const supabase = await createClient()
+
+  const codigo = String(Math.floor(100000 + Math.random() * 900000))
+  const expiraEm = new Date(Date.now() + 10 * 60 * 1000).toISOString()
+
+  const { error } = await supabase.from('otp_codigos').insert({
+    site_id: site.id,
+    email,
+    codigo,
+    expira_em: expiraEm,
+  })
+  if (error) return { error: 'Não foi possível gerar o código. Tente novamente em instantes.' }
+
+  const result = await enviarCodigoAcesso({ email, codigo }).then(() => ({ ok: true })).catch(err => {
+    console.error('[dentista-joao] falha ao enviar código de acesso:', err)
+    return { ok: false }
+  })
+  if (!result.ok) return { error: 'Não foi possível enviar o código por e-mail. Tente novamente.' }
+
+  return { success: true }
+}
+
+// Passo 2: valida o código (RPC SECURITY DEFINER — nunca lê a tabela
+// otp_codigos diretamente) e retorna os agendamentos daquele e-mail.
 export interface OtpFormState {
   error?: string
   agendamentos?: {
@@ -190,10 +276,18 @@ export async function consultarAgendamentos(_prev: OtpFormState, formData: FormD
   const email = (formData.get('email') as string)?.trim().toLowerCase()
   const codigo = (formData.get('codigo') as string)?.trim()
   if (!email) return { error: 'Informe o e-mail.' }
-  if (codigo !== '000000') return { error: 'Código inválido.' }
+  if (!codigo) return { error: 'Informe o código recebido por e-mail.' }
 
   const site = await getSiteEspecial()
   const supabase = await createClient()
+
+  const { data: valido, error: rpcError } = await supabase.rpc('verificar_otp_codigo', {
+    p_site_id: site.id,
+    p_email: email,
+    p_codigo: codigo,
+  })
+  if (rpcError) return { error: 'Erro ao validar o código. Tente novamente.' }
+  if (!valido) return { error: 'Código inválido ou expirado. Solicite um novo.' }
 
   const { data: agendamentos } = await supabase
     .from('agendamentos')

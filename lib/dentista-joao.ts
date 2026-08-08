@@ -54,6 +54,7 @@ export interface SiteEspecial {
   cor_primaria: string
   cor_secundaria: string
   logo_posicao: 'esquerda' | 'centro'
+  email_notificacoes: string | null
 }
 
 /** Busca o site — 404 se não existir. Não filtra por status aqui:
@@ -64,7 +65,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, instagram_visivel, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, seo_indexavel, textos_customizados, cor_primaria, cor_secundaria, logo_posicao')
+    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, instagram_visivel, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, seo_indexavel, textos_customizados, cor_primaria, cor_secundaria, logo_posicao, email_notificacoes')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()
