@@ -140,25 +140,27 @@ body {
   .hero-text-enter { animation: none; }
 }
 
-/* ── Hero drone flyover (colegio-elite/page.tsx — Home) ──────────────
-   Zoom + pan lento e contínuo simulando o drone sobrevoando a escola.
-   6 pontos de passagem (em vez de 3) pra parecer um voo de verdade —
-   sobe, desce, desliza pros lados — não só um zoom no lugar. Looping
-   contínuo (volta pro ponto inicial no fim), sem "alternate" pra não
-   parecer que bate e volta. cubic-bezier suave imita aceleração e
-   desaceleração de câmera em drone real. */
+/* ── Hero drone rise (colegio-elite/page.tsx — Home) ──────────────────
+   Pedido do cliente: a animação tem que parecer alguém sobrevoando de
+   baixo pra cima — começa embaixo (pátio/playground, mais perto) e
+   sobe revelando o resto (rua, prédios, mais longe). translateY
+   negativo revela a parte de baixo da foto (a imagem "sobe" na tela,
+   trazendo o que estava embaixo pra dentro da janela); translateY
+   positivo revela a parte de cima. Looping com alternate: sobe, desce
+   de novo devagar, repete — sem corte brusco. Margens de translate
+   calculadas pra nunca passar do buffer de zoom (senão aparece borda
+   vazia da imagem). */
 .ce-hero-drone {
-  animation: ce-drone-flyover 34s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: ce-drone-rise 32s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
   transform-origin: center center;
   will-change: transform;
 }
-@keyframes ce-drone-flyover {
-  0%   { transform: scale(1.08) translate(0%, 0%); }
-  20%  { transform: scale(1.17) translate(-2.8%, -2%); }
-  40%  { transform: scale(1.24) translate(2%, -2.8%); }
-  60%  { transform: scale(1.15) translate(2.8%, 1.6%); }
-  80%  { transform: scale(1.21) translate(-1.8%, 2.4%); }
-  100% { transform: scale(1.08) translate(0%, 0%); }
+@keyframes ce-drone-rise {
+  0%   { transform: scale(1.24) translate(-1%, -8%); }
+  25%  { transform: scale(1.20) translate(0%, -4%); }
+  50%  { transform: scale(1.18) translate(1%, 0%); }
+  75%  { transform: scale(1.20) translate(0.5%, 4%); }
+  100% { transform: scale(1.24) translate(-1%, 8%); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ce-hero-drone { animation: none; }

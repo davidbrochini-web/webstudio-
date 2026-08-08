@@ -76,18 +76,20 @@ export default async function HomePage() {
     <PageShell site={site}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* 1 — Banner aéreo com animação de sobrevoo */}
+      {/* 1 — Banner aéreo com animação de sobrevoo (baixo → cima) +
+             painel lateral fixo com os segmentos (estático, com
+             transparência, sobre a foto que continua se movendo atrás) */}
       <section className="relative overflow-hidden min-h-[480px] sm:min-h-[620px] lg:min-h-[700px] flex items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={site.hero_imagem_url || HERO_FALLBACK}
           alt=""
           className="ce-hero-drone absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: '50% 38%' }}
         />
         <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 140px 40px rgba(15,31,61,0.35)' }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/55 to-transparent" />
-        <div className="relative max-w-4xl mx-auto px-5 sm:px-6 py-16">
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/50 to-transparent lg:to-[var(--ce-secondary)]/10" />
+
+        <div className="relative max-w-4xl mx-auto px-5 sm:px-6 py-16 lg:pr-[340px]">
           <p className="text-[var(--ce-primary)] font-bold text-xs uppercase tracking-widest mb-3">Colégio Elite · 42 anos de história</p>
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white mb-4 max-w-xl leading-tight">
             {site.hero_title || site.business_name}
@@ -102,6 +104,31 @@ export default async function HomePage() {
             {texto(site.textos_customizados, 'nav_cta', 'Fale Conosco')}
           </Link>
         </div>
+
+        {/* Painel lateral — estático (não acompanha a animação da foto),
+            fundo translúcido com leve blur, mesma composição do banner
+            de referência do site antigo (Ensino Médio / Fundamental /
+            Educação Infantil empilhados à direita) */}
+        {(medio || fundamental || infantil) && (
+          <div
+            className="hidden lg:flex absolute right-0 top-0 h-full w-[320px] xl:w-[380px] flex-col justify-center gap-9 px-9 py-12 bg-gradient-to-b from-[var(--ce-secondary)]/80 via-[var(--ce-secondary)]/70 to-[var(--ce-secondary)]/80 backdrop-blur-[2px]"
+            style={{ clipPath: 'polygon(7% 0, 100% 0, 100% 100%, 0% 100%)' }}
+          >
+            {[
+              { seg: medio, icon: '🎓' },
+              { seg: fundamental, icon: '📐' },
+              { seg: infantil, icon: '🧸' },
+            ].filter(x => x.seg).map(({ seg, icon }) => (
+              <div key={seg!.slug} className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+                <div>
+                  <p className="font-display font-bold text-white text-base leading-snug mb-1">{seg!.titulo}</p>
+                  <p className="text-white/75 text-xs leading-relaxed">{seg!.resumo}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <InstagramFeedStrip site={site} fotos={IG_PHOTOS} />
