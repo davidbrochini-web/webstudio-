@@ -13,6 +13,7 @@ const USUARIO_MAP: Record<string, string> = {
   colegio: 'colegio@colegioelite.local',
   elite: 'colegio@colegioelite.local',
   lukas: 'colegio@colegioelite.local',
+  lucas: 'colegio@colegioelite.local',
 }
 
 export default function LoginPage() {
