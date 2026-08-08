@@ -91,6 +91,25 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           href: '/app/casos-esquecidos/novo',
         })
       }
+
+      if (tenant.projeto_especial_slug === 'colegio-elite') {
+        navItems.push({
+          label: '📥 Leads',
+          href: '/app/colegio-elite/leads',
+        })
+        navItems.push({
+          label: '🎨 Editor do Site',
+          href: '/app/colegio-elite/editor',
+        })
+        navItems.push({
+          label: '✍️ Notícias',
+          href: '/app/colegio-elite/blog',
+        })
+        navItems.push({
+          label: '🔍 SEO',
+          href: '/app/colegio-elite/seo',
+        })
+      }
     }
   }
 

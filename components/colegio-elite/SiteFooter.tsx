@@ -1,0 +1,164 @@
+import type { SiteEspecial } from '@/lib/colegio-elite'
+import { formatTelefoneExibicao } from '@/lib/colegio-elite'
+import NewsletterForm from '@/components/colegio-elite/NewsletterForm'
+import Link from 'next/link'
+import { IconWhatsApp, IconInstagram } from '@/components/colegio-elite/icons'
+
+export default function SiteFooter({ site, base }: { site: SiteEspecial; base: string }) {
+  const LINKS = [
+    { label: 'Proposta Pedagógica', href: `${base}/proposta-pedagogica`, show: true },
+    { label: 'Ensino',              href: `${base}/ensino`, show: site.secao_segmentos_visivel },
+    { label: 'Estrutura',           href: `${base}/estrutura`, show: site.secao_diferenciais_visivel },
+    { label: 'Notícias',            href: `${base}/noticias`, show: site.secao_artigos_visivel },
+    { label: 'Localização',         href: `${base}/localizacao`, show: true },
+    { label: 'Contato',             href: `${base}/contato`, show: true },
+  ].filter(item => item.show)
+
+  const waLink = site.whatsapp
+    ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}?text=Olá%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20Col%C3%A9gio%20Elite`
+    : null
+  const mapsQuery = site.endereco
+    ? `https://maps.google.com/maps?q=${encodeURIComponent(site.endereco)}&output=embed`
+    : null
+
+  return (
+    <footer className="bg-[var(--ce-secondary)] text-white/70 text-sm">
+
+      <div className="bg-[var(--ce-primary)] px-5 sm:px-6 py-10 text-center">
+        <p className="font-display font-extrabold text-white text-2xl sm:text-3xl mb-2">
+          Vamos construir o futuro do seu filho juntos?
+        </p>
+        <p className="text-white/90 text-sm mb-6">
+          Agende uma visita e conheça de perto a estrutura do Colégio Elite.
+        </p>
+        <Link
+          href={`${base}/contato`}
+          className="inline-block bg-white text-[var(--ce-secondary)] font-bold px-8 py-3.5 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm"
+        >
+          Agendar Visita →
+        </Link>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 pt-14 pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+        <div className="sm:col-span-2 lg:col-span-1">
+          <p className="font-display font-extrabold text-white text-xl leading-tight">{site.business_name}</p>
+          <p className="text-[var(--ce-primary)] text-[10px] font-bold uppercase tracking-widest mt-0.5 mb-4">Educar para a Vida</p>
+          <p className="text-white/60 text-sm leading-relaxed mb-5">
+            {site.tagline
+              ? (site.tagline.length > 110 ? site.tagline.slice(0, 110) + '…' : site.tagline)
+              : 'Educação renovada e inovadora, com o aluno como protagonista da própria aprendizagem.'}
+          </p>
+          <div className="w-10 h-0.5 bg-[var(--ce-primary)] mb-5 rounded-full" />
+          <ul className="flex flex-col gap-3">
+            {site.telefone && (
+              <li>
+                <a href={`tel:${site.telefone.replace(/\D/g, '')}`}
+                  className="flex items-center gap-2.5 hover:text-white transition-colors group">
+                  <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-[var(--ce-primary)] flex items-center justify-center text-sm transition-colors flex-shrink-0">📞</span>
+                  <span>{site.telefone}</span>
+                </a>
+              </li>
+            )}
+            {waLink && (
+              <li>
+                <a href={waLink} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 hover:text-white transition-colors group">
+                  <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#25D366] flex items-center justify-center text-sm transition-colors flex-shrink-0">💬</span>
+                  <span>{site.whatsapp ? formatTelefoneExibicao(site.whatsapp) : 'WhatsApp'}</span>
+                </a>
+              </li>
+            )}
+            {site.endereco && (
+              <li className="flex items-start gap-2.5">
+                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">📍</span>
+                <span className="leading-snug">{site.endereco}</span>
+              </li>
+            )}
+          </ul>
+        </div>
+
+        <div>
+          <p className="font-display font-bold text-white mb-1 text-base">Navegação</p>
+          <div className="w-8 h-0.5 bg-[var(--ce-primary)] mb-5 rounded-full" />
+          <ul className="flex flex-col gap-2.5">
+            {LINKS.map(l => (
+              <li key={l.href}>
+                <Link href={l.href}
+                  className="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-1.5">
+                  <span className="w-1 h-1 rounded-full bg-[var(--ce-primary)] flex-shrink-0" />
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {((site.instagram_visivel && site.instagram_handle) || waLink) && (
+            <div className="mt-8">
+              <p className="font-display font-bold text-white mb-1 text-base">Siga-nos</p>
+              <div className="w-8 h-0.5 bg-[var(--ce-primary)] mb-4 rounded-full" />
+              <div className="flex gap-3">
+                {site.instagram_visivel && site.instagram_handle && (
+                  <a href={`https://instagram.com/${site.instagram_handle.replace('@', '')}`}
+                    target="_blank" rel="noopener noreferrer"
+                    title="Instagram"
+                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-gradient-to-br hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#dc2743] flex items-center justify-center transition-all">
+                    <IconInstagram className="w-4.5 h-4.5" />
+                  </a>
+                )}
+                {waLink && (
+                  <a href={waLink} target="_blank" rel="noopener noreferrer"
+                    title="WhatsApp"
+                    className="w-10 h-10 rounded-xl bg-white/10 hover:bg-[#25D366] flex items-center justify-center transition-all">
+                    <IconWhatsApp className="w-4.5 h-4.5" />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <p className="font-display font-bold text-white mb-1 text-base">Newsletter</p>
+          <div className="w-8 h-0.5 bg-[var(--ce-primary)] mb-5 rounded-full" />
+          <p className="text-white/60 text-sm mb-5 leading-relaxed">
+            Receba novidades, eventos e conteúdos do Colégio Elite direto no seu e-mail.
+          </p>
+          <NewsletterForm />
+        </div>
+
+        {mapsQuery ? (
+          <div>
+            <p className="font-display font-bold text-white mb-1 text-base">Localização</p>
+            <div className="w-8 h-0.5 bg-[var(--ce-primary)] mb-5 rounded-full" />
+            <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg aspect-[4/3]">
+              <iframe
+                src={mapsQuery}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`Localização — ${site.business_name}`}
+              />
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="font-display font-bold text-white mb-1 text-base">Localização</p>
+            <div className="w-8 h-0.5 bg-[var(--ce-primary)] mb-5 rounded-full" />
+            <div className="rounded-xl bg-white/5 border border-white/10 aspect-[4/3] flex flex-col items-center justify-center gap-2 text-white/30">
+              <span className="text-3xl">🗺️</span>
+              <span className="text-xs">Endereço em breve</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-white/10 px-5 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/30">
+        <span>© {new Date().getFullYear()} {site.business_name}. Todos os direitos reservados.</span>
+        <span>Site desenvolvido por <span className="text-[var(--ce-primary)] font-semibold">Omnidesign</span></span>
+      </div>
+    </footer>
+  )
+}
