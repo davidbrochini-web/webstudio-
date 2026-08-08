@@ -7,12 +7,22 @@ import { useEffect, useRef } from 'react'
  * puro (requestAnimationFrame), em vez de @keyframes no CSS.
  *
  * Por quê: Safari/WebKit tem suporte histórico ruim pra animar
- * `object-position` via CSS — em vários iPhones a animação
+ * `object-position` via CSS — em vários celulares a animação
  * simplesmente não roda (a imagem fica parada), mesmo funcionando
  * perfeitamente no Chrome desktop. Escrever o estilo a cada frame via
- * JS elimina essa dependência do motor de animação do navegador —
- * funciona igual em qualquer lugar, porque é só uma troca de estilo
- * inline comum, não uma interpolação de propriedade CSS.
+ * JS elimina essa dependência do motor de animação do navegador.
+ *
+ * Camada extra de segurança: a classe `ce-hero-fallback` (CSS, só
+ * transform — sempre suportado em qualquer navegador) fica no <img>
+ * como base. Assim que o JS roda, o estilo inline que ele escreve tem
+ * prioridade sobre a classe CSS e assume o controle fino (percorre a
+ * foto inteira via object-position). Se por qualquer motivo o JS não
+ * rodar num aparelho específico, ainda sobra o movimento do CSS —
+ * nunca fica 100% parado.
+ *
+ * Pedido explícito do cliente: sempre animado, mesmo com "reduzir
+ * movimento" ativado no aparelho (decisão de negócio, não acessibilidade
+ * crítica — é só o banner decorativo do topo).
  *
  * Onda triangular suavizada (smoothstep): sobe (embaixo → cima) e
  * desce de novo, em loop contínuo, sem corte brusco.
@@ -31,13 +41,6 @@ export default function HeroDroneImage({
   useEffect(() => {
     const img = ref.current
     if (!img) return
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) {
-      img.style.objectPosition = '50% 45%'
-      img.style.transform = 'scale(1.1)'
-      return
-    }
 
     const CICLO_MS = 30000 // duração de uma "ida" (embaixo → cima)
     const inicio = performance.now()
@@ -67,8 +70,9 @@ export default function HeroDroneImage({
       ref={ref}
       src={src}
       alt={alt}
-      className={className}
-      style={{ objectFit: 'cover', objectPosition: '50% 45%', transform: 'scale(1.1)' }}
+      className={`ce-hero-fallback ${className ?? ''}`}
+      style={{ objectFit: 'cover', objectPosition: '50% 45%' }}
     />
   )
 }
+

@@ -140,11 +140,24 @@ body {
   .hero-text-enter { animation: none; }
 }
 
-/* Hero drone rise do colegio-elite: removido daqui — a animação virou
-   100% JavaScript (components/colegio-elite/HeroDroneImage.tsx),
-   porque Safari/WebKit não anima `object-position` via CSS de forma
-   confiável (não rodava em vários iPhones). Ver o componente pra
-   detalhes. */
+/* Hero drone rise do colegio-elite: a animação principal é 100%
+   JavaScript (components/colegio-elite/HeroDroneImage.tsx), porque
+   Safari/WebKit não anima `object-position` via CSS de forma
+   confiável. Essa classe é só uma CAMADA DE SEGURANÇA — puro
+   transform (scale/translate), suportado em qualquer navegador —
+   caso o JS não rode por algum motivo específico do aparelho. O
+   estilo inline que o JS escreve tem prioridade sobre isso assim que
+   roda, então isso nunca "briga" com a animação principal — só
+   garante que nunca fica 100% parado. */
+.ce-hero-fallback {
+  animation: ce-hero-fallback-motion 26s ease-in-out infinite alternate;
+  transform-origin: center center;
+}
+@keyframes ce-hero-fallback-motion {
+  0%   { transform: scale(1.10) translate(0%, 0%); }
+  50%  { transform: scale(1.20) translate(-1.5%, -1.5%); }
+  100% { transform: scale(1.10) translate(1.5%, 1.5%); }
+}
 
 /* Sublinhado animado do menu desktop (dentista-joao/SiteNav.tsx) */
 .nav-underline {
