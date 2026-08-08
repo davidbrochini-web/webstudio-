@@ -55,14 +55,18 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Hero */}
-      <section className="relative overflow-hidden min-h-[420px] sm:min-h-[520px] flex items-center">
+      <section className="relative overflow-hidden min-h-[480px] sm:min-h-[620px] lg:min-h-[700px] flex items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={site.hero_imagem_url || HERO_FALLBACK}
           alt=""
           className="ce-hero-drone absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: '50% 38%' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/60 to-transparent" />
+        {/* Vinheta sutil nas bordas — deixa o movimento do pan mais
+            elegante em qualquer ponto do voo, sem escurecer o centro */}
+        <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 140px 40px rgba(15,31,61,0.35)' }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ce-secondary)]/92 via-[var(--ce-secondary)]/55 to-transparent" />
         <div className="relative max-w-4xl mx-auto px-5 sm:px-6 py-16">
           <p className="text-[var(--ce-primary)] font-bold text-xs uppercase tracking-widest mb-3">Colégio Elite · 42 anos de história</p>
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl text-white mb-4 max-w-xl leading-tight">
