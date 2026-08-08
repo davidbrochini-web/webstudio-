@@ -5,10 +5,13 @@ import Link from 'next/link'
 import ContatosBarCE from './ContatosBarCE'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableImage from '@/components/site-editor/EditableImage'
-import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
+import EditableTextoCE from './EditableTextoCE'
 import DiferenciaisSectionEditor, { type Diferencial } from './DiferenciaisSectionEditor'
 import SegmentosSectionEditor, { type Segmento } from './SegmentosSectionEditor'
 import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
+import MenuLabelsEditorCE from './MenuLabelsEditorCE'
+import BadgesSectionEditor from './BadgesSectionEditor'
+import TopoLinksSectionEditor from './TopoLinksSectionEditor'
 import { texto } from '@/lib/textos-customizados'
 import { updateSiteFieldCE } from '@/app/app/(hub)/colegio-elite/actions'
 
@@ -101,6 +104,13 @@ export default function LiveEditor({
         status={site.status} readOnly={readOnly}
         defaultExpanded={pagina === 'home' || pagina === 'contato'}
       />
+      {pagina === 'home' && (
+        <>
+          <MenuLabelsEditorCE siteId={site.id} textos={site.textos_customizados} readOnly={readOnly} />
+          <BadgesSectionEditor siteId={site.id} textos={site.textos_customizados} readOnly={readOnly} />
+          <TopoLinksSectionEditor siteId={site.id} textos={site.textos_customizados} readOnly={readOnly} />
+        </>
+      )}
 
       <div
         className="max-w-6xl mx-auto my-6 rounded-2xl overflow-hidden border border-[var(--border)] shadow-lg bg-white"
@@ -128,7 +138,7 @@ export default function LiveEditor({
                   className="text-white/85 text-sm sm:text-base max-w-md mb-6 block"
                   onSave={async v => { await updateSiteFieldCE(site.id, 'hero_sub', v) }} />
                 <div className="self-start">
-                  <EditableTextoCustomizado siteId={site.id} chave="nav_cta"
+                  <EditableTextoCE siteId={site.id} chave="nav_cta"
                     valor={texto(site.textos_customizados, 'nav_cta', 'Fale Conosco')}
                     readOnly={readOnly} as="span"
                     className="bg-white text-[var(--ce-secondary)] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg inline-block" />
@@ -172,7 +182,7 @@ export default function LiveEditor({
             </section>
 
             <section className="px-6 py-14 text-center bg-[var(--ce-secondary)]">
-              <EditableTextoCustomizado siteId={site.id} readOnly={readOnly} chave="home_cta_titulo"
+              <EditableTextoCE siteId={site.id} readOnly={readOnly} chave="home_cta_titulo"
                 valor={site.textos_customizados?.home_cta_titulo ?? 'Vamos construir o futuro do seu filho?'}
                 as="p" className="font-display font-extrabold text-xl text-white mb-3 block" />
               <span className="inline-block bg-[var(--ce-primary)] text-white font-bold px-6 py-3 rounded-full text-sm opacity-70">Fale Conosco</span>

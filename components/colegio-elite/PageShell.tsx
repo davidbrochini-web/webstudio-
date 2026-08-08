@@ -18,7 +18,7 @@ export default async function PageShell({ site, children }: { site: SiteEspecial
         '--ce-secondary': site.cor_secundaria || '#0F1F3D',
       } as React.CSSProperties}
     >
-      <TopLinksBar />
+      <TopLinksBar site={site} />
       <SiteNav site={site} base={base} />
       <main>{children}</main>
       <SiteFooter site={site} base={base} />
