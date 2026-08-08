@@ -6,13 +6,19 @@ import { sendEmail } from '@/lib/email'
  * seção 7): notificação de lead novo, confirmação de agendamento, e
  * código de acesso (OTP) em "Meus Agendamentos".
  *
- * Remetente usa o domínio próprio do cliente — só funciona depois do
- * domínio verificado no Resend (SPF/DKIM). Até lá, sendEmail() vira
- * no-op silencioso (loga e segue) — nunca derruba a criação de lead
- * ou agendamento.
+ * Remetente usa o domínio da Omnidesign (já verificado no Resend —
+ * SPF/DKIM ativos) em vez de drjoaobucomaxilofacial.com.br, que ainda
+ * não tem DNS configurado (e o cliente pode trocar de domínio, então
+ * não faz sentido gastar esse setup agora). Nome de exibição continua
+ * "Dr. João Victor Pimenta" — quem recebe não percebe a troca de
+ * domínio por trás. Quando o domínio próprio for verificado (ou
+ * decidido que fica definitivo), trocar só o FROM abaixo.
+ *
+ * Falha de envio nunca bloqueia a ação principal (lead/agendamento
+ * continuam salvos mesmo se o e-mail falhar) — ver lib/email.ts.
  */
 
-const FROM = 'Dr. João Victor Pimenta <agenda@drjoaobucomaxilofacial.com.br>'
+const FROM = 'Dr. João Victor Pimenta <notificacoes.drjoao@omnidesign.com.br>'
 
 const WRAPPER = (title: string, body: string) => `
 <!DOCTYPE html>
