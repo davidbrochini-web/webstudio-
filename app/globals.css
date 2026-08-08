@@ -141,26 +141,29 @@ body {
 }
 
 /* ── Hero drone rise (colegio-elite/page.tsx — Home) ──────────────────
-   Pedido do cliente: a animação tem que parecer alguém sobrevoando de
-   baixo pra cima — começa embaixo (pátio/playground, mais perto) e
-   sobe revelando o resto (rua, prédios, mais longe). translateY
-   negativo revela a parte de baixo da foto (a imagem "sobe" na tela,
-   trazendo o que estava embaixo pra dentro da janela); translateY
-   positivo revela a parte de cima. Looping com alternate: sobe, desce
-   de novo devagar, repete — sem corte brusco. Margens de translate
-   calculadas pra nunca passar do buffer de zoom (senão aparece borda
-   vazia da imagem). */
+   Pedido do cliente: começar embaixo (pátio/playground) e subir até
+   mostrar rua/prédios. IMPORTANTE: `object-fit: cover` recorta a
+   imagem ANTES de qualquer `transform` — animar scale/translate só
+   move dentro da fatia já cortada, nunca revela o que ficou de fora
+   do corte (foi o bug da primeira tentativa: o pátio simplesmente não
+   estava mais renderizado, então nenhum transform conseguia trazê-lo
+   de volta). A forma certa de "percorrer" a foto é animar o próprio
+   `object-position` — isso sim redefine qual fatia da imagem original
+   é usada no corte, quadro a quadro. Scale leve junto só pra dar um
+   respiro de zoom, sem carregar o peso do movimento (isso agora é
+   100% do object-position). */
 .ce-hero-drone {
-  animation: ce-drone-rise 32s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
-  transform-origin: center center;
-  will-change: transform;
+  animation: ce-drone-rise 32s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+  object-position: 50% 45%;
+  transform: scale(1.08);
+  will-change: object-position, transform;
 }
 @keyframes ce-drone-rise {
-  0%   { transform: scale(1.34) translate(-1%, -13%); }
-  25%  { transform: scale(1.28) translate(0%, -6%); }
-  50%  { transform: scale(1.24) translate(1%, 0%); }
-  75%  { transform: scale(1.28) translate(0.5%, 6%); }
-  100% { transform: scale(1.34) translate(-1%, 13%); }
+  0%   { object-position: 50% 100%; transform: scale(1.14); }
+  25%  { object-position: 50% 70%;  transform: scale(1.10); }
+  50%  { object-position: 50% 42%;  transform: scale(1.07); }
+  75%  { object-position: 50% 16%;  transform: scale(1.10); }
+  100% { object-position: 50% 0%;   transform: scale(1.14); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ce-hero-drone { animation: none; }
