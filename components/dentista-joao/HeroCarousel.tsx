@@ -108,12 +108,16 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
           key={index}
           className="relative h-full max-w-6xl mx-auto px-5 sm:px-6 flex flex-col justify-center hero-text-enter"
         >
-          <h1 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4 max-w-xl leading-tight">
-            {slides[index].titulo}
-          </h1>
-          <p className="text-white/85 text-sm sm:text-base max-w-sm sm:max-w-lg mb-6 sm:mb-8 line-clamp-3">
-            {slides[index].subtitulo}
-          </p>
+          {slides[index].titulo && (
+            <h1 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-white mb-3 sm:mb-4 max-w-xl leading-tight">
+              {slides[index].titulo}
+            </h1>
+          )}
+          {slides[index].subtitulo && (
+            <p className="text-white/85 text-sm sm:text-base max-w-sm sm:max-w-lg mb-6 sm:mb-8 line-clamp-3">
+              {slides[index].subtitulo}
+            </p>
+          )}
           <Link
             href={slides[index].ctaHref}
             className="self-start bg-white text-[var(--dj-secondary)] font-bold px-5 sm:px-6 py-2.5 sm:py-3.5 rounded-full hover:opacity-90 transition-opacity text-sm sm:text-base shadow-lg shadow-black/20"
