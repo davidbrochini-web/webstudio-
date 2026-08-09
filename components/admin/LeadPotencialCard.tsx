@@ -5,6 +5,7 @@ import { updateLeadCampos, updateLeadPdfs } from '@/app/admin/crm/actions'
 import { uploadLeadPdf } from '@/lib/storage'
 import LeadAssetsPanel from '@/components/admin/LeadAssetsPanel'
 import LeadHistorico from '@/components/admin/LeadHistorico'
+import LeadFaqPanel from '@/components/admin/LeadFaqPanel'
 
 function CampoEditavel({
   id,
@@ -146,6 +147,7 @@ export default function LeadPotencialCard({
           <LeadAssetsPanel id={id} logoUrl={logoUrl} imagensPortfolio={imagensPortfolio} />
         </div>
       </div>
+      <LeadFaqPanel leadId={id} />
       <LeadHistorico leadId={id} />
     </div>
   )

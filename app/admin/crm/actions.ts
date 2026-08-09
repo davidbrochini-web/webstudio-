@@ -371,3 +371,124 @@ export async function archiveLeadPotencial(id: string) {
 
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
+
+// ------------------------------------------------------------------
+// FAQ por lead (0041) — script pré-definido por segmento +
+// perguntas reais que o cliente fez, registradas pela Andressa.
+// ------------------------------------------------------------------
+
+export interface LeadFaqItem {
+  id: string
+  tipo: 'pre_definida' | 'pergunta_aberta'
+  pergunta: string
+  resposta: string
+  ordem: number
+  created_at: string
+}
+
+export async function getLeadFaq(leadId: string): Promise<LeadFaqItem[]> {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('leads_omnidesign_faq')
+    .select('id, tipo, pergunta, resposta, ordem, created_at')
+    .eq('lead_id', leadId)
+    .order('tipo', { ascending: false }) // pre_definida antes de pergunta_aberta
+    .order('ordem', { ascending: true })
+
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
+/**
+ * Popula o script pré-definido de um lead (usado uma vez ao gerar o
+ * FAQ do segmento). Substitui qualquer pré-definida existente pra
+ * evitar duplicar se rodar de novo.
+ */
+export async function setLeadFaqPreDefinida(
+  leadId: string,
+  itens: { pergunta: string; resposta: string }[]
+) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+
+  const { error: delError } = await supabase
+    .from('leads_omnidesign_faq')
+    .delete()
+    .eq('lead_id', leadId)
+    .eq('tipo', 'pre_definida')
+
+  if (delError) throw new Error(delError.message)
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { error } = await supabase.from('leads_omnidesign_faq').insert(
+    itens.map((item, i) => ({
+      lead_id: leadId,
+      tipo: 'pre_definida' as const,
+      pergunta: item.pergunta,
+      resposta: item.resposta,
+      ordem: i,
+      created_by: user?.id,
+    }))
+  )
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
+ * Registra uma pergunta real feita pelo cliente + a resposta (dada
+ * pela Andressa com apoio do Claude no chat). Campo aberto do card.
+ */
+export async function addLeadFaqPerguntaAberta(
+  leadId: string,
+  pergunta: string,
+  resposta: string
+) {
+  await requireSuperAdmin()
+
+  if (!pergunta.trim() || !resposta.trim()) {
+    throw new Error('Pergunta e resposta são obrigatórias.')
+  }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: max } = await supabase
+    .from('leads_omnidesign_faq')
+    .select('ordem')
+    .eq('lead_id', leadId)
+    .eq('tipo', 'pergunta_aberta')
+    .order('ordem', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const { error } = await supabase.from('leads_omnidesign_faq').insert({
+    lead_id: leadId,
+    tipo: 'pergunta_aberta',
+    pergunta: pergunta.trim(),
+    resposta: resposta.trim(),
+    ordem: (max?.ordem ?? -1) + 1,
+    created_by: user?.id,
+  })
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+export async function deleteLeadFaqItem(id: string, leadId: string) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('leads_omnidesign_faq').delete().eq('id', id)
+
+  if (error) throw new Error(error.message)
+
+  void leadId
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
