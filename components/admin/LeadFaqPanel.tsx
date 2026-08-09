@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useTransition } from 'react'
-import { getLeadFaq, addLeadFaqPerguntaAberta, deleteLeadFaqItem, type LeadFaqItem } from '@/app/admin/crm/actions'
+import { getLeadFaq, addLeadFaqPerguntaAberta, deleteLeadFaqItem, buscarSugestaoFaq, type LeadFaqItem } from '@/app/admin/crm/actions'
 
 export default function LeadFaqPanel({ leadId }: { leadId: string }) {
   const [itens, setItens] = useState<LeadFaqItem[] | null>(null)
@@ -96,7 +96,27 @@ function NovaPerguntaForm({ leadId, onAdded }: { leadId: string; onAdded: () => 
   const [pergunta, setPergunta] = useState('')
   const [resposta, setResposta] = useState('')
   const [pending, startTransition] = useTransition()
+  const [buscando, startBusca] = useTransition()
   const [erro, setErro] = useState<string | null>(null)
+  const [buscaInfo, setBuscaInfo] = useState<string | null>(null)
+
+  function handleBuscar() {
+    setErro(null)
+    setBuscaInfo(null)
+    startBusca(async () => {
+      try {
+        const sugestao = await buscarSugestaoFaq(leadId, pergunta)
+        if (sugestao) {
+          setResposta(sugestao.resposta)
+          setBuscaInfo(`Encontrado na base (parecido com: "${sugestao.perguntaBase}") — revise antes de salvar.`)
+        } else {
+          setBuscaInfo('Nada parecido o suficiente na base — responda manualmente.')
+        }
+      } catch (err) {
+        setErro(err instanceof Error ? err.message : 'Erro ao buscar na base.')
+      }
+    })
+  }
 
   function handleAdicionar() {
     setErro(null)
@@ -105,6 +125,7 @@ function NovaPerguntaForm({ leadId, onAdded }: { leadId: string; onAdded: () => 
         await addLeadFaqPerguntaAberta(leadId, pergunta, resposta)
         setPergunta('')
         setResposta('')
+        setBuscaInfo(null)
         onAdded()
       } catch (err) {
         setErro(err instanceof Error ? err.message : 'Erro ao registrar.')
@@ -119,14 +140,24 @@ function NovaPerguntaForm({ leadId, onAdded }: { leadId: string; onAdded: () => 
       </p>
       <input
         value={pergunta}
-        onChange={e => setPergunta(e.target.value)}
+        onChange={e => { setPergunta(e.target.value); setBuscaInfo(null) }}
         placeholder="O que o cliente perguntou..."
         className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-white text-xs outline-none mb-2 focus:border-[var(--brand)]"
       />
+      <div className="mb-2">
+        <button
+          onClick={handleBuscar}
+          disabled={buscando || !pergunta.trim()}
+          className="text-xs font-semibold text-[var(--brand)] disabled:text-[var(--muted)] disabled:cursor-default"
+        >
+          {buscando ? 'Buscando na base...' : '🔎 Buscar resposta na base'}
+        </button>
+        {buscaInfo && <p className="text-[10px] text-[var(--muted)] mt-1">{buscaInfo}</p>}
+      </div>
       <textarea
         value={resposta}
         onChange={e => setResposta(e.target.value)}
-        placeholder="Resposta (com base no FAQ / o que combinamos com o Claude no chat)..."
+        placeholder="Resposta (busque na base ou escreva manualmente)..."
         rows={2}
         className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-white text-xs outline-none resize-none mb-2 focus:border-[var(--brand)]"
       />

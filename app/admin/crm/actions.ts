@@ -492,3 +492,47 @@ export async function deleteLeadFaqItem(id: string, leadId: string) {
   void leadId
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
+
+/**
+ * Busca por similaridade (pg_trgm, sem IA) na base de conhecimento
+ * (leads_faq_base_conhecimento) pra sugerir resposta pra uma pergunta
+ * nova que o cliente fez. Retorna null se nada bateu o suficiente
+ * (limiar 0.3, ver migration 0042) — a Andressa sempre revisa/edita
+ * antes de salvar.
+ */
+export interface SugestaoFaq {
+  resposta: string
+  perguntaBase: string
+  similaridade: number
+}
+
+export async function buscarSugestaoFaq(leadId: string, pergunta: string): Promise<SugestaoFaq | null> {
+  await requireSuperAdmin()
+
+  if (!pergunta.trim()) return null
+
+  const supabase = await createClient()
+
+  const { data: lead, error: leadError } = await supabase
+    .from('leads_omnidesign')
+    .select('segmento')
+    .eq('id', leadId)
+    .single()
+
+  if (leadError) throw new Error(leadError.message)
+
+  const { data, error } = await supabase.rpc('buscar_sugestao_faq', {
+    p_segmento: lead?.segmento ?? null,
+    p_pergunta: pergunta.trim(),
+  })
+
+  if (error) throw new Error(error.message)
+  if (!data || data.length === 0) return null
+
+  const match = data[0]
+  return {
+    resposta: match.resposta,
+    perguntaBase: match.pergunta_base,
+    similaridade: match.similaridade,
+  }
+}
