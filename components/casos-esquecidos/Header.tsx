@@ -11,9 +11,8 @@ export default function Header({ base }: { base: string }) {
           <Link href={base || '/'} className="brand">Casos<span>•</span>Esquecidos</Link>
           <nav className="site-nav" aria-label="Menu principal">
             <Link href={`${base}/contos`}>Contos</Link>
-            <Link href={`${base}#livro`}>O Livro</Link>
-            <Link href={`${base}#apoio`}>Apoiar</Link>
-            <Link href="/login">Login</Link>
+            <Link href={`${base}/#livro`}>O Livro</Link>
+            <Link href={`${base}/#apoio`}>Apoiar</Link>
           </nav>
         </div>
       </header>

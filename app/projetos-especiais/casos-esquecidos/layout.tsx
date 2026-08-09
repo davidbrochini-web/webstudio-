@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Cinzel, EB_Garamond, JetBrains_Mono } from 'next/font/google'
 import { getSiteEspecial, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import GoogleAnalytics from '@/components/casos-esquecidos/GoogleAnalytics'
 import './ce-styles.css'
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-cinzel', display: 'optional' })
@@ -39,6 +41,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`ce-site ${cinzel.variable} ${garamond.variable} ${mono.variable}`}>
+      <Suspense fallback={null}>
+        <GoogleAnalytics />
+      </Suspense>
       {children}
     </div>
   )
