@@ -44,24 +44,10 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const orgJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Omnidesign',
-    url: 'https://omnidesign.com.br',
-    logo: 'https://omnidesign.com.br/brand/omnidesign-logo.png',
-    description: 'Sites profissionais conectados ao Instagram e sistemas internos sob medida para pequenos e médios negócios.',
-    areaServed: 'BR',
-  }
-
   return (
     <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <ThemeScript />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-        />
       </head>
       <body className="antialiased">{children}</body>
     </html>
