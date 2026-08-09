@@ -174,7 +174,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
         <p style={{ color: 'var(--paper-dim)' }}>Os contos são gratuitos, mas levam tempo pra escrever. Se este te tirou o sono, considere apoiar o trabalho.</p>
         <div className="story-end-actions">
           <a className="btn btn-primary" href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Comprar o livro na Amazon</a>
-          <Link className="btn btn-ghost" href={`${base}#apoio`}>Apoiar via Pix</Link>
+          <Link className="btn btn-ghost" href={`${base}/#apoio`}>Apoiar via Pix</Link>
         </div>
       </div>
 

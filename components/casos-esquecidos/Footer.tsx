@@ -10,7 +10,8 @@ export default function Footer({ base }: { base: string }) {
           <a href="https://www.instagram.com/db.casosesquecidos/" target="_blank" rel="noopener">Instagram</a>
           <Link href={`${base}/contos`}>Contos</Link>
           <Link href={`${base}/sobre`}>O Autor</Link>
-          <Link href={`${base}#apoio`}>Pix</Link>
+          <Link href={`${base}/#apoio`}>Pix</Link>
+          <Link href="/login">Login</Link>
         </nav>
         <span className="footer-note">© {new Date().getFullYear()} D. Broch — todos os direitos reservados</span>
       </div>

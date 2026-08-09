@@ -114,7 +114,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
               <p style={{ color: 'var(--paper-dim)', marginTop: '0.75rem' }}>Os contos são gratuitos, mas levam tempo pra escrever. Compre o livro na Amazon ou faça uma doação via Pix.</p>
               <div className="hero-actions" style={{ marginTop: '1.5rem' }}>
                 <a className="btn btn-primary" href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Comprar o livro</a>
-                <Link className="btn btn-ghost" href={`${base}#apoio`}>Apoiar via Pix</Link>
+                <Link className="btn btn-ghost" href={`${base}/#apoio`}>Apoiar via Pix</Link>
               </div>
             </div>
             <div className="qr-frame">
