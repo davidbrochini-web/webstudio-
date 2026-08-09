@@ -13,6 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL_BASE),
     title: { default: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch', template: '%s | Casos Esquecidos' },
     description: 'Contos de terror e histórias de terror gratuitas, publicadas toda semana. Livros de terror de D. Broch — horror psicológico e investigação paranormal.',
+    keywords: [
+      'contos de terror', 'histórias de terror', 'terror psicológico', 'contos de terror grátis',
+      'lendas urbanas', 'investigação paranormal', 'D. Broch', 'livro de terror brasileiro',
+    ],
     robots: { index: site.seo_indexavel, follow: site.seo_indexavel },
     alternates: {
       canonical: SITE_URL_BASE,
