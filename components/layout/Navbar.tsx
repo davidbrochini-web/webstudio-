@@ -33,6 +33,7 @@ export default function Navbar() {
           {[
             { href: '#instagram',     label: 'Instagram' },
             { href: '#templates',     label: 'Modelos de site' },
+            { href: '#marketing-digital', label: 'Marketing' },
             { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },
           ].map(({ href, label }) => (
@@ -108,6 +109,7 @@ export default function Navbar() {
           {[
             { href: '#instagram',     label: 'Instagram' },
             { href: '#templates',     label: 'Modelos de site' },
+            { href: '#marketing-digital', label: 'Marketing' },
             { href: '#modulos',       label: 'Sistemas' },
             { href: '#preco',         label: 'Preço' },
           ].map(({ href, label }) => (

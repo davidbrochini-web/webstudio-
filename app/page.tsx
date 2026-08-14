@@ -1,15 +1,17 @@
-import Navbar     from '@/components/layout/Navbar'
-import Footer     from '@/components/layout/Footer'
-import Hero       from '@/components/sections/Hero'
-import FeedDemo   from '@/components/sections/FeedDemo'
-import Stats      from '@/components/sections/Stats'
-import HowItWorks from '@/components/sections/HowItWorks'
-import Templates  from '@/components/sections/Templates'
-import Features   from '@/components/sections/Features'
-import Modules    from '@/components/sections/Modules'
-import Pricing    from '@/components/sections/Pricing'
-import Faq        from '@/components/sections/Faq'
-import CtaFinal   from '@/components/sections/CtaFinal'
+import Navbar      from '@/components/layout/Navbar'
+import Footer      from '@/components/layout/Footer'
+import AdsBanner   from '@/components/sections/AdsBanner'
+import Hero        from '@/components/sections/Hero'
+import FeedDemo    from '@/components/sections/FeedDemo'
+import Stats       from '@/components/sections/Stats'
+import HowItWorks  from '@/components/sections/HowItWorks'
+import Templates   from '@/components/sections/Templates'
+import Features    from '@/components/sections/Features'
+import AdsServices from '@/components/sections/AdsServices'
+import Modules     from '@/components/sections/Modules'
+import Pricing     from '@/components/sections/Pricing'
+import Faq         from '@/components/sections/Faq'
+import CtaFinal    from '@/components/sections/CtaFinal'
 
 export default function Home() {
   // JSON-LD da Organização — vivia no RootLayout e vazava pra TODAS
@@ -37,6 +39,7 @@ export default function Home() {
       />
 
       <Navbar />
+      <AdsBanner />
       <main>
         <Hero />
         <FeedDemo />
@@ -44,6 +47,7 @@ export default function Home() {
         <HowItWorks />
         <Templates />
         <Features />
+        <AdsServices />
         <Modules />
         <Pricing />
         <Faq />
