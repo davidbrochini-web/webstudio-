@@ -72,8 +72,8 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
                 </div>
               </article>
             ))}
-            {contosPagina.map(conto => (
-              <CaseCard key={conto.id} conto={conto} prefix={`${base}/contos`} />
+            {contosPagina.map((conto, i) => (
+              <CaseCard key={conto.id} conto={conto} prefix={`${base}/contos`} priority={i < 3} />
             ))}
             {ehUltimaPagina && agendadosOrdenados.length === 0 && (
               <article className="case-card locked">

@@ -123,7 +123,7 @@ export default async function Home() {
           </div>
           <div className="hero-covers">
             <div className="hero-cover-main">
-              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch." width={1024} height={1536} sizes="(max-width: 480px) 200px, (max-width: 880px) 260px, 290px" />
+              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch." width={1024} height={1536} sizes="(max-width: 480px) 200px, (max-width: 880px) 260px, 290px" priority />
             </div>
             <div className="hero-cover-back">
               <Image src="/assets/casos-esquecidos/capa-livro-2.jpg" alt="Capa do segundo livro de D. Broch — em andamento" width={800} height={1200} sizes="(max-width: 480px) 170px, (max-width: 880px) 220px, 240px" />
