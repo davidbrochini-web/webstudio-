@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect, useCallback } from 'react'
-import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
+import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
 import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
 export default function LeadWhatsappSimulador({
@@ -29,6 +29,8 @@ export default function LeadWhatsappSimulador({
   const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
   const [respondendo, setRespondendo] = useState(false)
   const [sugerindo, setSugerindo] = useState(false)
+  const [confirmandoReset, setConfirmandoReset] = useState(false)
+  const [resetando, setResetando] = useState(false)
 
   const carregar = useCallback(() => {
     getMensagensSimuladas(leadId)
@@ -108,6 +110,27 @@ export default function LeadWhatsappSimulador({
       .finally(() => setSugerindo(false))
   }
 
+  function handleResetar() {
+    if (!confirmandoReset) {
+      setConfirmandoReset(true)
+      return
+    }
+    setResetando(true)
+    setErro(null)
+    resetarSimulacao(leadId)
+      .then(() => {
+        setIndiceRoteiro(0)
+        setRoteiroEncerrado(false)
+        carregar()
+        onEnviado()
+      })
+      .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao resetar.'))
+      .finally(() => {
+        setResetando(false)
+        setConfirmandoReset(false)
+      })
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-[#e5ddd5]">
       {/* Cabeçalho estilo WhatsApp Web */}
@@ -142,6 +165,19 @@ export default function LeadWhatsappSimulador({
               ))}
             </select>
           )}
+          <button
+            onClick={handleResetar}
+            onBlur={() => setConfirmandoReset(false)}
+            disabled={resetando || mensagens.length === 0}
+            className={`text-[11px] font-bold px-2 py-1 rounded-lg border transition-colors disabled:opacity-30 ${
+              confirmandoReset
+                ? 'bg-red-500 text-white border-red-500'
+                : 'bg-white text-[var(--muted)] border-[var(--border)] hover:border-red-300 hover:text-red-500'
+            }`}
+            title="Apaga as mensagens simuladas e reseta o termômetro/perfil/checklist desse lead"
+          >
+            {resetando ? '...' : confirmandoReset ? 'Confirmar reset?' : '🔄 Resetar'}
+          </button>
         </div>
       </div>
 

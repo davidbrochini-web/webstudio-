@@ -279,6 +279,19 @@ export async function enviarMensagemSimulada(leadId: string, direcao: 'enviada' 
 }
 
 // ============================================================
+// Resetar simulação — apaga o transcript E a análise derivada dele
+// (hits, interesses, checklist volta pendente, conversa volta ao
+// estado inicial), pra treinar do zero quando quiser.
+// ============================================================
+export async function resetarSimulacao(leadId: string) {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('resetar_simulacao_lead', { p_lead_id: leadId })
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+// ============================================================
 // Falso positivo
 // ============================================================
 export async function marcarFalsoPositivo(hitId: string) {
