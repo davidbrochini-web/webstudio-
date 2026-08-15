@@ -41,7 +41,7 @@ export default async function SobrePage() {
           </div>
           <div className="book-block">
             <div className="book-cover-secondary">
-              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch" width={1024} height={1536} sizes="(max-width: 880px) 280px, 300px" />
+              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch" width={1024} height={1536} sizes="(max-width: 880px) 280px, 300px" priority />
             </div>
             <div className="lore">
               <p>D. Broch é autor brasileiro de terror psicológico e investigação paranormal. Escreve sobre as frestas do mundo — os lugares, pessoas e coisas que existem entre o que a gente vê e o que a gente prefere não ver.</p>

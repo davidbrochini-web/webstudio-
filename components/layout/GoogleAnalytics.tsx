@@ -2,6 +2,7 @@
 
 import Script from 'next/script'
 import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { DOMAIN_MAP } from '@/lib/domain-map'
 
 /**
@@ -14,6 +15,13 @@ import { DOMAIN_MAP } from '@/lib/domain-map'
  *
  * Pra conectar um domínio novo: adiciona a env var na Vercel e uma
  * linha no mapa abaixo. Não precisa mexer em mais nada.
+ *
+ * `send_page_view: false` + page_view manual a cada troca de pathname/
+ * searchParams: o App Router navega client-side (sem reload), então o
+ * pageview automático do gtag só pegaria a carga inicial — qualquer
+ * navegação depois (Link, router.push) passaria batido. Isso é o único
+ * componente de GA4 da plataforma; não duplicar por projeto (aconteceu
+ * uma vez no Casos Esquecidos, corrigido).
  */
 const GA_POR_HOST: Record<string, string | undefined> = {
   'omnidesign.com.br': process.env.NEXT_PUBLIC_GA_ID,
@@ -38,6 +46,28 @@ if (process.env.NODE_ENV !== 'production') {
   }
 }
 
+declare global {
+  interface Window {
+    dataLayer: unknown[]
+    gtag: (...args: unknown[]) => void
+  }
+}
+
+function PageViewTracker() {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (typeof window.gtag !== 'function') return
+    const query = searchParams.toString()
+    window.gtag('event', 'page_view', {
+      page_path: query ? `${pathname}?${query}` : pathname,
+    })
+  }, [pathname, searchParams])
+
+  return null
+}
+
 export default function GoogleAnalytics() {
   const [gaId, setGaId] = useState<string | null>(null)
 
@@ -59,9 +89,10 @@ export default function GoogleAnalytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${gaId}');
+          gtag('config', '${gaId}', { send_page_view: false });
         `}
       </Script>
+      <PageViewTracker />
     </>
   )
 }
