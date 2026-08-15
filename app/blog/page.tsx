@@ -46,9 +46,17 @@ export default async function BlogPage() {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="group py-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2"
+                className="group py-8 flex flex-col sm:flex-row sm:items-start gap-5"
               >
-                <div className="min-w-0">
+                {post.capa_url && (
+                  <img
+                    src={post.capa_url}
+                    alt={post.capa_alt ?? post.titulo}
+                    loading="lazy"
+                    className="w-full sm:w-40 h-40 sm:h-24 object-cover rounded-xl border border-[var(--border)] flex-shrink-0"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
                   {post.categoria && (
                     <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--brand2)]">
                       {post.categoria}

@@ -6,6 +6,7 @@ export interface BlogPostOmnidesign {
   conteudo: string
   categoria: string | null
   capa_url: string | null
+  capa_alt: string | null
   status: 'rascunho' | 'publicado'
   publicado_em: string | null
   meta_titulo: string | null
