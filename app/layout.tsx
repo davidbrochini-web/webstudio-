@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   keywords: [
     'criação de site', 'site para pequena empresa', 'site conectado ao instagram',
     'sistema interno para empresa', 'site institucional', 'CRM para pequena empresa',
+    'agência de marketing digital', 'gestão de google ads para pequena empresa',
+    'google meu negócio', 'chatgpt ads',
   ],
   alternates: {
     canonical: '/',
