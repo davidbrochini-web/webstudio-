@@ -22,6 +22,8 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
   const [resumo, setResumo] = useState(post?.resumo ?? '')
   const [conteudo, setConteudo] = useState(post?.conteudo ?? '')
   const [categoria, setCategoria] = useState(post?.categoria ?? '')
+  const [capaUrl, setCapaUrl] = useState(post?.capa_url ?? '')
+  const [capaAlt, setCapaAlt] = useState(post?.capa_alt ?? '')
   const [status, setStatus] = useState<'rascunho' | 'publicado'>(post?.status ?? 'rascunho')
   const [publicadoEm, setPublicadoEm] = useState(toDatetimeLocal(post?.publicado_em ?? null))
   const [seoAberto, setSeoAberto] = useState(false)
@@ -40,6 +42,9 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
   async function handleSalvar() {
     setErro(null)
     if (!titulo.trim()) return setErro('Título é obrigatório.')
+    if (capaUrl && !capaAlt.trim()) {
+      return setErro('Capa precisa de texto alternativo (descreva a imagem em uma frase — acessibilidade e SEO).')
+    }
     if (status === 'publicado' && !publicadoEm) {
       return setErro('Post publicado precisa de data de publicação (pode ser agora ou uma data futura pra agendar).')
     }
@@ -50,6 +55,8 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
       resumo,
       conteudo,
       categoria: categoria || undefined,
+      capa_url: capaUrl || undefined,
+      capa_alt: capaAlt || undefined,
       status,
       publicado_em: publicadoEm ? new Date(publicadoEm).toISOString() : null,
       meta_titulo: metaTitulo || undefined,
@@ -120,6 +127,36 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
             className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm leading-relaxed focus:outline-none focus:border-[var(--brand)]"
           />
         </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label className="text-xs font-semibold text-[var(--muted)] mb-1.5 block">Capa (URL da imagem — opcional)</label>
+            <input
+              value={capaUrl}
+              onChange={e => setCapaUrl(e.target.value)}
+              placeholder="https://..."
+              className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm font-mono focus:outline-none focus:border-[var(--brand)]"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-[var(--muted)] mb-1.5 block">
+              Texto alternativo da capa {capaUrl ? '(obrigatório)' : '(se tiver capa)'}
+            </label>
+            <input
+              value={capaAlt}
+              onChange={e => setCapaAlt(e.target.value)}
+              placeholder="Descreva a imagem em uma frase"
+              className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)]"
+            />
+          </div>
+        </div>
+        {capaUrl && (
+          <img
+            src={capaUrl}
+            alt={capaAlt || 'Prévia da capa'}
+            className="rounded-xl border border-[var(--border)] max-h-52 object-cover w-full"
+          />
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>

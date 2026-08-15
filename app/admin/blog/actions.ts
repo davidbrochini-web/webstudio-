@@ -18,6 +18,7 @@ interface BlogPostInput {
   conteudo: string
   categoria?: string
   capa_url?: string
+  capa_alt?: string
   status: 'rascunho' | 'publicado'
   publicado_em?: string | null
   meta_titulo?: string
@@ -48,6 +49,7 @@ export async function criarPost(input: BlogPostInput): Promise<BlogFormState> {
       conteudo: input.conteudo,
       categoria: input.categoria || null,
       capa_url: input.capa_url || null,
+      capa_alt: input.capa_alt || null,
       status: input.status,
       publicado_em: input.publicado_em || null,
       meta_titulo: input.meta_titulo || null,
@@ -82,6 +84,7 @@ export async function atualizarPost(id: string, input: BlogPostInput): Promise<B
       conteudo: input.conteudo,
       categoria: input.categoria || null,
       capa_url: input.capa_url || null,
+      capa_alt: input.capa_alt || null,
       status: input.status,
       publicado_em: input.publicado_em || null,
       meta_titulo: input.meta_titulo || null,

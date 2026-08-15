@@ -1,9 +1,18 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
+import GoogleAnalytics from '@/components/layout/GoogleAnalytics'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
+  // Verificação do Google Search Console — ativa quando a env
+  // NEXT_PUBLIC_GSC_VERIFICATION for setada na Vercel (só o token,
+  // sem a tag inteira). Nota: a meta tag aparece em todos os domínios
+  // servidos por este layout, mas isso é inofensivo — o token só
+  // verifica propriedade de omnidesign.com.br no GSC.
+  verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
+    : undefined,
   title: {
     default: 'Omnidesign — Sites Inteligentes Conectados ao Instagram + Sistemas Internos',
     template: '%s | Omnidesign',
@@ -51,7 +60,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <ThemeScript />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <GoogleAnalytics />
+      </body>
     </html>
   )
 }

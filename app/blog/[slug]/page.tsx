@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: 'article',
       url: `https://omnidesign.com.br/blog/${post.slug}`,
       publishedTime: post.publicado_em ?? undefined,
+      ...(post.capa_url ? { images: [{ url: post.capa_url, alt: post.capa_alt ?? post.titulo }] } : {}),
     },
   }
 }
@@ -76,6 +77,16 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <p className="text-sm text-[var(--muted)]">{formatarData(post.publicado_em)}</p>
           )}
         </div>
+
+        {post.capa_url && (
+          <img
+            src={post.capa_url}
+            alt={post.capa_alt ?? post.titulo}
+            className="rounded-2xl border border-[var(--border)] w-full mb-10"
+            loading="eager"
+            fetchPriority="high"
+          />
+        )}
 
         <article className="flex flex-col gap-5">
           {paragrafos.map((p, i) => (

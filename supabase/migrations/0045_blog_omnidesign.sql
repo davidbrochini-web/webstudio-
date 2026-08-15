@@ -75,3 +75,6 @@ create policy blog_posts_omnidesign_all_admin on blog_posts_omnidesign
 
 grant select on blog_posts_omnidesign to anon, authenticated;
 grant insert, update, delete on blog_posts_omnidesign to authenticated;
+
+-- (adendo, mesma sessão) Texto alternativo da capa — acessibilidade e SEO.
+alter table blog_posts_omnidesign add column if not exists capa_alt text;
