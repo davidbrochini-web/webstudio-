@@ -6,6 +6,7 @@ import { uploadLeadPdf } from '@/lib/storage'
 import LeadAssetsPanel from '@/components/admin/LeadAssetsPanel'
 import LeadHistorico from '@/components/admin/LeadHistorico'
 import LeadFaqPanel from '@/components/admin/LeadFaqPanel'
+import LeadCrmInteligencia from '@/components/admin/LeadCrmInteligencia'
 
 function CampoEditavel({
   id,
@@ -148,6 +149,7 @@ export default function LeadPotencialCard({
         </div>
       </div>
       <LeadFaqPanel leadId={id} />
+      <LeadCrmInteligencia leadId={id} />
       <LeadHistorico leadId={id} />
     </div>
   )
