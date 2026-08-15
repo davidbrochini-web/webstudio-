@@ -374,7 +374,7 @@ export async function archiveLeadPotencial(id: string) {
 
 // ------------------------------------------------------------------
 // FAQ por lead (0041) — script pré-definido por segmento +
-// perguntas reais que o cliente fez, registradas pela Andressa.
+// perguntas reais que o cliente fez, registradas pela Eliane (ou quem estiver no comercial).
 // ------------------------------------------------------------------
 
 export interface LeadFaqItem {
@@ -442,7 +442,7 @@ export async function setLeadFaqPreDefinida(
 
 /**
  * Registra uma pergunta real feita pelo cliente + a resposta (dada
- * pela Andressa com apoio do Claude no chat). Campo aberto do card.
+ * pela pessoa do comercial com apoio do Claude no chat). Campo aberto do card.
  */
 export async function addLeadFaqPerguntaAberta(
   leadId: string,
@@ -497,7 +497,7 @@ export async function deleteLeadFaqItem(id: string, leadId: string) {
  * Busca por similaridade (pg_trgm, sem IA) na base de conhecimento
  * (leads_faq_base_conhecimento) pra sugerir resposta pra uma pergunta
  * nova que o cliente fez. Retorna null se nada bateu o suficiente
- * (limiar 0.3, ver migration 0042) — a Andressa sempre revisa/edita
+ * (limiar 0.3, ver migration 0042) — quem estiver no comercial sempre revisa/edita
  * antes de salvar.
  */
 export interface SugestaoFaq {

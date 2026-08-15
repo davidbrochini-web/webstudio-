@@ -68,7 +68,7 @@ export async function proxy(request: NextRequest) {
 
   // Sessão ativa com must_change_password=true → trava em /primeiro-acesso
   // até trocar a senha (e opcionalmente subir foto). Pedido do David:
-  // contas criadas pra outras pessoas da equipe (ex: Andressa) não podem
+  // contas criadas pra outras pessoas da equipe (ex: Eliane) não podem
   // seguir usando a senha provisória que ele definiu na criação.
   if (isProtected && user && path !== '/primeiro-acesso') {
     const { data: profile } = await supabase
