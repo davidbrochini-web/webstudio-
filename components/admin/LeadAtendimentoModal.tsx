@@ -94,6 +94,7 @@ export default function LeadAtendimentoModal({
             </div>
 
             <div className="pt-4 border-t border-[var(--border)]">
+              <p className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-wide mb-3">Materiais e notas</p>
               <LeadMateriaisCompacto
                 id={leadId}
                 notas={notas}

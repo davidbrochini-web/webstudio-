@@ -159,17 +159,7 @@ export default function LeadCrmInteligencia({ leadId, refreshSignal, onDadosChan
       </div>
 
       {/* Checklist */}
-      <div>
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Checklist de qualificação</p>
-          <p className="text-[10px] font-bold text-[var(--muted)]">{conversa?.checklistPct ?? 0}%</p>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          {checklist.map(item => (
-            <ChecklistRow key={item.item} leadId={leadId} item={item} onSaved={recarregar} />
-          ))}
-        </div>
-      </div>
+      <ChecklistSection leadId={leadId} checklist={checklist} checklistPct={conversa?.checklistPct ?? 0} onSaved={recarregar} />
 
       {/* Interesses */}
       <div>
@@ -208,6 +198,48 @@ export default function LeadCrmInteligencia({ leadId, refreshSignal, onDadosChan
   )
 }
 
+
+function ChecklistSection({
+  leadId,
+  checklist,
+  checklistPct,
+  onSaved,
+}: {
+  leadId: string
+  checklist: QualificacaoItem[]
+  checklistPct: number
+  onSaved: () => void
+}) {
+  const [aberto, setAberto] = useState(false)
+
+  const respondidos = checklist.filter(i => i.status !== 'pendente').length
+  const total = checklist.length
+
+  return (
+    <div>
+      <button onClick={() => setAberto(a => !a)} className="w-full flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <span className={`text-[var(--muted)] text-[9px] flex-shrink-0 transition-transform ${aberto ? 'rotate-90' : ''}`}>▶</span>
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Checklist de qualificação</p>
+        </div>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <span className="text-[10px] font-bold text-[var(--ink)] bg-[var(--off)] px-1.5 py-0.5 rounded-full">
+            {respondidos}/{total}
+          </span>
+          <span className="text-[10px] font-bold text-[var(--muted)]">{checklistPct}%</span>
+        </div>
+      </button>
+
+      {aberto && (
+        <div className="flex flex-col gap-1.5 mt-2">
+          {checklist.map(item => (
+            <ChecklistRow key={item.item} leadId={leadId} item={item} onSaved={onSaved} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function PerfilSelect({ leadId, atual, confirmado, onSaved }: { leadId: string; atual: string | null; confirmado: boolean; onSaved: () => void }) {
   const [pending, startTransition] = useTransition()

@@ -222,17 +222,28 @@ export default function LeadMateriaisCompacto({
   imagensPortfolio: string[]
 }) {
   return (
-    <div className="flex flex-col gap-2.5">
-      <div className="grid grid-cols-2 gap-2">
-        <CampoEditavelCompacto id={id} campo="notas" valorInicial={notas} placeholder="Observação..." />
-        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Texto a enviar..." />
+    <div className="flex flex-col gap-4">
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Observação</p>
+        <CampoEditavelCompacto id={id} campo="notas" valorInicial={notas} placeholder="Anote algo sobre o lead..." />
       </div>
-      <div className="flex flex-wrap items-center gap-1.5">
-        <BotaoPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
-        <BotaoPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
-        <BotaoLogo id={id} urlAtual={logoUrl} />
-        <BotaoPortfolio id={id} imagens={imagensPortfolio} />
-        <BotaoGerarProposta id={id} />
+
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Texto a enviar</p>
+        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} />
+      </div>
+
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Documentos e materiais</p>
+        <div className="flex flex-wrap gap-1.5">
+          <BotaoPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
+          <BotaoPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
+          <BotaoLogo id={id} urlAtual={logoUrl} />
+          <BotaoPortfolio id={id} imagens={imagensPortfolio} />
+        </div>
+        <div className="mt-2">
+          <BotaoGerarProposta id={id} />
+        </div>
       </div>
     </div>
   )
