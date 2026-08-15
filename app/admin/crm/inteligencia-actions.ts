@@ -284,6 +284,89 @@ export async function confirmarChecklistItem(leadId: string, item: string, statu
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
 
+// ============================================================
+// Fila de follow-up (Fase 2, §7 do blueprint) — envio continua manual;
+// isso só calcula quem precisa de contato hoje e evita repetir no
+// mesmo dia (view crm_fila_followup já cuida da regra de negócio).
+// ============================================================
+export interface FilaFollowupItem {
+  leadId: string
+  nome: string
+  telefone: string | null
+  textoEnvio: string | null
+  estagio: string
+  temperatura: string
+  perfilLead: string | null
+  ultimaMsgRecebidaEm: string | null
+  momento: string
+  template: string | null
+}
+
+export async function getFilaFollowup(): Promise<FilaFollowupItem[]> {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('crm_fila_followup')
+    .select('*')
+    .order('ultima_msg_recebida_em', { ascending: true })
+
+  if (error) throw new Error(error.message)
+
+  return (data ?? []).map(f => ({
+    leadId: f.lead_id,
+    nome: f.nome,
+    telefone: f.telefone,
+    textoEnvio: f.texto_envio,
+    estagio: f.estagio,
+    temperatura: f.temperatura,
+    perfilLead: f.perfil_lead,
+    ultimaMsgRecebidaEm: f.ultima_msg_recebida_em,
+    momento: f.momento,
+    template: f.template,
+  }))
+}
+
+export async function marcarFollowupEnviado(leadId: string) {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('marcar_followup_enviado', { p_lead_id: leadId })
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/crm/followups')
+}
+
+// ============================================================
+// Templates da régua — editáveis direto na tela da fila (texto fica
+// vazio até alguém escrever; ver pendência no blueprint §7.3).
+// ============================================================
+export interface TemplateFollowup {
+  momento: string
+  condicao: string
+  template: string | null
+}
+
+export async function getTemplatesFollowup(): Promise<TemplateFollowup[]> {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('crm_regua_followup')
+    .select('momento, condicao, template')
+    .order('momento')
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
+export async function salvarTemplateFollowup(momento: string, template: string) {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('crm_regua_followup')
+    .update({ template })
+    .eq('momento', momento)
+  if (error) throw new Error(error.message)
+  revalidatePath('/admin/crm/followups')
+}
+
 export async function confirmarInteresse(leadId: string, servico: string, confirmado: boolean) {
   await requireSuperAdmin()
   const supabase = await createClient()
