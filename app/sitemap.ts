@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
 import dentistaJoaoSitemap from '@/app/projetos-especiais/dentista-joao/sitemap'
 import casosEsquecidosSitemap from '@/app/projetos-especiais/casos-esquecidos/sitemap'
+import { listarPostsPublicados } from '@/lib/blog-omnidesign'
 
 const BASE_URL = 'https://omnidesign.com.br'
 
@@ -25,11 +26,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const custom = DOMAIN_SITEMAPS[host]
   if (custom) return custom()
 
+  const posts = await listarPostsPublicados()
+
   return [
     {
       url: BASE_URL,
       changeFrequency: 'weekly',
       priority: 1,
     },
+    {
+      url: `${BASE_URL}/blog`,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...posts.map(post => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: post.updated_at,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
   ]
 }

@@ -17,6 +17,7 @@ const NAV: DarkNavItem[] = [
     ],
   },
   { label: 'Financeiro', href: '/admin/financeiro' },
+  { label: 'Blog', href: '/admin/blog' },
 ]
 
 export default function AdminTopNav({ email, fotoUrl }: { email: string; fotoUrl?: string | null }) {
