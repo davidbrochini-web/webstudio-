@@ -29,6 +29,7 @@ export default function LeadWhatsappSimulador({
   const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
   const [respondendo, setRespondendo] = useState(false)
   const [sugerindo, setSugerindo] = useState(false)
+  const [dica, setDica] = useState<string | null>(null)
   const [confirmandoReset, setConfirmandoReset] = useState(false)
   const [resetando, setResetando] = useState(false)
 
@@ -102,12 +103,16 @@ export default function LeadWhatsappSimulador({
     setSugerindo(true)
     setErro(null)
     sugerirResposta(leadId)
-      .then(sugestao => {
-        setTexto(sugestao)
-        setDirecao('enviada')
-      })
+      .then(sugestao => setDica(sugestao))
       .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao sugerir resposta.'))
       .finally(() => setSugerindo(false))
+  }
+
+  function handleUsarDica() {
+    if (!dica) return
+    setTexto(dica)
+    setDirecao('enviada')
+    setDica(null)
   }
 
   function handleResetar() {
@@ -217,6 +222,25 @@ export default function LeadWhatsappSimulador({
         <p className="text-[10px] text-amber-700 bg-amber-50 border-t border-amber-200 px-4 py-1.5 text-center">
           Roteiro automático desse perfil chegou ao fim — continue a conversa manualmente ou troque o perfil.
         </p>
+      )}
+
+      {/* Card de dica — "me ajuda a responder" é orientação, não mensagem pronta */}
+      {dica && (
+        <div className="mx-3 mb-2 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2.5">
+          <span className="text-base flex-shrink-0">💡</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold text-amber-800 uppercase tracking-wide mb-0.5">Dica pra sua resposta</p>
+            <p className="text-xs text-[var(--ink)]">{dica}</p>
+            <div className="flex items-center gap-3 mt-1.5">
+              <button onClick={handleUsarDica} className="text-[10px] font-bold text-[var(--brand)]">
+                Usar no campo
+              </button>
+              <button onClick={() => setDica(null)} className="text-[10px] font-semibold text-[var(--muted)] hover:text-[var(--ink)]">
+                dispensar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Barra de envio */}
