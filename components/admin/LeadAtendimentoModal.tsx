@@ -1,0 +1,92 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import LeadCrmInteligencia from '@/components/admin/LeadCrmInteligencia'
+import LeadWhatsappSimulador from '@/components/admin/LeadWhatsappSimulador'
+import LeadFaqPanel from '@/components/admin/LeadFaqPanel'
+import LeadStatusSelect from '@/components/admin/LeadStatusSelect'
+import ResponsavelSelect, { type Membro } from '@/components/admin/ResponsavelSelect'
+
+export default function LeadAtendimentoModal({
+  leadId,
+  nome,
+  telefone,
+  status,
+  responsavelId,
+  membros,
+  onClose,
+}: {
+  leadId: string
+  nome: string
+  telefone: string | null
+  status: string
+  responsavelId: string | null
+  membros: Membro[]
+  onClose: () => void
+}) {
+  const [refreshSignal, setRefreshSignal] = useState(0)
+  const [temEscalonamento, setTemEscalonamento] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
+  useEffect(() => {
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [onClose])
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl w-full max-w-6xl h-full sm:h-[88vh] flex flex-col overflow-hidden shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-[var(--border)] flex-shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <p className="font-display font-bold text-[var(--ink)] text-base truncate">{nome}</p>
+            {temEscalonamento && (
+              <span className="text-[10px] font-bold text-white bg-red-500 px-2 py-0.5 rounded-full flex-shrink-0">🔔 ESCALAR</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <LeadStatusSelect id={leadId} status={status} />
+            <ResponsavelSelect id={leadId} responsavelId={responsavelId} membros={membros} />
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full hover:bg-[var(--off)] text-[var(--muted)] hover:text-[var(--ink)] flex items-center justify-center text-lg flex-shrink-0"
+              title="Fechar (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Corpo: 2 colunas, mesma altura */}
+        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_1fr] divide-y lg:divide-y-0 lg:divide-x divide-[var(--border)]">
+          {/* Coluna esquerda: CRM Inteligente + FAQ */}
+          <div className="min-h-0 overflow-y-auto p-5">
+            <p className="text-[11px] font-bold text-[var(--muted)] uppercase tracking-wide mb-3">CRM Inteligente</p>
+            <LeadCrmInteligencia leadId={leadId} refreshSignal={refreshSignal} onDadosChange={setTemEscalonamento} />
+            <LeadFaqPanel leadId={leadId} />
+          </div>
+
+          {/* Coluna direita: WhatsApp sempre aberto */}
+          <div className="min-h-0 flex flex-col">
+            <LeadWhatsappSimulador
+              leadId={leadId}
+              nome={nome}
+              telefone={telefone}
+              onEnviado={() => setRefreshSignal(s => s + 1)}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

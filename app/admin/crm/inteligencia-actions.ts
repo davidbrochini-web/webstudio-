@@ -184,6 +184,18 @@ export async function getCrmInteligencia(leadId: string) {
 // ============================================================
 // Registrar conversa colada (bloco de texto [A]/[C])
 // ============================================================
+export async function getMensagensSimuladas(leadId: string): Promise<MensagemSimulada[]> {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('crm_simulador_mensagens')
+    .select('id, direcao, texto, created_at')
+    .eq('lead_id', leadId)
+    .order('created_at', { ascending: true })
+  if (error) throw new Error(error.message)
+  return (data ?? []).map(m => ({ id: m.id, direcao: m.direcao, texto: m.texto, createdAt: m.created_at }))
+}
+
 export async function registrarConversaColada(leadId: string, texto: string) {
   await requireSuperAdmin()
   if (!texto.trim()) throw new Error('Cole a conversa antes de analisar.')

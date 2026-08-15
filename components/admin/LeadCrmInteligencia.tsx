@@ -13,10 +13,8 @@ import {
   type HitAnalise,
   type QualificacaoItem,
   type InteresseItem,
-  type MensagemSimulada,
   type EscalonamentoInfo,
 } from '@/app/admin/crm/inteligencia-actions'
-import LeadWhatsappSimulador from '@/components/admin/LeadWhatsappSimulador'
 
 const PERFIL_LABELS: Record<string, string> = {
   decidido: 'Decidido 🔥',
@@ -83,13 +81,11 @@ function corDoScore(score: number) {
   return { barra: 'bg-[var(--brand)]', texto: 'text-[var(--brand)]' }
 }
 
-export default function LeadCrmInteligencia({ leadId }: { leadId: string }) {
-  const [aberto, setAberto] = useState(false)
+export default function LeadCrmInteligencia({ leadId, refreshSignal, onDadosChange }: { leadId: string; refreshSignal?: number; onDadosChange?: (temEscalonamento: boolean) => void }) {
   const [conversa, setConversa] = useState<AnaliseConversa | null>(null)
   const [hits, setHits] = useState<HitAnalise[]>([])
   const [checklist, setChecklist] = useState<QualificacaoItem[]>([])
   const [interesses, setInteresses] = useState<InteresseItem[]>([])
-  const [mensagens, setMensagens] = useState<MensagemSimulada[]>([])
   const [escalonamento, setEscalonamento] = useState<EscalonamentoInfo>({ ativo: false, motivos: [] })
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
@@ -103,130 +99,115 @@ export default function LeadCrmInteligencia({ leadId }: { leadId: string }) {
         setHits(dados.hits)
         setChecklist(dados.checklist)
         setInteresses(dados.interesses)
-        setMensagens(dados.mensagens)
         setEscalonamento(dados.escalonamento)
+        onDadosChange?.(dados.escalonamento.ativo)
       })
       .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao carregar.'))
       .finally(() => setCarregando(false))
-  }, [leadId])
+  }, [leadId, onDadosChange])
 
   useEffect(() => {
-    if (aberto) recarregar()
-  }, [aberto, recarregar])
+    recarregar()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leadId, refreshSignal])
 
   const score = conversa?.scoreAtendente ?? 50
   const cor = corDoScore(score)
 
   return (
-    <div className="pt-4 mt-4 border-t border-[var(--border)]">
-      <button onClick={() => setAberto(a => !a)} className="w-full flex items-center gap-2 text-left">
-        <span className={`text-[var(--muted)] text-[10px] flex-shrink-0 transition-transform ${aberto ? 'rotate-90' : ''}`}>▶</span>
-        <p className="text-[11px] font-semibold text-[var(--muted)]">
-          CRM Inteligente {conversa && <span className="ml-1 font-normal">(termômetro {score})</span>}
-        </p>
-        {escalonamento.ativo && (
-          <span className="text-[9px] font-bold text-white bg-red-500 px-2 py-0.5 rounded-full">🔔 ESCALAR</span>
-        )}
-      </button>
+    <div className="flex flex-col gap-4">
+      {erro && <p className="text-xs text-red-500">{erro}</p>}
+      {carregando && !conversa && <p className="text-xs text-[var(--muted)]">Carregando análise...</p>}
 
-      {aberto && (
-        <div className="mt-3 flex flex-col gap-4">
-          {erro && <p className="text-xs text-red-500">{erro}</p>}
-          {carregando && !conversa && <p className="text-xs text-[var(--muted)]">Carregando análise...</p>}
-
-          {escalonamento.ativo && (
-            <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2.5">
-              <p className="text-xs font-bold text-red-700">🔔 Requer atenção</p>
-              <ul className="mt-1 text-xs text-red-600 list-disc list-inside">
-                {escalonamento.motivos.map(m => <li key={m}>{m}</li>)}
-              </ul>
-            </div>
-          )}
-
-          {/* Termômetro + perfil + temperatura + estágio */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Termômetro do atendimento</p>
-              <div className="h-2.5 rounded-full bg-[var(--off)] overflow-hidden">
-                <div className={`h-full ${cor.barra} transition-all`} style={{ width: `${score}%` }} />
-              </div>
-              <p className={`text-xs font-bold mt-1 ${cor.texto}`}>{score}/100</p>
-            </div>
-
-            <div>
-              <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Perfil do lead</p>
-              <PerfilSelect leadId={leadId} atual={conversa?.perfilLead ?? null} confirmado={conversa?.perfilConfirmado ?? false} onSaved={recarregar} />
-            </div>
-
-            <div>
-              <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Temperatura</p>
-              {conversa && (
-                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full border ${TEMPERATURA_LABELS[conversa.temperatura]?.classe ?? ''}`}>
-                  {TEMPERATURA_LABELS[conversa.temperatura]?.label ?? conversa.temperatura}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Estágio do funil</p>
-              <EstagioSelect leadId={leadId} atual={conversa?.estagio ?? 'novo'} onSaved={recarregar} />
-            </div>
-          </div>
-
-          {/* Checklist */}
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Checklist de qualificação</p>
-              <p className="text-[10px] font-bold text-[var(--muted)]">{conversa?.checklistPct ?? 0}%</p>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              {checklist.map(item => (
-                <ChecklistRow key={item.item} leadId={leadId} item={item} onSaved={recarregar} />
-              ))}
-            </div>
-          </div>
-
-          {/* Interesses */}
-          <div>
-            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Interesses detectados</p>
-            <div className="flex flex-wrap gap-1.5">
-              {interesses.length === 0 && <p className="text-xs text-[var(--muted)]">Nenhum ainda.</p>}
-              {interesses.map(i => (
-                <button
-                  key={i.servico}
-                  onClick={() => confirmarInteresse(leadId, i.servico, !i.confirmado).then(recarregar)}
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
-                    i.confirmado
-                      ? 'bg-green-50 text-[var(--brand)] border-green-200'
-                      : 'bg-[var(--off)] text-[var(--muted)] border-dashed border-[var(--border)]'
-                  }`}
-                  title={i.confirmado ? 'Confirmado — clique pra desmarcar' : 'Sugerido — clique pra confirmar'}
-                >
-                  {i.confirmado ? '✓ ' : '? '}{INTERESSE_LABELS[i.servico] ?? i.servico}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Hits recentes / objeções */}
-          <div>
-            <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Detecções recentes</p>
-            <div className="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
-              {hits.length === 0 && <p className="text-xs text-[var(--muted)]">Sem detecções ainda — registre uma conversa abaixo.</p>}
-              {hits.map(hit => <HitRow key={hit.id} hit={hit} onSaved={recarregar} />)}
-            </div>
-          </div>
-
-          {/* Registrar conversa colada */}
-          <RegistrarConversaForm leadId={leadId} onAnalisado={recarregar} />
-
-          {/* Simulador de WhatsApp */}
-          <LeadWhatsappSimulador leadId={leadId} mensagens={mensagens} onEnviado={recarregar} />
+      {escalonamento.ativo && (
+        <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2.5">
+          <p className="text-xs font-bold text-red-700">🔔 Requer atenção</p>
+          <ul className="mt-1 text-xs text-red-600 list-disc list-inside">
+            {escalonamento.motivos.map(m => <li key={m}>{m}</li>)}
+          </ul>
         </div>
       )}
+
+      {/* Termômetro + perfil + temperatura + estágio */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Termômetro</p>
+          <div className="h-2.5 rounded-full bg-[var(--off)] overflow-hidden">
+            <div className={`h-full ${cor.barra} transition-all`} style={{ width: `${score}%` }} />
+          </div>
+          <p className={`text-xs font-bold mt-1 ${cor.texto}`}>{score}/100</p>
+        </div>
+
+        <div>
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Temperatura</p>
+          {conversa && (
+            <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full border ${TEMPERATURA_LABELS[conversa.temperatura]?.classe ?? ''}`}>
+              {TEMPERATURA_LABELS[conversa.temperatura]?.label ?? conversa.temperatura}
+            </span>
+          )}
+        </div>
+
+        <div>
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Perfil do lead</p>
+          <PerfilSelect leadId={leadId} atual={conversa?.perfilLead ?? null} confirmado={conversa?.perfilConfirmado ?? false} onSaved={recarregar} />
+        </div>
+
+        <div>
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Estágio do funil</p>
+          <EstagioSelect leadId={leadId} atual={conversa?.estagio ?? 'novo'} onSaved={recarregar} />
+        </div>
+      </div>
+
+      {/* Checklist */}
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Checklist de qualificação</p>
+          <p className="text-[10px] font-bold text-[var(--muted)]">{conversa?.checklistPct ?? 0}%</p>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          {checklist.map(item => (
+            <ChecklistRow key={item.item} leadId={leadId} item={item} onSaved={recarregar} />
+          ))}
+        </div>
+      </div>
+
+      {/* Interesses */}
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Interesses detectados</p>
+        <div className="flex flex-wrap gap-1.5">
+          {interesses.length === 0 && <p className="text-xs text-[var(--muted)]">Nenhum ainda.</p>}
+          {interesses.map(i => (
+            <button
+              key={i.servico}
+              onClick={() => confirmarInteresse(leadId, i.servico, !i.confirmado).then(recarregar)}
+              className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+                i.confirmado
+                  ? 'bg-green-50 text-[var(--brand)] border-green-200'
+                  : 'bg-[var(--off)] text-[var(--muted)] border-dashed border-[var(--border)]'
+              }`}
+              title={i.confirmado ? 'Confirmado — clique pra desmarcar' : 'Sugerido — clique pra confirmar'}
+            >
+              {i.confirmado ? '✓ ' : '? '}{INTERESSE_LABELS[i.servico] ?? i.servico}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Hits recentes / objeções */}
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Detecções recentes</p>
+        <div className="flex flex-col gap-2">
+          {hits.length === 0 && <p className="text-xs text-[var(--muted)]">Sem detecções ainda — a análise roda sozinha conforme a conversa avança.</p>}
+          {hits.map(hit => <HitRow key={hit.id} hit={hit} onSaved={recarregar} />)}
+        </div>
+      </div>
+
+      {/* Registrar conversa colada (fallback pra quem cola histórico de fora do simulador) */}
+      <RegistrarConversaForm leadId={leadId} onAnalisado={recarregar} />
     </div>
   )
 }
+
 
 function PerfilSelect({ leadId, atual, confirmado, onSaved }: { leadId: string; atual: string | null; confirmado: boolean; onSaved: () => void }) {
   const [pending, startTransition] = useTransition()
