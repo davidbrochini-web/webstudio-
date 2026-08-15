@@ -27,6 +27,14 @@ const faqs = [
     q: 'Meu site aparece no Google?',
     a: 'Sim, todo site que criamos é otimizado tecnicamente para os mecanismos de busca. Presença no Google depende também de conteúdo e tempo, mas a base técnica já vem pronta.',
   },
+  {
+    q: 'Vocês também cuidam de anúncios, tipo Google Ads?',
+    a: 'Sim. Configuramos e gerenciamos campanhas de Google Ads e também de ChatGPT Ads — o formato novo de anúncio dentro de conversas com IA. Sem taxa fixa nem plano fechado: o investimento é orçado conforme o objetivo do seu negócio.',
+  },
+  {
+    q: 'O que é o Google Meu Negócio e vocês configuram isso?',
+    a: 'É o cadastro gratuito que faz sua empresa aparecer no mapa e na busca local do Google — endereço, horário, fotos, avaliações. Configuramos tudo isso pra você, é a base de qualquer estratégia de SEO local.',
+  },
 ]
 
 export default function Faq() {
