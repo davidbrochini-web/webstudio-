@@ -21,9 +21,26 @@ export default async function AdminHome() {
     { count: leadsRecentes },
   ] = await Promise.all([
     supabase.from('tenants').select('id, status, is_demo').is('deleted_at', null),
-    supabase.from('sites').select('id', { count: 'exact', head: true }).eq('status', 'publicado').is('deleted_at', null),
-    supabase.from('subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'ativo').is('deleted_at', null),
-    supabase.from('site_leads').select('id', { count: 'exact', head: true }).gte('created_at', seteDiasAtras.toISOString()),
+    supabase
+      .from('sites')
+      .select('id, tenant:tenants!inner(is_demo, deleted_at)', { count: 'exact', head: true })
+      .eq('status', 'publicado')
+      .is('deleted_at', null)
+      .eq('tenant.is_demo', false)
+      .is('tenant.deleted_at', null),
+    supabase
+      .from('subscriptions')
+      .select('id, tenant:tenants!inner(is_demo, deleted_at)', { count: 'exact', head: true })
+      .eq('status', 'ativo')
+      .is('deleted_at', null)
+      .eq('tenant.is_demo', false)
+      .is('tenant.deleted_at', null),
+    supabase
+      .from('site_leads')
+      .select('id, site:sites!inner(tenant:tenants!inner(is_demo, deleted_at))', { count: 'exact', head: true })
+      .gte('created_at', seteDiasAtras.toISOString())
+      .eq('site.tenant.is_demo', false)
+      .is('site.tenant.deleted_at', null),
   ])
 
   const reais = (tenants ?? []).filter(t => !t.is_demo)
