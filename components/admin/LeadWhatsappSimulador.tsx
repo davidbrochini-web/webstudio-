@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect, useCallback } from 'react'
 import { enviarMensagemSimulada, getMensagensSimuladas, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
+import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
 export default function LeadWhatsappSimulador({
   leadId,
@@ -22,6 +23,12 @@ export default function LeadWhatsappSimulador({
   const [erro, setErro] = useState<string | null>(null)
   const fimRef = useRef<HTMLDivElement>(null)
 
+  const [autoAtivo, setAutoAtivo] = useState(false)
+  const [perfilAuto, setPerfilAuto] = useState<PerfilSimulado>('decidido')
+  const [indiceRoteiro, setIndiceRoteiro] = useState(0)
+  const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
+  const [respondendo, setRespondendo] = useState(false)
+
   const carregar = useCallback(() => {
     getMensagensSimuladas(leadId)
       .then(setMensagens)
@@ -35,16 +42,46 @@ export default function LeadWhatsappSimulador({
     fimRef.current?.scrollIntoView({ block: 'nearest' })
   }, [mensagens.length])
 
+  function handleTrocarPerfilAuto(novoPerfil: PerfilSimulado) {
+    setPerfilAuto(novoPerfil)
+    setIndiceRoteiro(0)
+    setRoteiroEncerrado(false)
+  }
+
+  async function dispararRespostaAuto(ultimaMsgAtendente: string) {
+    const proxima = proximaRespostaAuto(perfilAuto, indiceRoteiro, ultimaMsgAtendente)
+    if (!proxima) {
+      setRoteiroEncerrado(true)
+      return
+    }
+    setRespondendo(true)
+    await new Promise(r => setTimeout(r, 900 + Math.random() * 700)) // pausa natural, "digitando..."
+    try {
+      await enviarMensagemSimulada(leadId, 'recebida', proxima.texto)
+      setIndiceRoteiro(proxima.proximoIndice)
+      carregar()
+      onEnviado()
+    } catch {
+      // se falhar, só para o auto silenciosamente — o atendente pode continuar manual
+    } finally {
+      setRespondendo(false)
+    }
+  }
+
   function handleEnviar() {
     if (!texto.trim()) return
     setErro(null)
     const textoEnviado = texto
+    const direcaoEnviada = direcao
     startTransition(async () => {
       try {
-        await enviarMensagemSimulada(leadId, direcao, textoEnviado)
+        await enviarMensagemSimulada(leadId, direcaoEnviada, textoEnviado)
         setTexto('')
         carregar()
         onEnviado()
+        if (autoAtivo && direcaoEnviada === 'enviada' && !roteiroEncerrado) {
+          dispararRespostaAuto(textoEnviado)
+        }
       } catch (err) {
         setErro(err instanceof Error ? err.message : 'Erro ao enviar.')
       }
@@ -65,9 +102,33 @@ export default function LeadWhatsappSimulador({
         <div className="w-9 h-9 rounded-full bg-[var(--dark)] text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
           {nome.charAt(0).toUpperCase()}
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-[var(--ink)] truncate">{nome}</p>
           <p className="text-[11px] text-[var(--muted)]">{telefone ?? 'sem telefone'} · simulado (sem ZAP-API ainda)</p>
+        </div>
+
+        {/* Cliente automático */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <label className="flex items-center gap-1.5 text-[11px] font-semibold text-[var(--muted)] cursor-pointer">
+            <input
+              type="checkbox"
+              checked={autoAtivo}
+              onChange={e => { setAutoAtivo(e.target.checked); setRoteiroEncerrado(false) }}
+              className="accent-[var(--brand)]"
+            />
+            🤖 Cliente automático
+          </label>
+          {autoAtivo && (
+            <select
+              value={perfilAuto}
+              onChange={e => handleTrocarPerfilAuto(e.target.value as PerfilSimulado)}
+              className="text-[11px] font-semibold px-2 py-1 rounded-lg border border-[var(--border)] bg-white outline-none cursor-pointer"
+            >
+              {Object.entries(PERFIL_SIMULADO_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
@@ -76,7 +137,9 @@ export default function LeadWhatsappSimulador({
         {carregando && <p className="text-center text-xs text-gray-500 py-6">Carregando conversa...</p>}
         {!carregando && mensagens.length === 0 && (
           <p className="text-center text-xs text-gray-500 py-10">
-            Nenhuma mensagem ainda. Digite abaixo simulando o cliente ou o atendente pra ver a análise rodando ao vivo.
+            {autoAtivo
+              ? `Modo automático ligado (perfil ${PERFIL_SIMULADO_LABELS[perfilAuto]}). Mande a primeira mensagem como atendente e o cliente simulado responde sozinho.`
+              : 'Nenhuma mensagem ainda. Digite abaixo simulando o cliente ou o atendente pra ver a análise rodando ao vivo.'}
           </p>
         )}
         {mensagens.map(m => (
@@ -93,8 +156,19 @@ export default function LeadWhatsappSimulador({
             </div>
           </div>
         ))}
+        {respondendo && (
+          <div className="flex justify-start">
+            <div className="bg-white rounded-lg px-3 py-2 text-xs text-gray-400 shadow-sm italic">cliente digitando...</div>
+          </div>
+        )}
         <div ref={fimRef} />
       </div>
+
+      {roteiroEncerrado && (
+        <p className="text-[10px] text-amber-700 bg-amber-50 border-t border-amber-200 px-4 py-1.5 text-center">
+          Roteiro automático desse perfil chegou ao fim — continue a conversa manualmente ou troque o perfil.
+        </p>
+      )}
 
       {/* Barra de envio */}
       <div className="bg-[#f0f2f5] border-t border-[var(--border)] p-3 flex-shrink-0">
@@ -124,14 +198,14 @@ export default function LeadWhatsappSimulador({
             value={texto}
             onChange={e => setTexto(e.target.value)}
             onKeyDown={handleKeyDown}
-            disabled={pending}
+            disabled={pending || respondendo}
             autoFocus
             placeholder={direcao === 'recebida' ? 'Digite como se fosse o cliente...' : 'Digite como se fosse o atendente...'}
             className="flex-1 min-w-0 px-3.5 py-2.5 rounded-full border border-[var(--border)] bg-white text-sm outline-none focus:border-[var(--brand)] disabled:opacity-60"
           />
           <button
             onClick={handleEnviar}
-            disabled={pending || !texto.trim()}
+            disabled={pending || respondendo || !texto.trim()}
             className="w-10 h-10 rounded-full bg-[var(--brand)] text-white flex items-center justify-center disabled:opacity-40 flex-shrink-0"
             title="Enviar"
           >
