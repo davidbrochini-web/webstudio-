@@ -7,18 +7,16 @@ export default function LeadFaqPanel({ leadId }: { leadId: string }) {
   const [itens, setItens] = useState<LeadFaqItem[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
-  const [aberto, setAberto] = useState(false)
 
   useEffect(() => {
-    if (!aberto || itens) return
     getLeadFaq(leadId)
       .then(setItens)
       .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao carregar FAQ.'))
-  }, [leadId, aberto, itens])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leadId])
 
   const preDefinidas = itens?.filter(i => i.tipo === 'pre_definida') ?? []
   const abertas = itens?.filter(i => i.tipo === 'pergunta_aberta') ?? []
-  const total = itens?.length ?? null
 
   function recarregar() {
     getLeadFaq(leadId).then(setItens).catch(() => {})
@@ -36,60 +34,44 @@ export default function LeadFaqPanel({ leadId }: { leadId: string }) {
   }
 
   return (
-    <div className="pt-4 mt-4 border-t border-[var(--border)]">
-      <button
-        onClick={() => setAberto(a => !a)}
-        className="w-full flex items-center gap-2 text-left"
-      >
-        <span className={`text-[var(--muted)] text-[10px] flex-shrink-0 transition-transform ${aberto ? 'rotate-90' : ''}`}>▶</span>
-        <p className="text-[11px] font-semibold text-[var(--muted)]">
-          FAQ do cliente{total != null && <span className="ml-1 font-normal">({total})</span>}
-        </p>
-      </button>
+    <div className="flex flex-col gap-4">
+      {!itens && !erro && <p className="text-xs text-[var(--muted)]">Carregando...</p>}
+      {erro && <p className="text-xs text-red-500">{erro}</p>}
 
-      {aberto && (
-        <div className="mt-2">
-          {!itens && !erro && <p className="text-xs text-[var(--muted)]">Carregando...</p>}
-          {erro && <p className="text-xs text-red-500">{erro}</p>}
-
-          <div className="max-h-56 overflow-y-auto pr-1">
-            {preDefinidas.length > 0 && (
-              <div className="flex flex-col gap-2 mb-4">
-                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Script do segmento</p>
-                {preDefinidas.map(item => (
-                  <div key={item.id} className="bg-[var(--off)] rounded-xl px-3 py-2.5">
-                    <p className="text-xs font-bold text-[var(--ink)]">{item.pergunta}</p>
-                    <p className="text-xs text-[var(--muted)] mt-0.5">{item.resposta}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {abertas.length > 0 && (
-              <div className="flex flex-col gap-2 mb-3">
-                <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Perguntas reais do cliente</p>
-                {abertas.map(item => (
-                  <div key={item.id} className="border border-[var(--border)] rounded-xl px-3 py-2.5">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs font-bold text-[var(--ink)]">{item.pergunta}</p>
-                      <button
-                        onClick={() => handleRemover(item.id)}
-                        disabled={pending}
-                        className="text-[10px] text-[var(--muted)] hover:text-red-500 flex-shrink-0"
-                      >
-                        remover
-                      </button>
-                    </div>
-                    <p className="text-xs text-[var(--muted)] mt-0.5">{item.resposta}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <NovaPerguntaForm leadId={leadId} onAdded={recarregar} />
+      {preDefinidas.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Script do segmento</p>
+          {preDefinidas.map(item => (
+            <div key={item.id} className="bg-[var(--off)] rounded-xl px-3 py-2.5">
+              <p className="text-xs font-bold text-[var(--ink)]">{item.pergunta}</p>
+              <p className="text-xs text-[var(--muted)] mt-0.5">{item.resposta}</p>
+            </div>
+          ))}
         </div>
       )}
+
+      {abertas.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">Perguntas reais do cliente</p>
+          {abertas.map(item => (
+            <div key={item.id} className="border border-[var(--border)] rounded-xl px-3 py-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-xs font-bold text-[var(--ink)]">{item.pergunta}</p>
+                <button
+                  onClick={() => handleRemover(item.id)}
+                  disabled={pending}
+                  className="text-[10px] text-[var(--muted)] hover:text-red-500 flex-shrink-0"
+                >
+                  remover
+                </button>
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-0.5">{item.resposta}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <NovaPerguntaForm leadId={leadId} onAdded={recarregar} />
     </div>
   )
 }

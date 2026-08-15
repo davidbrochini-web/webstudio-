@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getLeadLog } from '@/app/admin/crm/actions'
 
 interface LogEntry {
@@ -38,56 +38,39 @@ function descreverEvento(l: LogEntry): string {
 }
 
 export default function LeadHistorico({ leadId }: { leadId: string }) {
-  const [aberto, setAberto] = useState(false)
-  const [carregando, setCarregando] = useState(false)
+  const [carregando, setCarregando] = useState(true)
   const [log, setLog] = useState<LogEntry[] | null>(null)
   const [erro, setErro] = useState<string | null>(null)
 
-  async function handleAbrir() {
-    const novoEstado = !aberto
-    setAberto(novoEstado)
-    if (novoEstado && !log) {
-      setCarregando(true)
-      setErro(null)
-      try {
-        const dados = await getLeadLog(leadId)
-        setLog(dados as LogEntry[])
-      } catch (err) {
-        setErro(err instanceof Error ? err.message : 'Erro ao carregar histórico.')
-      } finally {
-        setCarregando(false)
-      }
-    }
-  }
+  useEffect(() => {
+    setCarregando(true)
+    getLeadLog(leadId)
+      .then(dados => setLog(dados as LogEntry[]))
+      .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao carregar histórico.'))
+      .finally(() => setCarregando(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leadId])
 
   return (
-    <div className="pt-2">
-      <button onClick={handleAbrir} className="text-xs font-semibold text-[var(--muted)] hover:text-[var(--brand)] underline underline-offset-2">
-        {aberto ? 'Esconder histórico' : 'Ver histórico'}
-      </button>
-
-      {aberto && (
-        <div className="mt-2 flex flex-col gap-2">
-          {carregando && <p className="text-xs text-[var(--muted)]">Carregando...</p>}
-          {erro && <p className="text-xs text-red-500">{erro}</p>}
-          {log?.length === 0 && <p className="text-xs text-[var(--muted)]">Sem eventos registrados.</p>}
-          {log?.map(l => {
-            const autor = Array.isArray(l.autor) ? l.autor[0] : l.autor
-            const data = new Date(l.criado_em)
-            return (
-              <div key={l.id} className="flex items-start gap-2 text-xs">
-                <span className="text-[var(--muted)] flex-shrink-0 w-28">
-                  {data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} {data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-                <span className="text-[var(--ink)]">
-                  {descreverEvento(l)}
-                  {autor?.nome && <span className="text-[var(--muted)]"> · {autor.nome}</span>}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+    <div className="flex flex-col gap-2">
+      {carregando && <p className="text-xs text-[var(--muted)]">Carregando...</p>}
+      {erro && <p className="text-xs text-red-500">{erro}</p>}
+      {log?.length === 0 && <p className="text-xs text-[var(--muted)]">Sem eventos registrados.</p>}
+      {log?.map(l => {
+        const autor = Array.isArray(l.autor) ? l.autor[0] : l.autor
+        const data = new Date(l.criado_em)
+        return (
+          <div key={l.id} className="flex items-start gap-2 text-xs">
+            <span className="text-[var(--muted)] flex-shrink-0 w-28">
+              {data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })} {data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+            <span className="text-[var(--ink)]">
+              {descreverEvento(l)}
+              {autor?.nome && <span className="text-[var(--muted)]"> · {autor.nome}</span>}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
