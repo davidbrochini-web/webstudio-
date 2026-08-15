@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect, useCallback } from 'react'
-import { enviarMensagemSimulada, getMensagensSimuladas, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
+import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
 import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
 export default function LeadWhatsappSimulador({
@@ -17,7 +17,7 @@ export default function LeadWhatsappSimulador({
 }) {
   const [mensagens, setMensagens] = useState<MensagemSimulada[]>([])
   const [carregando, setCarregando] = useState(true)
-  const [direcao, setDirecao] = useState<'enviada' | 'recebida'>('recebida')
+  const [direcao, setDirecao] = useState<'enviada' | 'recebida'>('enviada')
   const [texto, setTexto] = useState('')
   const [pending, startTransition] = useTransition()
   const [erro, setErro] = useState<string | null>(null)
@@ -28,6 +28,7 @@ export default function LeadWhatsappSimulador({
   const [indiceRoteiro, setIndiceRoteiro] = useState(0)
   const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
   const [respondendo, setRespondendo] = useState(false)
+  const [sugerindo, setSugerindo] = useState(false)
 
   const carregar = useCallback(() => {
     getMensagensSimuladas(leadId)
@@ -93,6 +94,18 @@ export default function LeadWhatsappSimulador({
       e.preventDefault()
       handleEnviar()
     }
+  }
+
+  function handleSugerir() {
+    setSugerindo(true)
+    setErro(null)
+    sugerirResposta(leadId)
+      .then(sugestao => {
+        setTexto(sugestao)
+        setDirecao('enviada')
+      })
+      .catch(err => setErro(err instanceof Error ? err.message : 'Erro ao sugerir resposta.'))
+      .finally(() => setSugerindo(false))
   }
 
   return (
@@ -192,6 +205,14 @@ export default function LeadWhatsappSimulador({
               Atendente
             </button>
           </div>
+          <button
+            onClick={handleSugerir}
+            disabled={sugerindo || mensagens.length === 0}
+            className="ml-auto flex items-center gap-1 text-[11px] font-bold text-[var(--brand)] bg-green-50 border border-green-200 px-2.5 py-1 rounded-lg disabled:opacity-40 hover:bg-green-100 transition-colors"
+            title="Sugere uma resposta com base na última objeção detectada ou na próxima pergunta pendente do checklist"
+          >
+            💡 {sugerindo ? 'Pensando...' : 'Me ajuda a responder'}
+          </button>
         </div>
         <div className="flex items-center gap-2">
           <input

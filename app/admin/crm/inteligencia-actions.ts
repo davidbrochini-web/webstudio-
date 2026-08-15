@@ -75,6 +75,53 @@ const ITENS_ESSENCIAIS = ['tem_site', 'objetivo_principal', 'urgencia_prazo', 'q
 const ITENS_COMPLEMENTARES = ['faixa_investimento', 'concorrente_citado', 'sistema_legado']
 
 // ============================================================
+// "Me ajuda a responder" — sem IA. Olha os últimos hits recebidos
+// (mais recente primeiro): se a última coisa relevante foi uma
+// objeção, sugere a resposta recomendada já cadastrada no dicionário
+// (§8 do blueprint). Se não, sugere a próxima pergunta pendente do
+// checklist. Fallback genérico se não tiver nada ainda.
+// ============================================================
+export async function sugerirResposta(leadId: string): Promise<string> {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+
+  const { data: hits, error: hitsError } = await supabase
+    .from('crm_analise_hits')
+    .select('created_at, direcao, falso_positivo, dicionario:crm_dicionario(categoria, resposta_recomendada)')
+    .eq('lead_id', leadId)
+    .eq('direcao', 'recebida')
+    .eq('falso_positivo', false)
+    .order('created_at', { ascending: false })
+    .limit(10)
+
+  if (hitsError) throw new Error(hitsError.message)
+
+  for (const h of hits ?? []) {
+    const dic = Array.isArray(h.dicionario) ? h.dicionario[0] : h.dicionario
+    if (dic?.categoria === 'objecao' && dic.resposta_recomendada) {
+      return dic.resposta_recomendada
+    }
+  }
+
+  const { data: qualificacao, error: qualError } = await supabase
+    .from('crm_qualificacao')
+    .select('item, essencial, status')
+    .eq('lead_id', leadId)
+    .eq('essencial', true)
+    .eq('status', 'pendente')
+    .order('item')
+
+  if (qualError) throw new Error(qualError.message)
+
+  const proximoItem = qualificacao?.[0]
+  if (proximoItem && SUGESTOES_CHECKLIST[proximoItem.item]) {
+    return SUGESTOES_CHECKLIST[proximoItem.item]
+  }
+
+  return 'Posso te ajudar com mais alguma coisa ou já fica claro o próximo passo?'
+}
+
+// ============================================================
 // Leitura consolidada — tudo que o painel precisa numa chamada só
 // ============================================================
 export async function getCrmInteligencia(leadId: string) {
