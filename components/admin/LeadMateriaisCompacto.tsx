@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
 import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
@@ -85,6 +85,14 @@ function CampoEditavelCompacto({
 function BotaoPdf({ id, tipo, urlAtual }: { id: string; tipo: 'analise' | 'proposta'; urlAtual: string | null }) {
   const [uploading, setUploading] = useState(false)
   const [url, setUrl] = useState(urlAtual)
+
+  // urlAtual pode mudar depois do primeiro render (ex: "Gerar
+  // proposta" cria um PDF novo) — sem isso, o botão ficava mostrando
+  // "enviar" pra sempre até recarregar a página, mesmo com o PDF já
+  // salvo de verdade no banco.
+  useEffect(() => {
+    setUrl(urlAtual)
+  }, [urlAtual])
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -290,16 +298,23 @@ function BotaoCriarDemo({
   )
 }
 
-function BotaoGerarProposta({ id }: { id: string }) {
+function BotaoGerarProposta({ id, onGerado }: { id: string; onGerado: (url: string) => void }) {
   const [gerando, setGerando] = useState(false)
-  const [msg, setMsg] = useState<string | null>(null)
+  const [erro, setErro] = useState<string | null>(null)
+  const [urlGerada, setUrlGerada] = useState<string | null>(null)
 
   async function handleGerar() {
     setGerando(true)
-    setMsg(null)
+    setErro(null)
+    setUrlGerada(null)
     try {
       const res = await gerarPropostaPdf(id)
-      setMsg(res.error ? res.error : 'Gerada ✓')
+      if (res.error) {
+        setErro(res.error)
+      } else if (res.url) {
+        onGerado(res.url)
+        setUrlGerada(res.url)
+      }
     } finally {
       setGerando(false)
     }
@@ -314,7 +329,17 @@ function BotaoGerarProposta({ id }: { id: string }) {
       >
         {gerando ? 'Gerando...' : '✨ Gerar proposta'}
       </button>
-      {msg && <span className="text-[10px] text-[var(--muted)]">{msg}</span>}
+      {erro && <span className="text-[10px] text-red-600">{erro}</span>}
+      {urlGerada && (
+        <a
+          href={urlGerada}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[10px] font-bold text-[var(--brand)] underline underline-offset-2"
+        >
+          Gerada ✓ — abrir/baixar PDF
+        </a>
+      )}
     </div>
   )
 }
@@ -342,6 +367,8 @@ export default function LeadMateriaisCompacto({
   demoLinkInicial: string | null
   demoNichoInicial: string | null
 }) {
+  const [propostaUrl, setPropostaUrl] = useState(propostaPdfUrl)
+
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -368,9 +395,9 @@ export default function LeadMateriaisCompacto({
           <BotaoPortfolio id={id} imagens={imagensPortfolio} />
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <BotaoGerarProposta id={id} />
+          <BotaoGerarProposta id={id} onGerado={setPropostaUrl} />
           <span className="text-[10px] text-[var(--muted)]">↓ resultado fica salvo aqui:</span>
-          <BotaoPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
+          <BotaoPdf id={id} tipo="proposta" urlAtual={propostaUrl} />
         </div>
       </div>
 
