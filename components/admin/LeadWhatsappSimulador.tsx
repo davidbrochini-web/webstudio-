@@ -28,8 +28,9 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
   const fimRef = useRef<HTMLDivElement>(null)
 
   const [autoAtivo, setAutoAtivo] = useState(true)
-  const [perfilAuto, setPerfilAuto] = useState<PerfilSimulado>('decidido')
+  const [perfilAuto, setPerfilAuto] = useState<PerfilSimulado | null>(null)
   const [indiceRoteiro, setIndiceRoteiro] = useState(0)
+  const [condicionaisUsados, setCondicionaisUsados] = useState<Set<number>>(new Set())
   const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
   const [respondendo, setRespondendo] = useState(false)
   const [sugerindo, setSugerindo] = useState(false)
@@ -68,11 +69,13 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
   function handleTrocarPerfilAuto(novoPerfil: PerfilSimulado) {
     setPerfilAuto(novoPerfil)
     setIndiceRoteiro(0)
+    setCondicionaisUsados(new Set())
     setRoteiroEncerrado(false)
   }
 
   async function dispararRespostaAuto(ultimaMsgAtendente: string) {
-    const proxima = proximaRespostaAuto(perfilAuto, indiceRoteiro, ultimaMsgAtendente)
+    if (!perfilAuto) return
+    const proxima = proximaRespostaAuto(perfilAuto, indiceRoteiro, ultimaMsgAtendente, condicionaisUsados)
     if (!proxima) {
       setRoteiroEncerrado(true)
       return
@@ -82,6 +85,9 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
     try {
       const resultado = await enviarMensagemSimulada(leadId, 'recebida', proxima.texto)
       setIndiceRoteiro(proxima.proximoIndice)
+      if (proxima.condicionalUsado !== undefined) {
+        setCondicionaisUsados(s => new Set(s).add(proxima.condicionalUsado!))
+      }
       carregar()
       onEnviado()
       if (resultado) mostrarFeedback(resultado.detalhes)
@@ -164,6 +170,7 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
     resetarSimulacao(leadId)
       .then(() => {
         setIndiceRoteiro(0)
+        setCondicionaisUsados(new Set())
         setRoteiroEncerrado(false)
         carregar()
         onEnviado()
@@ -183,7 +190,7 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
     }
     setSalvandoAuditoria(true)
     try {
-      const res = await registrarAuditoriaSimulacao(leadId, perfilAuto, problemaAuditoria, solucaoAuditoria || null)
+      const res = await registrarAuditoriaSimulacao(leadId, perfilAuto ?? 'sem_perfil', problemaAuditoria, solucaoAuditoria || null)
       if (res.error) {
         setErroAuditoria(res.error)
         return
@@ -221,10 +228,13 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
           </label>
           {autoAtivo && (
             <select
-              value={perfilAuto}
-              onChange={e => handleTrocarPerfilAuto(e.target.value as PerfilSimulado)}
-              className="text-[11px] font-semibold px-2 py-1 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none cursor-pointer"
+              value={perfilAuto ?? ''}
+              onChange={e => e.target.value && handleTrocarPerfilAuto(e.target.value as PerfilSimulado)}
+              className={`text-[11px] font-semibold px-2 py-1 rounded-lg border outline-none cursor-pointer ${
+                perfilAuto ? 'border-[var(--border)] bg-[var(--card-bg)]' : 'border-amber-300 bg-amber-50 text-amber-700'
+              }`}
             >
+              <option value="">Selecione o perfil...</option>
               {Object.entries(PERFIL_SIMULADO_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
@@ -260,7 +270,9 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
         {!carregando && mensagens.length === 0 && (
           <p className="text-center text-xs text-gray-500 py-10">
             {autoAtivo
-              ? `Modo automático ligado (perfil ${PERFIL_SIMULADO_LABELS[perfilAuto]}). Mande a primeira mensagem como atendente e o cliente simulado responde sozinho.`
+              ? perfilAuto
+                ? `Modo automático ligado (perfil ${PERFIL_SIMULADO_LABELS[perfilAuto]}). Mande a primeira mensagem como atendente e o cliente simulado responde sozinho.`
+                : 'Escolha um perfil no seletor acima pra ligar o cliente automático.'
               : 'Nenhuma mensagem ainda. Digite abaixo simulando o cliente ou o atendente pra ver a análise rodando ao vivo.'}
           </p>
         )}
@@ -406,7 +418,7 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
             </div>
             <div className="p-5 flex flex-col gap-3">
               <p className="text-xs text-[var(--muted)] -mt-1">
-                A conversa inteira (perfil {PERFIL_SIMULADO_LABELS[perfilAuto]}) fica salva junto — não
+                A conversa inteira (perfil {perfilAuto ? PERFIL_SIMULADO_LABELS[perfilAuto] : 'nenhum selecionado'}) fica salva junto — não
                 precisa descrever o que aconteceu, só o problema e, se já tiver, a solução.
               </p>
               <label className="flex flex-col gap-1">

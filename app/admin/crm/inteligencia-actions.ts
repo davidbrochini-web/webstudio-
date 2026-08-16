@@ -36,6 +36,7 @@ export interface QualificacaoItem {
   item: string
   essencial: boolean
   status: string
+  resposta: string | null
   textoSugerido: string
 }
 
@@ -167,7 +168,7 @@ export async function getCrmInteligencia(leadId: string) {
       .eq('lead_id', leadId)
       .order('created_at', { ascending: false })
       .limit(30),
-    supabase.from('crm_qualificacao').select('item, essencial, status').eq('lead_id', leadId),
+    supabase.from('crm_qualificacao').select('item, essencial, status, resposta').eq('lead_id', leadId),
     supabase.from('crm_interesses_lead').select('servico, origem, confirmado').eq('lead_id', leadId),
     supabase.from('crm_simulador_mensagens').select('id, direcao, texto, created_at').eq('lead_id', leadId).order('created_at', { ascending: true }),
   ])
@@ -209,11 +210,12 @@ export async function getCrmInteligencia(leadId: string) {
 
   // Checklist: sempre mostra os 8 itens fixos, mesmo antes do primeiro
   // "Registrar conversa" ter rodado (senão o painel fica vazio até lá).
-  const statusPorItem = new Map((qualificacaoRes.data ?? []).map(q => [q.item, q.status]))
+  const dadosPorItem = new Map((qualificacaoRes.data ?? []).map(q => [q.item, q]))
   const checklist: QualificacaoItem[] = [...ITENS_ESSENCIAIS, ...ITENS_COMPLEMENTARES].map(item => ({
     item,
     essencial: ITENS_ESSENCIAIS.includes(item),
-    status: statusPorItem.get(item) ?? 'pendente',
+    status: dadosPorItem.get(item)?.status ?? 'pendente',
+    resposta: dadosPorItem.get(item)?.resposta ?? null,
     textoSugerido: SUGESTOES_CHECKLIST[item] ?? '',
   }))
 
@@ -498,6 +500,28 @@ export async function confirmarChecklistItem(leadId: string, item: string, statu
   if (error) throw new Error(error.message)
 
   await supabase.rpc('recalcular_analise_lead', { p_lead_id: leadId })
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
+ * Salva o texto livre do checklist (o que o cliente respondeu de
+ * verdade) — separado de confirmarChecklistItem porque não mexe em
+ * status/confirmado_em, só anota a informação. Cobre também resposta
+ * que veio por áudio: a atendente ouve e digita aqui, sem
+ * transcrição automática (Zero IA no CRM é regra fixa).
+ */
+export async function salvarRespostaChecklistItem(leadId: string, item: string, resposta: string) {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('crm_qualificacao')
+    .upsert(
+      { lead_id: leadId, item, resposta: resposta.trim() || null },
+      { onConflict: 'lead_id,item' }
+    )
+  if (error) throw new Error(error.message)
+
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
 

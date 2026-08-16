@@ -237,15 +237,26 @@ const ROTEIROS: Record<PerfilSimulado, Roteiro> = {
 export function proximaRespostaAuto(
   perfil: PerfilSimulado,
   indiceAtual: number,
-  ultimaMsgAtendente: string
-): { texto: string; proximoIndice: number } | null {
+  ultimaMsgAtendente: string,
+  condicionaisUsados: ReadonlySet<number> = new Set()
+): { texto: string; proximoIndice: number; condicionalUsado?: number } | null {
   const roteiro = ROTEIROS[perfil]
   const msgSemAcento = ultimaMsgAtendente
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
 
-  for (const cond of roteiro.condicionais) {
+  for (let i = 0; i < roteiro.condicionais.length; i++) {
+    // Cada condicional só dispara UMA VEZ por conversa — sem isso, um
+    // gatilho como "instagram" (objeção de confiança no perfil
+    // Desconfiado) fica re-disparando pra sempre: a atendente
+    // naturalmente precisa repetir a palavra pra tratar a objeção, e
+    // o cliente simulado voltava a dar a MESMA frase enlatada de novo,
+    // ignorando qualquer coisa nova que ela tivesse dito. Confirmado
+    // isso numa simulação real (a mesma resposta 3x seguidas mesmo
+    // com respostas diferentes da atendente).
+    if (condicionaisUsados.has(i)) continue
+    const cond = roteiro.condicionais[i]
     const bateu = cond.gatilhos.some(g => msgSemAcento.includes(g.normalize('NFD').replace(/[\u0300-\u036f]/g, '')))
     if (bateu) {
       // A resposta condicional é só uma reação pontual — mas precisa
@@ -254,14 +265,13 @@ export function proximaRespostaAuto(
       // Decidido) são palavras comuns demais numa negociação real, e
       // ficavam re-disparando a cada mensagem sem nunca progredir.
       const proximoIndice = Math.min(indiceAtual + 1, roteiro.sequencia.length)
-      return { texto: cond.texto, proximoIndice }
+      return { texto: cond.texto, proximoIndice, condicionalUsado: i }
     }
   }
 
-  // Nenhum gatilho específico bateu — se a fala do atendente tem cara
-  // de pergunta, ainda assim reage no tom do perfil em vez de ignorar
-  // (ver RESPOSTA_GENERICA acima). Perguntas sem gatilho específico
-  // não têm informação de verdade pra dar, mas pelo menos "conversam".
+  // Nenhum gatilho específico bateu (ou já foi usado antes) — se a
+  // fala do atendente tem cara de pergunta, ainda assim reage no tom
+  // do perfil em vez de ignorar (ver RESPOSTA_GENERICA acima).
   if (pareceUmaPergunta(ultimaMsgAtendente)) {
     const proximoIndice = Math.min(indiceAtual + 1, roteiro.sequencia.length)
     return { texto: RESPOSTA_GENERICA[perfil], proximoIndice }

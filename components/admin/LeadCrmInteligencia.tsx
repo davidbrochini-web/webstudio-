@@ -8,6 +8,7 @@ import {
   confirmarPerfilManual,
   atualizarEstagioManual,
   confirmarChecklistItem,
+  salvarRespostaChecklistItem,
   confirmarInteresse,
   type AnaliseConversa,
   type HitAnalise,
@@ -351,6 +352,18 @@ function ChecklistRow({ leadId, item, onSaved }: { leadId: string; item: Qualifi
   const [pending, startTransition] = useTransition()
   const [copiado, setCopiado] = useState(false)
 
+  const [resposta, setResposta] = useState(item.resposta ?? '')
+  const [respostaSalva, setRespostaSalva] = useState(true)
+  const [salvandoResposta, setSalvandoResposta] = useState(false)
+
+  // Sincroniza se item.resposta mudar por fora (ex: recarregou a
+  // análise) — mesma lógica já aplicada em outros campos desta
+  // sessão, evita mostrar texto desatualizado.
+  useEffect(() => {
+    setResposta(item.resposta ?? '')
+    setRespostaSalva(true)
+  }, [item.resposta])
+
   const cores: Record<string, string> = {
     pendente: 'bg-[var(--off)] text-[var(--muted)] border-[var(--border)]',
     detectado: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -363,6 +376,13 @@ function ChecklistRow({ leadId, item, onSaved }: { leadId: string; item: Qualifi
       await confirmarChecklistItem(leadId, item.item, status)
       onSaved()
     })
+  }
+
+  function handleSalvarResposta() {
+    setSalvandoResposta(true)
+    salvarRespostaChecklistItem(leadId, item.item, resposta)
+      .then(() => setRespostaSalva(true))
+      .finally(() => setSalvandoResposta(false))
   }
 
   function copiarSugestao() {
@@ -384,7 +404,23 @@ function ChecklistRow({ leadId, item, onSaved }: { leadId: string; item: Qualifi
         </span>
       </div>
 
-      <div className="flex items-center gap-3 mt-1.5">
+      {/* Texto livre com o que o cliente respondeu — cobre também
+          resposta que veio por áudio (a atendente ouve e digita aqui,
+          sem transcrição automática por IA). */}
+      <input
+        value={resposta}
+        onChange={e => { setResposta(e.target.value); setRespostaSalva(false) }}
+        onBlur={() => { if (!respostaSalva && !salvandoResposta) handleSalvarResposta() }}
+        placeholder="O que o cliente respondeu (inclusive por áudio)..."
+        className="w-full mt-1.5 px-2 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--off)] text-[11px] outline-none focus:border-[var(--brand)]"
+      />
+
+      <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+        {!respostaSalva && (
+          <button onClick={handleSalvarResposta} disabled={salvandoResposta} className="text-[10px] font-semibold text-[var(--brand)] disabled:opacity-40">
+            {salvandoResposta ? 'Salvando...' : 'Salvar resposta'}
+          </button>
+        )}
         {item.status !== 'confirmado' && (
           <button disabled={pending} onClick={() => handleStatus('confirmado')} className="text-[10px] font-semibold text-[var(--brand)] disabled:opacity-40">
             confirmar
