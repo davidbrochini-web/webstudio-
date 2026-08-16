@@ -6,16 +6,19 @@ import { updateLeadResponsavel } from '@/app/admin/crm/actions'
 export interface Membro {
   id: string
   nome: string
+  email: string | null
 }
 
 export default function ResponsavelSelect({
   id,
   responsavelId,
   membros,
+  onChanged,
 }: {
   id: string
   responsavelId: string | null
   membros: Membro[]
+  onChanged?: (novoId: string | null) => void
 }) {
   const [current, setCurrent] = useState(responsavelId ?? '')
   const [pending, startTransition] = useTransition()
@@ -28,6 +31,7 @@ export default function ResponsavelSelect({
     startTransition(async () => {
       try {
         await updateLeadResponsavel(id, novoId || null)
+        onChanged?.(novoId || null)
       } catch (err) {
         setCurrent(anterior)
         setErro(err instanceof Error ? err.message : 'Erro ao atribuir.')

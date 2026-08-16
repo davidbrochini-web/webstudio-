@@ -58,11 +58,14 @@ export default function LeadAtendimentoModal({
   const [refreshSignal, setRefreshSignal] = useState(0)
   const [temEscalonamento, setTemEscalonamento] = useState(false)
   const [editarAberto, setEditarAberto] = useState(false)
+  const [responsavelAtualId, setResponsavelAtualId] = useState(responsavelId)
   const [dadosLead, setDadosLead] = useState<LeadDadosCompletos>({
     nome, telefone, email, segmento, bairro, endereco,
     siteAtualUrl, instagramUrl, notas,
   })
   const simuladorRef = useRef<LeadWhatsappSimuladorHandle>(null)
+
+  const responsavelAtual = membros.find(m => m.id === responsavelAtualId) ?? null
 
   async function handleEnviarParaSimulador(texto: string) {
     await simuladorRef.current?.enviarTextoExterno(texto)
@@ -106,7 +109,7 @@ export default function LeadAtendimentoModal({
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <LeadStatusSelect id={leadId} status={status} />
-            <ResponsavelSelect id={leadId} responsavelId={responsavelId} membros={membros} />
+            <ResponsavelSelect id={leadId} responsavelId={responsavelId} membros={membros} onChanged={setResponsavelAtualId} />
             <button
               onClick={onClose}
               className="w-8 h-8 rounded-full hover:bg-[var(--off)] text-[var(--muted)] hover:text-[var(--ink)] flex items-center justify-center text-lg flex-shrink-0"
@@ -126,6 +129,7 @@ export default function LeadAtendimentoModal({
               refreshSignal={refreshSignal}
               onDadosChange={setTemEscalonamento}
               onEnviarParaSimulador={handleEnviarParaSimulador}
+              responsavelAtual={responsavelAtual}
               notas={dadosLead.notas}
               textoEnvio={textoEnvio}
               analisePdfUrl={analisePdfUrl}

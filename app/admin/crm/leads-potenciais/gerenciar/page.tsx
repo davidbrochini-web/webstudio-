@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import LeadsPotenciaisList from '@/components/admin/LeadsPotenciaisList'
 import type { LeadPotencialRowData } from '@/components/admin/LeadPotencialRow'
 
@@ -30,6 +31,19 @@ export default async function GerenciarLeadsPage() {
     .select('id, nome')
     .eq('is_super_admin', true)
     .order('nome')
+
+  // E-mail vive em auth.users, não em profiles — mesma limitação de
+  // sempre, resolvida com o client admin (service_role), mesmo
+  // padrão já usado em app/admin/equipe/actions.ts. Necessário pra
+  // proposta e assinatura no WhatsApp usarem o contato certo do
+  // responsável atribuído.
+  const admin = createAdminClient()
+  const membros = await Promise.all(
+    (membrosData ?? []).map(async m => {
+      const { data: userData } = await admin.auth.admin.getUserById(m.id)
+      return { id: m.id, nome: m.nome, email: userData.user?.email ?? null }
+    })
+  )
 
   // Demos ativas ligadas a esses leads (ver migration 0058) — um
   // select à parte porque tenants não tem FK direta exposta aqui,
@@ -100,7 +114,7 @@ export default async function GerenciarLeadsPage() {
         </div>
       ) : (
         <LeadsPotenciaisList
-          membros={membrosData ?? []}
+          membros={membros}
           leads={leads.map((l): LeadPotencialRowData => {
             const criador = Array.isArray(l.criador) ? l.criador[0] : l.criador
             return {

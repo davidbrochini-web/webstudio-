@@ -74,6 +74,8 @@ export interface PropostaLeadData {
   logoUrl: string | null
   imagensPortfolio: string[]
   homeMockupUrl: string | null
+  responsavelNome: string | null
+  responsavelEmail: string | null
 }
 
 export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
@@ -270,8 +272,12 @@ export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
           <Text style={styles.ctaTexto}>
             É só responder essa mensagem com um dia e horário que funcione pra vocês — presencial ou por chamada de vídeo. Sem compromisso: a conversa é só pra entender a necessidade direito, 20 a 30 minutos. Depois disso, a proposta final sai com escopo, prazo e valor já fechados.
           </Text>
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: INK }}>Omnidesign</Text>
-          <Text style={{ fontSize: 9, color: MUTED }}>omnidesign.com.br</Text>
+          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: INK }}>
+            {lead.responsavelNome ?? 'Omnidesign'}
+          </Text>
+          <Text style={{ fontSize: 9, color: MUTED }}>
+            {lead.responsavelEmail ?? 'omnidesign.com.br'}
+          </Text>
         </View>
       </Page>
     </Document>

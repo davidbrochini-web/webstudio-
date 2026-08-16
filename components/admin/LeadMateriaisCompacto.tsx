@@ -5,6 +5,12 @@ import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, updateLeadHomeMockup,
 import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
 
+export interface ResponsavelInfo {
+  id: string
+  nome: string
+  email: string | null
+}
+
 function CampoEditavelCompacto({
   id,
   campo,
@@ -12,6 +18,7 @@ function CampoEditavelCompacto({
   placeholder,
   rows = 2,
   onEnviarParaSimulador,
+  responsavelAtual,
 }: {
   id: string
   campo: 'notas' | 'texto_envio'
@@ -19,6 +26,7 @@ function CampoEditavelCompacto({
   placeholder: string
   rows?: number
   onEnviarParaSimulador?: (texto: string) => Promise<void>
+  responsavelAtual?: ResponsavelInfo | null
 }) {
   const [valor, setValor] = useState(valorInicial ?? '')
   const [salvo, setSalvo] = useState(true)
@@ -53,6 +61,18 @@ function CampoEditavelCompacto({
       .finally(() => setEnviando(false))
   }
 
+  // Assinatura do responsável atribuído ao lead — troca sozinha
+  // quando o atendente muda o responsável no seletor, sem precisar
+  // digitar nome/e-mail na mão nem errar de quem é a vez de atender.
+  function handleInserirAssinatura() {
+    if (!responsavelAtual) return
+    const linha1 = responsavelAtual.nome
+    const linha2 = responsavelAtual.email ?? ''
+    const bloco = `${linha1}\nOmnidesign${linha2 ? `\n${linha2}` : ''}`
+    setValor(v => (v.trim() ? `${v.trimEnd()}\n\n${bloco}` : bloco))
+    setSalvo(false)
+  }
+
   // Só o campo "texto_envio" ganha o botão de enviar — "notas" é
   // anotação interna, nunca vai pro cliente. O envio manda o texto
   // direto pra conversa do simulador (mesma engine de análise que o
@@ -60,6 +80,7 @@ function CampoEditavelCompacto({
   // Quando a ZAP-API existir de verdade, esse mesmo botão passa a
   // mandar pro WhatsApp real em vez do simulado.
   const podeEnviar = campo === 'texto_envio' && !!onEnviarParaSimulador
+  const podeAssinar = campo === 'texto_envio' && !!responsavelAtual
 
   return (
     <div>
@@ -70,10 +91,19 @@ function CampoEditavelCompacto({
         rows={rows}
         className="w-full px-2.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-xs outline-none resize-none focus:border-[var(--brand)]"
       />
-      <div className="flex items-center gap-3 mt-1">
+      <div className="flex items-center gap-3 mt-1 flex-wrap">
         {!salvo && (
           <button onClick={handleSalvar} disabled={pending} className="text-[10px] font-semibold text-[var(--brand)]">
             {pending ? 'Salvando...' : 'Salvar'}
+          </button>
+        )}
+        {podeAssinar && (
+          <button
+            onClick={handleInserirAssinatura}
+            className="text-[10px] font-semibold text-[var(--muted)] hover:text-[var(--brand)] underline underline-offset-2"
+            title={`Insere o nome e e-mail de ${responsavelAtual!.nome} no fim do texto`}
+          >
+            ✍️ Inserir assinatura de {responsavelAtual!.nome.split(' ')[0]}
           </button>
         )}
         {podeEnviar && (
@@ -405,6 +435,7 @@ function BotaoGerarProposta({ id, onGerado }: { id: string; onGerado: (url: stri
 export default function LeadMateriaisCompacto({
   id,
   onEnviarParaSimulador,
+  responsavelAtual,
   notas,
   textoEnvio,
   analisePdfUrl,
@@ -417,6 +448,7 @@ export default function LeadMateriaisCompacto({
 }: {
   id: string
   onEnviarParaSimulador: (texto: string) => Promise<void>
+  responsavelAtual: ResponsavelInfo | null
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
@@ -440,7 +472,7 @@ export default function LeadMateriaisCompacto({
       <div>
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Texto a enviar</p>
         <p className="text-[10px] text-[var(--muted)] mb-1.5">Rascunho da mensagem — o botão manda pra conversa ao lado (simulada, por enquanto).</p>
-        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} onEnviarParaSimulador={onEnviarParaSimulador} />
+        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} onEnviarParaSimulador={onEnviarParaSimulador} responsavelAtual={responsavelAtual} />
       </div>
 
       <div className="border border-[var(--border)] rounded-xl p-3">

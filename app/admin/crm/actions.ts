@@ -208,11 +208,30 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
   const { data: { user } } = await supabase.auth.getUser()
   const { data: lead, error: fetchError } = await supabase
     .from('leads_omnidesign')
-    .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio, home_mockup_url')
+    .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio, home_mockup_url, responsavel_id')
     .eq('id', id)
     .single()
 
   if (fetchError || !lead) return { error: 'Lead não encontrado.' }
+
+  // Contato que aparece no final da proposta ("vamos marcar essa
+  // conversa?") — o responsável atribuído ao lead, se tiver algum.
+  // Sem responsável definido, cai no contato genérico da Omnidesign.
+  let responsavelNome: string | null = null
+  let responsavelEmail: string | null = null
+  if (lead.responsavel_id) {
+    const { data: perfil } = await supabase
+      .from('profiles')
+      .select('nome')
+      .eq('id', lead.responsavel_id)
+      .single()
+    if (perfil) {
+      responsavelNome = perfil.nome
+      const admin = createAdminClient()
+      const { data: userData } = await admin.auth.admin.getUserById(lead.responsavel_id)
+      responsavelEmail = userData.user?.email ?? null
+    }
+  }
 
   try {
     const { renderToBuffer } = await import('@react-pdf/renderer')
@@ -231,6 +250,8 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
           logoUrl: lead.logo_url,
           imagensPortfolio: lead.imagens_portfolio ?? [],
           homeMockupUrl: lead.home_mockup_url,
+          responsavelNome,
+          responsavelEmail,
         },
       })
     )

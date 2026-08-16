@@ -4,7 +4,7 @@ import { useState } from 'react'
 import LeadCrmInteligencia from '@/components/admin/LeadCrmInteligencia'
 import LeadFaqPanel from '@/components/admin/LeadFaqPanel'
 import LeadHistorico from '@/components/admin/LeadHistorico'
-import LeadMateriaisCompacto from '@/components/admin/LeadMateriaisCompacto'
+import LeadMateriaisCompacto, { type ResponsavelInfo } from '@/components/admin/LeadMateriaisCompacto'
 
 type Aba = 'analise' | 'faq' | 'proposta' | 'historico'
 
@@ -20,6 +20,7 @@ export default function LeadAtendimentoAbas({
   refreshSignal,
   onDadosChange,
   onEnviarParaSimulador,
+  responsavelAtual,
   notas,
   textoEnvio,
   analisePdfUrl,
@@ -34,6 +35,7 @@ export default function LeadAtendimentoAbas({
   refreshSignal: number
   onDadosChange: (temEscalonamento: boolean) => void
   onEnviarParaSimulador: (texto: string) => Promise<void>
+  responsavelAtual: ResponsavelInfo | null
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
@@ -78,6 +80,7 @@ export default function LeadAtendimentoAbas({
           <LeadMateriaisCompacto
             id={leadId}
             onEnviarParaSimulador={onEnviarParaSimulador}
+            responsavelAtual={responsavelAtual}
             notas={notas}
             textoEnvio={textoEnvio}
             analisePdfUrl={analisePdfUrl}
