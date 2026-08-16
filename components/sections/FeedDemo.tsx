@@ -1,4 +1,5 @@
 import { unsplashPhoto } from '@/lib/photos'
+import ScrollComSetas from '@/components/ui/ScrollComSetas'
 
 // Mostra uma foto real de cada nicho que atendemos — vitrine dos segmentos
 const posts = [
@@ -45,7 +46,7 @@ export default function FeedDemo() {
         </div>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
+      <ScrollComSetas>
         <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
           {posts.map(({ likes, caption, photoId }, i) => (
             <div
@@ -70,10 +71,10 @@ export default function FeedDemo() {
             </div>
           ))}
         </div>
-      </div>
+      </ScrollComSetas>
 
       <p className="text-center text-xs text-[var(--muted)] mt-5 px-6">
-        Arraste para o lado — funciona igual no site do seu negócio.
+        Arraste ou use as setas para o lado — funciona igual no site do seu negócio.
       </p>
     </section>
   )

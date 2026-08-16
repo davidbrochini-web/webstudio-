@@ -1,4 +1,5 @@
 import type { SiteEspecial } from '@/lib/colegio-elite'
+import ScrollComSetas from '@/components/ui/ScrollComSetas'
 
 /**
  * Faixa de Instagram logo abaixo do banner principal (pedido do
@@ -32,7 +33,7 @@ export default function InstagramFeedStrip({ site, fotos }: { site: SiteEspecial
         </a>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
+      <ScrollComSetas>
         <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
           {fotos.map((url, i) => (
             <a
@@ -45,7 +46,7 @@ export default function InstagramFeedStrip({ site, fotos }: { site: SiteEspecial
             </a>
           ))}
         </div>
-      </div>
+      </ScrollComSetas>
 
       <p className="text-center text-xs text-slate-400 mt-5 px-6">
         Posts reais do Instagram do colégio — a sincronização automática entra assim que a integração com a API for habilitada.

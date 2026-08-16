@@ -87,14 +87,18 @@ export default function Hero() {
             precisa de tecnologia que funciona — sem complicação, sem depender
             de TI para cada detalhe.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start">
             <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#25D366] text-white font-semibold text-base hover:bg-[#22c55e] transition-all hover:-translate-y-px shadow-lg shadow-green-200">
               💬 Falar com a gente
             </a>
+            <Link href="#instagram"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[var(--border)] text-[var(--slate)] font-semibold text-base hover:border-[var(--slate)] transition-colors">
+              📸 Ver Instagram automático →
+            </Link>
             <Link href="#modulos"
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[var(--border)] text-[var(--slate)] font-semibold text-base hover:border-[var(--slate)] transition-colors">
-              Ver os módulos →
+              🧩 Ver os módulos →
             </Link>
           </div>
         </div>

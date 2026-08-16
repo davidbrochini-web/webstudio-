@@ -1,5 +1,6 @@
 import type { NichePost } from '@/lib/templates'
 import { unsplashPhotoFrom } from '@/lib/photos'
+import ScrollComSetas from '@/components/ui/ScrollComSetas'
 
 interface Props {
   posts: NichePost[]
@@ -28,7 +29,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
         </div>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
+      <ScrollComSetas>
         <div className="flex gap-3 px-6 pb-2 justify-start lg:justify-center" style={{ minWidth: 'min-content' }}>
           {posts.map(({ likes, caption }, i) => (
             <div
@@ -53,7 +54,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
             </div>
           ))}
         </div>
-      </div>
+      </ScrollComSetas>
 
       <p className="text-center text-xs text-[var(--muted)] mt-5 px-6">
         No site real, cada post do feed vem direto do seu Instagram — aqui é uma amostra.
