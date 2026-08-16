@@ -56,9 +56,9 @@ export default function Pricing() {
           <div className="grad-border rounded-2xl bg-[var(--card-bg)] p-8 shadow-2xl shadow-green-100">
             <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-2">Site + Instagram</p>
             <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
-              Sob consulta
+              R$&thinsp;499<span className="text-lg font-medium text-[var(--muted)]">/mês</span>
             </div>
-            <p className="text-xs text-[var(--muted)] mb-6">Analisamos seu negócio e te passamos o valor certo.</p>
+            <p className="text-xs text-[var(--muted)] mb-6">Site pronto a partir de um dos nossos modelos, com Instagram sincronizado.</p>
             <ul className="space-y-3 mb-7">
               {siteItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
@@ -66,7 +66,12 @@ export default function Pricing() {
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl grad-bg text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
               Quero meu site →
             </a>
-            <p className="text-xs text-[var(--muted)] text-center mt-3">Site no ar em até 48h após o contrato.</p>
+            <p className="text-xs text-[var(--muted)] text-center mt-3">
+              Site no ar em até 48h após o contrato. Precisa de algo sob medida?{' '}
+              <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="text-[var(--brand)] font-semibold underline underline-offset-2">
+                Fale sobre Projeto Especial
+              </a>.
+            </p>
           </div>
 
           {/* Módulos internos */}
