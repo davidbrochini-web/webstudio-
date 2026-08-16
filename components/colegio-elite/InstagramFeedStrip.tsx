@@ -49,7 +49,7 @@ export default function InstagramFeedStrip({ site, fotos }: { site: SiteEspecial
       </ScrollComSetas>
 
       <p className="text-center text-xs text-slate-400 mt-5 px-6">
-        Posts reais do Instagram do colégio — a sincronização automática entra assim que a integração com a API for habilitada.
+        Posts reais do Instagram do colégio — a sincronização diária entra assim que a integração com a API for habilitada.
       </p>
     </section>
   )

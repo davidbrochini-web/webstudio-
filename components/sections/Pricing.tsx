@@ -9,7 +9,7 @@ const siteOnlyItems = [
 
 const siteInstagramItems = [
   'Site profissional criado para o seu negócio',
-  'Posts do Instagram aparecem no site automaticamente — você continua postando como sempre',
+  'Posts e reels do Instagram sincronizados no site todo dia — você continua postando como sempre, sem se preocupar com nada',
   'Hospedagem + SSL incluso',
   'Domínio .com.br no 1º ano grátis',
   'Suporte via WhatsApp',

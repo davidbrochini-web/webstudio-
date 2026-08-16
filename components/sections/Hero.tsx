@@ -52,7 +52,7 @@ function BrowserMockup() {
         </div>
         <div className="flex items-center gap-1 mt-1.5">
           <div className="w-1 h-1 rounded-full bg-[var(--green)] animate-blink"/>
-          <span className="text-[7px] font-semibold text-[var(--green)]">Sincronizado agora</span>
+          <span className="text-[7px] font-semibold text-[var(--green)]">Sincroniza todo dia</span>
         </div>
       </div>
     </div>

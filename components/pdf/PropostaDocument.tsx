@@ -229,7 +229,7 @@ export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                       <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: '#22C55E' }} />
-                      <Text style={{ fontSize: 7, color: '#22C55E', fontFamily: 'Helvetica-Bold' }}>Sincronizado automaticamente</Text>
+                      <Text style={{ fontSize: 7, color: '#22C55E', fontFamily: 'Helvetica-Bold' }}>Sincronizado todo dia</Text>
                     </View>
                   </View>
                   <View style={{ flexDirection: 'row', gap: 6 }}>
@@ -241,7 +241,7 @@ export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
                     ))}
                   </View>
                   <Text style={{ fontSize: 7, color: MUTED, textAlign: 'center', marginTop: 8 }}>
-                    Tudo o que voce postar no Instagram aparece aqui automaticamente
+                    Posts e reels que voce postar no Instagram entram aqui sozinhos, todo dia
                   </Text>
                 </View>
               )}

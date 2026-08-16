@@ -18,7 +18,7 @@ const TEMPLATES: Record<string, TemplateProposta> = {
     escopo: [
       { titulo: 'Página inicial direta ao ponto', descricao: 'Os trabalhos mais fortes em destaque e um caminho rápido pro WhatsApp — sem o visitante precisar rolar muito pra decidir chamar.' },
       { titulo: 'Vitrine de serviços por categoria', descricao: 'Impressão rápida, personalizados, adesivos e materiais para eventos — cada um com sua própria seção.' },
-      { titulo: 'Galeria de trabalhos', descricao: 'Espaço dedicado pra mostrar o que já foi entregue, com as fotos publicadas no Instagram entrando automaticamente.' },
+      { titulo: 'Galeria de trabalhos', descricao: 'Espaço dedicado pra mostrar o que já foi entregue, com as fotos e reels publicados no Instagram sincronizados todo dia.' },
       { titulo: 'Localização sempre visível', descricao: 'Endereço, mapa e horário de funcionamento numa seção fixa, fácil de achar em qualquer página.' },
       { titulo: 'Botão de WhatsApp fixo', descricao: 'Presente em todas as páginas — o caminho mais curto entre "gostei" e "pedido fechado".' },
       { titulo: 'Formulário simples de orçamento', descricao: 'Cliente descreve o que precisa (o quê, quantidade, prazo) e o pedido já chega pronto pra vocês responderem.' },
@@ -57,7 +57,7 @@ const TEMPLATES: Record<string, TemplateProposta> = {
     escopo: [
       { titulo: 'Página inicial com a cara do trabalho de vocês', descricao: 'Os melhores momentos em destaque e um caminho rápido pra se inscrever.' },
       { titulo: 'Aulas e turmas organizadas', descricao: 'Cada modalidade com sua própria seção — nível, horário, valor.' },
-      { titulo: 'Galeria de trabalhos/alunos', descricao: 'Espaço dedicado pra mostrar o resultado, com fotos do Instagram entrando automaticamente.' },
+      { titulo: 'Galeria de trabalhos/alunos', descricao: 'Espaço dedicado pra mostrar o resultado, com fotos e reels do Instagram sincronizados todo dia.' },
       { titulo: 'Localização e horário sempre visíveis', descricao: 'Endereço, mapa e horário das turmas numa seção fixa.' },
       { titulo: 'Botão de WhatsApp fixo', descricao: 'Presente em todas as páginas, pra tirar dúvida sobre turma e valor.' },
       { titulo: 'Formulário de inscrição', descricao: 'Interessado descreve o que quer aprender, e o contato já chega pronto pra vocês responderem.' },
@@ -72,7 +72,7 @@ const GENERICO: TemplateProposta = {
   escopo: [
     { titulo: 'Página inicial direta ao ponto', descricao: 'Apresentação clara do negócio e um caminho rápido pro WhatsApp.' },
     { titulo: 'Vitrine de serviços', descricao: 'Cada serviço com sua própria seção, fácil de entender.' },
-    { titulo: 'Galeria de trabalhos', descricao: 'Espaço pra mostrar o que já foi entregue, com fotos do Instagram entrando automaticamente.' },
+    { titulo: 'Galeria de trabalhos', descricao: 'Espaço pra mostrar o que já foi entregue, com fotos e reels do Instagram sincronizados todo dia.' },
     { titulo: 'Localização sempre visível', descricao: 'Endereço, mapa e horário de funcionamento numa seção fixa.' },
     { titulo: 'Botão de WhatsApp fixo', descricao: 'Presente em todas as páginas — o caminho mais curto até o pedido.' },
     { titulo: 'Formulário simples de contato', descricao: 'Cliente descreve o que precisa e o pedido já chega pronto pra vocês responderem.' },

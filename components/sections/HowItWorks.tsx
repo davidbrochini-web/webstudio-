@@ -12,7 +12,7 @@ const steps = [
   {
     n: '03',
     title: 'Continue postando normalmente',
-    desc: 'Publicou no Instagram? O site atualiza sozinho. Sem logar em painel, sem enviar foto de novo, sem nada extra.',
+    desc: 'Postou uma foto ou um reels? O site sincroniza sozinho, todo dia. Sem logar em painel, sem enviar foto de novo, sem nada extra.',
   },
 ]
 

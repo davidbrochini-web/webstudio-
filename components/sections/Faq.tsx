@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: 'O site conecta mesmo com o Instagram?',
-    a: 'Sim. Depois de autorizar o acesso uma única vez, tudo o que você postar no feed do Instagram aparece automaticamente no site.',
+    a: 'Sim. Depois de autorizar o acesso uma única vez, os posts e reels que você publicar no Instagram entram no site sozinhos — a sincronização roda todo dia, sem você precisar se preocupar com nada.',
   },
   {
     q: 'E os sistemas internos, como funcionam?',

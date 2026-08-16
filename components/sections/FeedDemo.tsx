@@ -24,8 +24,8 @@ export default function FeedDemo() {
             O Instagram, direto no site.
           </h2>
           <p className="text-base text-[var(--muted)] max-w-lg mx-auto">
-            É assim que fica no site do seu negócio: cada post novo aparece
-            automaticamente, sem você levantar um dedo.
+            É assim que fica no site do seu negócio: posts e reels novos entram
+            sozinhos, sincronizados todo dia — sem você levantar um dedo.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export default function FeedDemo() {
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-blink" />
-            <span className="text-xs font-semibold text-[var(--green)] hidden sm:inline">Sincronizado agora</span>
+            <span className="text-xs font-semibold text-[var(--green)] hidden sm:inline">Sincroniza todo dia</span>
           </div>
         </div>
       </div>

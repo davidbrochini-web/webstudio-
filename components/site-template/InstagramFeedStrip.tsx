@@ -25,7 +25,7 @@ export default function InstagramFeedStrip({ posts, igHandle, businessName, acce
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-blink" />
-          <span className="text-xs font-semibold text-[var(--green)] hidden sm:inline">Sincronizado agora</span>
+          <span className="text-xs font-semibold text-[var(--green)] hidden sm:inline">Sincroniza todo dia</span>
         </div>
       </div>
 
