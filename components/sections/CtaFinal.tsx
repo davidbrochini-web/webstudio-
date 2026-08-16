@@ -8,7 +8,7 @@ export default function CtaFinal() {
           Seu negócio merece um site que trabalha por você.
         </h2>
         <p className="text-base text-white/70 leading-relaxed mb-9">
-          A gente resolve tudo em 48 horas.<br className="hidden sm:block" />
+          A gente cuida de tudo pra você, sem complicação.<br className="hidden sm:block" />
           Preencha o formulário abaixo que entraremos em contato o mais rápido possível.
         </p>
         <LeadFormOmnidesign />

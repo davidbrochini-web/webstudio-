@@ -70,9 +70,9 @@ export default function Pricing() {
 
         <div className="max-w-2xl mx-auto text-center mb-10 bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl px-6 py-5">
           <p className="text-sm text-[var(--slate)] leading-relaxed">
-            <span className="font-display font-bold text-[var(--ink)]">Em até 48 horas</span> após o contrato
-            seu site já está no ar, com domínio, hospedagem e SSL configurados. Você escolhe o modelo mais
-            parecido com seu negócio e a gente ajusta o conteúdo pra você.
+            <span className="font-display font-bold text-[var(--ink)]">Processo rápido e sem complicação:</span>{' '}
+            você escolhe o modelo mais parecido com o seu negócio, e a gente configura tudo — domínio,
+            hospedagem e SSL inclusos. Você não precisa mexer em nada técnico.
           </p>
         </div>
 

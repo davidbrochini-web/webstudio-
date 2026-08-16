@@ -1,5 +1,5 @@
 const stats = [
-  { value: '48h',   label: 'do contrato ao site no ar' },
+  { value: '24/7',  label: 'site no ar, sempre' },
   { value: '0',     label: 'trabalho extra após a configuração' },
   { value: '100%',  label: 'automático — sem painel extra' },
 ]

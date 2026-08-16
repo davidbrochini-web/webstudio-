@@ -7,12 +7,12 @@ const steps = [
   {
     n: '02',
     title: 'Publicamos seu site',
-    desc: 'Em até 48 horas, seu site profissional está no ar com domínio, hospedagem, SSL e o conteúdo real do seu negócio.',
+    desc: 'A gente configura tudo pra você — domínio, hospedagem, SSL e o conteúdo real do seu negócio. Processo rápido e sem burocracia, sem você precisar mexer em nada técnico.',
   },
   {
     n: '03',
     title: 'Continue postando normalmente',
-    desc: 'Publicou no Instagram? O site atualiza em minutos. Sem logar em painel, sem enviar foto de novo, sem nada extra.',
+    desc: 'Publicou no Instagram? O site atualiza sozinho. Sem logar em painel, sem enviar foto de novo, sem nada extra.',
   },
 ]
 

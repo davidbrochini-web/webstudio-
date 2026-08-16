@@ -4,8 +4,8 @@ const faqs = [
     a: 'Não. Depois que o site é publicado, você edita clicando direto em cima do que quer mudar — texto, foto, serviço — igual editar um documento. Sem painel complicado, sem termo técnico.',
   },
   {
-    q: 'Quanto tempo demora até o site ficar pronto?',
-    a: 'Em até 48 horas seu site já está pronto e no ar. A gente já deixa tudo configurado pra você: o link que os clientes vão acessar, o espaço onde o site fica guardado e funcionando, e o selo de segurança que aparece no navegador. Você só escolhe o modelo mais parecido com seu negócio e a gente ajusta o conteúdo pra você.',
+    q: 'Como funciona o processo de criação do site?',
+    a: 'É simples e sem burocracia: você escolhe o modelo mais parecido com o seu negócio, e a gente configura tudo — o link que os clientes vão acessar, o espaço onde o site fica guardado e funcionando, e o selo de segurança que aparece no navegador. Depois só ajustamos o conteúdo pra você. Você não precisa mexer em nada técnico.',
   },
   {
     q: 'Consigo mudar o conteúdo sozinho depois?',
