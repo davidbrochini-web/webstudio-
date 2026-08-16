@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf } from '@/app/admin/crm/actions'
+import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
+import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
 
 function CampoEditavelCompacto({
@@ -175,6 +176,85 @@ function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
   )
 }
 
+function BotaoCriarDemo({
+  id,
+  nichos,
+  linkInicial,
+  nichoInicial,
+}: {
+  id: string
+  nichos: { slug: string; label: string }[]
+  linkInicial: string | null
+  nichoInicial: string | null
+}) {
+  const [nicho, setNicho] = useState(nichos[0]?.slug ?? '')
+  const [criando, setCriando] = useState(false)
+  const [link, setLink] = useState<string | null>(linkInicial)
+  const [nichoAtivo, setNichoAtivo] = useState<string | null>(nichoInicial)
+  const [erro, setErro] = useState<string | null>(null)
+  const [copiado, setCopiado] = useState(false)
+
+  async function handleCriar() {
+    setCriando(true)
+    setErro(null)
+    try {
+      const res = await criarDemoParaLead(id, nicho)
+      if (res.error) {
+        setErro(res.error)
+      } else {
+        setLink(res.link ?? null)
+        setNichoAtivo(res.nicho ?? null)
+      }
+    } finally {
+      setCriando(false)
+    }
+  }
+
+  function handleCopiar() {
+    if (!link) return
+    navigator.clipboard.writeText(link)
+    setCopiado(true)
+    setTimeout(() => setCopiado(false), 2000)
+  }
+
+  if (link) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">
+          Demo ativa {nichoAtivo ? `— ${nichoAtivo}` : ''}
+        </p>
+        <div className="flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-white">
+          <span className="text-[var(--muted)] truncate max-w-[180px]">{link}</span>
+          <button onClick={handleCopiar} className="font-semibold text-[var(--brand)] underline underline-offset-2 flex-shrink-0">
+            {copiado ? 'copiado ✓' : 'copiar'}
+          </button>
+        </div>
+        <p className="text-[10px] text-[var(--muted)]">Manda esse link pro lead pelo WhatsApp durante a negociação.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <select
+        value={nicho}
+        onChange={e => setNicho(e.target.value)}
+        className="text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-white text-[var(--ink)] outline-none"
+      >
+        {nichos.map(n => <option key={n.slug} value={n.slug}>{n.label}</option>)}
+      </select>
+      <button
+        onClick={handleCriar}
+        disabled={criando || !nicho}
+        className="text-[11px] font-bold text-white bg-[var(--brand)] px-2.5 py-1 rounded-full disabled:opacity-60"
+      >
+        {criando ? 'Criando...' : '✨ Criar demo'}
+      </button>
+      {erro && <span className="text-[10px] text-red-600">{erro}</span>}
+    </div>
+  )
+}
+
 function BotaoGerarProposta({ id }: { id: string }) {
   const [gerando, setGerando] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
@@ -212,6 +292,8 @@ export default function LeadMateriaisCompacto({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  demoLinkInicial,
+  demoNichoInicial,
 }: {
   id: string
   notas: string | null
@@ -220,6 +302,8 @@ export default function LeadMateriaisCompacto({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  demoLinkInicial: string | null
+  demoNichoInicial: string | null
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -244,6 +328,11 @@ export default function LeadMateriaisCompacto({
         <div className="mt-2">
           <BotaoGerarProposta id={id} />
         </div>
+      </div>
+
+      <div>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Demo pro lead</p>
+        <BotaoCriarDemo id={id} nichos={niches} linkInicial={demoLinkInicial} nichoInicial={demoNichoInicial} />
       </div>
     </div>
   )

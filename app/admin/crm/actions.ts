@@ -1,7 +1,11 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { requireSuperAdmin } from '@/lib/supabase/guards'
+import { getNiche } from '@/lib/templates'
+import { seedSiteFromNiche } from '@/lib/site-seed'
+import { seedCadastrosDemo } from '@/lib/demo-cadastros-seed'
 import { revalidatePath } from 'next/cache'
 
 const STATUS_VALIDOS = ['novo', 'contatado', 'em_negociacao', 'sem_interesse', 'convertido', 'perdido']
@@ -21,7 +25,7 @@ async function registrarEvento(
   supabase: Awaited<ReturnType<typeof createClient>>,
   params: {
     leadId: string
-    evento: 'lead_criado' | 'status_alterado' | 'proposta_gerada' | 'responsavel_alterado'
+    evento: 'lead_criado' | 'status_alterado' | 'proposta_gerada' | 'responsavel_alterado' | 'demo_criada'
     statusAnterior?: string | null
     statusNovo?: string | null
     detalhe?: string | null
@@ -534,5 +538,97 @@ export async function buscarSugestaoFaq(leadId: string, pergunta: string): Promi
     resposta: match.resposta,
     perguntaBase: match.pergunta_base,
     similaridade: match.similaridade,
+  }
+}
+
+/**
+ * Demo ligada a lead: substitui o antigo /demo/iniciar público
+ * (self-serve, sem limite — matou 45 tenants órfãos sem gerar 1
+ * lead sequer, ver migration 0058). Agora só o atendente cria,
+ * durante a negociação, e a demo já nasce amarrada ao lead —
+ * quando o lead é marcado como perdido, a demo soft-deleta sozinha
+ * (trigger) e é purgada em 7 dias (cron).
+ *
+ * Idempotente: se o lead já tem uma demo ativa (is_demo=true,
+ * deleted_at is null), retorna o link existente em vez de criar
+ * outra — evita duplicar ao clicar duas vezes.
+ */
+export interface DemoLeadResult {
+  error?: string
+  link?: string
+  nicho?: string
+}
+
+export async function criarDemoParaLead(leadId: string, nichoSlug: string): Promise<DemoLeadResult> {
+  await requireSuperAdmin()
+
+  const niche = getNiche(nichoSlug)
+  if (!niche) return { error: 'Modelo inválido.' }
+
+  const admin = createAdminClient()
+
+  const { data: existente } = await admin
+    .from('tenants')
+    .select('demo_token, nome')
+    .eq('lead_id', leadId)
+    .eq('is_demo', true)
+    .is('deleted_at', null)
+    .maybeSingle()
+
+  if (existente?.demo_token) {
+    return {
+      link: `https://webstudio-red-eight.vercel.app/demo/entrar?token=${existente.demo_token}`,
+      nicho: existente.nome?.replace('Demo — ', '') ?? niche.label,
+    }
+  }
+
+  const { data: tenant, error: tenantError } = await admin
+    .from('tenants')
+    .insert({
+      nome: `Demo — ${niche.label}`,
+      plano: 'demo',
+      status: 'ativo',
+      is_demo: true,
+      lead_id: leadId,
+      demo_token: crypto.randomUUID(),
+    })
+    .select('id, demo_token')
+    .single()
+
+  if (tenantError || !tenant) {
+    return { error: tenantError?.message ?? 'Erro ao criar a demo.' }
+  }
+
+  const randomId = Math.random().toString(36).slice(2, 8)
+  const seedResult = await seedSiteFromNiche(admin, tenant.id, niche.slug, `demo-${randomId}`, 'publicado')
+
+  if (seedResult.error || !seedResult.siteId) {
+    await admin.from('tenants').delete().eq('id', tenant.id)
+    return { error: seedResult.error ?? 'Erro ao montar o conteúdo do site.' }
+  }
+
+  const { error: subError } = await admin
+    .from('subscriptions')
+    .insert([
+      { tenant_id: tenant.id, modulo: 'site', status: 'ativo' },
+      { tenant_id: tenant.id, modulo: 'cadastros', status: 'ativo' },
+    ])
+
+  if (subError) {
+    await admin.from('tenants').delete().eq('id', tenant.id)
+    return { error: subError.message }
+  }
+
+  await seedCadastrosDemo(admin, tenant.id, niche.slug).catch(() => {})
+
+  await registrarEvento(await createClient(), {
+    leadId,
+    evento: 'demo_criada',
+    detalhe: `Demo criada (${niche.label})`,
+  })
+
+  return {
+    link: `https://webstudio-red-eight.vercel.app/demo/entrar?token=${tenant.demo_token}`,
+    nicho: niche.label,
   }
 }

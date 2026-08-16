@@ -52,7 +52,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/app', '/login', '/demo/iniciar'],
+      disallow: ['/admin', '/app', '/login', '/demo/entrar'],
     },
     sitemap: 'https://omnidesign.com.br/sitemap.xml',
   }

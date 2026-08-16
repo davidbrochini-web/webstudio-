@@ -46,10 +46,10 @@ export default async function NichePreview(
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
-            href={`/demo/iniciar?nicho=${config.slug}`}
+            href="/#contato"
             className="text-xs font-bold text-white px-3 py-1.5 rounded-lg grad-bg hover:opacity-90 hover:scale-105 transition-all whitespace-nowrap"
           >
-            ✨ Teste você mesmo
+            ✨ Peça uma demo
           </Link>
           <a
             href={WA_LINK}

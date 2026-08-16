@@ -19,6 +19,8 @@ export default function LeadAtendimentoModal({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  demoLinkInicial,
+  demoNichoInicial,
   onClose,
 }: {
   leadId: string
@@ -33,6 +35,8 @@ export default function LeadAtendimentoModal({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  demoLinkInicial: string | null
+  demoNichoInicial: string | null
   onClose: () => void
 }) {
   const [refreshSignal, setRefreshSignal] = useState(0)
@@ -95,6 +99,8 @@ export default function LeadAtendimentoModal({
               propostaPdfUrl={propostaPdfUrl}
               logoUrl={logoUrl}
               imagensPortfolio={imagensPortfolio}
+              demoLinkInicial={demoLinkInicial}
+              demoNichoInicial={demoNichoInicial}
             />
           </div>
 

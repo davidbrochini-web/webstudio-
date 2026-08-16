@@ -27,6 +27,8 @@ export interface LeadPotencialRowData {
   created_at: string
   criadorNome: string | null
   responsavelId: string | null
+  demoLink: string | null
+  demoNicho: string | null
 }
 
 export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencialRowData; membros: Membro[] }) {
@@ -109,6 +111,8 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
           propostaPdfUrl={lead.proposta_pdf_url}
           logoUrl={lead.logoUrl}
           imagensPortfolio={lead.imagensPortfolio}
+          demoLinkInicial={lead.demoLink}
+          demoNichoInicial={lead.demoNicho}
           onClose={() => setAtendimentoAberto(false)}
         />
       )}

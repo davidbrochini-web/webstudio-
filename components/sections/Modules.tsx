@@ -62,13 +62,13 @@ export default function Modules() {
           ))}
         </div>
 
-        {/* CTA de teste — só o que está disponível hoje dá pra testar */}
+        {/* CTA de contato — demo agora é feita pelo atendente durante a negociação */}
         <div className="mt-8 flex flex-col items-center gap-3">
           <Link
-            href="/demo"
+            href="/#contato"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl grad-bg text-white text-sm font-bold hover:opacity-90 hover:scale-105 transition-all"
           >
-            ✨ Teste os módulos você mesmo
+            ✨ Peça uma demo dos módulos
           </Link>
           <p className="text-center text-sm text-white/25">
             Todos os módulos rodam na web — sem instalação, acessível de qualquer dispositivo.

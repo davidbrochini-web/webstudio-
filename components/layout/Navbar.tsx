@@ -53,10 +53,10 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
         <ThemeToggle />
         <Link
-          href="/demo"
+          href="/#contato"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg grad-bg text-white text-sm font-semibold hover:opacity-90 transition-all hover:-translate-y-px"
         >
-          ✨ Teste você mesmo
+          ✨ Peça uma demo
         </Link>
         <a
           href={WA_LINK}
@@ -101,11 +101,11 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden border-t border-white/10 bg-[#0B0F0C] px-6 pb-4">
           <Link
-            href="/demo"
+            href="/#contato"
             onClick={() => setOpen(false)}
             className="block py-3 text-sm font-semibold text-[var(--brand2)] border-b border-white/10"
           >
-            ✨ Teste você mesmo
+            ✨ Peça uma demo
           </Link>
           {[
             { href: '#instagram',     label: 'Instagram' },

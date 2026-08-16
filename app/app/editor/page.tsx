@@ -78,12 +78,6 @@ export default async function SiteLiveEditorPage() {
             </Link>
             <span className="text-xs font-bold text-[var(--brand)] flex-shrink-0">✨ Demo</span>
             <Link
-              href="/demo"
-              className="text-xs font-semibold text-[var(--ink)] px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--off)] transition-colors whitespace-nowrap"
-            >
-              🔀 Trocar de modelo
-            </Link>
-            <Link
               href="/app"
               className="text-sm font-bold text-white px-4 py-2 rounded-lg grad-bg hover:opacity-90 hover:scale-105 transition-all whitespace-nowrap shadow-md"
             >

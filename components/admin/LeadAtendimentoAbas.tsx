@@ -25,6 +25,8 @@ export default function LeadAtendimentoAbas({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  demoLinkInicial,
+  demoNichoInicial,
 }: {
   leadId: string
   refreshSignal: number
@@ -35,6 +37,8 @@ export default function LeadAtendimentoAbas({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  demoLinkInicial: string | null
+  demoNichoInicial: string | null
 }) {
   const [abaAtiva, setAbaAtiva] = useState<Aba>('analise')
 
@@ -75,6 +79,8 @@ export default function LeadAtendimentoAbas({
             propostaPdfUrl={propostaPdfUrl}
             logoUrl={logoUrl}
             imagensPortfolio={imagensPortfolio}
+            demoLinkInicial={demoLinkInicial}
+            demoNichoInicial={demoNichoInicial}
           />
         </div>
         <div style={{ display: abaAtiva === 'historico' ? 'block' : 'none' }}>

@@ -30,6 +30,25 @@ export default async function GerenciarLeadsPage() {
     .eq('is_super_admin', true)
     .order('nome')
 
+  // Demos ativas ligadas a esses leads (ver migration 0058) — um
+  // select à parte porque tenants não tem FK direta exposta aqui,
+  // mais simples que embutir no nested select de cima.
+  const { data: demosAtivas } = leads?.length
+    ? await supabase
+        .from('tenants')
+        .select('lead_id, nome, demo_token')
+        .eq('is_demo', true)
+        .is('deleted_at', null)
+        .in('lead_id', leads.map(l => l.id))
+    : { data: [] }
+
+  const demoPorLead = new Map(
+    (demosAtivas ?? []).map(t => [
+      t.lead_id as string,
+      { link: `https://webstudio-red-eight.vercel.app/demo/entrar?token=${t.demo_token}`, nicho: t.nome.replace('Demo — ', '') },
+    ])
+  )
+
   const total = leads?.length ?? 0
   const emAberto = leads?.filter(l => l.status === 'novo' || l.status === 'contatado' || l.status === 'em_negociacao').length ?? 0
   const convertidos = leads?.filter(l => l.status === 'convertido').length ?? 0
@@ -104,6 +123,8 @@ export default async function GerenciarLeadsPage() {
               created_at: l.created_at,
               criadorNome: criador?.nome ?? null,
               responsavelId: l.responsavel_id,
+              demoLink: demoPorLead.get(l.id)?.link ?? null,
+              demoNicho: demoPorLead.get(l.id)?.nicho ?? null,
             }
           })}
         />
