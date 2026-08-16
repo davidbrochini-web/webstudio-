@@ -24,6 +24,12 @@ export default function Modules() {
               você contrata só o que precisa e adiciona o restante conforme a
               operação crescer.
             </p>
+            <p className="text-sm text-white/30 leading-relaxed max-w-xl mt-3">
+              Cada módulo funciona sozinho, mas também pode trabalhar junto com
+              os outros se fizer sentido pro seu negócio. O Cadastros, por
+              exemplo, pode virar a base compartilhada do CRM e do Estoque ao
+              mesmo tempo — ou ficar isolado, do seu jeito.
+            </p>
           </div>
           <div className="flex-shrink-0">
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-5 py-3">
@@ -71,7 +77,7 @@ export default function Modules() {
             ✨ Peça uma demo dos módulos
           </Link>
           <p className="text-center text-sm text-white/25">
-            Todos os módulos rodam na web — sem instalação, acessível de qualquer dispositivo.
+            Tudo funciona direto pela internet — não precisa baixar nem instalar nenhum aplicativo. É só abrir e usar, em qualquer celular ou computador.
           </p>
         </div>
       </div>

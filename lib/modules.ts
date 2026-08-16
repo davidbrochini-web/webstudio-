@@ -78,7 +78,7 @@ export const modules: ModuleConfig[] = [
   },
   {
     slug: 'crm',
-    label: 'CRM',
+    label: 'CRM — Gestão de Leads',
     desc: 'Cadastro de contatos, histórico e pipeline de oportunidades organizado.',
     icon: '👥',
     preco: 69.90,

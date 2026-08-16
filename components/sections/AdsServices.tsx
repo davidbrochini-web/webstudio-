@@ -70,6 +70,9 @@ export default function AdsServices() {
           <p className="text-center text-sm text-[var(--muted)]">
             Orçamento sob medida pro seu negócio — sem plano fechado, sem letra miúda.
           </p>
+          <a href="#contato" className="text-xs text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2">
+            ou preencha o formulário →
+          </a>
         </div>
       </div>
     </section>

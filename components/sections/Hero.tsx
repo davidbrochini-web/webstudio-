@@ -101,6 +101,9 @@ export default function Hero() {
               🧩 Ver os módulos →
             </Link>
           </div>
+          <a href="#contato" className="inline-block text-sm text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2 mt-3">
+            ou prefere preencher um formulário? →
+          </a>
         </div>
 
         <div className="flex-1 flex items-center justify-center">

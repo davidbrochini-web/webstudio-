@@ -1,8 +1,17 @@
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
-const siteItems = [
+const siteOnlyItems = [
   'Site profissional criado para o seu negócio',
-  'Feed do Instagram atualizado automaticamente',
+  'Hospedagem + SSL incluso',
+  'Domínio .com.br no 1º ano grátis',
+  'Suporte via WhatsApp',
+  'Google Analytics configurado',
+  '1 ajuste de layout por mês incluso',
+]
+
+const siteInstagramItems = [
+  'Site profissional criado para o seu negócio',
+  'Posts do Instagram aparecem no site automaticamente — você continua postando como sempre',
   'Hospedagem + SSL incluso',
   'Domínio .com.br no 1º ano grátis',
   'Suporte via WhatsApp',
@@ -11,7 +20,7 @@ const siteItems = [
 ]
 
 const moduleItems = [
-  'CRM — clientes e oportunidades',
+  'CRM — gestão de leads',
   'Controle de estoque',
   'Contas a pagar',
   'Contas a receber',
@@ -36,12 +45,20 @@ function CheckItem({ children }: { children: React.ReactNode }) {
   )
 }
 
+function FormularioLink() {
+  return (
+    <a href="#contato" className="block text-xs text-center text-[var(--muted)] hover:text-[var(--brand)] transition-colors mt-2 underline underline-offset-2">
+      ou preencha o formulário →
+    </a>
+  )
+}
+
 export default function Pricing() {
   return (
     <section id="preco" className="py-20 px-6 bg-[var(--off)] border-t border-[var(--border)]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-3">Preço</p>
+          <p className="text-sm font-bold tracking-widest uppercase text-[var(--brand)] mb-3">Valores</p>
           <h2 className="font-display font-extrabold text-[clamp(26px,5vw,40px)] leading-tight text-[var(--ink)] mb-3">
             Simples e sem surpresa
           </h2>
@@ -50,9 +67,45 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
 
-          {/* Site + Instagram */}
+          {/* Módulos internos — primeiro, é o mais em conta */}
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-8">
+            <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-2">Módulos internos</p>
+            <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
+              A partir de<br />R$&thinsp;39,90
+            </div>
+            <p className="text-xs text-[var(--muted)] mb-6">Por módulo/mês, de acordo com a complexidade.</p>
+            <ul className="space-y-3 mb-7">
+              {moduleItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
+            </ul>
+            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
+              Falar sobre módulos →
+            </a>
+            <p className="text-xs text-[var(--muted)] text-center mt-3">Pode combinar site + módulos no mesmo plano.</p>
+            <FormularioLink />
+          </div>
+
+          {/* Site (sem Instagram) */}
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-8">
+            <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-2">Site</p>
+            <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
+              R$&thinsp;299<span className="text-lg font-medium text-[var(--muted)]">/mês</span>
+            </div>
+            <p className="text-xs text-[var(--muted)] mb-6">Site pronto a partir de um dos nossos modelos.</p>
+            <ul className="space-y-3 mb-7">
+              {siteOnlyItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
+            </ul>
+            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
+              Quero meu site →
+            </a>
+            <p className="text-xs text-[var(--muted)] text-center mt-3">Site no ar em até 48h após o contrato.</p>
+            <FormularioLink />
+          </div>
+
+          {/* Site + Instagram — destaque */}
           <div className="grad-border rounded-2xl bg-[var(--card-bg)] p-8 shadow-2xl shadow-green-100">
             <p className="text-xs font-bold tracking-widest uppercase text-[var(--brand)] mb-2">Site + Instagram</p>
             <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
@@ -60,7 +113,7 @@ export default function Pricing() {
             </div>
             <p className="text-xs text-[var(--muted)] mb-6">Site pronto a partir de um dos nossos modelos, com Instagram sincronizado.</p>
             <ul className="space-y-3 mb-7">
-              {siteItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
+              {siteInstagramItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
             <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl grad-bg text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
@@ -72,23 +125,7 @@ export default function Pricing() {
                 Fale sobre Projeto Especial
               </a>.
             </p>
-          </div>
-
-          {/* Módulos internos */}
-          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-8">
-            <p className="text-xs font-bold tracking-widest uppercase text-[var(--muted)] mb-2">Módulos internos</p>
-            <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
-              R$&thinsp;39,90<span className="text-lg font-medium text-[var(--muted)]"> a R$&thinsp;99,90</span>
-            </div>
-            <p className="text-xs text-[var(--muted)] mb-6">Por módulo/mês, de acordo com a complexidade.</p>
-            <ul className="space-y-3 mb-7">
-              {moduleItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
-            </ul>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
-              Falar sobre módulos →
-            </a>
-            <p className="text-xs text-[var(--muted)] text-center mt-3">Pode combinar site + módulos no mesmo plano.</p>
+            <FormularioLink />
           </div>
 
           {/* Gestão de Anúncios */}
@@ -109,6 +146,7 @@ export default function Pricing() {
               Falar sobre anúncios →
             </a>
             <p className="text-xs text-[var(--muted)] text-center mt-3">Google Ads e GPT Ads no mesmo pacote.</p>
+            <FormularioLink />
           </div>
 
         </div>

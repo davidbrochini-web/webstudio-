@@ -36,7 +36,7 @@ export default function Navbar() {
             { href: '#marketing-digital', label: 'Marketing' },
             { href: '/blog',          label: 'Blog' },
             { href: '#modulos',       label: 'Sistemas' },
-            { href: '#preco',         label: 'Preço' },
+            { href: '#preco',         label: 'Valores' },
           ].map(({ href, label }) => (
             <li key={href}>
               <Link
@@ -113,7 +113,7 @@ export default function Navbar() {
             { href: '#marketing-digital', label: 'Marketing' },
             { href: '/blog',          label: 'Blog' },
             { href: '#modulos',       label: 'Sistemas' },
-            { href: '#preco',         label: 'Preço' },
+            { href: '#preco',         label: 'Valores' },
           ].map(({ href, label }) => (
             <Link
               key={href}

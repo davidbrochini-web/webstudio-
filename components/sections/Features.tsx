@@ -7,7 +7,7 @@ const features = [
   {
     icon: '⚡',
     title: 'Feed automático do Instagram',
-    desc: 'Posts e fotos aparecem no site em minutos após a publicação. Seu catálogo e novidades sempre atualizados.',
+    desc: 'Você posta no Instagram como sempre faz — em minutos, o mesmo post aparece no seu site também, sem precisar fazer nada a mais.',
   },
   {
     icon: '🔒',
