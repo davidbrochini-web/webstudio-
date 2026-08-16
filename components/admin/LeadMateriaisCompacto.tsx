@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
 import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
+import { linkWhatsapp } from '@/lib/whatsapp'
 
 function CampoEditavelCompacto({
   id,
@@ -11,12 +12,14 @@ function CampoEditavelCompacto({
   valorInicial,
   placeholder,
   rows = 2,
+  telefone,
 }: {
   id: string
   campo: 'notas' | 'texto_envio'
   valorInicial: string | null
   placeholder: string
   rows?: number
+  telefone?: string | null
 }) {
   const [valor, setValor] = useState(valorInicial ?? '')
   const [salvo, setSalvo] = useState(true)
@@ -29,6 +32,13 @@ function CampoEditavelCompacto({
     })
   }
 
+  // Só o campo "texto_envio" ganha o botão de enviar — "notas" é
+  // anotação interna, nunca vai pro cliente. Envio continua sempre
+  // manual (abre o WhatsApp com o texto pronto, quem manda é a
+  // pessoa) — nada aqui dispara mensagem sozinho, mesma regra de
+  // sempre até a ZAP-API existir de verdade.
+  const link = campo === 'texto_envio' && telefone && valor.trim() ? linkWhatsapp(telefone, valor) : null
+
   return (
     <div>
       <textarea
@@ -38,11 +48,26 @@ function CampoEditavelCompacto({
         rows={rows}
         className="w-full px-2.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--off)] text-xs outline-none resize-none focus:border-[var(--brand)]"
       />
-      {!salvo && (
-        <button onClick={handleSalvar} disabled={pending} className="text-[10px] font-semibold text-[var(--brand)] mt-1">
-          {pending ? 'Salvando...' : 'Salvar'}
-        </button>
-      )}
+      <div className="flex items-center gap-3 mt-1">
+        {!salvo && (
+          <button onClick={handleSalvar} disabled={pending} className="text-[10px] font-semibold text-[var(--brand)]">
+            {pending ? 'Salvando...' : 'Salvar'}
+          </button>
+        )}
+        {link && (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] font-bold text-white bg-[#25D366] px-2.5 py-1 rounded-full hover:opacity-90 transition-opacity"
+          >
+            Enviar para o cliente
+          </a>
+        )}
+        {campo === 'texto_envio' && valor.trim() && !telefone && (
+          <span className="text-[10px] text-[var(--muted)]">sem telefone cadastrado pra enviar</span>
+        )}
+      </div>
     </div>
   )
 }
@@ -286,6 +311,7 @@ function BotaoGerarProposta({ id }: { id: string }) {
 
 export default function LeadMateriaisCompacto({
   id,
+  telefone,
   notas,
   textoEnvio,
   analisePdfUrl,
@@ -296,6 +322,7 @@ export default function LeadMateriaisCompacto({
   demoNichoInicial,
 }: {
   id: string
+  telefone: string | null
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
@@ -314,7 +341,7 @@ export default function LeadMateriaisCompacto({
 
       <div>
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Texto a enviar</p>
-        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} />
+        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} telefone={telefone} />
       </div>
 
       <div>

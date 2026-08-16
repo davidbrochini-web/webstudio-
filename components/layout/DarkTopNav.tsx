@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
+import ThemeToggle from './ThemeToggle'
 
 export interface DarkNavItem {
   label: string
@@ -166,7 +167,8 @@ export default function DarkTopNav({
           })}
         </div>
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <ThemeToggle />
         <UserMenu email={email} fotoUrl={fotoUrl} />
       </div>
     </nav>

@@ -2,6 +2,16 @@
 @import "tailwindcss";
 
 :root {
+  /* color-scheme explícito: fala pro navegador "esse site já cuida do próprio
+     tema" — sem isso, o Chrome (e outros) pode aplicar um "dark mode forçado"
+     próprio por cima das nossas cores quando o SO/navegador está em modo
+     escuro, e o resultado é ilegível (fundo e texto repintados por heurística,
+     ignorando nossas variáveis). Isso já causou reclamação real de leitura
+     ruim em modo escuro do Chrome — a causa não era contraste das variáveis
+     (já estava em ~5.5:1, acima do mínimo AA), era o navegador brigando com
+     a gente por cima. */
+  color-scheme: light;
+
   /* Omnidesign — verde (automação/código), preto (base) e azul-escuro (cloud) */
   --brand:       #7FA33E;  /* verde — versão mais escura, legível sobre branco (links, CTAs) */
   --brand-bright:#A0C15B;  /* verde da marca — usado sobre fundo escuro */
@@ -10,7 +20,7 @@
   --dark:        #05070A;
   --ink:         #0A0F0B;
   --slate:       #1B241C;
-  --muted:       #5C6B60;
+  --muted:       #455249;  /* escurecido de #5C6B60 (16/08) — texto de card reclamado como "clarinho"; contraste subiu de ~5.5:1 pra ~8:1 */
   --border:      #E1E8D8;
   --off:         #F6F8F2;
   --grad:        linear-gradient(135deg, #7FA33E 0%, #4FB8C4 100%);
@@ -19,10 +29,12 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   --brand:       #A0C15B;
   --ink:         #EDF1E6;
   --slate:       #C9D2C2;
-  --muted:       #7C8C7E;
+  --muted:       #96A498;  /* clareado de #7C8C7E (16/08), mesmo motivo do light acima */
   --border:      #1E2A22;
   --off:         #0B1220;
   --page-bg:     #060606;

@@ -91,6 +91,7 @@ export default function LeadAtendimentoModal({
           <div className="min-h-0">
             <LeadAtendimentoAbas
               leadId={leadId}
+              telefone={telefone}
               refreshSignal={refreshSignal}
               onDadosChange={setTemEscalonamento}
               notas={notas}

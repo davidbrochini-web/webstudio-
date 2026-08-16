@@ -23,7 +23,7 @@ export default function LeadWhatsappSimulador({
   const [erro, setErro] = useState<string | null>(null)
   const fimRef = useRef<HTMLDivElement>(null)
 
-  const [autoAtivo, setAutoAtivo] = useState(false)
+  const [autoAtivo, setAutoAtivo] = useState(true)
   const [perfilAuto, setPerfilAuto] = useState<PerfilSimulado>('decidido')
   const [indiceRoteiro, setIndiceRoteiro] = useState(0)
   const [roteiroEncerrado, setRoteiroEncerrado] = useState(false)
