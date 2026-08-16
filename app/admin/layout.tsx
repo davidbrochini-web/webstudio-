@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import AdminTopNav from '@/components/admin/AdminTopNav'
 
+const DAVID_USER_ID = 'b8035bb4-79ed-4996-9bc8-0b3ca345ef41'
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // Auth/permissão de super-admin já são resolvidas centralmente pelo
   // proxy.ts (equivalente ao middleware) antes de chegar aqui — esse
@@ -14,7 +16,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen bg-[var(--off)]">
-      <AdminTopNav email={user?.email ?? ''} fotoUrl={profile?.foto_perfil_url} />
+      <AdminTopNav email={user?.email ?? ''} fotoUrl={profile?.foto_perfil_url} mostrarDocIa={user?.id === DAVID_USER_ID} />
       <main className="px-6 py-10">
         <div className="max-w-5xl mx-auto">{children}</div>
       </main>

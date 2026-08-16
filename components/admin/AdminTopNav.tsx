@@ -21,6 +21,9 @@ const NAV: DarkNavItem[] = [
   { label: 'Equipe', href: '/admin/equipe' },
 ]
 
-export default function AdminTopNav({ email, fotoUrl }: { email: string; fotoUrl?: string | null }) {
-  return <DarkTopNav items={NAV} email={email} badge="admin" homeHref="/admin" fotoUrl={fotoUrl} />
+const NAV_DOC_IA: DarkNavItem = { label: 'Doc IA', href: '/admin/doc-ia' }
+
+export default function AdminTopNav({ email, fotoUrl, mostrarDocIa = false }: { email: string; fotoUrl?: string | null; mostrarDocIa?: boolean }) {
+  const items = mostrarDocIa ? [...NAV, NAV_DOC_IA] : NAV
+  return <DarkTopNav items={items} email={email} badge="admin" homeHref="/admin" fotoUrl={fotoUrl} />
 }
