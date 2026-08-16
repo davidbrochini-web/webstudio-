@@ -19,6 +19,7 @@ export default function LeadAtendimentoModal({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  homeMockupUrl,
   demoLinkInicial,
   demoNichoInicial,
   onClose,
@@ -35,6 +36,7 @@ export default function LeadAtendimentoModal({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  homeMockupUrl: string | null
   demoLinkInicial: string | null
   demoNichoInicial: string | null
   onClose: () => void
@@ -104,6 +106,7 @@ export default function LeadAtendimentoModal({
               analisePdfUrl={analisePdfUrl}
               propostaPdfUrl={propostaPdfUrl}
               logoUrl={logoUrl}
+              homeMockupUrl={homeMockupUrl}
               imagensPortfolio={imagensPortfolio}
               demoLinkInicial={demoLinkInicial}
               demoNichoInicial={demoNichoInicial}

@@ -26,6 +26,7 @@ export default function LeadAtendimentoAbas({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  homeMockupUrl,
   demoLinkInicial,
   demoNichoInicial,
 }: {
@@ -39,6 +40,7 @@ export default function LeadAtendimentoAbas({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  homeMockupUrl: string | null
   demoLinkInicial: string | null
   demoNichoInicial: string | null
 }) {
@@ -81,6 +83,7 @@ export default function LeadAtendimentoAbas({
             analisePdfUrl={analisePdfUrl}
             propostaPdfUrl={propostaPdfUrl}
             logoUrl={logoUrl}
+            homeMockupUrl={homeMockupUrl}
             imagensPortfolio={imagensPortfolio}
             demoLinkInicial={demoLinkInicial}
             demoNichoInicial={demoNichoInicial}

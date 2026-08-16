@@ -45,6 +45,10 @@ const styles = StyleSheet.create({
   mockFooter: { backgroundColor: DARK, borderBottomLeftRadius: 8, borderBottomRightRadius: 8, padding: 12 },
   mockFooterTexto: { color: '#fff', fontSize: 8.5 },
 
+  // JPG pronto (subido pelo atendente) em vez da montagem automática
+  mockJpgWrap: { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
+  mockJpg: { width: '100%', borderRadius: 8, objectFit: 'contain' },
+
   ctaFinal: { flex: 1, justifyContent: 'center', alignItems: 'center', textAlign: 'center' },
   ctaTitulo: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: INK, marginBottom: 10, maxWidth: 380 },
   ctaTexto: { fontSize: 10.5, color: MUTED, lineHeight: 1.5, maxWidth: 380, marginBottom: 24 },
@@ -69,12 +73,15 @@ export interface PropostaLeadData {
   avaliacoesGoogle: number | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  homeMockupUrl: string | null
 }
 
 export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
   const tpl = getTemplateProposta(lead.segmento)
   const hoje = new Date().toLocaleDateString('pt-BR')
-  const temMockup = Boolean(lead.logoUrl) || lead.imagensPortfolio.length > 0
+  const temMockupAuto = Boolean(lead.logoUrl) || lead.imagensPortfolio.length > 0
+  const temMockupJpg = Boolean(lead.homeMockupUrl)
+  const temMockup = temMockupJpg || temMockupAuto
 
   return (
     <Document>
@@ -137,45 +144,120 @@ export default function PropostaDocument({ lead }: { lead: PropostaLeadData }) {
         <Footer nome={lead.nome} pagina="04" />
       </Page>
 
-      {/* Mockup — só entra se tiver logo ou pelo menos 1 foto */}
+      {/* Mockup — JPG pronto do atendente tem prioridade; senão monta
+          automático com logo + fotos; se não tiver nada, a página nem entra */}
       {temMockup && (
         <Page size="A4" style={styles.page}>
           <Text style={styles.kicker}>IDEIA VISUAL</Text>
           <Text style={styles.h1}>Como a home pode ficar</Text>
           <View style={styles.hrRed} />
 
-          <View>
-            <View style={styles.mockNav}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                {lead.logoUrl && <Image src={lead.logoUrl} style={styles.mockLogo} />}
-                <Text style={styles.mockNavNome}>{lead.nome}</Text>
+          {temMockupJpg ? (
+            <View style={styles.mockJpgWrap}>
+              <Image src={lead.homeMockupUrl!} style={styles.mockJpg} />
+            </View>
+          ) : (
+            <View>
+              {/* ===== BROWSER FRAME ===== */}
+              <View style={{ backgroundColor: '#F3F4F6', borderTopLeftRadius: 8, borderTopRightRadius: 8, paddingHorizontal: 10, paddingVertical: 6, flexDirection: 'row', alignItems: 'center', gap: 8, borderBottomWidth: 1, borderBottomColor: '#E5E7EB' }}>
+                <View style={{ flexDirection: 'row', gap: 4 }}>
+                  <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#D1D5DB' }} />
+                  <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#D1D5DB' }} />
+                  <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#D1D5DB' }} />
+                </View>
+                <View style={{ flex: 1, backgroundColor: '#fff', borderRadius: 4, paddingVertical: 3, paddingHorizontal: 8 }}>
+                  <Text style={{ fontSize: 7, color: MUTED }}>{lead.nome.toLowerCase().replace(/[^a-z0-9]/g, '')}.com.br</Text>
+                </View>
               </View>
-              <Text style={{ color: '#fff', fontSize: 8, fontFamily: 'Helvetica-Bold' }}>WHATSAPP</Text>
-            </View>
-            <View style={styles.mockHero}>
-              <Text style={styles.mockHeroTitulo}>{tpl.tagline}</Text>
-            </View>
-            <View style={styles.mockBadgesRow}>
-              {tpl.categorias.map(c => (
-                <Text key={c} style={styles.mockBadge}>{c}</Text>
-              ))}
-            </View>
-            {lead.imagensPortfolio.length > 0 && (
-              <View style={styles.mockGrid}>
-                {lead.imagensPortfolio.slice(0, 6).map((url, i) => (
-                  <Image key={i} src={url} style={styles.mockImg} />
-                ))}
+
+              {/* ===== NAV ===== */}
+              <View style={{ backgroundColor: DARK, paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  {lead.logoUrl && <Image src={lead.logoUrl} style={{ width: 22, height: 22, borderRadius: 4, objectFit: 'contain', backgroundColor: '#fff' }} />}
+                  <Text style={{ color: '#fff', fontSize: 11, fontFamily: 'Helvetica-Bold' }}>{lead.nome}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+                  {tpl.categorias.slice(0, 3).map(c => (
+                    <Text key={c} style={{ color: 'rgba(255,255,255,0.6)', fontSize: 7 }}>{c}</Text>
+                  ))}
+                  <View style={{ backgroundColor: '#25D366', borderRadius: 4, paddingVertical: 3, paddingHorizontal: 8 }}>
+                    <Text style={{ color: '#fff', fontSize: 7, fontFamily: 'Helvetica-Bold' }}>WhatsApp</Text>
+                  </View>
+                </View>
               </View>
-            )}
-            <View style={styles.mockFooter}>
-              <Text style={styles.mockFooterTexto}>
-                {lead.endereco ?? lead.bairro ?? ''}{lead.telefone ? `  •  ${lead.telefone}` : ''}
-              </Text>
+
+              {/* ===== HERO com foto de fundo ===== */}
+              <View style={{ backgroundColor: DARK, paddingHorizontal: 20, paddingVertical: 24, position: 'relative', minHeight: 100 }}>
+                {lead.imagensPortfolio.length > 0 && (
+                  <Image src={lead.imagensPortfolio[0]} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.3 }} />
+                )}
+                <Text style={{ color: '#fff', fontSize: 18, fontFamily: 'Helvetica-Bold', marginBottom: 6, maxWidth: 320, position: 'relative' }}>{tpl.tagline}</Text>
+                <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 9, marginBottom: 12, position: 'relative' }}>{lead.bairro ? `${lead.segmento ?? ''} · ${lead.bairro}` : (lead.segmento ?? '')}</Text>
+                <View style={{ flexDirection: 'row', gap: 8, position: 'relative' }}>
+                  <View style={{ backgroundColor: BRAND, borderRadius: 4, paddingVertical: 5, paddingHorizontal: 14 }}>
+                    <Text style={{ color: '#fff', fontSize: 8, fontFamily: 'Helvetica-Bold' }}>Entre em contato</Text>
+                  </View>
+                  <View style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', borderRadius: 4, paddingVertical: 5, paddingHorizontal: 14 }}>
+                    <Text style={{ color: '#fff', fontSize: 8 }}>Nossos servicos</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* ===== SERVIÇOS (categorias como cards) ===== */}
+              <View style={{ backgroundColor: '#fff', paddingHorizontal: 16, paddingVertical: 14 }}>
+                <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold', color: INK, marginBottom: 8 }}>Nossos servicos</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                  {tpl.categorias.map(c => (
+                    <View key={c} style={{ backgroundColor: '#F4F6F3', borderRadius: 6, paddingVertical: 8, paddingHorizontal: 12, flexGrow: 1 }}>
+                      <Text style={{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: INK, textAlign: 'center' }}>{c}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* ===== INSTAGRAM FEED — a estrela do produto ===== */}
+              {lead.imagensPortfolio.length > 0 && (
+                <View style={{ backgroundColor: '#FAFAF5', paddingHorizontal: 16, paddingVertical: 14, borderTopWidth: 1, borderTopColor: '#E5E7EB' }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: BRAND, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ color: '#fff', fontSize: 7, fontFamily: 'Helvetica-Bold' }}>{lead.nome[0]}</Text>
+                      </View>
+                      <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: INK }}>@{lead.nome.toLowerCase().replace(/[^a-z0-9]/g, '')}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: '#22C55E' }} />
+                      <Text style={{ fontSize: 7, color: '#22C55E', fontFamily: 'Helvetica-Bold' }}>Sincronizado automaticamente</Text>
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    {lead.imagensPortfolio.slice(0, 4).map((url, i) => (
+                      <View key={i} style={{ flex: 1 }}>
+                        <Image src={url} style={{ width: '100%', height: 90, borderRadius: 6, objectFit: 'cover' }} />
+                        <Text style={{ fontSize: 6.5, color: MUTED, marginTop: 3 }}>❤ {Math.floor(40 + Math.random() * 180)} curtidas</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <Text style={{ fontSize: 7, color: MUTED, textAlign: 'center', marginTop: 8 }}>
+                    Tudo o que voce postar no Instagram aparece aqui automaticamente
+                  </Text>
+                </View>
+              )}
+
+              {/* ===== RODAPÉ ===== */}
+              <View style={{ backgroundColor: DARK, borderBottomLeftRadius: 8, borderBottomRightRadius: 8, paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 8 }}>
+                  {lead.endereco ?? lead.bairro ?? ''}{lead.telefone ? `  ·  ${lead.telefone}` : ''}
+                </Text>
+                <Text style={{ color: 'rgba(255,255,255,0.4)', fontSize: 7 }}>omnidesign.com.br</Text>
+              </View>
             </View>
-          </View>
+          )}
 
           <Text style={{ fontSize: 8, color: MUTED, marginTop: 10 }}>
-            Ideia de direção visual — o layout final ganha ainda mais refinamento na conversa.
+            {temMockupJpg
+              ? 'Mockup preparado pela nossa equipe pra visualizacao.'
+              : 'Ideia de direcao visual — o layout final ganha ainda mais refinamento na conversa.'}
           </Text>
           <Footer nome={lead.nome} pagina="05" />
         </Page>

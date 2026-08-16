@@ -23,6 +23,7 @@ export interface LeadPotencialRowData {
   propostaGeradaEm: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  homeMockupUrl: string | null
   status: string
   created_at: string
   criadorNome: string | null
@@ -110,6 +111,7 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
           analisePdfUrl={lead.analise_pdf_url}
           propostaPdfUrl={lead.proposta_pdf_url}
           logoUrl={lead.logoUrl}
+          homeMockupUrl={lead.homeMockupUrl}
           imagensPortfolio={lead.imagensPortfolio}
           demoLinkInicial={lead.demoLink}
           demoNichoInicial={lead.demoNicho}

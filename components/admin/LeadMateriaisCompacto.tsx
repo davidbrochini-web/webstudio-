@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useEffect } from 'react'
-import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
+import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, updateLeadHomeMockup, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
 import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
 
@@ -158,20 +158,70 @@ function BotaoLogo({ id, urlAtual }: { id: string; urlAtual: string | null }) {
   )
 }
 
-function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
-  const [lista, setLista] = useState(imagens)
+function BotaoHomeMockup({ id, urlAtual }: { id: string; urlAtual: string | null }) {
   const [uploading, setUploading] = useState(false)
-  const [aberto, setAberto] = useState(false)
-  const [, startTransition] = useTransition()
+  const [url, setUrl] = useState(urlAtual)
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
     try {
-      const url = await uploadLeadImagem(id, 'portfolio', file)
-      await addLeadImagemPortfolio(id, url)
-      setLista(l => [...l, url])
+      const novaUrl = await uploadLeadImagem(id, 'home-mockup', file)
+      await updateLeadHomeMockup(id, novaUrl)
+      setUrl(novaUrl)
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+    }
+  }
+
+  function handleRemover() {
+    updateLeadHomeMockup(id, null)
+    setUrl(null)
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)]">
+      {url ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={url} alt="" className="w-4 h-4 rounded object-cover" />
+      ) : (
+        <span>🖼️</span>
+      )}
+      <span className="text-[var(--muted)]">JPG da home</span>
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer" className="text-[var(--brand)] underline underline-offset-2">ver</a>
+      )}
+      <label className="text-[var(--muted)] hover:text-[var(--brand)] cursor-pointer underline underline-offset-2">
+        {uploading ? '...' : url ? 'trocar' : 'enviar'}
+        <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleFile} />
+      </label>
+      {url && (
+        <button onClick={handleRemover} className="text-[var(--muted)] hover:text-red-500 underline underline-offset-2">
+          remover
+        </button>
+      )}
+    </div>
+  )
+}
+
+function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
+  const [lista, setLista] = useState(imagens)
+  const [uploading, setUploading] = useState(false)
+  const [aberto, setAberto] = useState(false)
+  const [, startTransition] = useTransition()
+
+  async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+    setUploading(true)
+    try {
+      for (const file of files) {
+        const url = await uploadLeadImagem(id, 'portfolio', file)
+        await addLeadImagemPortfolio(id, url)
+        setLista(l => [...l, url])
+      }
     } finally {
       setUploading(false)
       e.target.value = ''
@@ -194,7 +244,7 @@ function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
         🖼️ Fotos ({lista.length})
       </button>
       {aberto && (
-        <div className="absolute z-10 top-full left-0 mt-1 bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-2.5 shadow-lg w-56">
+        <div className="absolute z-10 top-full left-0 mt-1 bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-2.5 shadow-lg w-56 max-h-40 overflow-y-auto">
           <div className="flex flex-wrap gap-1.5">
             {lista.map((url, i) => (
               <div key={url} className="relative w-10 h-10">
@@ -210,7 +260,7 @@ function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
             ))}
             <label className="w-10 h-10 rounded-lg border border-dashed border-[var(--border)] flex items-center justify-center text-xs text-[var(--muted)] cursor-pointer hover:border-[var(--brand)] hover:text-[var(--brand)]">
               {uploading ? '···' : '+'}
-              <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleFile} />
+              <input type="file" accept="image/*" multiple className="hidden" disabled={uploading} onChange={handleFiles} />
             </label>
           </div>
         </div>
@@ -353,6 +403,7 @@ export default function LeadMateriaisCompacto({
   propostaPdfUrl,
   logoUrl,
   imagensPortfolio,
+  homeMockupUrl,
   demoLinkInicial,
   demoNichoInicial,
 }: {
@@ -364,6 +415,7 @@ export default function LeadMateriaisCompacto({
   propostaPdfUrl: string | null
   logoUrl: string | null
   imagensPortfolio: string[]
+  homeMockupUrl: string | null
   demoLinkInicial: string | null
   demoNichoInicial: string | null
 }) {
@@ -387,12 +439,19 @@ export default function LeadMateriaisCompacto({
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">① Proposta em PDF</p>
         <p className="text-[10px] text-[var(--muted)] mb-2">
           Sobe a logo e algumas fotos do negócio do lead aqui embaixo — o botão &quot;Gerar proposta&quot; usa
-          exatamente esses dois pra montar o PDF sozinho, junto com o que já está cadastrado do lead
-          (nome, segmento, avaliação no Google). Não precisa escrever nada na mão.
+          exatamente esses dois pra montar sozinha a página &quot;como a home pode ficar&quot;, junto com o
+          resto do PDF (nome, segmento, avaliação no Google). Não precisa escrever nada na mão.
         </p>
         <div className="flex flex-wrap gap-1.5 mb-2">
           <BotaoLogo id={id} urlAtual={logoUrl} />
           <BotaoPortfolio id={id} imagens={imagensPortfolio} />
+        </div>
+        <p className="text-[10px] text-[var(--muted)] mb-2">
+          Prefere montar a home você mesma (Canva, Figma...)? Sobe um JPG pronto aqui — ele substitui a
+          montagem automática só nessa página, o resto da proposta continua igual.
+        </p>
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          <BotaoHomeMockup id={id} urlAtual={homeMockupUrl} />
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <BotaoGerarProposta id={id} onGerado={setPropostaUrl} />

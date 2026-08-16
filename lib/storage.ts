@@ -90,7 +90,7 @@ export async function uploadContoImagem(siteId: string, file: File): Promise<str
  * que são públicos — isso é material de prospecção, não conteúdo
  * de site publicado). Path `{leadId}/{tipo}-{timestamp}.ext`.
  */
-export async function uploadLeadImagem(leadId: string, tipo: 'logo' | 'portfolio', file: File): Promise<string> {
+export async function uploadLeadImagem(leadId: string, tipo: 'logo' | 'portfolio' | 'home-mockup', file: File): Promise<string> {
   if (!file.type.startsWith('image/')) {
     throw new Error('Envie um arquivo de imagem (JPG, PNG, WEBP...).')
   }

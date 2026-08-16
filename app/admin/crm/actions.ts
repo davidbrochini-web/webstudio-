@@ -208,7 +208,7 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
   const { data: { user } } = await supabase.auth.getUser()
   const { data: lead, error: fetchError } = await supabase
     .from('leads_omnidesign')
-    .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio')
+    .select('nome, segmento, bairro, endereco, telefone, nota_google, avaliacoes_google, logo_url, imagens_portfolio, home_mockup_url')
     .eq('id', id)
     .single()
 
@@ -230,6 +230,7 @@ export async function gerarPropostaPdf(id: string): Promise<{ error?: string; ur
           avaliacoesGoogle: lead.avaliacoes_google,
           logoUrl: lead.logo_url,
           imagensPortfolio: lead.imagens_portfolio ?? [],
+          homeMockupUrl: lead.home_mockup_url,
         },
       })
     )
@@ -272,6 +273,23 @@ export async function updateLeadLogo(id: string, url: string) {
 
   const supabase = await createClient()
   const { error } = await supabase.from('leads_omnidesign').update({ logo_url: url }).eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+}
+
+/**
+ * JPG pronto de "como a home pode ficar", montado à mão pelo
+ * atendente (Canva, Figma etc.) — alternativa à montagem automática
+ * da página 4 da proposta (ver PropostaDocument.tsx). Upload feito
+ * no client, essa action só registra a URL. `url: null` remove (pra
+ * voltar a usar a montagem automática).
+ */
+export async function updateLeadHomeMockup(id: string, url: string | null) {
+  await requireSuperAdmin()
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('leads_omnidesign').update({ home_mockup_url: url }).eq('id', id)
   if (error) throw new Error(error.message)
 
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
