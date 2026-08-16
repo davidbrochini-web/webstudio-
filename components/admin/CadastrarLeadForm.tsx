@@ -45,7 +45,7 @@ export default function CadastrarLeadForm() {
 
   if (leadCriadoId) {
     return (
-      <div className="bg-white border border-[var(--border)] rounded-2xl p-6 max-w-2xl">
+      <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6 max-w-2xl">
         <p className="text-2xl mb-2">✅</p>
         <p className="font-display font-bold text-[var(--ink)] mb-1">Lead cadastrado!</p>
         <p className="text-sm text-[var(--muted)] mb-6">
@@ -100,7 +100,7 @@ export default function CadastrarLeadForm() {
   }
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl p-6 max-w-2xl">
+    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6 max-w-2xl">
       <form ref={formRef} action={formAction} className="flex flex-col gap-3">
         <input
           name="nome"

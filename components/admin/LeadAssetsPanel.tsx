@@ -95,7 +95,7 @@ function PortfolioUpload({ id, imagens }: { id: string; imagens: string[] }) {
             <button
               onClick={() => handleRemove(i)}
               disabled={pendingRemove}
-              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white border border-[var(--border)] text-[9px] text-[var(--muted)] flex items-center justify-center hover:text-red-500 hover:border-red-200"
+              className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[var(--card-bg)] border border-[var(--border)] text-[9px] text-[var(--muted)] flex items-center justify-center hover:text-red-500 hover:border-red-200"
             >
               ×
             </button>

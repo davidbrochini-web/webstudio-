@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LeadAtendimentoAbas from '@/components/admin/LeadAtendimentoAbas'
-import LeadWhatsappSimulador from '@/components/admin/LeadWhatsappSimulador'
+import LeadWhatsappSimulador, { type LeadWhatsappSimuladorHandle } from '@/components/admin/LeadWhatsappSimulador'
 import LeadStatusSelect from '@/components/admin/LeadStatusSelect'
 import ResponsavelSelect, { type Membro } from '@/components/admin/ResponsavelSelect'
 
@@ -41,6 +41,11 @@ export default function LeadAtendimentoModal({
 }) {
   const [refreshSignal, setRefreshSignal] = useState(0)
   const [temEscalonamento, setTemEscalonamento] = useState(false)
+  const simuladorRef = useRef<LeadWhatsappSimuladorHandle>(null)
+
+  async function handleEnviarParaSimulador(texto: string) {
+    await simuladorRef.current?.enviarTextoExterno(texto)
+  }
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -58,7 +63,7 @@ export default function LeadAtendimentoModal({
   return (
     <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-3 sm:p-6" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl w-full max-w-7xl h-full sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+        className="bg-[var(--card-bg)] rounded-2xl w-full max-w-7xl h-full sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -91,9 +96,9 @@ export default function LeadAtendimentoModal({
           <div className="min-h-0">
             <LeadAtendimentoAbas
               leadId={leadId}
-              telefone={telefone}
               refreshSignal={refreshSignal}
               onDadosChange={setTemEscalonamento}
+              onEnviarParaSimulador={handleEnviarParaSimulador}
               notas={notas}
               textoEnvio={textoEnvio}
               analisePdfUrl={analisePdfUrl}
@@ -108,6 +113,7 @@ export default function LeadAtendimentoModal({
           {/* Coluna direita: WhatsApp dominante, conversa só desse cliente */}
           <div className="min-h-0 flex flex-col">
             <LeadWhatsappSimulador
+              ref={simuladorRef}
               leadId={leadId}
               nome={nome}
               telefone={telefone}

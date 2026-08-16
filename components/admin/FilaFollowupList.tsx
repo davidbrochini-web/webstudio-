@@ -63,7 +63,7 @@ export default function FilaFollowupList({ itens }: { itens: FilaFollowupItem[] 
       {visiveis.map(item => {
         const textoParaCopiar = item.template?.trim() || item.textoEnvio || ''
         return (
-          <div key={item.leadId} className="bg-white border border-[var(--border)] rounded-2xl p-4">
+          <div key={item.leadId} className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-4">
             <div className="flex items-start justify-between gap-3 flex-wrap">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">

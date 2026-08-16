@@ -126,7 +126,7 @@ function NovaPerguntaForm({ leadId, onAdded }: { leadId: string; onAdded: () => 
         value={pergunta}
         onChange={e => { setPergunta(e.target.value); setBuscaInfo(null) }}
         placeholder="O que o cliente perguntou..."
-        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-white text-xs outline-none mb-2 focus:border-[var(--brand)]"
+        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] text-xs outline-none mb-2 focus:border-[var(--brand)]"
       />
       <div className="mb-2">
         <button
@@ -143,7 +143,7 @@ function NovaPerguntaForm({ leadId, onAdded }: { leadId: string; onAdded: () => 
         onChange={e => setResposta(e.target.value)}
         placeholder="Resposta (busque na base ou escreva manualmente)..."
         rows={2}
-        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-white text-xs outline-none resize-none mb-2 focus:border-[var(--brand)]"
+        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] text-xs outline-none resize-none mb-2 focus:border-[var(--brand)]"
       />
       <div className="flex items-center gap-2">
         <button

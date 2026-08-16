@@ -4,7 +4,6 @@ import { useState, useTransition } from 'react'
 import { updateLeadCampos, updateLeadPdfs, updateLeadLogo, addLeadImagemPortfolio, removeLeadImagemPortfolio, gerarPropostaPdf, criarDemoParaLead } from '@/app/admin/crm/actions'
 import { niches } from '@/lib/templates'
 import { uploadLeadPdf, uploadLeadImagem } from '@/lib/storage'
-import { linkWhatsapp } from '@/lib/whatsapp'
 
 function CampoEditavelCompacto({
   id,
@@ -12,18 +11,20 @@ function CampoEditavelCompacto({
   valorInicial,
   placeholder,
   rows = 2,
-  telefone,
+  onEnviarParaSimulador,
 }: {
   id: string
   campo: 'notas' | 'texto_envio'
   valorInicial: string | null
   placeholder: string
   rows?: number
-  telefone?: string | null
+  onEnviarParaSimulador?: (texto: string) => Promise<void>
 }) {
   const [valor, setValor] = useState(valorInicial ?? '')
   const [salvo, setSalvo] = useState(true)
   const [pending, startTransition] = useTransition()
+  const [enviando, setEnviando] = useState(false)
+  const [enviado, setEnviado] = useState(false)
 
   function handleSalvar() {
     startTransition(async () => {
@@ -32,12 +33,25 @@ function CampoEditavelCompacto({
     })
   }
 
+  function handleEnviarParaSimulador() {
+    if (!onEnviarParaSimulador || !valor.trim()) return
+    setEnviando(true)
+    setEnviado(false)
+    onEnviarParaSimulador(valor)
+      .then(() => {
+        setEnviado(true)
+        setTimeout(() => setEnviado(false), 3000)
+      })
+      .finally(() => setEnviando(false))
+  }
+
   // Só o campo "texto_envio" ganha o botão de enviar — "notas" é
-  // anotação interna, nunca vai pro cliente. Envio continua sempre
-  // manual (abre o WhatsApp com o texto pronto, quem manda é a
-  // pessoa) — nada aqui dispara mensagem sozinho, mesma regra de
-  // sempre até a ZAP-API existir de verdade.
-  const link = campo === 'texto_envio' && telefone && valor.trim() ? linkWhatsapp(telefone, valor) : null
+  // anotação interna, nunca vai pro cliente. O envio manda o texto
+  // direto pra conversa do simulador (mesma engine de análise que o
+  // resto do WhatsApp simulado usa) — nunca abre nada fora do CRM.
+  // Quando a ZAP-API existir de verdade, esse mesmo botão passa a
+  // mandar pro WhatsApp real em vez do simulado.
+  const podeEnviar = campo === 'texto_envio' && !!onEnviarParaSimulador
 
   return (
     <div>
@@ -54,18 +68,14 @@ function CampoEditavelCompacto({
             {pending ? 'Salvando...' : 'Salvar'}
           </button>
         )}
-        {link && (
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] font-bold text-white bg-[#25D366] px-2.5 py-1 rounded-full hover:opacity-90 transition-opacity"
+        {podeEnviar && (
+          <button
+            onClick={handleEnviarParaSimulador}
+            disabled={enviando || !valor.trim()}
+            className="text-[10px] font-bold text-white bg-[#25D366] px-2.5 py-1 rounded-full hover:opacity-90 transition-opacity disabled:opacity-50"
           >
-            Enviar para o cliente
-          </a>
-        )}
-        {campo === 'texto_envio' && valor.trim() && !telefone && (
-          <span className="text-[10px] text-[var(--muted)]">sem telefone cadastrado pra enviar</span>
+            {enviando ? 'Enviando...' : enviado ? 'Enviado ✓' : 'Enviar para o cliente'}
+          </button>
         )}
       </div>
     </div>
@@ -93,7 +103,7 @@ function BotaoPdf({ id, tipo, urlAtual }: { id: string; tipo: 'analise' | 'propo
   const label = tipo === 'analise' ? 'Análise' : 'Proposta'
 
   return (
-    <div className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-white">
+    <div className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)]">
       <span className={url ? 'text-[var(--brand)]' : 'text-[var(--muted)]'}>📄 {label}</span>
       {url && (
         <a href={url} target="_blank" rel="noopener noreferrer" className="text-[var(--brand)] underline underline-offset-2">ver</a>
@@ -124,7 +134,7 @@ function BotaoLogo({ id, urlAtual }: { id: string; urlAtual: string | null }) {
   }
 
   return (
-    <div className="flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-white">
+    <div className="flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)]">
       {url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt="" className="w-4 h-4 rounded object-contain" />
@@ -171,12 +181,12 @@ function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
     <div className="relative">
       <button
         onClick={() => setAberto(a => !a)}
-        className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-white text-[var(--muted)]"
+        className="flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)] text-[var(--muted)]"
       >
         🖼️ Fotos ({lista.length})
       </button>
       {aberto && (
-        <div className="absolute z-10 top-full left-0 mt-1 bg-white border border-[var(--border)] rounded-xl p-2.5 shadow-lg w-56">
+        <div className="absolute z-10 top-full left-0 mt-1 bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-2.5 shadow-lg w-56">
           <div className="flex flex-wrap gap-1.5">
             {lista.map((url, i) => (
               <div key={url} className="relative w-10 h-10">
@@ -184,7 +194,7 @@ function BotaoPortfolio({ id, imagens }: { id: string; imagens: string[] }) {
                 <img src={url} alt="" className="w-10 h-10 rounded-lg object-cover border border-[var(--border)]" />
                 <button
                   onClick={() => handleRemove(i)}
-                  className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-white border border-[var(--border)] text-[8px] text-[var(--muted)] flex items-center justify-center hover:text-red-500"
+                  className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[var(--card-bg)] border border-[var(--border)] text-[8px] text-[var(--muted)] flex items-center justify-center hover:text-red-500"
                 >
                   ×
                 </button>
@@ -248,7 +258,7 @@ function BotaoCriarDemo({
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide">
           Demo ativa {nichoAtivo ? `— ${nichoAtivo}` : ''}
         </p>
-        <div className="flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-white">
+        <div className="flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)]">
           <span className="text-[var(--muted)] truncate max-w-[180px]">{link}</span>
           <button onClick={handleCopiar} className="font-semibold text-[var(--brand)] underline underline-offset-2 flex-shrink-0">
             {copiado ? 'copiado ✓' : 'copiar'}
@@ -264,7 +274,7 @@ function BotaoCriarDemo({
       <select
         value={nicho}
         onChange={e => setNicho(e.target.value)}
-        className="text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-white text-[var(--ink)] outline-none"
+        className="text-[11px] px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)] text-[var(--ink)] outline-none"
       >
         {nichos.map(n => <option key={n.slug} value={n.slug}>{n.label}</option>)}
       </select>
@@ -311,7 +321,7 @@ function BotaoGerarProposta({ id }: { id: string }) {
 
 export default function LeadMateriaisCompacto({
   id,
-  telefone,
+  onEnviarParaSimulador,
   notas,
   textoEnvio,
   analisePdfUrl,
@@ -322,7 +332,7 @@ export default function LeadMateriaisCompacto({
   demoNichoInicial,
 }: {
   id: string
-  telefone: string | null
+  onEnviarParaSimulador: (texto: string) => Promise<void>
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
@@ -341,7 +351,7 @@ export default function LeadMateriaisCompacto({
 
       <div>
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Texto a enviar</p>
-        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} telefone={telefone} />
+        <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} onEnviarParaSimulador={onEnviarParaSimulador} />
       </div>
 
       <div>

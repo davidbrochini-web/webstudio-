@@ -24,11 +24,11 @@ export default async function AdminBlogPage() {
       </div>
 
       {posts.length === 0 ? (
-        <div className="bg-white border border-dashed border-[var(--border)] rounded-2xl p-10 text-center">
+        <div className="bg-[var(--card-bg)] border border-dashed border-[var(--border)] rounded-2xl p-10 text-center">
           <p className="text-sm text-[var(--muted)]">Nenhum post ainda.</p>
         </div>
       ) : (
-        <div className="bg-white border border-[var(--border)] rounded-2xl divide-y divide-[var(--border)] overflow-hidden">
+        <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl divide-y divide-[var(--border)] overflow-hidden">
           {posts.map(post => {
             const exibicao = statusExibicao(post)
             const cor = exibicao === 'Publicado'

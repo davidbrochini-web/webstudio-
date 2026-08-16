@@ -312,7 +312,7 @@ function PerfilSelect({ leadId, atual, confirmado, onSaved }: { leadId: string; 
       value={atual ?? ''}
       disabled={pending}
       onChange={e => handleChange(e.target.value)}
-      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-white outline-none cursor-pointer disabled:opacity-60 w-full"
+      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none cursor-pointer disabled:opacity-60 w-full"
     >
       <option value="">— nenhum detectado —</option>
       {Object.entries(PERFIL_LABELS).map(([value, label]) => (
@@ -337,7 +337,7 @@ function EstagioSelect({ leadId, atual, onSaved }: { leadId: string; atual: stri
       value={atual}
       disabled={pending}
       onChange={e => handleChange(e.target.value)}
-      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-white outline-none cursor-pointer disabled:opacity-60 w-full"
+      className="text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none cursor-pointer disabled:opacity-60 w-full"
     >
       {Object.entries(ESTAGIO_LABELS).map(([value, label]) => (
         <option key={value} value={value}>{label}</option>
@@ -460,7 +460,7 @@ function HitRow({ hit, onSaved }: { hit: HitAnalise; onSaved: () => void }) {
       </div>
       {hit.dicaAtendente && <p className="text-[10px] text-amber-600 mt-1">{hit.dicaAtendente}</p>}
       {hit.respostaRecomendada && (
-        <div className="mt-1.5 flex items-start justify-between gap-2 bg-white rounded-lg px-2.5 py-1.5">
+        <div className="mt-1.5 flex items-start justify-between gap-2 bg-[var(--card-bg)] rounded-lg px-2.5 py-1.5">
           <p className="text-[11px] text-[var(--ink)]">{hit.respostaRecomendada}</p>
           <button onClick={copiarResposta} className="text-[10px] font-semibold text-[var(--brand)] flex-shrink-0">
             {copiado ? '✓' : 'copiar'}
@@ -498,14 +498,14 @@ function RegistrarConversaForm({ leadId, onAnalisado }: { leadId: string; onAnal
         Registrar conversa colada
       </p>
       <p className="text-[10px] text-[var(--muted)] mb-2">
-        Uma mensagem por linha, prefixada com <code className="bg-white px-1 rounded">[A]</code> (atendente) ou <code className="bg-white px-1 rounded">[C]</code> (cliente).
+        Uma mensagem por linha, prefixada com <code className="bg-[var(--card-bg)] px-1 rounded">[A]</code> (atendente) ou <code className="bg-[var(--card-bg)] px-1 rounded">[C]</code> (cliente).
       </p>
       <textarea
         value={texto}
         onChange={e => setTexto(e.target.value)}
         placeholder={'[C] oi, vi o instagram de voces\n[A] Oi! Tudo bem? Me conta, hoje voces tem site...'}
         rows={4}
-        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-white text-xs outline-none resize-none mb-2 focus:border-[var(--brand)] font-mono"
+        className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] text-xs outline-none resize-none mb-2 focus:border-[var(--brand)] font-mono"
       />
       <div className="flex items-center gap-2">
         <button

@@ -78,7 +78,7 @@ export default async function GerenciarLeadsPage() {
           { label: 'Em aberto', valor: emAberto },
           { label: 'Convertidos', valor: convertidos },
         ].map(k => (
-          <div key={k.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 text-center">
+          <div key={k.label} className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 text-center">
             <p className="font-display font-extrabold text-3xl text-[var(--ink)]">{k.valor}</p>
             <p className="text-xs text-[var(--muted)] mt-1 font-medium">{k.label}</p>
           </div>

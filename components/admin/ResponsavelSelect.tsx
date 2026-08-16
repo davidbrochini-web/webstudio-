@@ -41,7 +41,7 @@ export default function ResponsavelSelect({
         value={current}
         disabled={pending}
         onChange={e => handleChange(e.target.value)}
-        className="text-xs font-medium px-2.5 py-1 rounded-full border border-[var(--border)] bg-white text-[var(--ink)] outline-none cursor-pointer disabled:opacity-60"
+        className="text-xs font-medium px-2.5 py-1 rounded-full border border-[var(--border)] bg-[var(--card-bg)] text-[var(--ink)] outline-none cursor-pointer disabled:opacity-60"
       >
         <option value="">Sem responsável</option>
         {membros.map(m => (

@@ -65,7 +65,7 @@ export default function DocIaViewer({
         </button>
       </div>
 
-      <div className="bg-white border border-[var(--border)] rounded-2xl p-6">
+      <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6">
         {conteudo.split('\n').map((linha, i) => renderLinha(linha, i))}
       </div>
     </div>

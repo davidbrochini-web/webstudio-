@@ -38,7 +38,7 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
   const temProposta = Boolean(lead.proposta_pdf_url)
 
   return (
-    <div className="bg-white rounded-2xl border border-[var(--border)] overflow-hidden">
+    <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border)] overflow-hidden">
       <div className="w-full flex items-center gap-4 p-4 hover:bg-[var(--off)] transition-colors">
         <button onClick={() => setAtendimentoAberto(true)} className="flex items-center gap-4 flex-1 min-w-0 text-left">
           <div className="flex-1 min-w-0">

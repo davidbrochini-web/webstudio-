@@ -30,7 +30,7 @@ export default async function LeadsSiteOmnidesignPage() {
           { label: 'Últimos 7 dias', valor: semana },
           { label: 'Total', valor: total },
         ].map(k => (
-          <div key={k.label} className="bg-white border border-[var(--border)] rounded-2xl p-5 text-center">
+          <div key={k.label} className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 text-center">
             <p className="font-display font-extrabold text-3xl text-[var(--ink)]">{k.valor}</p>
             <p className="text-xs text-[var(--muted)] mt-1 font-medium">{k.label}</p>
           </div>
@@ -50,7 +50,7 @@ export default async function LeadsSiteOmnidesignPage() {
             const ehHoje = data.toDateString() === agora.toDateString()
             return (
               <div key={l.id}
-                className={`bg-white rounded-2xl border p-5 ${ehHoje ? 'border-[#0EA5A0]/40 shadow-sm' : 'border-[var(--border)]'}`}>
+                className={`bg-[var(--card-bg)] rounded-2xl border p-5 ${ehHoje ? 'border-[#0EA5A0]/40 shadow-sm' : 'border-[var(--border)]'}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

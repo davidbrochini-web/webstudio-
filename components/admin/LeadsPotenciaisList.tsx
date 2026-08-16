@@ -60,7 +60,7 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
               className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
                 ativo
                   ? 'bg-[var(--dark)] text-white border-[var(--dark)]'
-                  : 'bg-white text-[var(--muted)] border-[var(--border)] hover:border-[var(--brand)] hover:text-[var(--ink)]'
+                  : 'bg-[var(--card-bg)] text-[var(--muted)] border-[var(--border)] hover:border-[var(--brand)] hover:text-[var(--ink)]'
               }`}
             >
               {tab.label} <span className={ativo ? 'text-white/60' : 'text-[var(--muted)]'}>({qtd})</span>
@@ -84,7 +84,7 @@ export default function LeadsPotenciaisList({ leads, membros }: { leads: LeadPot
           value={busca}
           onChange={e => setBusca(e.target.value)}
           placeholder="Buscar por nome, segmento, bairro, telefone ou e-mail..."
-          className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-white text-sm outline-none focus:border-[var(--brand)] mb-4"
+          className="w-full px-4 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] text-sm outline-none focus:border-[var(--brand)] mb-4"
         />
       )}
 

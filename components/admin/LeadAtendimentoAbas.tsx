@@ -17,9 +17,9 @@ const ABAS: { id: Aba; label: string }[] = [
 
 export default function LeadAtendimentoAbas({
   leadId,
-  telefone,
   refreshSignal,
   onDadosChange,
+  onEnviarParaSimulador,
   notas,
   textoEnvio,
   analisePdfUrl,
@@ -30,9 +30,9 @@ export default function LeadAtendimentoAbas({
   demoNichoInicial,
 }: {
   leadId: string
-  telefone: string | null
   refreshSignal: number
   onDadosChange: (temEscalonamento: boolean) => void
+  onEnviarParaSimulador: (texto: string) => Promise<void>
   notas: string | null
   textoEnvio: string | null
   analisePdfUrl: string | null
@@ -75,7 +75,7 @@ export default function LeadAtendimentoAbas({
         <div style={{ display: abaAtiva === 'proposta' ? 'block' : 'none' }}>
           <LeadMateriaisCompacto
             id={leadId}
-            telefone={telefone}
+            onEnviarParaSimulador={onEnviarParaSimulador}
             notas={notas}
             textoEnvio={textoEnvio}
             analisePdfUrl={analisePdfUrl}

@@ -19,7 +19,7 @@ export default async function LeadsPotenciaisHubPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl">
         <Link
           href="/admin/crm/leads-potenciais/gerenciar"
-          className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
         >
           <span className="text-3xl">🗂️</span>
           <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-4 mb-1">Gerenciar Leads</h2>
@@ -33,7 +33,7 @@ export default async function LeadsPotenciaisHubPage() {
 
         <Link
           href="/admin/crm/followups"
-          className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
         >
           <span className="text-3xl">⏰</span>
           <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-4 mb-1">Follow-ups de hoje</h2>
@@ -47,7 +47,7 @@ export default async function LeadsPotenciaisHubPage() {
 
         <Link
           href="/admin/crm/dicionario"
-          className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
         >
           <span className="text-3xl">🧠</span>
           <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-4 mb-1">Cérebro do CRM</h2>
@@ -61,7 +61,7 @@ export default async function LeadsPotenciaisHubPage() {
 
         <Link
           href="/admin/crm/leads-potenciais/cadastrar"
-          className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
         >
           <span className="text-3xl">➕</span>
           <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-4 mb-1">Cadastrar Leads</h2>

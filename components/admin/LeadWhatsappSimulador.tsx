@@ -1,20 +1,24 @@
 'use client'
 
-import { useState, useTransition, useRef, useEffect, useCallback } from 'react'
+import { useState, useTransition, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, type MensagemSimulada, type DetalheFeedback } from '@/app/admin/crm/inteligencia-actions'
 import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
-export default function LeadWhatsappSimulador({
-  leadId,
-  nome,
-  telefone,
-  onEnviado,
-}: {
+export interface LeadWhatsappSimuladorHandle {
+  enviarTextoExterno: (texto: string) => Promise<void>
+}
+
+const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
   leadId: string
   nome: string
   telefone: string | null
   onEnviado: () => void
-}) {
+}>(function LeadWhatsappSimulador({
+  leadId,
+  nome,
+  telefone,
+  onEnviado,
+}, ref) {
   const [mensagens, setMensagens] = useState<MensagemSimulada[]>([])
   const [carregando, setCarregando] = useState(true)
   const [direcao, setDirecao] = useState<'enviada' | 'recebida'>('enviada')
@@ -103,6 +107,24 @@ export default function LeadWhatsappSimulador({
     })
   }
 
+  // Exposto pra fora (aba Proposta) mandar o "Texto a enviar" direto pra
+  // essa mesma conversa — mesmo caminho de um envio manual normal: entra
+  // como mensagem do atendente, roda a análise, e dispara o cliente
+  // automático se estiver ativo. Nunca abre nada fora do simulador.
+  useImperativeHandle(ref, () => ({
+    async enviarTextoExterno(textoExterno: string) {
+      if (!textoExterno.trim()) return
+      setErro(null)
+      const resultado = await enviarMensagemSimulada(leadId, 'enviada', textoExterno)
+      carregar()
+      onEnviado()
+      if (resultado) mostrarFeedback(resultado.detalhes)
+      if (autoAtivo && !roteiroEncerrado) {
+        await dispararRespostaAuto(textoExterno)
+      }
+    },
+  }), [leadId, autoAtivo, roteiroEncerrado, carregar, onEnviado])
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -174,7 +196,7 @@ export default function LeadWhatsappSimulador({
             <select
               value={perfilAuto}
               onChange={e => handleTrocarPerfilAuto(e.target.value as PerfilSimulado)}
-              className="text-[11px] font-semibold px-2 py-1 rounded-lg border border-[var(--border)] bg-white outline-none cursor-pointer"
+              className="text-[11px] font-semibold px-2 py-1 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none cursor-pointer"
             >
               {Object.entries(PERFIL_SIMULADO_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
@@ -188,7 +210,7 @@ export default function LeadWhatsappSimulador({
             className={`text-[11px] font-bold px-2 py-1 rounded-lg border transition-colors disabled:opacity-30 ${
               confirmandoReset
                 ? 'bg-red-500 text-white border-red-500'
-                : 'bg-white text-[var(--muted)] border-[var(--border)] hover:border-red-300 hover:text-red-500'
+                : 'bg-[var(--card-bg)] text-[var(--muted)] border-[var(--border)] hover:border-red-300 hover:text-red-500'
             }`}
             title="Apaga as mensagens simuladas e reseta o termômetro/perfil/checklist desse lead"
           >
@@ -211,7 +233,12 @@ export default function LeadWhatsappSimulador({
           <div key={m.id} className={`flex ${m.direcao === 'enviada' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[75%] rounded-lg px-3 py-2 text-sm shadow-sm ${
-                m.direcao === 'enviada' ? 'bg-[#dcf8c6] text-[var(--ink)]' : 'bg-white text-[var(--ink)]'
+                // Bolhas do WhatsApp simulado imitam a tela de um celular de
+                // verdade — fundo sempre claro de propósito, então o texto
+                // também fica sempre escuro fixo aqui (nunca var(--ink), que
+                // vira claro no tema escuro do admin e ficaria ilegível em
+                // cima desse fundo claro que não muda com o tema).
+                m.direcao === 'enviada' ? 'bg-[#dcf8c6] text-[#0b1a12]' : 'bg-white text-[#111b21]'
               }`}
             >
               <p className="whitespace-pre-wrap break-words">{m.texto}</p>
@@ -282,7 +309,7 @@ export default function LeadWhatsappSimulador({
             <button
               onClick={() => setDirecao('recebida')}
               className={`text-[11px] font-bold px-2.5 py-1 transition-colors ${
-                direcao === 'recebida' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[var(--muted)]'
+                direcao === 'recebida' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[#4b5563]'
               }`}
             >
               Cliente
@@ -290,7 +317,7 @@ export default function LeadWhatsappSimulador({
             <button
               onClick={() => setDirecao('enviada')}
               className={`text-[11px] font-bold px-2.5 py-1 transition-colors ${
-                direcao === 'enviada' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[var(--muted)]'
+                direcao === 'enviada' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[#4b5563]'
               }`}
             >
               Atendente
@@ -313,7 +340,7 @@ export default function LeadWhatsappSimulador({
             disabled={pending || respondendo}
             autoFocus
             placeholder={direcao === 'recebida' ? 'Digite como se fosse o cliente...' : 'Digite como se fosse o atendente...'}
-            className="flex-1 min-w-0 px-3.5 py-2.5 rounded-full border border-[var(--border)] bg-white text-sm outline-none focus:border-[var(--brand)] disabled:opacity-60"
+            className="flex-1 min-w-0 px-3.5 py-2.5 rounded-full border border-[var(--border)] bg-white text-[#111b21] placeholder:text-[#8696a0] text-sm outline-none focus:border-[var(--brand)] disabled:opacity-60"
           />
           <button
             onClick={handleEnviar}
@@ -328,4 +355,6 @@ export default function LeadWhatsappSimulador({
       </div>
     </div>
   )
-}
+})
+
+export default LeadWhatsappSimulador

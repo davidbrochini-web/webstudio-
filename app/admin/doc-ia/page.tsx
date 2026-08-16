@@ -39,7 +39,7 @@ export default async function DocIaPage() {
               <Link
                 key={doc.slug}
                 href={`/admin/doc-ia/${doc.slug}`}
-                className="block bg-white border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--brand)] transition-colors"
+                className="block bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 hover:border-[var(--brand)] transition-colors"
               >
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-display font-bold text-[var(--ink)]">{doc.titulo}</p>

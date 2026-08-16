@@ -14,7 +14,7 @@ export default function NovoLeadPotencialForm() {
   }, [state.success])
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl p-6">
+    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6">
       <p className="font-display font-bold text-[var(--ink)] mb-4">Cadastrar empresa pra contatar</p>
       <form ref={formRef} action={formAction} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input

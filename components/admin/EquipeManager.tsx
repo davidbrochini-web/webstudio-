@@ -62,7 +62,7 @@ export default function EquipeManager({
 
   return (
     <div>
-      <div className="bg-white border border-[var(--border)] rounded-2xl divide-y divide-[var(--border)] overflow-hidden mb-6">
+      <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl divide-y divide-[var(--border)] overflow-hidden mb-6">
         {membros.map(m => (
           <div key={m.id} className="flex items-center justify-between gap-4 px-6 py-4">
             <div className="min-w-0">
@@ -82,7 +82,7 @@ export default function EquipeManager({
                   value={m.nivel_acesso}
                   onChange={e => handleMudarNivel(m.id, e.target.value as 'super_admin' | 'admin_nivel_1')}
                   disabled={m.id === meuId}
-                  className="text-xs font-semibold border border-[var(--border)] rounded-lg px-2.5 py-1.5 bg-white disabled:opacity-50"
+                  className="text-xs font-semibold border border-[var(--border)] rounded-lg px-2.5 py-1.5 bg-[var(--card-bg)] disabled:opacity-50"
                 >
                   <option value="super_admin">Super admin</option>
                   <option value="admin_nivel_1">Admin nível 1</option>
@@ -112,7 +112,7 @@ export default function EquipeManager({
 
       {souSuperAdmin && (
         formAberto ? (
-          <div className="bg-white border border-[var(--border)] rounded-2xl p-6 max-w-lg">
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6 max-w-lg">
             <h3 className="font-display font-bold text-base text-[var(--ink)] mb-4">Novo membro</h3>
             <div className="grid grid-cols-1 gap-4">
               <div>
@@ -133,7 +133,7 @@ export default function EquipeManager({
               <div>
                 <label className="text-xs font-semibold text-[var(--muted)] mb-1.5 block">Nível de acesso</label>
                 <select value={nivel} onChange={e => setNivel(e.target.value as 'super_admin' | 'admin_nivel_1')}
-                  className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm bg-white focus:outline-none focus:border-[var(--brand)]">
+                  className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm bg-[var(--card-bg)] focus:outline-none focus:border-[var(--brand)]">
                   <option value="admin_nivel_1">Admin nível 1 — vê tudo, não gerencia equipe</option>
                   <option value="super_admin">Super admin — acesso completo</option>
                 </select>

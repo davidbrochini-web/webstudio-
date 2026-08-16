@@ -50,7 +50,7 @@ function TestadorFrases() {
   }
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl p-5 mb-8">
+    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 mb-8">
       <p className="font-display font-bold text-[var(--ink)] mb-1">🧪 Testador de frases</p>
       <p className="text-xs text-[var(--muted)] mb-3">
         Cole uma frase real e veja o que o motor detectaria — nada é gravado, é só simulação.
@@ -59,13 +59,13 @@ function TestadorFrases() {
         <div className="flex rounded-lg border border-[var(--border)] overflow-hidden flex-shrink-0 self-start">
           <button
             onClick={() => setDirecao('recebida')}
-            className={`text-[11px] font-bold px-2.5 py-2 transition-colors ${direcao === 'recebida' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[var(--muted)]'}`}
+            className={`text-[11px] font-bold px-2.5 py-2 transition-colors ${direcao === 'recebida' ? 'bg-[var(--dark)] text-white' : 'bg-[var(--card-bg)] text-[var(--muted)]'}`}
           >
             Cliente
           </button>
           <button
             onClick={() => setDirecao('enviada')}
-            className={`text-[11px] font-bold px-2.5 py-2 transition-colors ${direcao === 'enviada' ? 'bg-[var(--dark)] text-white' : 'bg-white text-[var(--muted)]'}`}
+            className={`text-[11px] font-bold px-2.5 py-2 transition-colors ${direcao === 'enviada' ? 'bg-[var(--dark)] text-white' : 'bg-[var(--card-bg)] text-[var(--muted)]'}`}
           >
             Atendente
           </button>
@@ -157,7 +157,7 @@ function NovoPadraoForm({ onAdded }: { onAdded: () => void }) {
   }
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl p-5 mb-8">
+    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 mb-8">
       <button onClick={() => setAberto(a => !a)} className="w-full flex items-center gap-2 text-left">
         <span className={`text-[var(--muted)] text-[10px] transition-transform ${aberto ? 'rotate-90' : ''}`}>▶</span>
         <p className="font-display font-bold text-[var(--ink)]">➕ Adicionar padrão novo</p>
@@ -167,7 +167,7 @@ function NovoPadraoForm({ onAdded }: { onAdded: () => void }) {
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Categoria</p>
-            <select value={categoria} onChange={e => setCategoria(e.target.value)} className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-[var(--border)] bg-white outline-none">
+            <select value={categoria} onChange={e => setCategoria(e.target.value)} className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none">
               {Object.entries(CATEGORIA_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </div>
@@ -181,7 +181,7 @@ function NovoPadraoForm({ onAdded }: { onAdded: () => void }) {
           </div>
           <div>
             <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Quem fala</p>
-            <select value={direcao} onChange={e => setDirecao(e.target.value)} className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-[var(--border)] bg-white outline-none">
+            <select value={direcao} onChange={e => setDirecao(e.target.value)} className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none">
               <option value="recebida">Cliente</option>
               <option value="enviada">Atendente</option>
               <option value="ambas">Ambos</option>
@@ -240,7 +240,7 @@ function PadraoRow({ padrao, onChanged }: { padrao: PadraoDicionario; onChanged:
   const alertaFp = padrao.disparos >= 3 && padrao.falsosPositivos / padrao.disparos > 0.4
 
   return (
-    <div className={`border rounded-xl px-3 py-2 ${padrao.ativo ? 'border-[var(--border)] bg-white' : 'border-dashed border-[var(--border)] bg-[var(--off)] opacity-60'}`}>
+    <div className={`border rounded-xl px-3 py-2 ${padrao.ativo ? 'border-[var(--border)] bg-[var(--card-bg)]' : 'border-dashed border-[var(--border)] bg-[var(--off)] opacity-60'}`}>
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 min-w-0 flex-wrap">
           <p className="text-xs font-bold text-[var(--ink)]">&quot;{padrao.padrao}&quot;</p>
@@ -339,7 +339,7 @@ export default function DicionarioCuradoria({ padroesIniciais }: { padroesInicia
         <select
           value={filtroCategoria}
           onChange={e => setFiltroCategoria(e.target.value)}
-          className="text-xs font-semibold px-3 py-2 rounded-lg border border-[var(--border)] bg-white outline-none cursor-pointer"
+          className="text-xs font-semibold px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none cursor-pointer"
         >
           <option value="todas">Todas as categorias ({padroes.length})</option>
           {Object.entries(CATEGORIA_LABELS).map(([v, l]) => (
@@ -350,7 +350,7 @@ export default function DicionarioCuradoria({ padroesIniciais }: { padroesInicia
           value={busca}
           onChange={e => setBusca(e.target.value)}
           placeholder="Buscar padrão ou subtipo..."
-          className="flex-1 text-xs px-3 py-2 rounded-lg border border-[var(--border)] bg-white outline-none focus:border-[var(--brand)]"
+          className="flex-1 text-xs px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--card-bg)] outline-none focus:border-[var(--brand)]"
         />
       </div>
 

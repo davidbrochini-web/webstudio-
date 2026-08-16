@@ -83,7 +83,7 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
   }
 
   return (
-    <div className="bg-white border border-[var(--border)] rounded-2xl p-6 max-w-3xl">
+    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-6 max-w-3xl">
       <div className="grid grid-cols-1 gap-5">
         <div>
           <label className="text-xs font-semibold text-[var(--muted)] mb-1.5 block">Título</label>
@@ -173,7 +173,7 @@ export default function BlogPostForm({ post }: { post?: BlogPostOmnidesign }) {
             <select
               value={status}
               onChange={e => setStatus(e.target.value as 'rascunho' | 'publicado')}
-              className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)] bg-white"
+              className="w-full border border-[var(--border)] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)] bg-[var(--card-bg)]"
             >
               <option value="rascunho">Rascunho</option>
               <option value="publicado">Publicado</option>
