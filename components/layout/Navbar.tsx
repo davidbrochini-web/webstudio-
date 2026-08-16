@@ -5,8 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from './ThemeToggle'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 export default function Navbar() {
   const [open, setOpen] = useState(false)
 
@@ -58,27 +56,11 @@ export default function Navbar() {
         >
           ✨ Peça uma demo
         </Link>
-        <a
-          href={WA_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#25D366] text-white text-sm font-semibold hover:bg-[#22c55e] transition-all hover:-translate-y-px"
-        >
-          💬 WhatsApp
-        </a>
         </div>
 
-        {/* Mobile: theme toggle + WA button + hamburger */}
+        {/* Mobile: theme toggle + hamburger (WhatsApp já é o botão flutuante fixo) */}
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#25D366] text-white text-sm font-semibold"
-          >
-            💬 WhatsApp
-          </a>
           <button
             onClick={() => setOpen(!open)}
             aria-label="Menu"

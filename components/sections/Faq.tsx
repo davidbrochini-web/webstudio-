@@ -5,15 +5,15 @@ const faqs = [
   },
   {
     q: 'Quanto tempo demora até o site ficar pronto?',
-    a: 'Em até 48 horas seu site já está no ar, com domínio, hospedagem e SSL configurados. Você escolhe o modelo mais parecido com seu negócio e a gente ajusta o conteúdo pra você.',
+    a: 'Em até 48 horas seu site já está pronto e no ar. A gente já deixa tudo configurado pra você: o link que os clientes vão acessar, o espaço onde o site fica guardado e funcionando, e o selo de segurança que aparece no navegador. Você só escolhe o modelo mais parecido com seu negócio e a gente ajusta o conteúdo pra você.',
   },
   {
     q: 'Consigo mudar o conteúdo sozinho depois?',
-    a: 'Sim, a qualquer momento. Você tem acesso a um painel próprio onde edita textos, fotos, serviços e depoimentos na hora, sem precisar chamar ninguém.',
+    a: 'Sim, a qualquer momento. Você terá acesso a um painel próprio e intuitivo para editar textos, fotos, serviços e depoimentos na hora, sem precisar chamar ninguém.',
   },
   {
     q: 'O site conecta mesmo com o Instagram?',
-    a: 'Sim. Depois de autorizar o acesso uma única vez, tudo que você posta no feed aparece automaticamente no site — sem precisar subir a mesma foto duas vezes.',
+    a: 'Sim. Depois de autorizar o acesso uma única vez, tudo o que você postar no feed do Instagram aparece automaticamente no site.',
   },
   {
     q: 'E os sistemas internos, como funcionam?',
@@ -25,15 +25,15 @@ const faqs = [
   },
   {
     q: 'Meu site aparece no Google?',
-    a: 'Sim, todo site que criamos é otimizado tecnicamente para os mecanismos de busca. Presença no Google depende também de conteúdo e tempo, mas a base técnica já vem pronta.',
+    a: 'Sim, todo site que criamos já sai pronto do jeito que o Google gosta, pra facilitar aparecer nas buscas. Aparecer bem também depende do conteúdo e do tempo, mas a base técnica já vem pronta desde o primeiro dia.',
   },
   {
     q: 'Vocês também cuidam de anúncios, tipo Google Ads?',
-    a: 'Sim. Configuramos e gerenciamos campanhas de Google Ads e também de ChatGPT Ads — o formato novo de anúncio dentro de conversas com IA. Sem taxa fixa nem plano fechado: o investimento é orçado conforme o objetivo do seu negócio.',
+    a: 'Sim. Configuramos e gerenciamos campanhas de Google Ads e também de ChatGPT Ads — o formato novo de anúncio dentro de conversas com IA, que quase nenhuma empresa no Brasil está usando ainda. Sem taxa fixa nem plano fechado: o investimento é orçado conforme o objetivo do seu negócio.',
   },
   {
     q: 'O que é o Google Meu Negócio e vocês configuram isso?',
-    a: 'É o cadastro gratuito que faz sua empresa aparecer no mapa e na busca local do Google — endereço, horário, fotos, avaliações. Configuramos tudo isso pra você, é a base de qualquer estratégia de SEO local.',
+    a: 'É o cadastro gratuito que faz sua empresa aparecer no mapa e na busca do Google quando alguém procura um negócio como o seu perto dali — endereço, horário, fotos, avaliações. A gente configura tudo isso pra você; é o primeiro passo pra ser encontrado por quem já está procurando.',
   },
 ]
 

@@ -1,5 +1,3 @@
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 const siteOnlyItems = [
   'Site profissional criado para o seu negócio',
   'Hospedagem + SSL incluso',
@@ -30,7 +28,7 @@ const moduleItems = [
 
 const adsItems = [
   'Google Ads — pesquisa, display e remarketing',
-  'GPT Ads — anúncios dentro do ChatGPT (novo no Brasil)',
+  'GPT Ads — anúncios dentro do ChatGPT (chegou agora no Brasil, quase ninguém faz ainda)',
   'Configuração e estruturação da conta',
   'Otimização contínua de campanhas',
   'Relatório mensal de performance',
@@ -45,10 +43,13 @@ function CheckItem({ children }: { children: React.ReactNode }) {
   )
 }
 
-function FormularioLink() {
+function BotaoContato({ destaque = false }: { destaque?: boolean }) {
   return (
-    <a href="#contato" className="block text-xs text-center text-[var(--muted)] hover:text-[var(--brand)] transition-colors mt-2 underline underline-offset-2">
-      ou preencha o formulário →
+    <a href="#contato"
+      className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-base transition-all hover:-translate-y-px ${
+        destaque ? 'grad-bg text-white hover:opacity-90' : 'bg-[var(--dark)] text-white hover:opacity-90'
+      }`}>
+      📩 Entre em contato
     </a>
   )
 }
@@ -67,6 +68,14 @@ export default function Pricing() {
           </p>
         </div>
 
+        <div className="max-w-2xl mx-auto text-center mb-10 bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl px-6 py-5">
+          <p className="text-sm text-[var(--slate)] leading-relaxed">
+            <span className="font-display font-bold text-[var(--ink)]">Em até 48 horas</span> após o contrato
+            seu site já está no ar, com domínio, hospedagem e SSL configurados. Você escolhe o modelo mais
+            parecido com seu negócio e a gente ajusta o conteúdo pra você.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
 
           {/* Módulos internos — primeiro, é o mais em conta */}
@@ -79,12 +88,8 @@ export default function Pricing() {
             <ul className="space-y-3 mb-7">
               {moduleItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
-              Falar sobre módulos →
-            </a>
+            <BotaoContato />
             <p className="text-xs text-[var(--muted)] text-center mt-3">Pode combinar site + módulos no mesmo plano.</p>
-            <FormularioLink />
           </div>
 
           {/* Site (sem Instagram) */}
@@ -97,12 +102,7 @@ export default function Pricing() {
             <ul className="space-y-3 mb-7">
               {siteOnlyItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
-              Quero meu site →
-            </a>
-            <p className="text-xs text-[var(--muted)] text-center mt-3">Site no ar em até 48h após o contrato.</p>
-            <FormularioLink />
+            <BotaoContato />
           </div>
 
           {/* Site + Instagram — destaque */}
@@ -115,17 +115,13 @@ export default function Pricing() {
             <ul className="space-y-3 mb-7">
               {siteInstagramItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl grad-bg text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
-              Quero meu site →
-            </a>
+            <BotaoContato destaque />
             <p className="text-xs text-[var(--muted)] text-center mt-3">
-              Site no ar em até 48h após o contrato. Precisa de algo sob medida?{' '}
-              <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="text-[var(--brand)] font-semibold underline underline-offset-2">
+              Precisa de algo sob medida?{' '}
+              <a href="#contato" className="text-[var(--brand)] font-semibold underline underline-offset-2">
                 Fale sobre Projeto Especial
               </a>.
             </p>
-            <FormularioLink />
           </div>
 
           {/* Gestão de Anúncios */}
@@ -141,12 +137,8 @@ export default function Pricing() {
             <ul className="space-y-3 mb-7">
               {adsItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[var(--dark)] text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px">
-              Falar sobre anúncios →
-            </a>
+            <BotaoContato />
             <p className="text-xs text-[var(--muted)] text-center mt-3">Google Ads e GPT Ads no mesmo pacote.</p>
-            <FormularioLink />
           </div>
 
         </div>

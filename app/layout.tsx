@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 import GoogleAnalytics from '@/components/layout/GoogleAnalytics'
+import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         {children}
+        <WhatsAppFloat />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

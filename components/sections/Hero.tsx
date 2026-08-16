@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 function PhoneMockup() {
   return (
     <div className="animate-float w-[148px] flex-shrink-0 bg-[#0B1220] rounded-[24px] p-1.5 shadow-[0_28px_56px_rgba(0,0,0,.30),0_0_0_1px_rgba(160,193,91,.12)]">
@@ -87,23 +85,22 @@ export default function Hero() {
             precisa de tecnologia que funciona — sem complicação, sem depender
             de TI para cada detalhe.
           </p>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start">
-            <a href={WA_LINK} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#25D366] text-white font-semibold text-base hover:bg-[#22c55e] transition-all hover:-translate-y-px shadow-lg shadow-green-200">
-              💬 Falar com a gente
+          <div className="flex justify-center lg:justify-start">
+            <a href="#contato"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl grad-bg text-white font-semibold text-base hover:opacity-90 transition-all hover:-translate-y-px shadow-lg shadow-green-200">
+              📩 Entre em contato
             </a>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 justify-center lg:justify-start mt-4">
             <Link href="#instagram"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[var(--border)] text-[var(--slate)] font-semibold text-base hover:border-[var(--slate)] transition-colors">
-              📸 Ver Instagram automático →
+              className="text-sm font-semibold text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2">
+              📸 Ver Instagram automático
             </Link>
             <Link href="#modulos"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[var(--border)] text-[var(--slate)] font-semibold text-base hover:border-[var(--slate)] transition-colors">
-              🧩 Ver os módulos →
+              className="text-sm font-semibold text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2">
+              🧩 Ver os módulos
             </Link>
           </div>
-          <a href="#contato" className="inline-block text-sm text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2 mt-3">
-            ou prefere preencher um formulário? →
-          </a>
         </div>
 
         <div className="flex-1 flex items-center justify-center">

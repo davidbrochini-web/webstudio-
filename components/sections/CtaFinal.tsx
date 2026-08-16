@@ -1,5 +1,3 @@
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 import LeadFormOmnidesign from './LeadFormOmnidesign'
 
 export default function CtaFinal() {
@@ -11,18 +9,8 @@ export default function CtaFinal() {
         </h2>
         <p className="text-base text-white/70 leading-relaxed mb-9">
           A gente resolve tudo em 48 horas.<br className="hidden sm:block" />
-          Você só precisa chamar no WhatsApp.
+          Preencha o formulário abaixo que entraremos em contato o mais rápido possível.
         </p>
-        <a
-          href={WA_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-[var(--brand)] font-bold text-base hover:-translate-y-px hover:shadow-xl hover:shadow-black/10 transition-all"
-        >
-          💬 Chamar no WhatsApp agora
-        </a>
-
-        <p className="text-sm text-white/60 mt-8 mb-1">Ou, se preferir, preenche o formulário:</p>
         <LeadFormOmnidesign />
       </div>
     </section>

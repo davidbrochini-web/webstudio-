@@ -1,5 +1,3 @@
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 const servicos = [
   {
     icon: '🎯',
@@ -11,7 +9,7 @@ const servicos = [
     icon: '💬',
     title: 'ChatGPT Ads',
     badge: 'Novo',
-    desc: 'A publicidade chegou nas conversas com IA. A gente já está pronto pra colocar seu negócio nesse espaço desde o começo, antes da concorrência.',
+    desc: 'A publicidade chegou nas conversas com IA — e quase nenhuma empresa no Brasil está anunciando ali ainda. Quem começar agora sai na frente, com menos concorrência disputando o mesmo espaço.',
   },
   {
     icon: '📍',
@@ -60,19 +58,14 @@ export default function AdsServices() {
 
         <div className="flex flex-col items-center gap-3">
           <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#contato"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl grad-bg text-white text-sm font-bold hover:opacity-90 hover:scale-105 transition-all"
           >
-            💬 Quero saber mais
+            📩 Entre em contato
           </a>
           <p className="text-center text-sm text-[var(--muted)]">
             Orçamento sob medida pro seu negócio — sem plano fechado, sem letra miúda.
           </p>
-          <a href="#contato" className="text-xs text-[var(--muted)] hover:text-[var(--brand)] transition-colors underline underline-offset-2">
-            ou preencha o formulário →
-          </a>
         </div>
       </div>
     </section>

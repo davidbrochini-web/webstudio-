@@ -4,8 +4,6 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { layoutByArchetype } from '@/lib/layout-map'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 export function generateStaticParams() {
   return niches.map(n => ({ nicho: n.slug }))
 }
@@ -51,14 +49,6 @@ export default async function NichePreview(
           >
             ✨ Peça uma demo
           </Link>
-          <a
-            href={WA_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-bold bg-[#25D366] hover:bg-[#22c55e] transition-colors px-3 py-1.5 rounded-lg whitespace-nowrap"
-          >
-            Quero esse site
-          </a>
         </div>
       </div>
 

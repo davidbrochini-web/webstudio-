@@ -2,8 +2,6 @@ import Link from 'next/link'
 import { niches } from '@/lib/templates'
 import { unsplashPhotoFrom } from '@/lib/photos'
 
-const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
-
 const descs: Record<string, string> = {
   'clinica-odontologica': 'Agendamento pelo WhatsApp, tratamentos em destaque e antes/depois direto do Instagram.',
   'escola-curso': 'Captação de matrículas, grade de cursos e mural de atividades atualizado pelo Instagram.',
@@ -76,8 +74,8 @@ export default function Templates() {
 
         <p className="text-center text-sm text-[var(--muted)] mt-10">
           Não achou o seu nicho? A gente monta sob medida —{' '}
-          <a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="font-semibold text-[var(--brand)] underline underline-offset-2">
-            chama no WhatsApp
+          <a href="#contato" className="font-semibold text-[var(--brand)] underline underline-offset-2">
+            entre em contato
           </a>.
         </p>
       </div>
