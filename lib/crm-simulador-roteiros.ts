@@ -34,6 +34,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Já tem uns 3 anos que eu trabalho nisso',
       local: 'Fico em São Paulo mesmo, na zona leste',
       decisor: 'Sou eu mesmo que decido, pode fechar comigo direto',
+      pagamento: 'Pode ser como for mais rápido, só me manda o link que eu já pago',
+      materiais: 'Tenho logo e fotos sim, já separo tudo agora',
+      qtdProdutos: 'Uns 10 produtos pra já ir no ar, depois eu vou adicionando mais',
+      referencia: 'Não tenho referência não, confio no trabalho de vocês, só bota pra rodar',
+      contato: 'Pode falar direto nesse número mesmo, respondo rápido',
     },
     pesquisador: {
       segmento: 'Tenho uma clínica de estética, tô pesquisando bastante antes de decidir',
@@ -42,6 +47,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Tô no mercado há uns 2 anos',
       local: 'Fico na região do ABC, em São Paulo',
       decisor: 'Sou eu que decido, mas quero comparar direito antes',
+      pagamento: 'Ainda não sei, depende de como fechar comparado com as outras opções',
+      materiais: 'Tenho logo, as fotos eu preciso separar ainda',
+      qtdProdutos: 'Uns 15 produtos, mas isso pode mudar dependendo do que eu decidir',
+      referencia: 'Tenho alguns sites que eu gosto do estilo, posso mandar de referência',
+      contato: 'Pode ser por aqui mesmo, só que eu demoro um pouco pra responder às vezes',
     },
     preco: {
       segmento: 'Tenho uma pequena loja, o orçamento é meio apertado',
@@ -50,6 +60,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Umas 2 anos, ainda tô começando a crescer',
       local: 'Fico no interior de São Paulo',
       decisor: 'Sou eu, mas preciso que caiba no bolso',
+      pagamento: 'Prefiro parcelado se puder, o à vista pesa muito',
+      materiais: 'Tenho logo sim, fotos eu tiro com o celular mesmo',
+      qtdProdutos: 'Uns 8 produtos só, pra começar simples',
+      referencia: 'Não tenho referência não, só quero que fique bonito sem estourar o orçamento',
+      contato: 'Pode ser por aqui mesmo',
     },
     desconfiado: {
       segmento: 'Tenho uma barbearia, mas antes de falar mais quero ter certeza que vocês são de confiança',
@@ -58,6 +73,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Uns 4 anos, já vi muita gente prometendo e não entregando',
       local: 'Fico em São Paulo, mas prefiro não dar mais detalhes ainda',
       decisor: 'Sou eu que decido, mas só depois de ter certeza',
+      pagamento: 'Prefiro pagar só depois de ver que tá tudo certo, não gosto de pagar adiantado',
+      materiais: 'Tenho, mas só mando depois que fechar mesmo',
+      qtdProdutos: 'Uns 10, mas ainda tô decidindo se vou fechar',
+      referencia: 'Tenho sim, mas quero ver primeiro como vocês trabalham',
+      contato: 'Prefiro continuar por aqui mesmo, por enquanto',
     },
     ocupado: {
       segmento: 'Comércio. Pode ser rápido?',
@@ -66,6 +86,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Uns 3 anos',
       local: 'SP',
       decisor: 'Sou eu mesmo, manda resumido',
+      pagamento: 'Qualquer uma, manda o link',
+      materiais: 'Tenho tudo, te mando',
+      qtdProdutos: 'Uns 10',
+      referencia: 'Não, façam o que for melhor',
+      contato: 'Esse número mesmo',
     },
     entusiasmado: {
       segmento: 'Ah, eu tenho um espaço de yoga! Adoro o que faço, super empolgada com tudo isso',
@@ -74,6 +99,11 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
       tempo: 'Faz uns 2 aninhos, tá crescendo bem!',
       local: 'Fico em São Paulo, zona oeste, um cantinho bem gostoso!',
       decisor: 'Sou eu que decido, super animada pra começar logo!',
+      pagamento: 'Ah, qualquer forma tá ótimo pra mim, super tranquila com isso!',
+      materiais: 'Tenho logo e um monte de fotos legais, adoro fotografar o espaço!',
+      qtdProdutos: 'Ai, uns 12 serviços que eu ofereço, quero mostrar tudo!',
+      referencia: 'Tenho sim! Adoro um estilo mais colorido e alegre, combina com meu negócio!',
+      contato: 'Pode ser por aqui mesmo, super acessível!',
     },
   }
 
@@ -85,7 +115,37 @@ function perguntasQualificacao(perfil: PerfilSimulado): RespostaCondicional[] {
     { gatilhos: ['quanto tempo', 'ha quanto tempo', 'faz tempo que', 'tempo de mercado'], texto: r.tempo },
     { gatilhos: ['onde fica', 'qual cidade', 'localizacao', 'qual regiao'], texto: r.local },
     { gatilhos: ['voce que decide', 'quem decide', 'voce e quem aprova', 'e voce quem fecha', 'e voce quem decide'], texto: r.decisor },
+    { gatilhos: ['forma de pagamento', 'como e o pagamento', 'parcela', 'a vista'], texto: r.pagamento },
+    { gatilhos: ['tem logo', 'tem fotos', 'materiais que precisa', 'precisa de logo', 'manda a logo'], texto: r.materiais },
+    { gatilhos: ['quantos produtos', 'quantos servicos', 'quantos itens', 'quantidade de produtos'], texto: r.qtdProdutos },
+    { gatilhos: ['alguma referencia', 'estilo que gosta', 'cor que prefere', 'tem referencia'], texto: r.referencia },
+    { gatilhos: ['qual seu whatsapp', 'melhor telefone', 'como falo com voce', 'melhor forma de falar'], texto: r.contato },
   ]
+}
+
+// Rede de segurança pra qualquer pergunta que não caiu em nenhum
+// gatilho específico acima: se a fala do atendente tem cara de
+// pergunta (termina com "?" ou começa com palavra interrogativa) e
+// nada bateu, o cliente ainda assim reage no tom dele em vez de
+// ignorar e emendar a próxima fala do roteiro fixo sem relação
+// nenhuma — era a reclamação central ("ele fica só questionando,
+// não responde"). Isso não substitui gatilho específico (que dá
+// informação de verdade); é só pra nunca ficar mudo.
+const RESPOSTA_GENERICA: Record<PerfilSimulado, string> = {
+  decidido: 'Boa pergunta! Mas não me prendo em detalhe agora não, quero é fechar rápido',
+  pesquisador: 'Ótima pergunta, deixa eu anotar isso aqui pra comparar com as outras opções que tô vendo',
+  preco: 'Não sei te responder isso de cabeça, mas o que importa mesmo é saber se cabe no orçamento',
+  desconfiado: 'Hmm, boa pergunta... mas antes disso, me conta mais como vocês trabalham?',
+  ocupado: 'Não sei agora, depois vejo isso com calma',
+  entusiasmado: 'Ai que pergunta legal! Não sei te responder certinho, mas tô super animada com tudo isso!',
+}
+
+const PALAVRAS_INTERROGATIVAS = ['qual', 'quais', 'quanto', 'quantos', 'quantas', 'quando', 'onde', 'como', 'quem', 'por que', 'porque']
+
+function pareceUmaPergunta(msg: string): boolean {
+  const semAcento = msg.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+  if (semAcento.endsWith('?')) return true
+  return PALAVRAS_INTERROGATIVAS.some(p => semAcento.startsWith(p + ' '))
 }
 
 // Frases escritas propositalmente reaproveitando os padrões reais do
@@ -196,6 +256,15 @@ export function proximaRespostaAuto(
       const proximoIndice = Math.min(indiceAtual + 1, roteiro.sequencia.length)
       return { texto: cond.texto, proximoIndice }
     }
+  }
+
+  // Nenhum gatilho específico bateu — se a fala do atendente tem cara
+  // de pergunta, ainda assim reage no tom do perfil em vez de ignorar
+  // (ver RESPOSTA_GENERICA acima). Perguntas sem gatilho específico
+  // não têm informação de verdade pra dar, mas pelo menos "conversam".
+  if (pareceUmaPergunta(ultimaMsgAtendente)) {
+    const proximoIndice = Math.min(indiceAtual + 1, roteiro.sequencia.length)
+    return { texto: RESPOSTA_GENERICA[perfil], proximoIndice }
   }
 
   if (indiceAtual >= roteiro.sequencia.length) return null

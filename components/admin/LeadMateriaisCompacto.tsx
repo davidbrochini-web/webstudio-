@@ -343,32 +343,49 @@ export default function LeadMateriaisCompacto({
   demoNichoInicial: string | null
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <div>
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Observação</p>
+        <p className="text-[10px] text-[var(--muted)] mb-1.5">Anotação interna sua — o lead nunca vê isso.</p>
         <CampoEditavelCompacto id={id} campo="notas" valorInicial={notas} placeholder="Anote algo sobre o lead..." />
       </div>
 
       <div>
         <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Texto a enviar</p>
+        <p className="text-[10px] text-[var(--muted)] mb-1.5">Rascunho da mensagem — o botão manda pra conversa ao lado (simulada, por enquanto).</p>
         <CampoEditavelCompacto id={id} campo="texto_envio" valorInicial={textoEnvio} placeholder="Rascunho da mensagem/proposta..." rows={3} onEnviarParaSimulador={onEnviarParaSimulador} />
       </div>
 
-      <div>
-        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Documentos e materiais</p>
-        <div className="flex flex-wrap gap-1.5">
-          <BotaoPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
-          <BotaoPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
+      <div className="border border-[var(--border)] rounded-xl p-3">
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">① Proposta em PDF</p>
+        <p className="text-[10px] text-[var(--muted)] mb-2">
+          Sobe a logo e algumas fotos do negócio do lead aqui embaixo — o botão &quot;Gerar proposta&quot; usa
+          exatamente esses dois pra montar o PDF sozinho, junto com o que já está cadastrado do lead
+          (nome, segmento, avaliação no Google). Não precisa escrever nada na mão.
+        </p>
+        <div className="flex flex-wrap gap-1.5 mb-2">
           <BotaoLogo id={id} urlAtual={logoUrl} />
           <BotaoPortfolio id={id} imagens={imagensPortfolio} />
         </div>
-        <div className="mt-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <BotaoGerarProposta id={id} />
+          <span className="text-[10px] text-[var(--muted)]">↓ resultado fica salvo aqui:</span>
+          <BotaoPdf id={id} tipo="proposta" urlAtual={propostaPdfUrl} />
         </div>
       </div>
 
+      <div className="border border-[var(--border)] rounded-xl p-3">
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">② Documento de análise (avulso)</p>
+        <p className="text-[10px] text-[var(--muted)] mb-2">
+          PDF separado, sem relação com a proposta acima — pra guardar uma análise específica desse
+          lead (ex: simulação de investimento em anúncios). Sempre subido manualmente.
+        </p>
+        <BotaoPdf id={id} tipo="analise" urlAtual={analisePdfUrl} />
+      </div>
+
       <div>
-        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1.5">Demo pro lead</p>
+        <p className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wide mb-1">Demo pro lead</p>
+        <p className="text-[10px] text-[var(--muted)] mb-1.5">Escolhe o modelo mais parecido com o negócio dele — o site já nasce pronto, cheio, só falta personalizar.</p>
         <BotaoCriarDemo id={id} nichos={niches} linkInicial={demoLinkInicial} nichoInicial={demoNichoInicial} />
       </div>
     </div>
