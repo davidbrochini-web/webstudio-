@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect, useCallback } from 'react'
-import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, type MensagemSimulada } from '@/app/admin/crm/inteligencia-actions'
+import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, type MensagemSimulada, type DetalheFeedback } from '@/app/admin/crm/inteligencia-actions'
 import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
 export default function LeadWhatsappSimulador({
@@ -32,6 +32,15 @@ export default function LeadWhatsappSimulador({
   const [dica, setDica] = useState<string | null>(null)
   const [confirmandoReset, setConfirmandoReset] = useState(false)
   const [resetando, setResetando] = useState(false)
+  const [feedbackImediato, setFeedbackImediato] = useState<DetalheFeedback[]>([])
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function mostrarFeedback(detalhes: DetalheFeedback[]) {
+    if (detalhes.length === 0) return
+    setFeedbackImediato(detalhes)
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current)
+    feedbackTimerRef.current = setTimeout(() => setFeedbackImediato([]), 8000)
+  }
 
   const carregar = useCallback(() => {
     getMensagensSimuladas(leadId)
@@ -61,10 +70,11 @@ export default function LeadWhatsappSimulador({
     setRespondendo(true)
     await new Promise(r => setTimeout(r, 900 + Math.random() * 700)) // pausa natural, "digitando..."
     try {
-      await enviarMensagemSimulada(leadId, 'recebida', proxima.texto)
+      const resultado = await enviarMensagemSimulada(leadId, 'recebida', proxima.texto)
       setIndiceRoteiro(proxima.proximoIndice)
       carregar()
       onEnviado()
+      if (resultado) mostrarFeedback(resultado.detalhes)
     } catch {
       // se falhar, só para o auto silenciosamente — o atendente pode continuar manual
     } finally {
@@ -79,10 +89,11 @@ export default function LeadWhatsappSimulador({
     const direcaoEnviada = direcao
     startTransition(async () => {
       try {
-        await enviarMensagemSimulada(leadId, direcaoEnviada, textoEnviado)
+        const resultado = await enviarMensagemSimulada(leadId, direcaoEnviada, textoEnviado)
         setTexto('')
         carregar()
         onEnviado()
+        if (resultado) mostrarFeedback(resultado.detalhes)
         if (autoAtivo && direcaoEnviada === 'enviada' && !roteiroEncerrado) {
           dispararRespostaAuto(textoEnviado)
         }
@@ -222,6 +233,26 @@ export default function LeadWhatsappSimulador({
         <p className="text-[10px] text-amber-700 bg-amber-50 border-t border-amber-200 px-4 py-1.5 text-center">
           Roteiro automático desse perfil chegou ao fim — continue a conversa manualmente ou troque o perfil.
         </p>
+      )}
+
+      {/* Feedback imediato — aparece sozinho assim que a mensagem gera uma detecção relevante */}
+      {feedbackImediato.length > 0 && (
+        <div className="mx-3 mb-2 flex flex-col gap-1.5">
+          {feedbackImediato.map((f, i) => {
+            const ehErro = f.categoria === 'atendente_erro'
+            const cor = ehErro
+              ? 'bg-red-50 border-red-200 text-red-700'
+              : f.categoria === 'atendente_acerto'
+                ? 'bg-green-50 border-green-200 text-[var(--brand)]'
+                : 'bg-amber-50 border-amber-200 text-amber-800'
+            return (
+              <div key={i} className={`rounded-xl border px-3 py-2 flex items-start justify-between gap-2 ${cor}`}>
+                <p className="text-xs">{f.texto}</p>
+                <button onClick={() => setFeedbackImediato(fs => fs.filter((_, idx) => idx !== i))} className="text-xs opacity-60 hover:opacity-100 flex-shrink-0">✕</button>
+              </div>
+            )
+          })}
+        </div>
       )}
 
       {/* Card de dica — "me ajuda a responder" é orientação, não mensagem pronta */}

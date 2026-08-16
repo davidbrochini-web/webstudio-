@@ -81,6 +81,68 @@ function corDoScore(score: number) {
   return { barra: 'bg-[var(--brand)]', texto: 'text-[var(--brand)]' }
 }
 
+interface Recomendacao {
+  nivel: 'urgente' | 'atencao' | 'positivo' | 'neutro'
+  titulo: string
+  detalhe?: string
+}
+
+// Copiloto: junta termômetro + perfil + checklist + última detecção
+// num único "o que fazer agora" — em vez do atendente ter que juntar
+// as peças espalhadas pelo painel sozinho.
+function calcularRecomendacao(
+  conversa: AnaliseConversa | null,
+  hits: HitAnalise[],
+  escalonamento: EscalonamentoInfo
+): Recomendacao | null {
+  if (!conversa) return null
+
+  if (escalonamento.ativo) {
+    return { nivel: 'urgente', titulo: '🔔 Escalar pro gestor agora', detalhe: escalonamento.motivos.join(' · ') }
+  }
+
+  const ultimoHitReal = hits.find(h => !h.falsoPositivo)
+  if (ultimoHitReal && ultimoHitReal.direcao === 'recebida' && ultimoHitReal.categoria === 'objecao') {
+    return {
+      nivel: 'atencao',
+      titulo: '⚠️ Objeção ainda sem resposta',
+      detalhe: ultimoHitReal.respostaRecomendada ?? 'Responda antes de seguir pra outro assunto.',
+    }
+  }
+
+  if (conversa.scoreAtendente < 40) {
+    return { nivel: 'atencao', titulo: '🌡️ Conduta no vermelho', detalhe: 'Reveja o tom das últimas mensagens (ver detecções abaixo).' }
+  }
+
+  if (conversa.checklistPct === 100 && conversa.perfilLead === 'decidido' && conversa.estagio !== 'proposta_enviada') {
+    return { nivel: 'positivo', titulo: '🚀 Pronto pra propor', detalhe: 'Checklist completo + perfil decidido — avance pra proposta.' }
+  }
+
+  if (conversa.checklistPct < 100) {
+    return { nivel: 'neutro', titulo: '❓ Ainda faltam perguntas de qualificação', detalhe: 'Veja o checklist abaixo pra saber qual falta.' }
+  }
+
+  return { nivel: 'positivo', titulo: '✅ Conversa indo bem', detalhe: 'Sem pendência clara no momento.' }
+}
+
+const RECOMENDACAO_CORES: Record<Recomendacao['nivel'], string> = {
+  urgente: 'bg-red-50 border-red-200 text-red-700',
+  atencao: 'bg-amber-50 border-amber-200 text-amber-800',
+  positivo: 'bg-green-50 border-green-200 text-[var(--brand)]',
+  neutro: 'bg-[var(--off)] border-[var(--border)] text-[var(--ink)]',
+}
+
+function CopilotoCard({ recomendacao }: { recomendacao: Recomendacao | null }) {
+  if (!recomendacao) return null
+  return (
+    <div className={`rounded-xl border px-3.5 py-3 ${RECOMENDACAO_CORES[recomendacao.nivel]}`}>
+      <p className="text-[10px] font-bold uppercase tracking-wide opacity-70 mb-0.5">Copiloto — o que fazer agora</p>
+      <p className="text-sm font-bold">{recomendacao.titulo}</p>
+      {recomendacao.detalhe && <p className="text-xs mt-0.5 opacity-90">{recomendacao.detalhe}</p>}
+    </div>
+  )
+}
+
 export default function LeadCrmInteligencia({ leadId, refreshSignal, onDadosChange }: { leadId: string; refreshSignal?: number; onDadosChange?: (temEscalonamento: boolean) => void }) {
   const [conversa, setConversa] = useState<AnaliseConversa | null>(null)
   const [hits, setHits] = useState<HitAnalise[]>([])
@@ -113,20 +175,14 @@ export default function LeadCrmInteligencia({ leadId, refreshSignal, onDadosChan
 
   const score = conversa?.scoreAtendente ?? 50
   const cor = corDoScore(score)
+  const recomendacao = calcularRecomendacao(conversa, hits, escalonamento)
 
   return (
     <div className="flex flex-col gap-4">
       {erro && <p className="text-xs text-red-500">{erro}</p>}
       {carregando && !conversa && <p className="text-xs text-[var(--muted)]">Carregando análise...</p>}
 
-      {escalonamento.ativo && (
-        <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2.5">
-          <p className="text-xs font-bold text-red-700">🔔 Requer atenção</p>
-          <ul className="mt-1 text-xs text-red-600 list-disc list-inside">
-            {escalonamento.motivos.map(m => <li key={m}>{m}</li>)}
-          </ul>
-        </div>
-      )}
+      <CopilotoCard recomendacao={recomendacao} />
 
       {/* Termômetro + perfil + temperatura + estágio */}
       <div className="grid grid-cols-2 gap-3">

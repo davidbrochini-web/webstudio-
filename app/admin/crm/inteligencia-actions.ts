@@ -81,9 +81,27 @@ const ITENS_COMPLEMENTARES = ['faixa_investimento', 'concorrente_citado', 'siste
 // (§8 do blueprint). Se não, sugere a próxima pergunta pendente do
 // checklist. Fallback genérico se não tiver nada ainda.
 // ============================================================
+const TOM_POR_PERFIL: Record<string, string> = {
+  decidido: 'Não enrole: proponha o próximo passo concreto agora.',
+  pesquisador: 'Mostre prova social — projetos no ar, diferencial claro.',
+  preco: 'Nunca brigue por preço — reforce valor e o que está incluso.',
+  desconfiado: 'Transparência total, sem promessa inflada.',
+  ocupado: 'Seja breve — uma pergunta por vez, direto ao ponto.',
+  entusiasmado: 'Valide o entusiasmo, mas mantenha o escopo em foco.',
+}
+
 export async function sugerirResposta(leadId: string): Promise<string> {
   await requireSuperAdmin()
   const supabase = await createClient()
+
+  const { data: conversa } = await supabase
+    .from('crm_analise_conversa')
+    .select('perfil_lead')
+    .eq('lead_id', leadId)
+    .maybeSingle()
+
+  const tom = conversa?.perfil_lead ? TOM_POR_PERFIL[conversa.perfil_lead] : null
+  const prefixo = tom ? `[${tom}]\n\n` : ''
 
   const { data: hits, error: hitsError } = await supabase
     .from('crm_analise_hits')
@@ -99,7 +117,7 @@ export async function sugerirResposta(leadId: string): Promise<string> {
   for (const h of hits ?? []) {
     const dic = Array.isArray(h.dicionario) ? h.dicionario[0] : h.dicionario
     if (dic?.categoria === 'objecao' && dic.resposta_recomendada) {
-      return dic.resposta_recomendada
+      return prefixo + dic.resposta_recomendada
     }
   }
 
@@ -115,10 +133,10 @@ export async function sugerirResposta(leadId: string): Promise<string> {
 
   const proximoItem = qualificacao?.[0]
   if (proximoItem && SUGESTOES_CHECKLIST[proximoItem.item]) {
-    return SUGESTOES_CHECKLIST[proximoItem.item]
+    return prefixo + SUGESTOES_CHECKLIST[proximoItem.item]
   }
 
-  return 'Posso te ajudar com mais alguma coisa ou já fica claro o próximo passo?'
+  return prefixo + 'Posso te ajudar com mais alguma coisa ou já fica claro o próximo passo?'
 }
 
 // ============================================================
@@ -243,7 +261,20 @@ export async function getMensagensSimuladas(leadId: string): Promise<MensagemSim
   return (data ?? []).map(m => ({ id: m.id, direcao: m.direcao, texto: m.texto, createdAt: m.created_at }))
 }
 
-export async function registrarConversaColada(leadId: string, texto: string) {
+export interface DetalheFeedback {
+  categoria: string
+  texto: string
+}
+
+export interface ResultadoAnalise {
+  score_atendente: number
+  perfil_lead: string | null
+  checklist_pct: number
+  hits_novos: number
+  detalhes: DetalheFeedback[]
+}
+
+export async function registrarConversaColada(leadId: string, texto: string): Promise<ResultadoAnalise | null> {
   await requireSuperAdmin()
   if (!texto.trim()) throw new Error('Cole a conversa antes de analisar.')
 
@@ -262,7 +293,7 @@ export async function registrarConversaColada(leadId: string, texto: string) {
 // Simulador de WhatsApp — 1 mensagem por vez, mesmo caminho que o
 // webhook real vai usar na Fase 3.
 // ============================================================
-export async function enviarMensagemSimulada(leadId: string, direcao: 'enviada' | 'recebida', texto: string) {
+export async function enviarMensagemSimulada(leadId: string, direcao: 'enviada' | 'recebida', texto: string): Promise<ResultadoAnalise | null> {
   await requireSuperAdmin()
   if (!texto.trim()) throw new Error('Digite uma mensagem.')
 
