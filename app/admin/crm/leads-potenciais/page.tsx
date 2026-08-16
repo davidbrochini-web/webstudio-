@@ -46,6 +46,20 @@ export default async function LeadsPotenciaisHubPage() {
         </Link>
 
         <Link
+          href="/admin/crm/dicionario"
+          className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
+        >
+          <span className="text-3xl">🧠</span>
+          <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-4 mb-1">Cérebro do CRM</h2>
+          <p className="text-sm text-[var(--muted)] leading-relaxed mb-3">
+            Padrões que o motor reconhece nas conversas — adicione variações, corrija falsos positivos, teste frases.
+          </p>
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--brand)] group-hover:gap-2.5 transition-all">
+            Abrir →
+          </span>
+        </Link>
+
+        <Link
           href="/admin/crm/leads-potenciais/cadastrar"
           className="group bg-white border border-[var(--border)] rounded-2xl p-7 hover:border-[var(--brand)] hover:shadow-lg hover:shadow-green-50 transition-all"
         >
