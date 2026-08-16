@@ -5,11 +5,19 @@ import LeadAtendimentoAbas from '@/components/admin/LeadAtendimentoAbas'
 import LeadWhatsappSimulador, { type LeadWhatsappSimuladorHandle } from '@/components/admin/LeadWhatsappSimulador'
 import LeadStatusSelect from '@/components/admin/LeadStatusSelect'
 import ResponsavelSelect, { type Membro } from '@/components/admin/ResponsavelSelect'
+import LeadEditarModal from '@/components/admin/LeadEditarModal'
+import type { LeadDadosCompletos } from '@/app/admin/crm/actions'
 
 export default function LeadAtendimentoModal({
   leadId,
   nome,
   telefone,
+  email,
+  segmento,
+  bairro,
+  endereco,
+  siteAtualUrl,
+  instagramUrl,
   status,
   responsavelId,
   membros,
@@ -27,6 +35,12 @@ export default function LeadAtendimentoModal({
   leadId: string
   nome: string
   telefone: string | null
+  email: string | null
+  segmento: string | null
+  bairro: string | null
+  endereco: string | null
+  siteAtualUrl: string | null
+  instagramUrl: string | null
   status: string
   responsavelId: string | null
   membros: Membro[]
@@ -43,6 +57,11 @@ export default function LeadAtendimentoModal({
 }) {
   const [refreshSignal, setRefreshSignal] = useState(0)
   const [temEscalonamento, setTemEscalonamento] = useState(false)
+  const [editarAberto, setEditarAberto] = useState(false)
+  const [dadosLead, setDadosLead] = useState<LeadDadosCompletos>({
+    nome, telefone, email, segmento, bairro, endereco,
+    siteAtualUrl, instagramUrl, notas,
+  })
   const simuladorRef = useRef<LeadWhatsappSimuladorHandle>(null)
 
   async function handleEnviarParaSimulador(texto: string) {
@@ -71,7 +90,13 @@ export default function LeadAtendimentoModal({
         {/* Header */}
         <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-[var(--border)] flex-shrink-0">
           <div className="flex items-center gap-3 min-w-0">
-            <p className="font-display font-bold text-[var(--ink)] text-base truncate">{nome}</p>
+            <p className="font-display font-bold text-[var(--ink)] text-base truncate">{dadosLead.nome}</p>
+            <button
+              onClick={() => setEditarAberto(true)}
+              className="text-[10px] font-bold text-[var(--muted)] hover:text-[var(--brand)] bg-[var(--off)] hover:bg-green-50 border border-[var(--border)] px-2 py-0.5 rounded-full flex-shrink-0 transition-colors"
+            >
+              ✏️ Editar cliente
+            </button>
             <span className="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full flex-shrink-0">
               🧪 SIMULAÇÃO
             </span>
@@ -101,7 +126,7 @@ export default function LeadAtendimentoModal({
               refreshSignal={refreshSignal}
               onDadosChange={setTemEscalonamento}
               onEnviarParaSimulador={handleEnviarParaSimulador}
-              notas={notas}
+              notas={dadosLead.notas}
               textoEnvio={textoEnvio}
               analisePdfUrl={analisePdfUrl}
               propostaPdfUrl={propostaPdfUrl}
@@ -118,12 +143,21 @@ export default function LeadAtendimentoModal({
             <LeadWhatsappSimulador
               ref={simuladorRef}
               leadId={leadId}
-              nome={nome}
-              telefone={telefone}
+              nome={dadosLead.nome}
+              telefone={dadosLead.telefone}
               onEnviado={() => setRefreshSignal(s => s + 1)}
             />
           </div>
         </div>
+
+        {editarAberto && (
+          <LeadEditarModal
+            leadId={leadId}
+            dadosIniciais={dadosLead}
+            onClose={() => setEditarAberto(false)}
+            onSalvo={setDadosLead}
+          />
+        )}
       </div>
     </div>
   )

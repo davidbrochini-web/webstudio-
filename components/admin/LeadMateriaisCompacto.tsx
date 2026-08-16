@@ -26,6 +26,14 @@ function CampoEditavelCompacto({
   const [enviando, setEnviando] = useState(false)
   const [enviado, setEnviado] = useState(false)
 
+  // Sincroniza se valorInicial mudar por fora (ex: "Editar cliente"
+  // também edita "notas") — sem isso, esse campo ficava mostrando o
+  // valor antigo até fechar e reabrir o atendimento.
+  useEffect(() => {
+    setValor(valorInicial ?? '')
+    setSalvo(true)
+  }, [valorInicial])
+
   function handleSalvar() {
     startTransition(async () => {
       await updateLeadCampos(id, { [campo]: valor })

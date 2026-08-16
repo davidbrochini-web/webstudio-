@@ -14,6 +14,8 @@ export interface LeadPotencialRowData {
   segmento: string | null
   bairro: string | null
   endereco: string | null
+  siteAtualUrl: string | null
+  instagramUrl: string | null
   notaGoogle: number | null
   avaliacoesGoogle: number | null
   notas: string | null
@@ -103,6 +105,12 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
           leadId={lead.id}
           nome={lead.nome}
           telefone={lead.telefone}
+          email={lead.email}
+          segmento={lead.segmento}
+          bairro={lead.bairro}
+          endereco={lead.endereco}
+          siteAtualUrl={lead.siteAtualUrl}
+          instagramUrl={lead.instagramUrl}
           status={lead.status}
           responsavelId={lead.responsavelId}
           membros={membros}

@@ -376,6 +376,57 @@ export async function updateLeadCampos(id: string, campos: { notas?: string; tex
   revalidatePath('/admin/crm/leads-potenciais/gerenciar')
 }
 
+export interface LeadDadosCompletos {
+  nome: string
+  telefone: string | null
+  email: string | null
+  segmento: string | null
+  bairro: string | null
+  endereco: string | null
+  siteAtualUrl: string | null
+  instagramUrl: string | null
+  notas: string | null
+}
+
+/**
+ * Atualiza os dados cadastrais do lead — usado pelo botão "Editar
+ * cliente" no atendimento. Diferente de updateLeadCampos (que só
+ * mexe em notas/texto_envio), esse cobre o cadastro inteiro:
+ * identificação, contato, endereço e os dois campos novos (site
+ * atual, Instagram).
+ */
+export async function updateLeadDadosCompletos(id: string, dados: LeadDadosCompletos): Promise<{ error?: string }> {
+  try {
+    await requireSuperAdmin()
+  } catch {
+    return { error: 'Acesso negado.' }
+  }
+
+  const nome = dados.nome.trim()
+  if (!nome) return { error: 'Nome da empresa é obrigatório.' }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('leads_omnidesign')
+    .update({
+      nome,
+      telefone: dados.telefone?.trim() || null,
+      email: dados.email?.trim() || null,
+      segmento: dados.segmento?.trim() || null,
+      bairro: dados.bairro?.trim() || null,
+      endereco: dados.endereco?.trim() || null,
+      site_atual_url: dados.siteAtualUrl?.trim() || null,
+      instagram_url: dados.instagramUrl?.trim() || null,
+      notas: dados.notas?.trim() || null,
+    })
+    .eq('id', id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/crm/leads-potenciais/gerenciar')
+  return {}
+}
+
 /**
  * Soft-delete de um lead potencial (não usamos DELETE de verdade,
  * mesmo padrão do resto da plataforma — não existe policy de delete).

@@ -10,6 +10,7 @@ export default async function GerenciarLeadsPage() {
     .from('leads_omnidesign')
     .select(`
       id, nome, telefone, email, segmento, bairro, endereco,
+      site_atual_url, instagram_url,
       nota_google, avaliacoes_google, notas, texto_envio,
       analise_pdf_url, proposta_pdf_url, proposta_gerada_em, logo_url, imagens_portfolio, home_mockup_url,
       status, created_at,
@@ -110,6 +111,8 @@ export default async function GerenciarLeadsPage() {
               segmento: l.segmento,
               bairro: l.bairro,
               endereco: l.endereco,
+              siteAtualUrl: l.site_atual_url,
+              instagramUrl: l.instagram_url,
               notaGoogle: l.nota_google,
               avaliacoesGoogle: l.avaliacoes_google,
               notas: l.notas,
