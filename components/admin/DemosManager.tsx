@@ -8,6 +8,8 @@ export interface DemoTenant {
   nome: string
   created_at: string
   site: { slug: string; pagelayout: string } | null
+  leadNome?: string | null
+  leadStatus?: string | null
 }
 
 export default function DemosManager({ tenants: initialTenants }: { tenants: DemoTenant[] }) {
@@ -64,6 +66,7 @@ export default function DemosManager({ tenants: initialTenants }: { tenants: Dem
                 <p className="text-sm font-semibold text-[var(--ink)] truncate">{t.nome}</p>
                 <p className="text-xs text-[var(--muted)]">
                   {t.site?.pagelayout ?? '—'} · {new Date(t.created_at).toLocaleString('pt-BR')}
+                  {t.leadNome && <> · lead: {t.leadNome}</>}
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
