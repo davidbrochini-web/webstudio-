@@ -52,6 +52,19 @@ export interface MensagemSimulada {
   createdAt: string
 }
 
+export interface AuditoriaSimulacaoItem {
+  id: string
+  leadNome: string
+  perfilSimulado: string
+  problema: string
+  solucaoSugerida: string | null
+  conversaSnapshot: MensagemSimulada[]
+  status: 'pendente' | 'resolvido'
+  createdAt: string
+  resolvidoEm: string | null
+  autorNome: string | null
+}
+
 export interface EscalonamentoInfo {
   ativo: boolean
   motivos: string[]
@@ -249,6 +262,36 @@ export async function getCrmInteligencia(leadId: string) {
 // ============================================================
 // Registrar conversa colada (bloco de texto [A]/[C])
 // ============================================================
+export async function getAuditoriasSimulador(): Promise<AuditoriaSimulacaoItem[]> {
+  await requireSuperAdmin()
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('crm_simulador_auditorias')
+    .select(`
+      id, perfil_simulado, problema, solucao_sugerida, conversa_snapshot, status, created_at, resolvido_em,
+      lead:leads_omnidesign ( nome ),
+      autor:profiles!crm_simulador_auditorias_criado_por_fkey ( nome )
+    `)
+    .order('status', { ascending: true })
+    .order('created_at', { ascending: false })
+    .limit(200)
+
+  if (error) throw new Error(error.message)
+
+  return (data ?? []).map((a: any) => ({
+    id: a.id,
+    leadNome: a.lead?.nome ?? 'Lead removido',
+    perfilSimulado: a.perfil_simulado,
+    problema: a.problema,
+    solucaoSugerida: a.solucao_sugerida,
+    conversaSnapshot: a.conversa_snapshot ?? [],
+    status: a.status,
+    createdAt: a.created_at,
+    resolvidoEm: a.resolvido_em,
+    autorNome: a.autor?.nome ?? null,
+  }))
+}
+
 export async function getMensagensSimuladas(leadId: string): Promise<MensagemSimulada[]> {
   await requireSuperAdmin()
   const supabase = await createClient()
@@ -259,6 +302,77 @@ export async function getMensagensSimuladas(leadId: string): Promise<MensagemSim
     .order('created_at', { ascending: true })
   if (error) throw new Error(error.message)
   return (data ?? []).map(m => ({ id: m.id, direcao: m.direcao, texto: m.texto, createdAt: m.created_at }))
+}
+
+/**
+ * Botão "🔍 Auditoria de simulação" no LeadWhatsappSimulador — a
+ * atendente sinaliza um problema encontrado no cliente automático
+ * (roteiro travou, respondeu errado, ignorou pergunta etc.), junto
+ * com uma sugestão de solução. Guarda o snapshot da conversa inteira
+ * até esse ponto, pra virar pendência de melhoria em
+ * lib/crm-simulador-roteiros.ts depois — sem depender de lembrar ou
+ * printar tela.
+ */
+export async function registrarAuditoriaSimulacao(
+  leadId: string,
+  perfilSimulado: string,
+  problema: string,
+  solucaoSugerida: string | null
+): Promise<{ error?: string }> {
+  try {
+    await requireSuperAdmin()
+  } catch {
+    return { error: 'Acesso negado.' }
+  }
+
+  const problemaTrim = problema.trim()
+  if (!problemaTrim) return { error: 'Descreve o problema antes de salvar.' }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const conversa = await getMensagensSimuladas(leadId)
+
+  const { error } = await supabase.from('crm_simulador_auditorias').insert({
+    lead_id: leadId,
+    perfil_simulado: perfilSimulado,
+    problema: problemaTrim,
+    solucao_sugerida: solucaoSugerida?.trim() || null,
+    conversa_snapshot: conversa,
+    criado_por: user?.id ?? null,
+  })
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/crm/auditorias-simulador')
+  return {}
+}
+
+/**
+ * Marca/desmarca uma auditoria de simulação como resolvida — usado
+ * na tela de revisão (/admin/crm/auditorias-simulador) depois que a
+ * lógica do roteiro (lib/crm-simulador-roteiros.ts) foi ajustada.
+ */
+export async function marcarAuditoriaResolvida(id: string, resolvido: boolean): Promise<{ error?: string }> {
+  try {
+    await requireSuperAdmin()
+  } catch {
+    return { error: 'Acesso negado.' }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('crm_simulador_auditorias')
+    .update({
+      status: resolvido ? 'resolvido' : 'pendente',
+      resolvido_em: resolvido ? new Date().toISOString() : null,
+    })
+    .eq('id', id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/admin/crm/auditorias-simulador')
+  return {}
 }
 
 export interface DetalheFeedback {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
-import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, type MensagemSimulada, type DetalheFeedback } from '@/app/admin/crm/inteligencia-actions'
+import { enviarMensagemSimulada, getMensagensSimuladas, sugerirResposta, resetarSimulacao, registrarAuditoriaSimulacao, type MensagemSimulada, type DetalheFeedback } from '@/app/admin/crm/inteligencia-actions'
 import { proximaRespostaAuto, PERFIL_SIMULADO_LABELS, type PerfilSimulado } from '@/lib/crm-simulador-roteiros'
 
 export interface LeadWhatsappSimuladorHandle {
@@ -38,6 +38,12 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
   const [resetando, setResetando] = useState(false)
   const [feedbackImediato, setFeedbackImediato] = useState<DetalheFeedback[]>([])
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [auditoriaAberta, setAuditoriaAberta] = useState(false)
+  const [problemaAuditoria, setProblemaAuditoria] = useState('')
+  const [solucaoAuditoria, setSolucaoAuditoria] = useState('')
+  const [salvandoAuditoria, setSalvandoAuditoria] = useState(false)
+  const [erroAuditoria, setErroAuditoria] = useState<string | null>(null)
 
   function mostrarFeedback(detalhes: DetalheFeedback[]) {
     if (detalhes.length === 0) return
@@ -169,6 +175,27 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
       })
   }
 
+  async function handleSalvarAuditoria() {
+    setErroAuditoria(null)
+    if (!problemaAuditoria.trim()) {
+      setErroAuditoria('Descreve o problema antes de salvar.')
+      return
+    }
+    setSalvandoAuditoria(true)
+    try {
+      const res = await registrarAuditoriaSimulacao(leadId, perfilAuto, problemaAuditoria, solucaoAuditoria || null)
+      if (res.error) {
+        setErroAuditoria(res.error)
+        return
+      }
+      setProblemaAuditoria('')
+      setSolucaoAuditoria('')
+      setAuditoriaAberta(false)
+    } finally {
+      setSalvandoAuditoria(false)
+    }
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-[#e5ddd5]">
       {/* Cabeçalho estilo WhatsApp Web */}
@@ -215,6 +242,14 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
             title="Apaga as mensagens simuladas e reseta o termômetro/perfil/checklist desse lead"
           >
             {resetando ? '...' : confirmandoReset ? 'Confirmar reset?' : '🔄 Resetar'}
+          </button>
+          <button
+            onClick={() => setAuditoriaAberta(true)}
+            disabled={mensagens.length === 0}
+            className="text-[11px] font-bold px-2 py-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors disabled:opacity-30"
+            title="Reporta um problema encontrado nessa simulação (roteiro travou, respondeu errado etc.) pra virar pendência de melhoria"
+          >
+            🔍 Auditoria
           </button>
         </div>
       </div>
@@ -353,6 +388,67 @@ const LeadWhatsappSimulador = forwardRef<LeadWhatsappSimuladorHandle, {
         </div>
         {erro && <p className="text-[10px] text-red-500 mt-1.5">{erro}</p>}
       </div>
+
+      {auditoriaAberta && (
+        <div className="fixed inset-0 z-[120] bg-black/70 flex items-center justify-center p-3 sm:p-6" onClick={() => setAuditoriaAberta(false)}>
+          <div
+            className="bg-[var(--card-bg)] rounded-2xl w-full max-w-md shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-[var(--border)]">
+              <p className="font-display font-bold text-[var(--ink)] text-base">🔍 Auditoria de simulação</p>
+              <button
+                onClick={() => setAuditoriaAberta(false)}
+                className="w-8 h-8 rounded-full hover:bg-[var(--off)] text-[var(--muted)] hover:text-[var(--ink)] flex items-center justify-center text-lg"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-5 flex flex-col gap-3">
+              <p className="text-xs text-[var(--muted)] -mt-1">
+                A conversa inteira (perfil {PERFIL_SIMULADO_LABELS[perfilAuto]}) fica salva junto — não
+                precisa descrever o que aconteceu, só o problema e, se já tiver, a solução.
+              </p>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-[var(--muted)]">Qual foi o problema? *</span>
+                <textarea
+                  value={problemaAuditoria}
+                  onChange={e => setProblemaAuditoria(e.target.value)}
+                  rows={3}
+                  placeholder="ex: o cliente ficou repetindo a mesma frase e não avançou o roteiro"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm outline-none resize-none focus:border-[var(--brand)]"
+                />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-[var(--muted)]">Possível solução (opcional)</span>
+                <textarea
+                  value={solucaoAuditoria}
+                  onChange={e => setSolucaoAuditoria(e.target.value)}
+                  rows={3}
+                  placeholder="ex: talvez precise de mais um gatilho pra essa frase"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--off)] text-sm outline-none resize-none focus:border-[var(--brand)]"
+                />
+              </label>
+              {erroAuditoria && <p className="text-xs text-red-500">{erroAuditoria}</p>}
+              <div className="flex gap-2 mt-1">
+                <button
+                  onClick={handleSalvarAuditoria}
+                  disabled={salvandoAuditoria}
+                  className="flex-1 bg-amber-600 text-white font-semibold px-6 py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60"
+                >
+                  {salvandoAuditoria ? 'Salvando...' : 'Salvar pendência'}
+                </button>
+                <button
+                  onClick={() => setAuditoriaAberta(false)}
+                  className="px-6 py-3 rounded-xl border border-[var(--border)] text-[var(--ink)] font-semibold hover:border-[var(--muted)] transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 })
