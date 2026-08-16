@@ -12,8 +12,16 @@ import Modules     from '@/components/sections/Modules'
 import Pricing     from '@/components/sections/Pricing'
 import Faq         from '@/components/sections/Faq'
 import CtaFinal    from '@/components/sections/CtaFinal'
+import InstagramFeed from '@/components/sections/InstagramFeed'
+import { getInstagramPosts } from '@/lib/instagram'
 
-export default function Home() {
+// A leitura do feed do Instagram (banco) tornaria a home dinâmica por
+// request — ISR de 1h mantém a página estática e alinha com o cron que
+// atualiza o cache 5x/dia (a home nunca fica mais de ~1h atrás do cache).
+export const revalidate = 3600
+
+export default async function Home() {
+  const instagramPosts = await getInstagramPosts('omnidesign')
   // JSON-LD da Organização — vivia no RootLayout e vazava pra TODAS
   // as páginas, inclusive domínios white-label de cliente (o site do
   // Dr. João expunha metadado dizendo ser da Omnidesign). Movido pra
@@ -51,6 +59,11 @@ export default function Home() {
         <Modules />
         <Pricing />
         <Faq />
+        <InstagramFeed
+          posts={instagramPosts}
+          handle="omnidesign"
+          subtitulo="Bastidores, projetos entregues e dicas para o seu negócio crescer online."
+        />
         <CtaFinal />
       </main>
       <Footer />
