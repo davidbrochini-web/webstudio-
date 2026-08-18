@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import type { SiteEspecial } from '@/lib/dentista-joao'
 import MobileMenu from '@/components/dentista-joao/MobileMenu'
-import { IconPhone, IconWhatsApp, IconInstagram, IconLogin } from '@/components/dentista-joao/icons'
+import { IconPhone, IconInstagram, IconLogin } from '@/components/dentista-joao/icons'
 import { texto } from '@/lib/textos-customizados'
 
 export default function SiteNav({ site, base }: { site: SiteEspecial; base: string }) {
-  const waLink = site.whatsapp
-    ? `https://wa.me/${site.whatsapp.replace(/\D/g, '')}?text=Olá%2C%20peguei%20esse%20contato%20no%20site`
-    : null
+  // WhatsApp da barra removido (ver comentário mais abaixo) — link não
+  // é mais necessário aqui.
 
   // Seção marcada como oculta no painel (VisibilidadeSecaoToggle) some
   // do menu — continua existindo no banco, só não aparece pro visitante.
@@ -70,12 +69,10 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
               <span className="sm:hidden">Ligar</span>
             </a>
           )}
-          {waLink && (
-            <a href={waLink} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 flex items-center gap-1.5">
-              <IconWhatsApp className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
-            </a>
-          )}
+          {/* WhatsApp removido desta barra — duplicava com o botão
+              flutuante (sempre visível, canto inferior), gerando 2
+              botões de WhatsApp na tela ao mesmo tempo. Continua
+              disponível no rodapé (contato) e no botão flutuante. */}
           {site.instagram_visivel && site.instagram_handle && (
             <a
               href={`https://instagram.com/${site.instagram_handle.replace('@','')}`}

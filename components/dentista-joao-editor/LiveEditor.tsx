@@ -8,6 +8,7 @@ import HeroSectionEditor from './HeroSectionEditor'
 import BemVindoSectionEditor from './BemVindoSectionEditor'
 import TratamentosSectionEditor, { type Tratamento } from './TratamentosSectionEditor'
 import CursosSectionEditor, { type Curso } from './CursosSectionEditor'
+import NovidadesSectionEditor from './NovidadesSectionEditor'
 import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
 import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
@@ -193,9 +194,11 @@ export default function LiveEditor({
               readOnly={readOnly}
             />
 
+            <NovidadesSectionEditor siteId={site.id} readOnly={readOnly} textos={site.textos_customizados ?? {}} />
+
             <div className="px-6 py-3 bg-slate-50 text-center border-t border-slate-100">
               <p className="text-xs text-slate-400">
-                A home também mostra prévias de Tratamentos, Cursos e Dúvidas Frequentes — edite o conteúdo em cada aba acima (os títulos dessas seções também ficam editáveis lá)
+                A home também mostra prévias de Tratamentos, Cursos e Dúvidas Frequentes — edite o conteúdo em cada aba acima (os títulos dessas seções também ficam editáveis lá). Novidades Clínicas (acima) é a única prévia editada direto aqui, porque não tem aba própria — o conteúdo dela vem da aba Blog do menu principal.
               </p>
             </div>
 
