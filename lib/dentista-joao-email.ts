@@ -16,9 +16,18 @@ import { sendEmail } from '@/lib/email'
  *
  * Falha de envio nunca bloqueia a ação principal (lead/agendamento
  * continuam salvos mesmo se o e-mail falhar) — ver lib/email.ts.
+ *
+ * ADMIN_CC: enquanto o cliente está em fase de teste, todo e-mail que
+ * vai pro admin (email_notificacoes, hoje drjoaovictorpimenta@gmail.com)
+ * leva o David em cópia, pra acompanhar os testes que o João for
+ * fazendo. NUNCA aplicado nos e-mails pro paciente (confirmação, OTP,
+ * lembrete-pro-paciente) — só nos 4 disparos "admin": lead novo,
+ * agendamento pendente, lembrete-pro-admin, resumo diário. Remover essa
+ * linha quando a fase de teste terminar.
  */
 
 const FROM = 'Dr. João Victor Pimenta <notificacoes.drjoao@omnidesign.com.br>'
+const ADMIN_CC = 'david.brochini@gmail.com'
 
 const WRAPPER = (title: string, body: string) => `
 <!DOCTYPE html>
@@ -64,6 +73,7 @@ export async function notificarLeadNovo(params: {
   await sendEmail({
     from: FROM,
     to: params.emailDestino,
+    cc: ADMIN_CC,
     subject: `Novo contato pelo site — ${params.nome}`,
     html: WRAPPER('Novo contato recebido pelo site', `
       <p style="margin:0 0 8px;font-size:14px;color:#444;"><strong>Nome:</strong> ${escapeHtml(params.nome)}</p>
@@ -111,6 +121,7 @@ export async function notificarAgendamentoNovoAdmin(params: {
   await sendEmail({
     from: FROM,
     to: params.emailDestino,
+    cc: ADMIN_CC,
     subject: `Novo agendamento pendente — ${params.nomePaciente}`,
     html: WRAPPER('Novo agendamento aguardando confirmação', `
       <p style="margin:0 0 8px;font-size:14px;color:#444;"><strong>Paciente:</strong> ${escapeHtml(params.nomePaciente)}</p>
@@ -196,6 +207,7 @@ export async function notificarLembreteAdmin(params: {
   await sendEmail({
     from: FROM,
     to: params.emailDestino,
+    cc: ADMIN_CC,
     subject: `Lembrete: consulta ${label} — ${params.nomePaciente}`,
     html: WRAPPER(`Consulta ${label} ⏰`, `
       <p style="margin:0 0 8px;font-size:14px;color:#444;"><strong>Paciente:</strong> ${escapeHtml(params.nomePaciente)}</p>
@@ -235,6 +247,7 @@ export async function notificarResumoDiario(params: {
   await sendEmail({
     from: FROM,
     to: params.emailDestino,
+    cc: ADMIN_CC,
     subject: `Agenda de hoje (${params.agendamentos.length}) — ${dataFmt}`,
     html: WRAPPER(`Bom dia! Sua agenda de hoje`, `
       <p style="margin:0 0 16px;font-size:13px;color:#666;text-transform:capitalize;">${dataFmt}</p>

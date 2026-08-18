@@ -26,6 +26,7 @@ export interface SendEmailInput {
   html: string
   from: string
   replyTo?: string
+  cc?: string | string[]
 }
 
 export interface SendEmailResult {
@@ -45,6 +46,7 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
     const { error } = await resend.emails.send({
       from: input.from,
       to: input.to,
+      cc: input.cc,
       subject: input.subject,
       html: input.html,
       replyTo: input.replyTo,
