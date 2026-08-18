@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
+import { headers } from 'next/headers'
 import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 import GoogleAnalytics from '@/components/layout/GoogleAnalytics'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
+import { DOMAIN_MAP } from '@/lib/domain-map'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
@@ -56,7 +58,19 @@ export const viewport: Viewport = {
   themeColor: '#060606',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // WhatsAppFloat exclui rotas /projetos-especiais via usePathname() —
+  // mas isso só funciona no domínio .vercel.app, onde o path REAL
+  // contém esse prefixo. Em domínio customizado (drjoaobucomaxilofacial.
+  // com.br, casosesquecidos.com.br etc.) o proxy.ts reescreve o path
+  // internamente e o visitante/usePathname() nunca vê "/projetos-
+  // especiais" — a exclusão por path silenciosamente falhava, e o
+  // botão flutuante da PRÓPRIA Omnidesign (número da agência) aparecia
+  // no site do cliente. Fix: checar pelo HOST aqui no server (onde dá
+  // pra ler o header de verdade, sem depender do path reescrito).
+  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  const dominioDeProjetoEspecial = host in DOMAIN_MAP
+
   return (
     <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
       <head>
@@ -64,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         {children}
-        <WhatsAppFloat />
+        <WhatsAppFloat ocultarPorDominio={dominioDeProjetoEspecial} />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

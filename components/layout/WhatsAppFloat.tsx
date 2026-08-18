@@ -10,8 +10,9 @@ const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXX
 // misturar com o da Omnidesign aqui).
 const ROTAS_EXCLUIDAS = ['/admin', '/app', '/login', '/primeiro-acesso', '/projetos-especiais', '/sandbox']
 
-export default function WhatsAppFloat() {
+export default function WhatsAppFloat({ ocultarPorDominio }: { ocultarPorDominio?: boolean }) {
   const pathname = usePathname()
+  if (ocultarPorDominio) return null
   if (ROTAS_EXCLUIDAS.some(rota => pathname.startsWith(rota))) return null
 
   return (
