@@ -98,7 +98,7 @@ export async function updateCores(siteId: string, corPrimaria: string, corSecund
 // sem ela ficar exposta no site) ────────────────────────────────
 const SECOES_TOGGLE = [
   'secao_tratamentos_visivel', 'secao_cursos_visivel', 'secao_equipe_visivel',
-  'secao_faq_visivel', 'secao_artigos_visivel',
+  'secao_faq_visivel', 'secao_artigos_visivel', 'secao_depoimentos_visivel',
 ] as const
 type SecaoToggle = typeof SECOES_TOGGLE[number]
 
@@ -173,6 +173,37 @@ export async function upsertEquipeInline(siteId: string, id: string | null, data
 export async function deleteEquipeInline(id: string) {
   const supabase = await createClient()
   const { error } = await supabase.from('site_equipe').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+  if (error) throw new Error(error.message)
+  revalidateAll()
+}
+
+// ── Depoimentos ──────────────────────────────────────────────────
+export interface DepoimentoData {
+  nome: string; cargo_ou_contexto: string | null; texto: string
+  nota: number; foto_url: string | null; alt_text: string | null; publicado: boolean
+}
+
+export async function upsertDepoimentoInline(siteId: string, id: string | null, data: Partial<DepoimentoData>) {
+  const supabase = await createClient()
+  if (id) {
+    const { data: row, error } = await supabase.from('site_depoimentos').update(data).eq('id', id)
+      .select('id, nome, cargo_ou_contexto, texto, nota, foto_url, alt_text, publicado').single()
+    if (error) throw new Error(error.message)
+    revalidateAll()
+    return row
+  }
+  const { data: max } = await supabase.from('site_depoimentos').select('ordem').eq('site_id', siteId).order('ordem', { ascending: false }).limit(1).maybeSingle()
+  const { data: row, error } = await supabase.from('site_depoimentos')
+    .insert({ site_id: siteId, ordem: (max?.ordem ?? -1) + 1, nome: 'Nome do paciente', texto: 'Depoimento do paciente', ...data })
+    .select('id, nome, cargo_ou_contexto, texto, nota, foto_url, alt_text, publicado').single()
+  if (error) throw new Error(error.message)
+  revalidateAll()
+  return row
+}
+
+export async function deleteDepoimentoInline(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('site_depoimentos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
   if (error) throw new Error(error.message)
   revalidateAll()
 }
