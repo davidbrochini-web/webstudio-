@@ -230,6 +230,27 @@ body {
   .cursos-scroll { display: grid; overflow: visible; }
   .cursos-card   { width: auto; max-width: none; }
 }
+
+/* ── Depoimentos scroll horizontal (mobile) — mesmo padrão dos cursos ── */
+.depoimentos-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.depoimentos-scroll::-webkit-scrollbar { display: none; }
+.depoimentos-card {
+  scroll-snap-align: start;
+  width: 82vw;
+  max-width: 340px;
+}
+@media (min-width: 640px) {
+  .depoimentos-scroll { display: grid; overflow: visible; }
+  .depoimentos-card   { width: auto; max-width: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .wa-pulse { animation: none; }
 }

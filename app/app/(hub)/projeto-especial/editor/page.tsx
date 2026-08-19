@@ -7,16 +7,19 @@ export default async function EditorPage() {
   if (!info || !info.siteId) return null
 
   const supabase = await createClient()
-  const [{ data: site }, { data: tratamentos }, { data: equipe }, { data: cursos }, { data: faq }, { data: fotos }] =
+  const [{ data: site }, { data: tratamentos }, { data: equipe }, { data: depoimentos }, { data: cursos }, { data: faq }, { data: fotos }] =
     await Promise.all([
       supabase.from('sites')
-        .select('id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, logo_posicao, telefone, whatsapp, instagram_handle, instagram_visivel, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, textos_customizados, cor_primaria, cor_secundaria')
+        .select('id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, logo_posicao, telefone, whatsapp, instagram_handle, instagram_visivel, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_depoimentos_visivel, textos_customizados, cor_primaria, cor_secundaria')
         .eq('id', info.siteId).single(),
       supabase.from('site_tratamentos')
         .select('id, titulo, slug, descricao_curta, descricao_completa, beneficios, duracao, indicado_para, imagem_url, alt_text, meta_titulo, meta_descricao, publicado')
         .eq('site_id', info.siteId).is('deleted_at', null).order('ordem'),
       supabase.from('site_equipe')
         .select('id, nome, foto_url, alt_text, formacao, especialidade, bio')
+        .eq('site_id', info.siteId).is('deleted_at', null).order('ordem'),
+      supabase.from('site_depoimentos')
+        .select('id, nome, cargo_ou_contexto, texto, nota, foto_url, alt_text, publicado')
         .eq('site_id', info.siteId).is('deleted_at', null).order('ordem'),
       supabase.from('site_cursos_eventos')
         .select('id, titulo, slug, descricao, descricao_completa, data_evento, imagem_url, alt_text, meta_titulo, meta_descricao, publicado')
@@ -37,6 +40,7 @@ export default async function EditorPage() {
       site={site}
       tratamentos={tratamentos ?? []}
       equipe={equipe ?? []}
+      depoimentos={depoimentos ?? []}
       cursos={cursos ?? []}
       faq={faq ?? []}
       fotos={fotos ?? []}

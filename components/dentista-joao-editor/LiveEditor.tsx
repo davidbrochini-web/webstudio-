@@ -11,6 +11,7 @@ import CursosSectionEditor, { type Curso } from './CursosSectionEditor'
 import NovidadesSectionEditor from './NovidadesSectionEditor'
 import FaqSectionEditor, { type Faq } from './FaqSectionEditor'
 import EquipeSectionEditor, { type Membro } from './EquipeSectionEditor'
+import DepoimentosSectionEditor, { type Depoimento } from './DepoimentosSectionEditor'
 import GaleriaSectionEditor from './GaleriaSectionEditor'
 import EditableText from '@/components/site-editor/EditableText'
 import EditableTextoCustomizado from '@/components/site-editor/EditableTextoCustomizado'
@@ -39,6 +40,7 @@ interface SiteDados {
   secao_cursos_visivel: boolean
   secao_equipe_visivel: boolean
   secao_faq_visivel: boolean
+  secao_depoimentos_visivel: boolean
   textos_customizados: Record<string, string>
   cor_primaria: string
   cor_secundaria: string
@@ -57,11 +59,12 @@ const PAGINAS = [
 type PaginaId = typeof PAGINAS[number]['id']
 
 export default function LiveEditor({
-  site, tratamentos, equipe, cursos, faq, fotos, readOnly,
+  site, tratamentos, equipe, depoimentos, cursos, faq, fotos, readOnly,
 }: {
   site: SiteDados
   tratamentos: Tratamento[]
   equipe: Membro[]
+  depoimentos: Depoimento[]
   cursos: Curso[]
   faq: Faq[]
   fotos: { id: string; url: string }[]
@@ -195,6 +198,8 @@ export default function LiveEditor({
             />
 
             <NovidadesSectionEditor siteId={site.id} readOnly={readOnly} textos={site.textos_customizados ?? {}} />
+
+            <DepoimentosSectionEditor siteId={site.id} depoimentosInicial={depoimentos} readOnly={readOnly} visivel={site.secao_depoimentos_visivel} />
 
             <div className="px-6 py-3 bg-slate-50 text-center border-t border-slate-100">
               <p className="text-xs text-slate-400">

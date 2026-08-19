@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { toggleSecaoVisivel } from '@/app/app/(hub)/projeto-especial/editor/actions'
 
 type Campo = 'secao_tratamentos_visivel' | 'secao_cursos_visivel' | 'secao_equipe_visivel'
-  | 'secao_faq_visivel' | 'secao_artigos_visivel'
+  | 'secao_faq_visivel' | 'secao_artigos_visivel' | 'secao_depoimentos_visivel'
 
 // Oculta a seção inteira (menu + prévia na Home + página dedicada) sem
 // apagar nenhum conteúdo — pra dar tempo de alimentar uma área aos

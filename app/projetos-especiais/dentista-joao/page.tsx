@@ -23,11 +23,12 @@ export default async function HomePage() {
   const base = await getBasePath()
   const supabase = await createClient()
 
-  const [{ data: tratamentosRaw }, { data: faqPreviaRaw }, { data: cursosRaw }, { data: artigosRaw }, { data: fotos }] = await Promise.all([
+  const [{ data: tratamentosRaw }, { data: faqPreviaRaw }, { data: cursosRaw }, { data: artigosRaw }, { data: depoimentosRaw }, { data: fotos }] = await Promise.all([
     supabase.from('site_tratamentos').select('slug, titulo, descricao_curta, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(6),
     supabase.from('site_faq').select('pergunta, resposta').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_cursos_eventos').select('slug, titulo, descricao, imagem_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
     supabase.from('site_blog_posts').select('slug, titulo, resumo, capa_url').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem').limit(3),
+    supabase.from('site_depoimentos').select('nome, cargo_ou_contexto, texto, nota, foto_url, alt_text').eq('site_id', site.id).eq('publicado', true).is('deleted_at', null).order('ordem'),
     supabase.from('site_fotos').select('url').eq('site_id', site.id).is('deleted_at', null).order('ordem').limit(1),
   ])
 
@@ -37,6 +38,7 @@ export default async function HomePage() {
   const faqPrevia = site.secao_faq_visivel ? faqPreviaRaw : []
   const cursos = site.secao_cursos_visivel ? cursosRaw : []
   const artigos = site.secao_artigos_visivel ? artigosRaw : []
+  const depoimentos = site.secao_depoimentos_visivel ? depoimentosRaw : []
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -49,6 +51,23 @@ export default async function HomePage() {
     ...(site.endereco && { address: site.endereco }),
     ...(site.instagram_handle && {
       sameAs: [`https://instagram.com/${site.instagram_handle.replace('@', '')}`],
+    }),
+    // Depoimentos publicados viram Review + aggregateRating no schema —
+    // habilita rich snippet de avaliação nos resultados do Google.
+    // Só entra se tiver pelo menos 1 depoimento publicado (schema com
+    // array vazio é inválido/inútil).
+    ...(depoimentos && depoimentos.length > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: (depoimentos.reduce((soma, d) => soma + d.nota, 0) / depoimentos.length).toFixed(1),
+        reviewCount: depoimentos.length,
+      },
+      review: depoimentos.map(d => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: d.nome },
+        reviewRating: { '@type': 'Rating', ratingValue: d.nota, bestRating: 5 },
+        reviewBody: d.texto,
+      })),
     }),
   }
 
@@ -183,6 +202,53 @@ export default async function HomePage() {
           </section>
           <WaveDivider fill="var(--dj-primary)" bg="white" flip />
         </>
+      )}
+
+      {/* Depoimentos de Clientes */}
+      {!!depoimentos?.length && (
+        <section id="depoimentos" className="px-6 py-16 bg-slate-50">
+          <div className="max-w-5xl mx-auto">
+            <Reveal>
+              <h2 className="font-display font-extrabold text-2xl text-[var(--dj-secondary)] text-center mb-2">
+                {texto(site.textos_customizados, 'home_depoimentos_titulo', 'O que nossos pacientes dizem')}
+              </h2>
+              <p className="text-center text-slate-500 text-sm mb-10">
+                {texto(site.textos_customizados, 'home_depoimentos_subtitulo', 'Depoimentos reais de quem já passou pelo consultório.')}
+              </p>
+            </Reveal>
+            {/* Mobile: scroll horizontal com snap; tablet+: grid normal — mesmo padrão de Cursos e Palestras */}
+            <div className="depoimentos-scroll sm:grid sm:grid-cols-3 sm:gap-6">
+              {depoimentos.map((d, i) => (
+                <Reveal key={`${d.nome}-${i}`} delay={i * 70} className="depoimentos-card flex-shrink-0 sm:flex-shrink sm:block">
+                  <div className="h-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col">
+                    <div className="flex gap-0.5 mb-3" aria-label={`${d.nota} de 5 estrelas`}>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <span key={n} className={n <= d.nota ? 'text-amber-400' : 'text-slate-200'} aria-hidden="true">★</span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-slate-600 leading-relaxed flex-1">&ldquo;{d.texto}&rdquo;</p>
+                    <div className="flex items-center gap-3 mt-5 pt-4 border-t border-slate-100">
+                      {d.foto_url ? (
+                        <img loading="lazy" decoding="async" src={d.foto_url} alt={d.alt_text || d.nome}
+                          className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
+                      ) : (
+                        <div className="w-11 h-11 rounded-full bg-[var(--dj-primary)]/15 text-[var(--dj-primary)] font-display font-bold flex items-center justify-center flex-shrink-0">
+                          {d.nome.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="font-display font-bold text-sm text-[var(--dj-secondary)] truncate">{d.nome}</p>
+                        {d.cargo_ou_contexto && (
+                          <p className="text-xs text-slate-400 truncate">{d.cargo_ou_contexto}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Cursos e Palestras */}
