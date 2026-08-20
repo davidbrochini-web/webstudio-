@@ -24,7 +24,7 @@ export async function enviarSolicitacaoConsulta(_prev: ContatoFormState, formDat
 
   if (!nome || !sobrenome) return { error: 'Preencha nome e sobrenome.' }
   if (!email && !telefone) return { error: 'Informe e-mail ou telefone pra retornarmos.' }
-  if (periodo && periodo !== 'manha' && periodo !== 'tarde') return { error: 'Período inválido.' }
+  if (periodo && periodo !== 'manha' && periodo !== 'tarde' && periodo !== 'noite') return { error: 'Período inválido.' }
 
   const site = await getSiteEspecial()
   const supabase = await createClient()
