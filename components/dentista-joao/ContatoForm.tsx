@@ -32,6 +32,7 @@ export default function ContatoForm() {
           <option value="">Período (opcional)</option>
           <option value="manha">Manhã</option>
           <option value="tarde">Tarde</option>
+          <option value="noite">Noite</option>
         </select>
       </div>
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}
