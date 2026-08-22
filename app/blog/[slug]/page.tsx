@@ -89,21 +89,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         )}
 
         <article className="flex flex-col gap-5">
-          {paragrafos.map((p, i) => (
-            <p key={i} className="text-base text-[var(--slate)] leading-relaxed">{p}</p>
-          ))}
+          {paragrafos.map((p, i) =>
+            p.startsWith('## ') ? (
+              // Subtítulo (H2) — necessário pra artigos profundos de
+              // SEO terem estrutura de verdade (escaneabilidade +
+              // chance de citação em AI Overviews). Posts antigos sem
+              // "## " continuam renderizando igual sempre foi.
+              <h2 key={i} className="font-display font-bold text-xl text-[var(--ink)] mt-4">
+                {p.slice(3)}
+              </h2>
+            ) : (
+              <p key={i} className="text-base text-[var(--slate)] leading-relaxed">{p}</p>
+            )
+          )}
         </article>
 
         <div className="mt-16 pt-8 border-t border-[var(--border)]">
           <p className="text-sm text-[var(--muted)] mb-4">Quer resolver isso no seu negócio também?</p>
-          <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/#contato"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl grad-bg text-white text-sm font-bold hover:opacity-90 transition-all"
           >
-            💬 Falar com a gente
-          </a>
+            📩 Entre em contato
+          </Link>
         </div>
       </main>
       <Footer />
