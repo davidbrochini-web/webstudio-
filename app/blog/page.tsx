@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import BlogPostList from '@/components/blog/BlogPostList'
 import { listarPostsPublicados } from '@/lib/blog-omnidesign'
+import { slugify } from '@/lib/blog-omnidesign-shared'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -18,12 +20,19 @@ export const metadata: Metadata = {
 
 export const revalidate = 300
 
-function formatarData(iso: string) {
-  return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
-}
-
 export default async function BlogPage() {
   const posts = await listarPostsPublicados()
+
+  // Categorias distintas, na ordem em que aparecem entre os posts —
+  // mesma fonte de verdade dos posts (categoria salva no banco), sem
+  // lista fixa que possa ficar desatualizada.
+  const categorias = Array.from(
+    new Map(
+      posts
+        .filter(p => p.categoria)
+        .map(p => [slugify(p.categoria!), p.categoria!] as const)
+    ).entries()
+  )
 
   return (
     <>
@@ -33,49 +42,26 @@ export default async function BlogPage() {
         <h1 className="font-display font-extrabold text-[clamp(30px,6vw,48px)] leading-tight text-[var(--ink)] mb-4">
           Negócio pequeno, problema real.
         </h1>
-        <p className="text-base text-[var(--muted)] leading-relaxed max-w-xl mb-14">
+        <p className="text-base text-[var(--muted)] leading-relaxed max-w-xl mb-8">
           Como site, sistema interno e presença no Google resolvem o que trava um
           negócio pequeno ou médio no dia a dia — sem termo técnico, sem enrolação.
         </p>
 
-        {posts.length === 0 ? (
-          <p className="text-sm text-[var(--muted)]">Nenhum post publicado ainda — volte em breve.</p>
-        ) : (
-          <div className="flex flex-col divide-y divide-[var(--border)] border-y border-[var(--border)]">
-            {posts.map(post => (
+        {categorias.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-10">
+            {categorias.map(([slug, label]) => (
               <Link
-                key={post.id}
-                href={`/blog/${post.slug}`}
-                className="group py-8 flex flex-col sm:flex-row sm:items-start gap-5"
+                key={slug}
+                href={`/blog/categoria/${slug}`}
+                className="text-xs font-semibold px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--muted)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-colors"
               >
-                {post.capa_url && (
-                  <img
-                    src={post.capa_url}
-                    alt={post.capa_alt ?? post.titulo}
-                    loading="lazy"
-                    className="w-full sm:w-40 h-40 sm:h-24 object-cover rounded-xl border border-[var(--border)] flex-shrink-0"
-                  />
-                )}
-                <div className="min-w-0 flex-1">
-                  {post.categoria && (
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--brand2)]">
-                      {post.categoria}
-                    </span>
-                  )}
-                  <h2 className="font-display font-bold text-lg text-[var(--ink)] mt-1 group-hover:text-[var(--brand)] transition-colors">
-                    {post.titulo}
-                  </h2>
-                  <p className="text-sm text-[var(--muted)] leading-relaxed mt-1.5 max-w-2xl">
-                    {post.resumo}
-                  </p>
-                </div>
-                <span className="flex-shrink-0 text-xs text-[var(--muted)] sm:text-right">
-                  {post.publicado_em && formatarData(post.publicado_em)}
-                </span>
+                {label}
               </Link>
             ))}
           </div>
         )}
+
+        <BlogPostList posts={posts} />
       </main>
       <Footer />
     </>

@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import dentistaJoaoSitemap from '@/app/projetos-especiais/dentista-joao/sitemap'
 import casosEsquecidosSitemap from '@/app/projetos-especiais/casos-esquecidos/sitemap'
 import { listarPostsPublicados } from '@/lib/blog-omnidesign'
+import { slugify } from '@/lib/blog-omnidesign-shared'
 import { niches } from '@/lib/templates'
 import { SEO_NICHOS } from '@/lib/seo-nichos'
 import { SEO_SOLUCOES } from '@/lib/seo-solucoes'
@@ -27,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (custom) return custom()
 
   const posts = await listarPostsPublicados()
+  const categorias = Array.from(new Set(posts.filter(p => p.categoria).map(p => slugify(p.categoria!))))
 
   return [
     {
@@ -39,6 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    // Páginas de categoria do blog — mesma fonte de verdade dos posts
+    // (categoria distinta salva no banco), sem lista fixa.
+    ...categorias.map(categoria => ({
+      url: `${BASE_URL}/blog/categoria/${categoria}`,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
     // Landing pages por nicho — antes eram noindex (vitrine de demo
     // pura, conteúdo quase-duplicado). Agora cada uma tem H1, intro e
     // FAQ próprios mirando "site para [nicho]" (ver lib/seo-nichos.ts),
