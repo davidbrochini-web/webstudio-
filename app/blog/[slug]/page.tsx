@@ -20,7 +20,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const descricao = post.meta_descricao || post.resumo
 
   return {
-    title: titulo,
+    // `absolute` ignora o template '%s | Omnidesign' do layout raiz —
+    // titulo já vem com o sufixo de marca embutido (meta_titulo do
+    // banco ou o próprio post.titulo), sem isso o Next concatenava
+    // os dois e duplicava "| Omnidesign" no <title> (bug achado em
+    // produção 23/08, afetava blog, modelos e solucoes).
+    title: { absolute: titulo },
     description: descricao,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {

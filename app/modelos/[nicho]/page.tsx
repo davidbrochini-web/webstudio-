@@ -20,13 +20,19 @@ export async function generateMetadata(
     // Nicho sem conteúdo de SEO dedicado ainda — mantém fora do índice
     // até ganhar o próprio (página de demo pura não deve rankear).
     return {
-      title: `${config.label} — modelo de site | omnidesign`,
+      // `absolute`: mesmo motivo do bloco abaixo — evita duplicar
+      // "| omnidesign" quando o template do layout raiz é aplicado.
+      title: { absolute: `${config.label} — modelo de site | omnidesign` },
       description: config.heroSub,
       robots: { index: false },
     }
   }
   return {
-    title: seo.tituloSeo,
+    // `absolute` ignora o template '%s | Omnidesign' do layout raiz —
+    // tituloSeo já vem com o sufixo de marca embutido (ver
+    // lib/seo-nichos.ts), sem isso duplicava "| Omnidesign" no
+    // <title> (bug achado em produção 23/08).
+    title: { absolute: seo.tituloSeo },
     description: seo.descricaoSeo,
     alternates: { canonical: `/modelos/${nicho}` },
     openGraph: {

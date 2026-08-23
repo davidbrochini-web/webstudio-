@@ -17,7 +17,11 @@ export async function generateMetadata(
   const solucao = SEO_SOLUCOES[problema]
   if (!solucao) return {}
   return {
-    title: solucao.tituloSeo,
+    // `absolute` ignora o template '%s | Omnidesign' do layout raiz —
+    // tituloSeo já vem com o sufixo de marca embutido (ver
+    // lib/seo-solucoes.ts), sem isso duplicava "| Omnidesign" no
+    // <title> (mesmo bug corrigido em blog/[slug] e modelos/[nicho]).
+    title: { absolute: solucao.tituloSeo },
     description: solucao.descricaoSeo,
     alternates: { canonical: `/solucoes/${problema}` },
     openGraph: {
