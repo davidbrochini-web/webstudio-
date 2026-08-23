@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'GT Fluir Pilates — exemplo de site | Omnidesign',
+  title: { absolute: 'GT Fluir Pilates — exemplo de site | Omnidesign' },
   robots: { index: false, follow: false },
 }
 
