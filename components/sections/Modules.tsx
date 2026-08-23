@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { modules, formatPreco } from '@/lib/modules'
+import { getSolucaoSlugByModulo } from '@/lib/seo-solucoes'
 
 export default function Modules() {
   // "Site" é o produto base (não é módulo à parte) — a grade aqui
@@ -41,7 +42,9 @@ export default function Modules() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden">
-          {internos.map(({ slug, icon, label, desc, preco, disponivel }) => (
+          {internos.map(({ slug, icon, label, desc, preco, disponivel }) => {
+            const solucaoSlug = getSolucaoSlugByModulo(slug)
+            return (
             <div
               key={slug}
               className="bg-[var(--dark)] hover:bg-white/[0.04] transition-colors p-7 flex flex-col gap-3 relative"
@@ -64,8 +67,17 @@ export default function Modules() {
                   <span className="text-xs text-white/40">/mês</span>
                 </p>
               )}
+              {solucaoSlug && (
+                <Link
+                  href={`/solucoes/${solucaoSlug}`}
+                  className={`text-xs font-semibold text-[var(--brand2)] hover:underline ${preco == null ? 'mt-auto pt-3 border-t border-white/5' : ''}`}
+                >
+                  Ver como resolve →
+                </Link>
+              )}
             </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* CTA de contato — demo agora é feita pelo atendente durante a negociação */}

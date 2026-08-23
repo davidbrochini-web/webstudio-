@@ -171,3 +171,15 @@ export const SEO_SOLUCOES: Record<string, SeoSolucao> = {
     ],
   },
 }
+
+/**
+ * slug de módulo → slug de problema. Usado pra ligar cada card em
+ * components/sections/Modules.tsx (homepage) até a página de SEO
+ * correspondente — sem isso, /solucoes/[problema] fica órfã (sem
+ * link interno nenhum apontando pra ela), o que prejudica indexação
+ * e é diferente do padrão já usado em /modelos (linkado a partir de
+ * components/sections/Templates.tsx).
+ */
+export function getSolucaoSlugByModulo(moduloSlug: string): string | undefined {
+  return Object.entries(SEO_SOLUCOES).find(([, s]) => s.moduloSlug === moduloSlug)?.[0]
+}
