@@ -5,6 +5,7 @@ import casosEsquecidosSitemap from '@/app/projetos-especiais/casos-esquecidos/si
 import { listarPostsPublicados } from '@/lib/blog-omnidesign'
 import { niches } from '@/lib/templates'
 import { SEO_NICHOS } from '@/lib/seo-nichos'
+import { SEO_SOLUCOES } from '@/lib/seo-solucoes'
 
 const BASE_URL = 'https://omnidesign.com.br'
 
@@ -51,6 +52,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly' as const,
         priority: 0.8,
       })),
+    // Landing pages por problema — uma por dor específica de módulo
+    // interno (ver lib/seo-solucoes.ts). Só existe entrada aqui pra
+    // módulo já disponível pra contratação (checado na própria fonte).
+    ...Object.keys(SEO_SOLUCOES).map(problema => ({
+      url: `${BASE_URL}/solucoes/${problema}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
     ...posts.map(post => ({
       url: `${BASE_URL}/blog/${post.slug}`,
       lastModified: post.updated_at,
