@@ -32,6 +32,22 @@ const faqs = [
     a: 'Sim. Configuramos e gerenciamos campanhas de Google Ads e também de ChatGPT Ads — o formato novo de anúncio dentro de conversas com IA, que quase nenhuma empresa no Brasil está usando ainda. Sem taxa fixa nem plano fechado: o investimento é orçado conforme o objetivo do seu negócio.',
   },
   {
+    q: 'Meu site é feio ou antigo — dá pra trocar sem perder o que já tenho?',
+    a: 'Dá. O domínio (o endereço que seus clientes já conhecem) pode ser migrado sem perder o histórico dele nas buscas, e conteúdo que já funciona — textos, fotos boas, depoimentos — pode ser aproveitado dentro da estrutura nova. Você não precisa recomeçar do zero pra ter um site melhor.',
+  },
+  {
+    q: 'Vocês fazem SEO de verdade, ou só falam que fazem?',
+    a: 'Fazemos os três pilares que realmente importam: base técnica (velocidade, funcionamento no celular, estrutura que o Google consegue ler), conteúdo que responde o que seu cliente pesquisa de verdade, e configuração do Google Meu Negócio. Não prometemos "primeira posição garantida" nem resultado em poucos dias — SEO sério é trabalho consistente, não truque.',
+  },
+  {
+    q: 'Quanto tempo leva pra aparecer no Google depois que o site fica pronto?',
+    a: 'A base técnica já sai pronta desde o primeiro dia, mas aparecer bem nos resultados depende do Google descobrir e avaliar o conteúdo — normalmente semanas a poucos meses pra começar a mostrar resultado consistente, melhorando com o tempo. Quem promete "primeira página em uma semana" não está sendo honesto com você.',
+  },
+  {
+    q: 'Meu site atual é lento — isso tem solução?',
+    a: 'Tem, e costuma ser a causa mais comum de perder cliente e ranquear mal no Google. Trabalhamos com otimização automática de imagem, hospedagem dedicada (não compartilhada com dezenas de sites desconhecidos) e código enxuto — os três pontos que mais pesam na velocidade real de carregamento.',
+  },
+  {
     q: 'O que é o Google Meu Negócio e vocês configuram isso?',
     a: 'É o cadastro gratuito que faz sua empresa aparecer no mapa e na busca do Google quando alguém procura um negócio como o seu perto dali — endereço, horário, fotos, avaliações. A gente configura tudo isso pra você; é o primeiro passo pra ser encontrado por quem já está procurando.',
   },
@@ -62,7 +78,7 @@ export default function Faq() {
           Sem letra miúda, sem complicação.
         </h2>
         <p className="text-base text-[var(--muted)] leading-relaxed mb-12 max-w-xl">
-          As dúvidas mais comuns de quem nunca teve site ou sistema antes.
+          As dúvidas mais comuns de quem nunca teve site ou sistema — e de quem já tem, mas quer um melhor.
         </p>
 
         <div className="flex flex-col divide-y divide-[var(--border)] border-y border-[var(--border)]">
