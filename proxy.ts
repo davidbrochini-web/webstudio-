@@ -31,6 +31,19 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(dest)
   }
 
+  // ── Rotas protegidas: só /admin, /app e /primeiro-acesso precisam
+  //    de sessão. Todo o resto (home, /blog, /modelos, projetos
+  //    especiais) é público — sair daqui ANTES de criar o client
+  //    Supabase evita uma chamada de rede pro Auth em toda visita a
+  //    página pública, que estava deixando até a home mais lenta à
+  //    toa (achado real: /blog media 3-4s numa visita "fria" antes
+  //    desse fix).
+  const path = request.nextUrl.pathname
+  const isProtected = path.startsWith('/admin') || path.startsWith('/app') || path === '/primeiro-acesso'
+  if (!isProtected) {
+    return NextResponse.next({ request })
+  }
+
   // ── Auth: protege /app e /admin ──────────────────────────────────
   let response = NextResponse.next({ request })
 
@@ -54,9 +67,6 @@ export async function proxy(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
-
-  const path = request.nextUrl.pathname
-  const isProtected = path.startsWith('/admin') || path.startsWith('/app') || path === '/primeiro-acesso'
 
   // Sem sessão tentando entrar em área protegida → manda pro login
   if (isProtected && !user) {
