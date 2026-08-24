@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 const WA = '5511994777420'
 const waLink = (msg: string) => `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`
@@ -64,14 +64,18 @@ const posts = [
   { tipo: 'Promoção', desc: 'Aula teste grátis', video: true },
 ]
 
+const TILE_BG = ['#1D6FA8', '#C99A3B', '#4A7290', '#1D6FA8', '#C99A3B', '#4A7290']
+
+const CARD = 'bg-white rounded-2xl border border-[#EDE6D3] shadow-[0_1px_2px_rgba(30,42,51,0.04),0_2px_8px_rgba(30,42,51,0.05)]'
+
 function FlowLine({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 400 40" className={className} preserveAspectRatio="none">
+    <svg viewBox="0 0 400 24" className={className} preserveAspectRatio="none">
       <path
-        d="M0 20 C 60 0, 100 40, 160 20 S 260 0, 320 20 S 380 35, 400 18"
+        d="M0 12 C 100 -6, 140 30, 240 12 S 360 -4, 400 12"
         fill="none"
         stroke="#C99A3B"
-        strokeWidth="2.5"
+        strokeWidth="2"
         strokeLinecap="round"
       />
     </svg>
@@ -81,19 +85,17 @@ function FlowLine({ className = '' }: { className?: string }) {
 function IconBadge({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-11 h-11 rounded-full bg-[#EAF1F6] flex items-center justify-center flex-shrink-0">
-      <svg viewBox="0 0 24 24" fill="#1D6FA8" className="w-6 h-6">
+      <svg viewBox="0 0 24 24" fill="#1D6FA8" className="w-[22px] h-[22px]">
         {children}
       </svg>
     </div>
   )
 }
 
-const TILE_BG = ['#1D6FA8', '#C99A3B', '#4A7290', '#1D6FA8', '#C99A3B', '#4A7290']
-
 function PostTile({ tipo, desc, video, bg }: { tipo: string; desc: string; video: boolean; bg: string }) {
   return (
-    <div className="relative aspect-square rounded-lg overflow-hidden" style={{ backgroundColor: bg }}>
-      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-[0.25]" preserveAspectRatio="none">
+    <div className="relative aspect-square rounded-xl overflow-hidden" style={{ backgroundColor: bg }}>
+      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-[0.22]" preserveAspectRatio="none">
         <path d="M-10 60 C 20 40, 40 80, 60 55 S 100 30, 120 55" fill="none" stroke="#fff" strokeWidth="4" />
       </svg>
       {video && (
@@ -109,33 +111,159 @@ function PostTile({ tipo, desc, video, bg }: { tipo: string; desc: string; video
   )
 }
 
-const UNIDADES_AGENDA = ['Tucuruvi', 'Parada Inglesa']
-const HORARIOS_DIA = ['07:00', '08:00', '09:30', '14:00', '16:00', '18:30']
+function UnidadeVisual({ nome }: { nome: string }) {
+  return (
+    <div className="h-32 bg-gradient-to-br from-[#1D6FA8] to-[#164F79] relative overflow-hidden flex items-center justify-center">
+      <svg viewBox="0 0 200 100" className="absolute inset-0 w-full h-full opacity-[0.15]">
+        <path d="M-10 60 C 40 30, 70 90, 120 55 S 190 20, 220 50" fill="none" stroke="#fff" strokeWidth="3" />
+      </svg>
+      <div className="relative text-center">
+        <svg viewBox="0 0 24 24" fill="#C99A3B" className="w-6 h-6 mx-auto mb-1.5">
+          <path d="M12 2c-4.4 0-8 3.6-8 8 0 5.4 8 12 8 12s8-6.6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z" />
+        </svg>
+        <p className="text-white font-semibold text-sm">{nome}</p>
+      </div>
+    </div>
+  )
+}
 
-function proximosDias(qtd: number) {
-  const dias: { label: string; iso: string }[] = []
-  const hoje = new Date()
-  let cursor = new Date(hoje)
-  while (dias.length < qtd) {
-    cursor = new Date(cursor.getTime() + 24 * 60 * 60 * 1000)
-    const diaSemana = cursor.getDay()
-    if (diaSemana === 0) continue // pula domingo
-    const label = cursor.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })
-    dias.push({ label: label.replace('.', ''), iso: cursor.toISOString() })
-  }
-  return dias
+// ---------- Agendamento: calendário real com disponibilidade ----------
+
+const HORARIOS_DIA = ['07:00', '08:00', '09:30', '11:00', '14:00', '16:00', '18:30']
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+const DIAS_SEMANA = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+
+function seedDia(iso: string) {
+  let h = 0
+  for (let i = 0; i < iso.length; i++) h = (h * 31 + iso.charCodeAt(i)) >>> 0
+  return h
+}
+
+/** Disponibilidade determinística por dia — mesmo dia sempre mostra o
+ *  mesmo padrão (sem Math.random puro, pra não ficar mudando a cada
+ *  clique). É só pra simular como o calendário real vai se comportar. */
+function horariosLivres(iso: string): string[] {
+  const seed = seedDia(iso)
+  return HORARIOS_DIA.filter((_, i) => (seed >> i) % 3 !== 0)
 }
 
 function validarEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 }
-
 function validarCPF(v: string) {
   return v.replace(/\D/g, '').length === 11
 }
-
 function validarTelefone(v: string) {
   return v.replace(/\D/g, '').length >= 10
+}
+
+function Calendario({
+  unidade,
+  diaSelecionado,
+  onSelecionarDia,
+}: {
+  unidade: string
+  diaSelecionado: string | null
+  onSelecionarDia: (iso: string) => void
+}) {
+  const hoje = new Date()
+  hoje.setHours(0, 0, 0, 0)
+  const [mesRef, setMesRef] = useState(new Date(hoje.getFullYear(), hoje.getMonth(), 1))
+
+  const semanas = useMemo(() => {
+    const primeiroDiaSemana = mesRef.getDay()
+    const ultimoDiaMes = new Date(mesRef.getFullYear(), mesRef.getMonth() + 1, 0).getDate()
+    const celulas: (Date | null)[] = Array(primeiroDiaSemana).fill(null)
+    for (let d = 1; d <= ultimoDiaMes; d++) {
+      celulas.push(new Date(mesRef.getFullYear(), mesRef.getMonth(), d))
+    }
+    while (celulas.length % 7 !== 0) celulas.push(null)
+    const linhas: (Date | null)[][] = []
+    for (let i = 0; i < celulas.length; i += 7) linhas.push(celulas.slice(i, i + 7))
+    return linhas
+  }, [mesRef])
+
+  const mesPassado = mesRef.getFullYear() === hoje.getFullYear() && mesRef.getMonth() === hoje.getMonth()
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <button
+          type="button"
+          onClick={() => setMesRef(new Date(mesRef.getFullYear(), mesRef.getMonth() - 1, 1))}
+          disabled={mesPassado}
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#4A5A66] disabled:opacity-25 hover:bg-[#F0EEE6]"
+          aria-label="Mês anterior"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <p className="text-sm font-semibold text-[#1E2A33] capitalize">
+          {MESES[mesRef.getMonth()]} de {mesRef.getFullYear()} · {unidade}
+        </p>
+        <button
+          type="button"
+          onClick={() => setMesRef(new Date(mesRef.getFullYear(), mesRef.getMonth() + 1, 1))}
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#4A5A66] hover:bg-[#F0EEE6]"
+          aria-label="Próximo mês"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-1">
+        {DIAS_SEMANA.map((d, i) => (
+          <div key={i} className="text-center text-[10px] font-semibold text-[#9AA5AC] py-1">{d}</div>
+        ))}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        {semanas.map((linha, li) => (
+          <div key={li} className="grid grid-cols-7 gap-1">
+            {linha.map((data, di) => {
+              if (!data) return <div key={di} />
+              const iso = data.toISOString().slice(0, 10)
+              const passou = data < hoje
+              const domingo = data.getDay() === 0
+              const indisponivel = passou || domingo
+              const livres = indisponivel ? [] : horariosLivres(iso)
+              const selecionado = diaSelecionado === iso
+              return (
+                <button
+                  key={di}
+                  type="button"
+                  disabled={indisponivel}
+                  onClick={() => onSelecionarDia(iso)}
+                  className={`aspect-square rounded-lg text-xs font-medium flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                    indisponivel
+                      ? 'text-[#D8CFB8] cursor-default'
+                      : selecionado
+                        ? 'bg-[#1D6FA8] text-white'
+                        : livres.length === 0
+                          ? 'text-[#B8AF98] bg-[#F5F2E9]'
+                          : 'text-[#1E2A33] bg-[#F5F2E9] hover:bg-[#EAF1F6]'
+                  }`}
+                >
+                  <span>{data.getDate()}</span>
+                  {!indisponivel && (
+                    <span
+                      className={`w-1 h-1 rounded-full ${
+                        selecionado ? 'bg-white' : livres.length === 0 ? 'bg-transparent' : 'bg-[#639922]'
+                      }`}
+                    />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-4 mt-3 text-[10px] text-[#9AA5AC]">
+        <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#639922]" />com horário livre</span>
+        <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[#F5F2E9]" />lotado</span>
+      </div>
+    </div>
+  )
 }
 
 function AgendamentoWidget() {
@@ -143,38 +271,26 @@ function AgendamentoWidget() {
   const [cpf, setCpf] = useState('')
   const [email, setEmail] = useState('')
   const [telefone, setTelefone] = useState('')
-  const [unidade, setUnidade] = useState(UNIDADES_AGENDA[0])
+  const [unidade, setUnidade] = useState('Tucuruvi')
   const [diaSelecionado, setDiaSelecionado] = useState<string | null>(null)
   const [horaSelecionada, setHoraSelecionada] = useState<string | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
   const [confirmado, setConfirmado] = useState(false)
 
-  const dias = proximosDias(6)
+  const livresDoDia = diaSelecionado ? horariosLivres(diaSelecionado) : []
 
-  function trocarModo(novo: 'aluno' | 'teste') {
-    setModo(novo)
+  function selecionarDia(iso: string) {
+    setDiaSelecionado(iso)
+    setHoraSelecionada(null)
     setErro(null)
-    setConfirmado(false)
   }
 
   function confirmar() {
-    if (modo === 'aluno' && !validarCPF(cpf)) {
-      setErro('Digite um CPF válido (11 números).')
-      return
-    }
-    if (!validarEmail(email)) {
-      setErro('Digite um e-mail válido.')
-      return
-    }
-    if (modo === 'teste' && !validarTelefone(telefone)) {
-      setErro('Digite um WhatsApp válido, com DDD.')
-      return
-    }
-    if (!diaSelecionado || !horaSelecionada) {
-      setErro('Escolha um dia e um horário.')
-      return
-    }
+    if (modo === 'aluno' && !validarCPF(cpf)) return setErro('Digite um CPF válido (11 números).')
+    if (!validarEmail(email)) return setErro('Digite um e-mail válido.')
+    if (modo === 'teste' && !validarTelefone(telefone)) return setErro('Digite um WhatsApp válido, com DDD.')
+    if (!diaSelecionado || !horaSelecionada) return setErro('Escolha um dia e um horário no calendário.')
     setErro(null)
     setEnviando(true)
     setTimeout(() => {
@@ -193,23 +309,27 @@ function AgendamentoWidget() {
   }
 
   if (confirmado) {
-    const diaLabel = dias.find(d => d.iso === diaSelecionado)?.label
+    const dataFormatada = diaSelecionado
+      ? new Date(diaSelecionado + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })
+      : ''
     return (
-      <div className="bg-white border border-[#E4DCC8] rounded-2xl p-6 text-center max-w-md mx-auto">
+      <div className={`${CARD} p-6 text-center max-w-md mx-auto`}>
         <div className="w-12 h-12 rounded-full bg-[#EAF3DE] flex items-center justify-center mx-auto mb-3">
           <svg viewBox="0 0 24 24" fill="#3B6D11" className="w-6 h-6">
             <path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z" />
           </svg>
         </div>
-        <p className="gtf-display font-semibold text-lg text-[#1E2A33] mb-1">Agendamento confirmado</p>
-        <p className="text-sm text-[#4A5A66] mb-4">
-          {modo === 'teste' ? 'Aula teste' : 'Aula'} marcada pra {diaLabel} às {horaSelecionada}, unidade {unidade}.
+        <p className="text-lg font-semibold text-[#1E2A33] mb-1" style={{ fontFamily: "'Fraunces', serif" }}>
+          Agendamento confirmado
+        </p>
+        <p className="text-sm text-[#4A5A66] mb-4 capitalize-first">
+          {modo === 'teste' ? 'Aula teste' : 'Aula'} marcada pra {dataFormatada} às {horaSelecionada}, unidade {unidade}.
           A confirmação foi enviada pra <span className="font-medium">{email}</span>
           {modo === 'teste' && ' e a equipe também vai confirmar no seu WhatsApp'}.
         </p>
         <button
           onClick={novoAgendamento}
-          className="text-xs font-semibold text-[#1D6FA8] border border-[#1D6FA8] rounded-full px-4 py-2"
+          className="text-xs font-semibold text-[#1D6FA8] border border-[#1D6FA8] rounded-lg px-4 py-2"
         >
           Fazer outro agendamento
         </button>
@@ -218,27 +338,27 @@ function AgendamentoWidget() {
   }
 
   return (
-    <div className="bg-white border border-[#E4DCC8] rounded-2xl p-5 max-w-md mx-auto">
-      <div className="flex bg-[#FBF9F4] rounded-full p-1 mb-5">
+    <div className={`${CARD} p-5 max-w-md mx-auto`}>
+      <div className="flex bg-[#F5F2E9] rounded-xl p-1 mb-5">
         <button
-          onClick={() => trocarModo('teste')}
-          className={`flex-1 text-xs font-semibold py-2.5 rounded-full transition-colors ${
-            modo === 'teste' ? 'bg-[#1D6FA8] text-white' : 'text-[#4A5A66]'
+          onClick={() => { setModo('teste'); setErro(null) }}
+          className={`flex-1 text-xs font-semibold py-2.5 rounded-lg transition-colors ${
+            modo === 'teste' ? 'bg-white text-[#1D6FA8] shadow-sm' : 'text-[#4A5A66]'
           }`}
         >
           Quero uma aula teste
         </button>
         <button
-          onClick={() => trocarModo('aluno')}
-          className={`flex-1 text-xs font-semibold py-2.5 rounded-full transition-colors ${
-            modo === 'aluno' ? 'bg-[#1D6FA8] text-white' : 'text-[#4A5A66]'
+          onClick={() => { setModo('aluno'); setErro(null) }}
+          className={`flex-1 text-xs font-semibold py-2.5 rounded-lg transition-colors ${
+            modo === 'aluno' ? 'bg-white text-[#1D6FA8] shadow-sm' : 'text-[#4A5A66]'
           }`}
         >
           Já sou aluno
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 mb-4">
+      <div className="flex flex-col gap-3 mb-5">
         {modo === 'aluno' && (
           <input
             type="text"
@@ -246,7 +366,7 @@ function AgendamentoWidget() {
             placeholder="CPF (só números)"
             value={cpf}
             onChange={e => setCpf(e.target.value)}
-            className="w-full border border-[#D8CFB8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8]"
+            className="w-full border border-[#E4DCC8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8] focus:ring-1 focus:ring-[#1D6FA8]"
           />
         )}
         <input
@@ -254,7 +374,7 @@ function AgendamentoWidget() {
           placeholder="Seu e-mail"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          className="w-full border border-[#D8CFB8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8]"
+          className="w-full border border-[#E4DCC8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8] focus:ring-1 focus:ring-[#1D6FA8]"
         />
         {modo === 'teste' && (
           <input
@@ -262,19 +382,18 @@ function AgendamentoWidget() {
             placeholder="WhatsApp com DDD"
             value={telefone}
             onChange={e => setTelefone(e.target.value)}
-            className="w-full border border-[#D8CFB8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8]"
+            className="w-full border border-[#E4DCC8] rounded-xl px-4 py-3 text-sm text-[#1E2A33] placeholder:text-[#9AA5AC] focus:outline-none focus:border-[#1D6FA8] focus:ring-1 focus:ring-[#1D6FA8]"
           />
         )}
       </div>
 
-      <label className="text-xs font-semibold text-[#4A5A66] mb-1.5 block">Unidade</label>
-      <div className="flex gap-2 mb-4">
-        {UNIDADES_AGENDA.map(u => (
+      <div className="flex gap-2 mb-5">
+        {['Tucuruvi', 'Parada Inglesa'].map(u => (
           <button
             key={u}
-            onClick={() => setUnidade(u)}
-            className={`flex-1 text-xs font-semibold py-2.5 rounded-xl border ${
-              unidade === u ? 'border-[#1D6FA8] bg-[#EAF1F6] text-[#1D6FA8]' : 'border-[#D8CFB8] text-[#4A5A66]'
+            onClick={() => { setUnidade(u); setDiaSelecionado(null); setHoraSelecionada(null) }}
+            className={`flex-1 text-xs font-semibold py-2.5 rounded-xl border transition-colors ${
+              unidade === u ? 'border-[#1D6FA8] bg-[#EAF1F6] text-[#1D6FA8]' : 'border-[#E4DCC8] text-[#4A5A66]'
             }`}
           >
             {u}
@@ -282,66 +401,40 @@ function AgendamentoWidget() {
         ))}
       </div>
 
-      <label className="text-xs font-semibold text-[#4A5A66] mb-1.5 block">Dia</label>
-      <div className="grid grid-cols-3 gap-2 mb-4">
-        {dias.map(d => (
-          <button
-            key={d.iso}
-            onClick={() => setDiaSelecionado(d.iso)}
-            className={`text-[11px] font-semibold py-2 rounded-lg border capitalize ${
-              diaSelecionado === d.iso ? 'border-[#1D6FA8] bg-[#EAF1F6] text-[#1D6FA8]' : 'border-[#D8CFB8] text-[#4A5A66]'
-            }`}
-          >
-            {d.label}
-          </button>
-        ))}
-      </div>
+      <Calendario unidade={unidade} diaSelecionado={diaSelecionado} onSelecionarDia={selecionarDia} />
 
       {diaSelecionado && (
-        <>
-          <label className="text-xs font-semibold text-[#4A5A66] mb-1.5 block">Horário</label>
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {HORARIOS_DIA.map(h => (
-              <button
-                key={h}
-                onClick={() => setHoraSelecionada(h)}
-                className={`text-xs font-semibold py-2 rounded-lg border ${
-                  horaSelecionada === h ? 'border-[#1D6FA8] bg-[#EAF1F6] text-[#1D6FA8]' : 'border-[#D8CFB8] text-[#4A5A66]'
-                }`}
-              >
-                {h}
-              </button>
-            ))}
-          </div>
-        </>
+        <div className="mt-4 pt-4 border-t border-[#EDE6D3]">
+          <label className="text-xs font-semibold text-[#4A5A66] mb-2 block">Horários livres</label>
+          {livresDoDia.length === 0 ? (
+            <p className="text-xs text-[#9AA5AC]">Esse dia está lotado — escolha outro no calendário.</p>
+          ) : (
+            <div className="grid grid-cols-4 gap-2">
+              {livresDoDia.map(h => (
+                <button
+                  key={h}
+                  onClick={() => setHoraSelecionada(h)}
+                  className={`text-xs font-semibold py-2 rounded-lg border transition-colors ${
+                    horaSelecionada === h ? 'border-[#1D6FA8] bg-[#1D6FA8] text-white' : 'border-[#E4DCC8] text-[#4A5A66] hover:border-[#1D6FA8]'
+                  }`}
+                >
+                  {h}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
-      {erro && <p className="text-xs mb-3" style={{ color: '#B3261E' }}>{erro}</p>}
+      {erro && <p className="text-xs mt-4" style={{ color: '#B3261E' }}>{erro}</p>}
 
       <button
         onClick={confirmar}
         disabled={enviando}
-        className="w-full bg-[#25A85A] text-white font-semibold text-sm py-3.5 rounded-full disabled:opacity-60"
+        className="w-full bg-[#25A85A] text-white font-semibold text-sm py-3.5 rounded-xl mt-5 disabled:opacity-60"
       >
         {enviando ? 'Confirmando…' : 'Confirmar agendamento'}
       </button>
-    </div>
-  )
-}
-
-function UnidadeVisual({ nome }: { nome: string }) {
-  return (
-    <div className="h-36 bg-[#1D6FA8] relative overflow-hidden flex items-center justify-center">
-      <svg viewBox="0 0 200 100" className="absolute inset-0 w-full h-full opacity-[0.18]">
-        <path d="M-10 60 C 40 30, 70 90, 120 55 S 190 20, 220 50" fill="none" stroke="#fff" strokeWidth="3" />
-        <path d="M-10 80 C 40 55, 80 100, 130 75 S 190 45, 220 70" fill="none" stroke="#fff" strokeWidth="2" />
-      </svg>
-      <div className="relative text-center">
-        <svg viewBox="0 0 24 24" fill="#C99A3B" className="w-7 h-7 mx-auto mb-1.5">
-          <path d="M12 2c-4.4 0-8 3.6-8 8 0 5.4 8 12 8 12s8-6.6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z" />
-        </svg>
-        <p className="text-white font-semibold text-sm">{nome}</p>
-      </div>
     </div>
   )
 }
@@ -364,7 +457,7 @@ export default function GtFluirClient() {
           Exemplo de site pra avaliação — GT Fluir Pilates. Fotos reais entram na versão final.
         </div>
 
-        <header className="sticky top-0 z-40 bg-[#FBF9F4]/95 backdrop-blur border-b border-[#E4DCC8] px-5 py-3.5 flex items-center justify-between">
+        <header className="sticky top-0 z-40 bg-[#FBF9F4]/95 backdrop-blur border-b border-[#EDE6D3] px-5 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-full bg-[#1D6FA8] flex items-center justify-center text-white font-bold text-sm gtf-display">
               GT
@@ -373,16 +466,15 @@ export default function GtFluirClient() {
           </div>
           <a
             href={waLink('Oi! Vi o site e quero saber mais sobre o Pilates da GT Fluir.')}
-            className="flex items-center gap-1.5 bg-[#25A85A] text-white text-sm font-semibold px-4 py-2.5 rounded-full"
+            className="flex items-center gap-1.5 bg-[#25A85A] text-white text-sm font-semibold px-4 py-2.5 rounded-xl"
           >
-            WhatsApp
+            Falar pelo WhatsApp
           </a>
         </header>
 
         <section className="relative bg-gradient-to-b from-[#EAF1F6] to-[#FBF9F4] px-5 pt-10 pb-8 text-center overflow-hidden">
-          <svg viewBox="0 0 400 200" className="absolute inset-0 w-full h-full opacity-[0.35]" preserveAspectRatio="none">
-            <path d="M-20 140 C 60 90, 120 190, 200 130 S 340 70, 420 120" fill="none" stroke="#1D6FA8" strokeWidth="3" />
-            <path d="M-20 170 C 80 130, 140 210, 220 160 S 360 110, 420 155" fill="none" stroke="#C99A3B" strokeWidth="2" />
+          <svg viewBox="0 0 400 200" className="absolute inset-0 w-full h-full opacity-[0.25]" preserveAspectRatio="none">
+            <path d="M-20 150 C 80 110, 140 190, 220 140 S 360 100, 420 140" fill="none" stroke="#1D6FA8" strokeWidth="2.5" />
           </svg>
           <div className="relative">
             <p className="text-xs font-semibold tracking-widest uppercase text-[#C99A3B] mb-3">
@@ -396,10 +488,10 @@ export default function GtFluirClient() {
               dor e devolver autonomia — em qualquer fase da vida.
             </p>
             <a
-              href={waLink('Oi! Quero agendar uma aula na GT Fluir.')}
-              className="inline-block bg-[#25A85A] text-white font-semibold text-base px-8 py-4 rounded-full mb-6 shadow-[0_4px_14px_rgba(37,168,90,0.3)]"
+              href={waLink('Oi! Vi o site e quero saber mais sobre o Pilates da GT Fluir.')}
+              className="inline-block bg-[#25A85A] text-white font-semibold text-base px-8 py-4 rounded-xl mb-6 shadow-[0_4px_14px_rgba(37,168,90,0.25)]"
             >
-              Agendar aula pelo WhatsApp
+              Falar pelo WhatsApp
             </a>
 
             <div className="flex items-center justify-center gap-6 sm:gap-10 pt-2">
@@ -421,10 +513,8 @@ export default function GtFluirClient() {
           </div>
         </section>
 
-        <FlowLine className="w-full h-6 -mt-1" />
+        <FlowLine className="w-full h-5" />
 
-        {/* Instagram — sobe pro topo porque é o conteúdo que eles mantêm
-            atualizado de verdade; o resto do site é mais estático */}
         <section className="bg-white px-5 py-10">
           <div className="flex items-center justify-between max-w-2xl mx-auto mb-1">
             <div>
@@ -433,7 +523,7 @@ export default function GtFluirClient() {
             </div>
             <a
               href="https://www.instagram.com/gtfluir/"
-              className="text-xs font-semibold text-white bg-gradient-to-tr from-[#C99A3B] to-[#1D6FA8] rounded-full px-4 py-2.5 flex-shrink-0"
+              className="text-xs font-semibold text-white bg-gradient-to-tr from-[#C99A3B] to-[#1D6FA8] rounded-xl px-4 py-2.5 flex-shrink-0"
             >
               Seguir
             </a>
@@ -448,16 +538,12 @@ export default function GtFluirClient() {
           </div>
         </section>
 
-        {/* Agendamento — o principal argumento de venda: cliente já
-            cadastrado agenda com CPF+e-mail, quem não é cliente agenda
-            aula teste só com e-mail+WhatsApp. Confirmação por e-mail
-            (simulado aqui — sem backend real ainda, é peça de venda) */}
         <section className="px-5 py-12 bg-[#FBF9F4]">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#C99A3B] mb-2 text-center">
             Agendamento online
           </p>
           <h2 className="gtf-display font-semibold text-2xl text-[#1E2A33] mb-2 text-center">
-            Marque sua aula em 1 minuto
+            Veja o horário livre e marque na hora
           </h2>
           <p className="text-xs text-[#9AA5AC] text-center mb-6">
             Simulação funcional — não envia e-mail de verdade ainda, mas o fluxo é esse.
@@ -474,7 +560,7 @@ export default function GtFluirClient() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {beneficios.map(b => (
-              <div key={b.titulo} className="flex gap-4 bg-[#FBF9F4] rounded-2xl p-5 border border-[#E4DCC8]">
+              <div key={b.titulo} className={`flex gap-4 ${CARD} p-5`}>
                 <IconBadge>{b.icon}</IconBadge>
                 <div>
                   <h3 className="gtf-display font-semibold text-base text-[#1E2A33] mb-1">{b.titulo}</h3>
@@ -535,7 +621,7 @@ export default function GtFluirClient() {
           </h2>
           <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {unidades.map(u => (
-              <div key={u.nome} className="border border-[#E4DCC8] rounded-2xl overflow-hidden bg-white">
+              <div key={u.nome} className={`${CARD} overflow-hidden`}>
                 <UnidadeVisual nome={u.nome} />
                 <div className="p-5">
                   <h3 className="gtf-display font-semibold text-base text-[#1E2A33] mb-1">Unidade {u.nome}</h3>
@@ -543,13 +629,13 @@ export default function GtFluirClient() {
                   <div className="flex gap-2">
                     <a
                       href={u.mapa}
-                      className="text-xs font-semibold text-[#1D6FA8] border border-[#1D6FA8] rounded-full px-4 py-2"
+                      className="text-xs font-semibold text-[#1D6FA8] border border-[#1D6FA8] rounded-lg px-4 py-2"
                     >
                       Ver no mapa
                     </a>
                     <a
                       href={waLink(`Oi! Tenho interesse na unidade ${u.nome}.`)}
-                      className="text-xs font-semibold text-white bg-[#25A85A] rounded-full px-4 py-2"
+                      className="text-xs font-semibold text-white bg-[#25A85A] rounded-lg px-4 py-2"
                     >
                       WhatsApp
                     </a>
@@ -574,8 +660,8 @@ export default function GtFluirClient() {
             {planos.map(p => (
               <div
                 key={p.freq}
-                className={`flex flex-col rounded-2xl p-5 border ${
-                  p.destaque ? 'border-[#1D6FA8] border-2 bg-[#EAF1F6]' : 'border-[#E4DCC8]'
+                className={`flex flex-col rounded-2xl p-5 ${
+                  p.destaque ? 'border-2 border-[#1D6FA8] bg-[#EAF1F6]' : `${CARD}`
                 }`}
               >
                 {p.destaque && (
@@ -587,7 +673,7 @@ export default function GtFluirClient() {
                 <p className="text-sm text-[#4A5A66] mb-4 flex-1">{p.desc}</p>
                 <a
                   href={waLink(`Oi! Quero saber o valor do plano ${p.freq}.`)}
-                  className="text-xs font-semibold text-center text-[#1D6FA8] border border-[#1D6FA8] rounded-full px-4 py-2.5"
+                  className="text-xs font-semibold text-center text-[#1D6FA8] border border-[#1D6FA8] rounded-lg px-4 py-2.5"
                 >
                   Ver valor
                 </a>
@@ -603,7 +689,7 @@ export default function GtFluirClient() {
           <h2 className="gtf-display font-semibold text-2xl text-[#1E2A33] mb-6 text-center">
             O que os alunos dizem
           </h2>
-          <div className="max-w-md mx-auto bg-white border border-[#E4DCC8] rounded-2xl p-6 text-center">
+          <div className={`${CARD} max-w-md mx-auto p-6 text-center`}>
             <svg viewBox="0 0 24 24" fill="#C99A3B" className="w-7 h-7 mx-auto mb-3 opacity-70">
               <path d="M7 5c-2.2 0-4 1.8-4 4 0 2 1.4 3.6 3.2 3.9-.3 1.5-1.3 2.6-2.7 3v2c2.8-.3 5.5-2.5 5.5-6.4V9c0-2.2-1.8-4-4-4zm10 0c-2.2 0-4 1.8-4 4 0 2 1.4 3.6 3.2 3.9-.3 1.5-1.3 2.6-2.7 3v2c2.8-.3 5.5-2.5 5.5-6.4V9c0-2.2-1.8-4-4-4z" />
             </svg>
@@ -618,8 +704,8 @@ export default function GtFluirClient() {
           <p className="gtf-display font-semibold text-lg text-white mb-1">GT Fluir Pilates</p>
           <p className="text-sm text-white/70 mb-4">Pilates e fisioterapia · Zona Norte, São Paulo</p>
           <a
-            href={waLink('Oi! Quero agendar uma aula na GT Fluir.')}
-            className="inline-block bg-[#25A85A] text-white font-semibold text-sm px-6 py-3 rounded-full mb-4"
+            href={waLink('Oi! Vi o site e quero saber mais sobre o Pilates da GT Fluir.')}
+            className="inline-block bg-[#25A85A] text-white font-semibold text-sm px-6 py-3 rounded-xl mb-4"
           >
             (11) 99477-7420 · WhatsApp
           </a>
