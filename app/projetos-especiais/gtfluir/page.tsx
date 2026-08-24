@@ -58,6 +58,15 @@ const planos = [
   { freq: '3x por semana', desc: 'Acompanhamento mais próximo, pra quem quer evoluir mais rápido.' },
 ]
 
+const posts = [
+  { tipo: 'Equipamento', desc: 'Reformer', video: true },
+  { tipo: 'Aula em grupo', desc: 'Turma da manhã', video: false },
+  { tipo: 'Dica rápida', desc: 'Postura no dia a dia', video: true },
+  { tipo: 'Aluno', desc: 'Depoimento', video: false },
+  { tipo: 'Bastidores', desc: 'Equipe GT Fluir', video: false },
+  { tipo: 'Promoção', desc: 'Aula teste grátis', video: true },
+]
+
 function FlowLine({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 400 40" className={className} preserveAspectRatio="none">
@@ -78,6 +87,27 @@ function IconBadge({ children }: { children: React.ReactNode }) {
       <svg viewBox="0 0 24 24" fill="#1D6FA8" className="w-6 h-6">
         {children}
       </svg>
+    </div>
+  )
+}
+
+const TILE_BG = ['#1D6FA8', '#C99A3B', '#4A7290', '#1D6FA8', '#C99A3B', '#4A7290']
+
+function PostTile({ tipo, desc, video, bg }: { tipo: string; desc: string; video: boolean; bg: string }) {
+  return (
+    <div className="relative aspect-square rounded-lg overflow-hidden" style={{ backgroundColor: bg }}>
+      <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full opacity-[0.25]" preserveAspectRatio="none">
+        <path d="M-10 60 C 20 40, 40 80, 60 55 S 100 30, 120 55" fill="none" stroke="#fff" strokeWidth="4" />
+      </svg>
+      {video && (
+        <svg viewBox="0 0 24 24" fill="white" className="absolute top-2 right-2 w-4 h-4 opacity-90">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      )}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
+        <p className="text-white text-[11px] font-semibold leading-tight">{tipo}</p>
+        <p className="text-white/75 text-[10px] leading-tight">{desc}</p>
+      </div>
     </div>
   )
 }
@@ -175,6 +205,31 @@ export default function GtFluirExemplo() {
         </section>
 
         <FlowLine className="w-full h-6 -mt-1" />
+
+        {/* Instagram — sobe pro topo porque é o conteúdo que eles mantêm
+            atualizado de verdade; o resto do site é mais estático */}
+        <section className="bg-white px-5 py-10">
+          <div className="flex items-center justify-between max-w-2xl mx-auto mb-1">
+            <div>
+              <p className="gtf-display font-semibold text-lg text-[#1E2A33]">@gtfluir</p>
+              <p className="text-xs text-[#4A5A66]">1,3 mil seguidores · atualizado toda semana</p>
+            </div>
+            <a
+              href="https://www.instagram.com/gtfluir/"
+              className="text-xs font-semibold text-white bg-gradient-to-tr from-[#C99A3B] to-[#1D6FA8] rounded-full px-4 py-2.5 flex-shrink-0"
+            >
+              Seguir
+            </a>
+          </div>
+          <p className="text-[11px] text-[#9AA5AC] max-w-2xl mx-auto mb-4">
+            Simulação do feed — as fotos e vídeos reais entram direto do Instagram deles.
+          </p>
+          <div className="grid grid-cols-3 gap-1.5 max-w-2xl mx-auto">
+            {posts.map((p, i) => (
+              <PostTile key={p.tipo} tipo={p.tipo} desc={p.desc} video={p.video} bg={TILE_BG[i]} />
+            ))}
+          </div>
+        </section>
 
         <section className="bg-white px-5 py-12">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#C99A3B] mb-2 text-center">
@@ -325,29 +380,19 @@ export default function GtFluirExemplo() {
           </div>
         </section>
 
-        <section className="bg-[#C99A3B] px-5 py-12 text-center">
-          <p className="gtf-display font-semibold text-xl text-white mb-2">
-            Acompanhe o dia a dia no Instagram
-          </p>
-          <p className="text-sm text-white/85 mb-5">@gtfluir</p>
-          <a
-            href="https://www.instagram.com/gtfluir/"
-            className="inline-block bg-white text-[#C99A3B] font-semibold text-sm px-6 py-3 rounded-full"
-          >
-            Seguir no Instagram
-          </a>
-        </section>
-
         <footer className="px-5 py-10 text-center bg-[#1E2A33]">
           <p className="gtf-display font-semibold text-lg text-white mb-1">GT Fluir Pilates</p>
           <p className="text-sm text-white/70 mb-4">Pilates e fisioterapia · Zona Norte, São Paulo</p>
           <a
             href={waLink('Oi! Quero agendar uma aula na GT Fluir.')}
-            className="inline-block bg-[#25A85A] text-white font-semibold text-sm px-6 py-3 rounded-full mb-6"
+            className="inline-block bg-[#25A85A] text-white font-semibold text-sm px-6 py-3 rounded-full mb-4"
           >
             (11) 99477-7420 · WhatsApp
           </a>
-          <p className="text-xs text-white/50">Tucuruvi · Parada Inglesa</p>
+          <p className="text-xs text-white/50 mb-1">Tucuruvi · Parada Inglesa</p>
+          <a href="https://www.instagram.com/gtfluir/" className="text-xs text-white/50 underline">
+            @gtfluir no Instagram
+          </a>
         </footer>
 
         <a
