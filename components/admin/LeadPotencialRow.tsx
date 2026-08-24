@@ -43,7 +43,18 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
   return (
     <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border)] overflow-hidden">
       <div className="w-full flex items-center gap-4 p-4 hover:bg-[var(--off)] transition-colors">
-        <button onClick={() => setAtendimentoAberto(true)} className="flex items-center gap-4 flex-1 min-w-0 text-left">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setAtendimentoAberto(true)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setAtendimentoAberto(true)
+            }
+          }}
+          className="flex items-center gap-4 flex-1 min-w-0 text-left cursor-pointer"
+        >
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <p className="font-bold text-[var(--ink)] text-sm truncate">{lead.nome}</p>
@@ -62,6 +73,18 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
                   ⭐ {lead.notaGoogle} ({lead.avaliacoesGoogle ?? 0})
                 </span>
               )}
+              {lead.instagramUrl && (
+                <a
+                  href={lead.instagramUrl.startsWith('http') ? lead.instagramUrl : `https://instagram.com/${lead.instagramUrl.replace(/^@/, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  className="text-[10px] font-semibold text-pink-700 bg-pink-50 px-2 py-0.5 rounded-full flex-shrink-0 hover:bg-pink-100"
+                  title="Abrir Instagram"
+                >
+                  📷 Instagram
+                </a>
+              )}
             </div>
             <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)] mt-0.5">
               {lead.telefone && <span>{lead.telefone}</span>}
@@ -70,7 +93,7 @@ export default function LeadPotencialRow({ lead, membros }: { lead: LeadPotencia
               <span>Cadastrado por {lead.criadorNome ?? 'alguém da equipe'} · {new Date(lead.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span>
             </div>
           </div>
-        </button>
+        </div>
 
         {/* Indicador rápido de PDFs, sem precisar abrir */}
         <div className="hidden sm:flex items-center gap-1.5 flex-shrink-0" title="Documentos">
