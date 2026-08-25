@@ -75,7 +75,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   return site as SiteEspecial
 }
 
-export const SITE_URL_BASE = `https://drjoaobucomaxilofacial.com.br`
+export const SITE_URL_BASE = `https://drjoaovictorpimenta.com.br`
 
 // Path interno onde as páginas realmente moram no Next.js.
 const INTERNAL_PATH = '/projetos-especiais/dentista-joao'
