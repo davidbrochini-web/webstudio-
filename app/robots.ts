@@ -37,6 +37,8 @@ async function casosEsquecidosRobots(): Promise<MetadataRoute.Robots> {
 const DOMAIN_ROBOTS: Record<string, () => Promise<MetadataRoute.Robots>> = {
   'drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
   'www.drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
+  'drjoaovictorpimenta.com.br': dentistaJoaoRobots,
+  'www.drjoaovictorpimenta.com.br': dentistaJoaoRobots,
   'casosesquecidos.com.br': casosEsquecidosRobots,
   'www.casosesquecidos.com.br': casosEsquecidosRobots,
 }

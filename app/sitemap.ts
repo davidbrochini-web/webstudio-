@@ -16,6 +16,8 @@ const BASE_URL = 'https://omnidesign.com.br'
 const DOMAIN_SITEMAPS: Record<string, () => Promise<MetadataRoute.Sitemap>> = {
   'drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
   'www.drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
+  'drjoaovictorpimenta.com.br': dentistaJoaoSitemap,
+  'www.drjoaovictorpimenta.com.br': dentistaJoaoSitemap,
   'casosesquecidos.com.br': casosEsquecidosSitemap,
   'www.casosesquecidos.com.br': casosEsquecidosSitemap,
 }

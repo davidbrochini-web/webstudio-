@@ -30,6 +30,8 @@ const GA_POR_HOST: Record<string, string | undefined> = {
 
   'drjoaobucomaxilofacial.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
   'www.drjoaobucomaxilofacial.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
+  'drjoaovictorpimenta.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
+  'www.drjoaovictorpimenta.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
 
   'casosesquecidos.com.br': process.env.NEXT_PUBLIC_GA_ID_CASOS_ESQUECIDOS,
   'www.casosesquecidos.com.br': process.env.NEXT_PUBLIC_GA_ID_CASOS_ESQUECIDOS,
