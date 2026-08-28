@@ -55,9 +55,11 @@ function renderInline(texto: string): React.ReactNode {
 export default function DocumentacaoModal({
   titulo,
   conteudo,
+  compact = false,
 }: {
   titulo: string
   conteudo: string
+  compact?: boolean
 }) {
   const [aberto, setAberto] = useState(false)
 
@@ -65,10 +67,15 @@ export default function DocumentacaoModal({
     <>
       <button
         onClick={() => setAberto(true)}
-        className="text-sm font-bold px-4 py-2 rounded-full border-2 transition-colors"
+        aria-label="Ver documentação"
+        className={
+          compact
+            ? 'flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] transition-colors'
+            : 'text-sm font-bold px-4 py-2 rounded-full border-2 transition-colors'
+        }
         style={{ borderColor: 'var(--dj-primary, #0EA5A0)', color: 'var(--dj-primary, #0EA5A0)' }}
       >
-        📄 Documentação
+        {compact ? '📄' : '📄 Documentação'}
       </button>
 
       {aberto && (

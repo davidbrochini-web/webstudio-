@@ -41,7 +41,7 @@ export default async function AssinaturaPage() {
       {itens.length === 0 ? (
         <p className="text-sm text-[var(--muted)]">Nenhum item de assinatura cadastrado ainda.</p>
       ) : (
-        <div className="flex flex-col gap-4 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-12">
           {itens.map(item => <ItemAtivoCard key={item.id} item={item} />)}
         </div>
       )}
@@ -78,50 +78,51 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
     .sort((a, b) => (a.vencimento! < b.vencimento! ? -1 : 1))[0]
 
   return (
-    <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-5 sm:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-        <div>
-          <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-white bg-[#0EA5A0] px-2.5 py-1 rounded-full mb-2">
-            Ativo
-          </span>
-          <p className="font-display font-bold text-lg text-[var(--ink)]">{item.label}</p>
-        </div>
+    <div className="relative aspect-square bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-3 sm:p-4 flex flex-col">
+      <div className="flex items-start justify-between gap-1 mb-2">
+        <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-white bg-[#0EA5A0] px-2 py-0.5 rounded-full">
+          Ativo
+        </span>
         {item.documentacao_conteudo && item.documentacao_titulo && (
-          <DocumentacaoModal titulo={item.documentacao_titulo} conteudo={item.documentacao_conteudo} />
+          <DocumentacaoModal titulo={item.documentacao_titulo} conteudo={item.documentacao_conteudo} compact />
         )}
       </div>
 
+      <p className="font-display font-bold text-[13px] sm:text-sm text-[var(--ink)] leading-snug line-clamp-2 mb-auto">
+        {item.label}
+      </p>
+
       {item.tipo === 'unico' ? (
-        <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-          <div>
-            <p className="text-[var(--muted)] text-xs">Valor total</p>
-            <p className="font-bold text-[var(--ink)]">{formatCentavos(item.valor_centavos)}</p>
-          </div>
-          <div>
-            <p className="text-[var(--muted)] text-xs">Pago</p>
-            <p className="font-bold text-emerald-600">{formatCentavos(pago)}</p>
+        <div className="mt-2 pt-2 border-t border-[var(--border)] flex flex-col gap-0.5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] text-[var(--muted)]">Pago</span>
+            <span className="text-xs font-bold text-emerald-500">{formatCentavos(pago)}</span>
           </div>
           {pendente > 0 && (
-            <div>
-              <p className="text-[var(--muted)] text-xs">Pendência</p>
-              <p className="font-bold text-amber-600">{formatCentavos(pendente)}</p>
+            <div className="flex items-baseline justify-between">
+              <span className="text-[10px] text-[var(--muted)]">Pendência</span>
+              <span className="text-xs font-bold text-amber-500">{formatCentavos(pendente)}</span>
             </div>
           )}
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] text-[var(--muted)]">Total</span>
+            <span className="text-xs font-bold text-[var(--ink)]">{formatCentavos(item.valor_centavos)}</span>
+          </div>
         </div>
       ) : (
-        <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-          <div>
-            <p className="text-[var(--muted)] text-xs">Mensalidade</p>
-            <p className="font-bold text-[var(--ink)]">{formatCentavos(item.valor_centavos)}/mês</p>
+        <div className="mt-2 pt-2 border-t border-[var(--border)] flex flex-col gap-0.5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] text-[var(--muted)]">Mensal</span>
+            <span className="text-xs font-bold text-[var(--ink)]">{formatCentavos(item.valor_centavos)}</span>
           </div>
           {proximoVencimento && (
-            <div>
-              <p className="text-[var(--muted)] text-xs">
-                {proximoVencimento.status === 'atrasado' ? 'Vencido em' : 'Primeiro pagamento'}
-              </p>
-              <p className={`font-bold ${proximoVencimento.status === 'atrasado' ? 'text-red-600' : 'text-amber-600'}`}>
+            <div className="flex items-baseline justify-between">
+              <span className="text-[10px] text-[var(--muted)]">
+                {proximoVencimento.status === 'atrasado' ? 'Vencido' : '1º pag.'}
+              </span>
+              <span className={`text-xs font-bold ${proximoVencimento.status === 'atrasado' ? 'text-red-500' : 'text-amber-500'}`}>
                 {formatDataCurta(proximoVencimento.vencimento)}
-              </p>
+              </span>
             </div>
           )}
         </div>
