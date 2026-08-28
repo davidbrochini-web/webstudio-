@@ -127,6 +127,8 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
         <div className="flex gap-1.5 mt-3">
           {item.documentacao_conteudo && item.documentacao_titulo && (
             <DocumentacaoModal
+              itemId={item.id}
+              campo="documentacao"
               titulo={item.documentacao_titulo}
               conteudo={item.documentacao_conteudo}
               icone="📄"
@@ -136,6 +138,8 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
           )}
           {item.guia_conteudo && item.guia_titulo && (
             <DocumentacaoModal
+              itemId={item.id}
+              campo="guia"
               titulo={item.guia_titulo}
               conteudo={item.guia_conteudo}
               icone="📘"
