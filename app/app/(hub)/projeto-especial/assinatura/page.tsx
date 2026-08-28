@@ -4,6 +4,7 @@ import Link from 'next/link'
 import QRCode from 'qrcode'
 import DocumentacaoModal from '@/components/projeto-especial/DocumentacaoModal'
 import PixPendenteBotao from '@/components/projeto-especial/PixPendenteBotao'
+import ModulosInfoModal from '@/components/projeto-especial/ModulosInfoModal'
 import { gerarPixCopiaECola, PIX_RECEBEDOR } from '@/lib/pix'
 import {
   type AssinaturaItem,
@@ -76,9 +77,12 @@ export default async function AssinaturaPage() {
       )}
 
       <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-1">Outros módulos disponíveis</h2>
-      <p className="text-[var(--muted)] text-sm mb-5">
-        Ainda não fazem parte do seu plano. Fale com a gente se quiser saber mais.
-      </p>
+      <div className="flex items-center justify-between gap-3 mb-5">
+        <p className="text-[var(--muted)] text-sm">
+          Ainda não fazem parte do seu plano. Fale com a gente se quiser saber mais.
+        </p>
+        <ModulosInfoModal />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {MODULOS_DISPONIVEIS_CLIENTE.map(m => (
           <div

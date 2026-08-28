@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import DarkTopNav, { type DarkNavItem } from '@/components/layout/DarkTopNav'
+import SuporteFloatingButton from '@/components/layout/SuporteFloatingButton'
 import { modules } from '@/lib/modules'
 import { getPendenciaAtual } from '@/lib/assinatura-server'
 
@@ -126,6 +127,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
       <main className="px-6 py-10">
         <div className="max-w-3xl mx-auto">{children}</div>
       </main>
+      <SuporteFloatingButton />
     </>
   )
 }
