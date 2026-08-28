@@ -48,4 +48,6 @@ export const MODULOS_DISPONIVEIS_CLIENTE = [
   { label: 'Orçamentos e Pedidos', icone: '📋' },
   { label: 'Vídeos no Site', icone: '🎬' },
   { label: 'WhatsApp Web no Painel', icone: '💬' },
+  { label: 'Google Ads', icone: '🎯' },
+  { label: 'GPT Ads', icone: '✨' },
 ] as const
