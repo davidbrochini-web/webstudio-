@@ -73,15 +73,7 @@ export default async function AssinaturaPage() {
               <p className="text-xs text-amber-700 mb-4">
                 Aponte a câmera do seu banco pro QR Code, ou copie o código Pix abaixo e cole no app do seu banco.
               </p>
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <CopiarPixBotao codigo={pixCodigo} />
-                <input
-                  readOnly
-                  value={pixCodigo}
-                  onFocus={e => e.currentTarget.select()}
-                  className="flex-1 min-w-0 text-[11px] font-mono text-amber-800 bg-white border border-amber-200 rounded-full px-4 py-2 truncate"
-                />
-              </div>
+              <CopiarPixBotao codigo={pixCodigo} />
             </div>
           </div>
         </div>
