@@ -84,7 +84,8 @@ export default function Pricing() {
             <div className="font-display font-extrabold text-4xl text-[var(--ink)] leading-none mb-1">
               A partir de<br />R$&thinsp;39,90
             </div>
-            <p className="text-xs text-[var(--muted)] mb-6">Por módulo/mês, de acordo com a complexidade.</p>
+            <p className="text-xs text-[var(--muted)] mb-1">Por módulo/mês, de acordo com a complexidade.</p>
+            <p className="text-xs text-[var(--muted)] mb-6">+ setup inicial sob análise.</p>
             <ul className="space-y-3 mb-7">
               {moduleItems.map(i => <CheckItem key={i}>{i}</CheckItem>)}
             </ul>
