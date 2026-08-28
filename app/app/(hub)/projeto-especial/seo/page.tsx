@@ -11,12 +11,23 @@ interface ChecklistItem {
   corrigirEm?: { href: string; label: string }
 }
 
+async function contarUrlsSitemap(): Promise<number | null> {
+  try {
+    const res = await fetch(`${SITE_URL_BASE}/sitemap.xml`, { cache: 'no-store', signal: AbortSignal.timeout(5000) })
+    if (!res.ok) return null
+    const xml = await res.text()
+    return (xml.match(/<url>/g) ?? []).length
+  } catch {
+    return null
+  }
+}
+
 export default async function SeoPage() {
   const info = await getCurrentTenant()
   if (!info || !info.siteId) return null
 
   const supabase = await createClient()
-  const [{ data: site }, { count: tratamentosCount }, { count: faqCount }, { count: artigosCount }, { count: equipeCount }] = await Promise.all([
+  const [{ data: site }, { count: tratamentosCount }, { count: faqCount }, { count: artigosCount }, { count: equipeCount }, sitemapUrlCount] = await Promise.all([
     supabase.from('sites')
       .select('business_name, tagline, telefone, whatsapp, endereco, hero_imagem_url, logo_url, instagram_handle, seo_indexavel, secao_tratamentos_visivel, secao_faq_visivel, secao_artigos_visivel, secao_equipe_visivel')
       .eq('id', info.siteId).single(),
@@ -24,6 +35,7 @@ export default async function SeoPage() {
     supabase.from('site_faq').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId).is('deleted_at', null),
     supabase.from('site_blog_posts').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId).eq('publicado', true).is('deleted_at', null),
     supabase.from('site_equipe').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId).is('deleted_at', null),
+    contarUrlsSitemap(),
   ])
 
   if (!site) return null
@@ -31,6 +43,8 @@ export default async function SeoPage() {
   // Heurística: detecta se o campo ainda está com o texto de rascunho
   // original (não foi personalizado ainda) — mais útil que só "vazio".
   const éPlaceholder = (v: string | null, marcador: string) => !v || v.includes(marcador)
+
+  const artigosOcultosComConteudo = !site.secao_artigos_visivel && (artigosCount ?? 0) > 0
 
   const checklist: ChecklistItem[] = [
     {
@@ -79,9 +93,11 @@ export default async function SeoPage() {
     },
     {
       ok: (artigosCount ?? 0) > 0 && site.secao_artigos_visivel,
-      label: 'Pelo menos 1 artigo publicado',
-      detalhe: 'Blog ajuda o site a aparecer em mais buscas — não é obrigatório, mas ajuda bastante.',
-      corrigirEm: { href: '/app/projeto-especial/blog', label: 'Ir pro Blog' },
+      label: 'Pelo menos 1 artigo publicado e visível',
+      detalhe: artigosOcultosComConteudo
+        ? `Você já tem ${artigosCount} artigo(s) escrito(s) e publicado(s), mas a seção Artigos está oculta no site agora — ninguém consegue ver esse conteúdo, nem o Google.`
+        : 'Blog ajuda o site a aparecer em mais buscas — não é obrigatório, mas ajuda bastante.',
+      corrigirEm: { href: '/app/projeto-especial/editor', label: artigosOcultosComConteudo ? 'Reativar seção' : 'Ir pro Blog' },
     },
     {
       ok: (equipeCount ?? 0) > 0 && site.secao_equipe_visivel,
@@ -96,6 +112,15 @@ export default async function SeoPage() {
   ]
 
   const feitos = checklist.filter(c => c.ok).length
+
+  // Prévia de como o site aparece no resultado de busca do Google —
+  // mesma regra que o Google usa (title da página + descrição, cortada
+  // em ~155 caracteres, que é aproximadamente onde o Google trunca).
+  const descricaoPrevia = (site.tagline ?? '').replace(/\s+/g, ' ').trim()
+  const descricaoCortada = descricaoPrevia.length > 155 ? descricaoPrevia.slice(0, 155).trim() + '…' : descricaoPrevia
+  const urlExibicao = SITE_URL_BASE.replace('https://', '')
+
+  const gaConfigurado = !!process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO
 
   return (
     <div className="max-w-4xl">
@@ -112,6 +137,49 @@ export default async function SeoPage() {
 
       {/* ── Visibilidade no Google ─────────────────────────────── */}
       <SeoIndexToggle siteId={info.siteId} indexavel={site.seo_indexavel} />
+
+      {/* ── Como aparece no Google ──────────────────────────────── */}
+      <div className="mt-8">
+        <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-1">Como aparece no Google</h2>
+        <p className="text-xs text-[var(--muted)] mb-4">
+          Uma simulação de como seu site aparece quando alguém pesquisa por ele — o Google monta o resultado a partir do título e da descrição do site.
+        </p>
+        <div className="bg-white border border-[var(--border)] rounded-xl p-4 sm:p-5">
+          <p className="text-[13px] text-[#4d5156]">{urlExibicao}</p>
+          <p className="text-lg text-[#1a0dab] leading-snug mt-0.5 mb-1">{site.business_name}</p>
+          <p className="text-sm text-[#4d5156] leading-snug">{descricaoCortada || 'Sem descrição configurada ainda.'}</p>
+        </div>
+      </div>
+
+      {/* ── Números do site ─────────────────────────────────────── */}
+      <div className="mt-8">
+        <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-4">Números do site</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-4 text-center">
+            <p className="font-display font-extrabold text-2xl text-[var(--ink)]">{sitemapUrlCount ?? '—'}</p>
+            <p className="text-[11px] text-[var(--muted)] mt-1">páginas no sitemap</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-4 text-center">
+            <p className={`font-display font-extrabold text-2xl ${site.seo_indexavel ? 'text-emerald-500' : 'text-amber-500'}`}>
+              {site.seo_indexavel ? 'Sim' : 'Não'}
+            </p>
+            <p className="text-[11px] text-[var(--muted)] mt-1">visível no Google</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-4 text-center">
+            <p className="font-display font-extrabold text-2xl text-emerald-500">Ativo</p>
+            <p className="text-[11px] text-[var(--muted)] mt-1">dados estruturados</p>
+          </div>
+          <div className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-4 text-center">
+            <p className={`font-display font-extrabold text-2xl ${gaConfigurado ? 'text-emerald-500' : 'text-amber-500'}`}>
+              {gaConfigurado ? 'Ativo' : 'Pendente'}
+            </p>
+            <p className="text-[11px] text-[var(--muted)] mt-1">Google Analytics</p>
+          </div>
+        </div>
+        <p className="text-[11px] text-[var(--muted)] mt-3">
+          &quot;Dados estruturados&quot; é a informação (endereço, telefone, avaliações) que o Google lê direto do código do site pra te mostrar melhor nos resultados — já vem configurado, sem precisar mexer.
+        </p>
+      </div>
 
       {/* ── Checklist ───────────────────────────────────────────── */}
       <div className="mt-8">
@@ -152,7 +220,7 @@ export default async function SeoPage() {
           <a href={`${SITE_URL_BASE}/sitemap.xml`} target="_blank" rel="noopener noreferrer"
             className="block bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
             <p className="text-sm font-bold text-[var(--ink)] mb-1">📄 sitemap.xml</p>
-            <p className="text-xs text-[var(--muted)]">Lista de páginas que o site oferece pro Google indexar.</p>
+            <p className="text-xs text-[var(--muted)]">Lista de páginas que o site oferece pro Google indexar{sitemapUrlCount != null ? ` — ${sitemapUrlCount} no momento` : ''}.</p>
           </a>
           <a href={`${SITE_URL_BASE}/robots.txt`} target="_blank" rel="noopener noreferrer"
             className="block bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
@@ -162,22 +230,41 @@ export default async function SeoPage() {
         </div>
       </div>
 
-      {/* ── Próximos passos recomendados ───────────────────────── */}
+      {/* ── Ferramentas do Google ──────────────────────────────── */}
       <div className="mt-8 mb-4">
-        <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-1">Próximos passos recomendados</h2>
+        <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-1">Ferramentas do Google</h2>
         <p className="text-xs text-[var(--muted)] mb-4">
-          Essas duas ferramentas são gratuitas e do próprio Google — precisam da sua conta Google pra configurar, por isso não dá pra fazer por aqui.
+          Gratuitas e do próprio Google — usam a sua conta Google, por isso não dá pra configurar por aqui.
         </p>
         <div className="flex flex-col gap-3">
           <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer"
-            className="block bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
-            <p className="text-sm font-bold text-[var(--ink)] mb-1">🔍 Google Search Console</p>
-            <p className="text-xs text-[var(--muted)]">Cadastra o site oficialmente no Google e mostra como as pessoas estão encontrando a clínica na busca.</p>
+            className="flex items-center justify-between gap-3 bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
+            <div>
+              <p className="text-sm font-bold text-[var(--ink)] mb-1">🔍 Google Search Console</p>
+              <p className="text-xs text-[var(--muted)]">Mostra como as pessoas estão encontrando a clínica na busca do Google.</p>
+            </div>
+            <span className="flex-shrink-0 text-xs font-bold text-[var(--brand)] whitespace-nowrap">Ver no Google →</span>
           </a>
           <a href="https://business.google.com" target="_blank" rel="noopener noreferrer"
-            className="block bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
-            <p className="text-sm font-bold text-[var(--ink)] mb-1">📍 Perfil da Empresa no Google (antigo Google Meu Negócio)</p>
-            <p className="text-xs text-[var(--muted)]">O que faz a clínica aparecer no mapa e nas buscas tipo &quot;dentista perto de mim&quot;. Separado do site, mas o mais importante pra clínica física.</p>
+            className="flex items-center justify-between gap-3 bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
+            <div>
+              <p className="text-sm font-bold text-[var(--ink)] mb-1">📍 Perfil da Empresa (Google Meu Negócio)</p>
+              <p className="text-xs text-[var(--muted)]">O que faz a clínica aparecer no mapa e em buscas tipo &quot;dentista perto de mim&quot;.</p>
+            </div>
+            <span className="flex-shrink-0 text-xs font-bold text-[var(--brand)] whitespace-nowrap">Ver no Google →</span>
+          </a>
+          <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-between gap-3 bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-4 transition-colors">
+            <div>
+              <p className="text-sm font-bold text-[var(--ink)] mb-1">📊 Google Analytics</p>
+              <p className="text-xs text-[var(--muted)]">
+                Quantas pessoas visitam seu site, de onde vêm e o que mais acessam.
+                {gaConfigurado
+                  ? ' Já está ativo no seu site — acesse com sua conta Google pra ver os números.'
+                  : ' Ainda não foi ativado no seu site.'}
+              </p>
+            </div>
+            <span className="flex-shrink-0 text-xs font-bold text-[var(--brand)] whitespace-nowrap">Ver no Google →</span>
           </a>
         </div>
       </div>

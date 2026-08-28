@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import DarkTopNav, { type DarkNavItem } from '@/components/layout/DarkTopNav'
 import { modules } from '@/lib/modules'
+import { getPendenciaAtual } from '@/lib/assinatura-server'
 
 export default async function HubLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -55,6 +56,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
       }
 
       if (tenant.projeto_especial_slug === 'dentista-joao') {
+        const { totalCentavos: pendenciaCentavos } = await getPendenciaAtual(tenant.id)
         navItems.push({
           label: '📥 Leads',
           href: '/app/projeto-especial/leads',
@@ -82,6 +84,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         navItems.push({
           label: '💳 Assinatura',
           href: '/app/projeto-especial/assinatura',
+          dot: pendenciaCentavos > 0,
         })
       }
 

@@ -11,6 +11,8 @@ export interface DarkNavItem {
   label: string
   href?: string
   children?: { label: string; href: string }[]
+  /** Bolinha discreta de notificação (ex: pendência de pagamento). */
+  dot?: boolean
 }
 
 function NavDropdown({ item, active }: { item: DarkNavItem; active: boolean }) {
@@ -161,6 +163,12 @@ export default function DarkTopNav({
                 }`}
               >
                 {item.label}
+                {item.dot && (
+                  <span
+                    aria-label="Pendência"
+                    className="absolute top-1 right-0.5 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"
+                  />
+                )}
                 {active && <span className="absolute left-3 right-3 -bottom-[1px] h-0.5 bg-[var(--brand2)] rounded-full" />}
               </Link>
             )
