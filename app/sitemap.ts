@@ -14,8 +14,8 @@ const BASE_URL = 'https://omnidesign.com.br'
 // app Vercel — sem isso, /sitemap.xml em qualquer domínio devolveria
 // sempre o sitemap da plataforma (Omnidesign), nunca o do projeto.
 const DOMAIN_SITEMAPS: Record<string, () => Promise<MetadataRoute.Sitemap>> = {
-  'drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
-  'www.drjoaobucomaxilofacial.com.br': dentistaJoaoSitemap,
+  // Domínio antigo (drjoaobucomaxilofacial.com.br) removido em 28/08 —
+  // já é redirect 308 na borda da Vercel, nunca chega aqui.
   'drjoaovictorpimenta.com.br': dentistaJoaoSitemap,
   'www.drjoaovictorpimenta.com.br': dentistaJoaoSitemap,
   'casosesquecidos.com.br': casosEsquecidosSitemap,

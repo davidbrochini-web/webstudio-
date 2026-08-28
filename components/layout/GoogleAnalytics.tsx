@@ -28,8 +28,8 @@ const GA_POR_HOST: Record<string, string | undefined> = {
   'www.omnidesign.com.br': process.env.NEXT_PUBLIC_GA_ID,
   'localhost': process.env.NEXT_PUBLIC_GA_ID,
 
-  'drjoaobucomaxilofacial.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
-  'www.drjoaobucomaxilofacial.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
+  // Domínio antigo (drjoaobucomaxilofacial.com.br) removido em 28/08 —
+  // já é redirect 308 na borda da Vercel, nunca chega aqui.
   'drjoaovictorpimenta.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
   'www.drjoaovictorpimenta.com.br': process.env.NEXT_PUBLIC_GA_ID_DENTISTA_JOAO,
 

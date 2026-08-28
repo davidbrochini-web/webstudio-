@@ -74,7 +74,7 @@ export async function GET() {
 
   // Só hosts da PRÓPRIA plataforma recebem o feed da Omnidesign —
   // domínio customizado de Projeto Especial sem feed próprio (ex:
-  // drjoaobucomaxilofacial.com.br) continua 404, senão a marca da
+  // drjoaovictorpimenta.com.br) continua 404, senão a marca da
   // Omnidesign vazaria pra dentro do site do cliente.
   const isPlatformHost =
     host === 'omnidesign.com.br' ||

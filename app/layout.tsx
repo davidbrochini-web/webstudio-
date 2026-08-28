@@ -61,7 +61,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // WhatsAppFloat exclui rotas /projetos-especiais via usePathname() —
   // mas isso só funciona no domínio .vercel.app, onde o path REAL
-  // contém esse prefixo. Em domínio customizado (drjoaobucomaxilofacial.
+  // contém esse prefixo. Em domínio customizado (drjoaovictorpimenta.
   // com.br, casosesquecidos.com.br etc.) o proxy.ts reescreve o path
   // internamente e o visitante/usePathname() nunca vê "/projetos-
   // especiais" — a exclusão por path silenciosamente falhava, e o

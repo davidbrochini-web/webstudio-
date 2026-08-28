@@ -7,12 +7,12 @@ import { sendEmail } from '@/lib/email'
  * código de acesso (OTP) em "Meus Agendamentos".
  *
  * Remetente usa o domínio da Omnidesign (já verificado no Resend —
- * SPF/DKIM ativos) em vez de drjoaobucomaxilofacial.com.br, que ainda
- * não tem DNS configurado (e o cliente pode trocar de domínio, então
- * não faz sentido gastar esse setup agora). Nome de exibição continua
- * "Dr. João Victor Pimenta" — quem recebe não percebe a troca de
- * domínio por trás. Quando o domínio próprio for verificado (ou
- * decidido que fica definitivo), trocar só o FROM abaixo.
+ * SPF/DKIM ativos) em vez de drjoaovictorpimenta.com.br — o cliente
+ * pode trocar de domínio de novo no futuro, então não faz sentido
+ * gastar setup de SPF/DKIM próprio pra esse caso. Nome de exibição
+ * continua "Dr. João Victor Pimenta" — quem recebe não percebe a
+ * troca de domínio por trás. Se um dia fizer sentido usar o domínio
+ * próprio do cliente como remetente, trocar só o FROM abaixo.
  *
  * Falha de envio nunca bloqueia a ação principal (lead/agendamento
  * continuam salvos mesmo se o e-mail falhar) — ver lib/email.ts.

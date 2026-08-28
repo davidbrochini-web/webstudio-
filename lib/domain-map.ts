@@ -6,16 +6,11 @@
 //
 // Import seguro em Edge Runtime (proxy.ts) — sem dependências.
 export const DOMAIN_MAP: Record<string, string> = {
-  'drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
-  'www.drjoaobucomaxilofacial.com.br': '/projetos-especiais/dentista-joao',
-  // Domínio novo (23/08) — cliente comprou drjoaovictorpimenta.com.br,
-  // mais pessoal/de marca que o antigo (que descreve a especialidade).
-  // Os dois ficam mapeados em paralelo até o corte final: DNS ainda
-  // em transição no registro.br quando isso foi adicionado, e
-  // SITE_URL_BASE (lib/dentista-joao.ts) só muda pro domínio novo
-  // depois de confirmado que ele resolve de verdade — evita quebrar
-  // link de confirmação de agendamento real de paciente durante a
-  // propagação. Depois do corte, o antigo vira redirect 301 pro novo.
+  // Domínio antigo (drjoaobucomaxilofacial.com.br) removido daqui em
+  // 28/08 — a migração pro domínio novo foi concluída e o antigo
+  // virou redirect 308 configurado na borda da Vercel (nível de
+  // domínio), então tráfego pra ele nunca chega a esse mapeamento.
+  // Confirmado como código morto por auditoria antes de remover.
   'drjoaovictorpimenta.com.br': '/projetos-especiais/dentista-joao',
   'www.drjoaovictorpimenta.com.br': '/projetos-especiais/dentista-joao',
   'casosesquecidos.com.br': '/projetos-especiais/casos-esquecidos',

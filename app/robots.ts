@@ -35,8 +35,8 @@ async function casosEsquecidosRobots(): Promise<MetadataRoute.Robots> {
 }
 
 const DOMAIN_ROBOTS: Record<string, () => Promise<MetadataRoute.Robots>> = {
-  'drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
-  'www.drjoaobucomaxilofacial.com.br': dentistaJoaoRobots,
+  // Domínio antigo (drjoaobucomaxilofacial.com.br) removido em 28/08 —
+  // já é redirect 308 na borda da Vercel, nunca chega aqui.
   'drjoaovictorpimenta.com.br': dentistaJoaoRobots,
   'www.drjoaovictorpimenta.com.br': dentistaJoaoRobots,
   'casosesquecidos.com.br': casosEsquecidosRobots,
