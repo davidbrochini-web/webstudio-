@@ -21,8 +21,8 @@ const features = [
   },
   {
     icon: '💬',
-    title: 'Suporte real pelo WhatsApp',
-    desc: 'Precisou de ajuda? A gente responde direto no WhatsApp. Sem ticket, sem fila de atendimento, sem chatbot.',
+    title: 'Suporte quando você precisar',
+    desc: 'Dúvidas ou algo pra ajustar? É só chamar a gente pelo painel — a resposta chega rápido.',
   },
   {
     icon: '📊',

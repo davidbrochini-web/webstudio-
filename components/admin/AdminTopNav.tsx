@@ -17,6 +17,7 @@ const NAV: DarkNavItem[] = [
     ],
   },
   { label: 'Financeiro', href: '/admin/financeiro' },
+  { label: 'Suporte', href: '/admin/suporte' },
   { label: 'Blog', href: '/admin/blog' },
   { label: 'Equipe', href: '/admin/equipe' },
 ]

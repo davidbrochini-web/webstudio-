@@ -2,7 +2,7 @@ const siteOnlyItems = [
   'Site profissional criado para o seu negócio',
   'Hospedagem + SSL incluso',
   'Domínio .com.br no 1º ano grátis',
-  'Suporte via WhatsApp',
+  'Suporte incluso',
   'Google Analytics configurado',
   '1 ajuste de layout por mês incluso',
 ]
@@ -12,7 +12,7 @@ const siteInstagramItems = [
   'Posts e reels do Instagram sincronizados no site todo dia — você continua postando como sempre, sem se preocupar com nada',
   'Hospedagem + SSL incluso',
   'Domínio .com.br no 1º ano grátis',
-  'Suporte via WhatsApp',
+  'Suporte incluso',
   'Google Analytics configurado',
   '1 ajuste de layout por mês incluso',
 ]
