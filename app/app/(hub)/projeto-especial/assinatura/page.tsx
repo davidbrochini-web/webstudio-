@@ -3,7 +3,7 @@ import { getCurrentTenant } from '@/lib/current-tenant'
 import Link from 'next/link'
 import QRCode from 'qrcode'
 import DocumentacaoModal from '@/components/projeto-especial/DocumentacaoModal'
-import CopiarPixBotao from '@/components/projeto-especial/CopiarPixBotao'
+import PixPendenteBotao from '@/components/projeto-especial/PixPendenteBotao'
 import { gerarPixCopiaECola, PIX_RECEBEDOR } from '@/lib/pix'
 import {
   type AssinaturaItem,
@@ -59,25 +59,13 @@ export default async function AssinaturaPage() {
         <span className="text-[var(--ink)] font-medium">Assinatura</span>
       </div>
 
-      <h1 className="font-display font-extrabold text-3xl text-[var(--ink)] mb-1">Assinatura</h1>
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-1">
+        <h1 className="font-display font-extrabold text-3xl text-[var(--ink)]">Assinatura</h1>
+        {totalPendenteCentavos > 0 && pixCodigo && pixQrDataUrl && (
+          <PixPendenteBotao totalCentavos={totalPendenteCentavos} qrDataUrl={pixQrDataUrl} codigo={pixCodigo} />
+        )}
+      </div>
       <p className="text-[var(--muted)] text-sm mb-8">O que está ativo no seu projeto e o que mais está disponível.</p>
-
-      {totalPendenteCentavos > 0 && pixCodigo && pixQrDataUrl && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 sm:p-6 mb-8">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={pixQrDataUrl} alt="QR Code Pix" className="w-32 h-32 rounded-lg border border-amber-200 bg-white flex-shrink-0" />
-            <div className="flex-1 min-w-0 text-center sm:text-left">
-              <p className="text-xs font-bold uppercase tracking-wide text-amber-700 mb-1">Total pendente de pagamento</p>
-              <p className="font-display font-extrabold text-3xl text-amber-800 mb-3">{formatCentavos(totalPendenteCentavos)}</p>
-              <p className="text-xs text-amber-700 mb-4">
-                Aponte a câmera do seu banco pro QR Code, ou copie o código Pix abaixo e cole no app do seu banco.
-              </p>
-              <CopiarPixBotao codigo={pixCodigo} />
-            </div>
-          </div>
-        </div>
-      )}
 
       {itens.length === 0 ? (
         <p className="text-sm text-[var(--muted)]">Nenhum item de assinatura cadastrado ainda.</p>
