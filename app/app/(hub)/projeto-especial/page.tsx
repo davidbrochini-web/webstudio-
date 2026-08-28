@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentTenant } from '@/lib/current-tenant'
+import { getPendenciaAtual } from '@/lib/assinatura-server'
 import Link from 'next/link'
 
 export default async function ProjetoEspecialHome() {
@@ -10,8 +11,10 @@ export default async function ProjetoEspecialHome() {
 
   // Contadores pra mostrar no dashboard
   const hoje = new Date(new Date().setHours(0,0,0,0)).toISOString()
-  const [{ count: totalLeads }, { count: leadsHoje }, { count: totalArtigos }, { count: totalTratamentos },
-   { count: agHoje }, { count: agPendentes }, { data: siteSeo }] =
+  const [
+    { count: totalLeads }, { count: leadsHoje }, { count: totalArtigos }, { count: totalTratamentos },
+    { count: agHoje }, { count: agPendentes }, { data: siteSeo }, { data: ultimoArtigo }, { totalCentavos: pendenciaCentavos },
+  ] =
     await Promise.all([
       supabase.from('site_leads').select('*', { count: 'exact', head: true }).eq('site_id', info.siteId),
       supabase.from('site_leads').select('*', { count: 'exact', head: true })
@@ -26,7 +29,16 @@ export default async function ProjetoEspecialHome() {
       supabase.from('agendamentos').select('*', { count: 'exact', head: true })
         .eq('site_id', info.siteId).eq('status', 'pendente'),
       supabase.from('sites').select('seo_indexavel').eq('id', info.siteId).single(),
+      supabase.from('site_blog_posts').select('created_at')
+        .eq('site_id', info.siteId).is('deleted_at', null).eq('publicado', true)
+        .order('created_at', { ascending: false }).limit(1).maybeSingle(),
+      getPendenciaAtual(info.tenantId),
     ])
+
+  const diasDesdeUltimoPost = ultimoArtigo?.created_at
+    ? Math.floor((Date.now() - new Date(ultimoArtigo.created_at).getTime()) / (1000 * 60 * 60 * 24))
+    : null
+  const precisaPublicar = diasDesdeUltimoPost === null || diasDesdeUltimoPost >= 7
 
   return (
     <div className="max-w-4xl">
@@ -69,8 +81,8 @@ export default async function ProjetoEspecialHome() {
         </div>
       </Link>
 
-      {/* Editor + Blog + Agenda */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Principais: Editor, Blog (com lembrete), Agenda */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <Link
           href="/app/projeto-especial/editor"
           className="group bg-[var(--card-bg)] border-2 border-[#0EA5A0]/30 hover:border-[#0EA5A0] rounded-2xl p-7 transition-all hover:shadow-lg"
@@ -91,27 +103,40 @@ export default async function ProjetoEspecialHome() {
 
         <Link
           href="/app/projeto-especial/blog"
-          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-2xl p-7 transition-all hover:shadow-lg"
+          className={`group bg-[var(--card-bg)] rounded-2xl p-7 transition-all hover:shadow-lg ${
+            precisaPublicar ? 'border-2 border-amber-300 hover:border-amber-400' : 'border border-[var(--border)] hover:border-[var(--brand)]'
+          }`}
         >
-          <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl mb-5">
-            ✍️
+          <div className="flex items-start justify-between mb-5">
+            <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl">
+              ✍️
+            </div>
+            {precisaPublicar && (
+              <span className="text-[10px] font-bold uppercase tracking-wide text-amber-700 bg-amber-100 px-2 py-1 rounded-full">
+                Publicar
+              </span>
+            )}
           </div>
           <h2 className="font-display font-bold text-[var(--ink)] text-lg mb-2">Blog / Artigos</h2>
           <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">
-            Publique artigos, dicas e novidades da clínica. Cada publicação aparece na seção de novidades do site.
+            {precisaPublicar
+              ? diasDesdeUltimoPost === null
+                ? 'Não esqueça a publicação semanal — você ainda não publicou nenhum artigo.'
+                : `Não esqueça a publicação semanal — o último artigo foi há ${diasDesdeUltimoPost} dias.`
+              : 'Publique artigos, dicas e novidades da clínica. Cada publicação aparece na seção de novidades do site.'}
           </p>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[var(--brand)]">{totalArtigos ?? 0} publicados</span>
+            <span className={`text-xs font-semibold ${precisaPublicar ? 'text-amber-600' : 'text-[var(--brand)]'}`}>{totalArtigos ?? 0} publicados</span>
             <span className="text-[var(--border)]">·</span>
-            <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Escrever →</span>
+            <span className={`text-xs text-[var(--muted)] transition-colors font-semibold ${precisaPublicar ? 'group-hover:text-amber-600' : 'group-hover:text-[var(--brand)]'}`}>Escrever →</span>
           </div>
         </Link>
 
         <Link
           href="/app/projeto-especial/agenda"
-          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-2xl p-7 transition-all hover:shadow-lg"
+          className="group bg-[var(--card-bg)] border-2 border-[#0EA5A0]/30 hover:border-[#0EA5A0] rounded-2xl p-7 transition-all hover:shadow-lg"
         >
-          <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl mb-5">
+          <div className="w-12 h-12 rounded-xl bg-[#0EA5A0]/10 flex items-center justify-center text-xl mb-5">
             🗓️
           </div>
           <h2 className="font-display font-bold text-[var(--ink)] text-lg mb-2">Agenda</h2>
@@ -121,7 +146,7 @@ export default async function ProjetoEspecialHome() {
           <div className="flex items-center gap-2">
             {(agHoje ?? 0) > 0 && (
               <>
-                <span className="text-xs font-semibold text-[var(--brand)]">{agHoje} hoje</span>
+                <span className="text-xs font-semibold text-[#0EA5A0]">{agHoje} hoje</span>
                 <span className="text-[var(--border)]">·</span>
               </>
             )}
@@ -131,28 +156,49 @@ export default async function ProjetoEspecialHome() {
                 <span className="text-[var(--border)]">·</span>
               </>
             )}
-            <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Configurar →</span>
+            <span className="text-xs text-[var(--muted)] group-hover:text-[#0EA5A0] transition-colors font-semibold">Configurar →</span>
           </div>
+        </Link>
+      </div>
+
+      {/* Acesso rápido: SEO, Assinatura, Módulos extras */}
+      <h2 className="font-display font-bold text-sm text-[var(--muted)] uppercase tracking-wide mb-3">Acesso rápido</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <Link
+          href="/app/projeto-especial/seo"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-5 transition-all"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-lg">🔍</span>
+            <h3 className="font-display font-bold text-[var(--ink)] text-sm">SEO</h3>
+          </div>
+          <p className={`text-xs font-semibold ${siteSeo?.seo_indexavel ? 'text-[var(--brand)]' : 'text-amber-600'}`}>
+            {siteSeo?.seo_indexavel ? '🌍 visível no Google' : '🙈 oculto do Google'}
+          </p>
         </Link>
 
         <Link
-          href="/app/projeto-especial/seo"
-          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-2xl p-7 transition-all hover:shadow-lg"
+          href="/app/projeto-especial/assinatura"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-5 transition-all"
         >
-          <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 flex items-center justify-center text-xl mb-5">
-            🔍
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-lg">💳</span>
+            <h3 className="font-display font-bold text-[var(--ink)] text-sm">Assinatura</h3>
           </div>
-          <h2 className="font-display font-bold text-[var(--ink)] text-lg mb-2">SEO</h2>
-          <p className="text-[var(--muted)] text-sm leading-relaxed mb-5">
-            Checklist pra aparecer bem no Google, e o interruptor que libera a indexação do site.
+          <p className={`text-xs font-semibold ${pendenciaCentavos > 0 ? 'text-red-600' : 'text-[var(--muted)]'}`}>
+            {pendenciaCentavos > 0 ? 'Pagamento pendente' : 'Tudo em dia'}
           </p>
-          <div className="flex items-center gap-2">
-            <span className={`text-xs font-semibold ${siteSeo?.seo_indexavel ? 'text-[var(--brand)]' : 'text-amber-600'}`}>
-              {siteSeo?.seo_indexavel ? '🌍 visível no Google' : '🙈 oculto do Google'}
-            </span>
-            <span className="text-[var(--border)]">·</span>
-            <span className="text-xs text-[var(--muted)] group-hover:text-[var(--brand)] transition-colors font-semibold">Ver checklist →</span>
+        </Link>
+
+        <Link
+          href="/app/projeto-especial/assinatura#modulos-disponiveis"
+          className="group bg-[var(--card-bg)] border border-[var(--border)] hover:border-[var(--brand)] rounded-xl p-5 transition-all"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-lg">➕</span>
+            <h3 className="font-display font-bold text-[var(--ink)] text-sm">Módulos extras</h3>
           </div>
+          <p className="text-xs font-semibold text-[var(--muted)]">Instagram, Financeiro, CRM e mais</p>
         </Link>
       </div>
     </div>

@@ -76,7 +76,7 @@ export default async function AssinaturaPage() {
         </div>
       )}
 
-      <h2 className="font-display font-bold text-lg text-[var(--ink)] mb-1">Outros módulos disponíveis</h2>
+      <h2 id="modulos-disponiveis" className="font-display font-bold text-lg text-[var(--ink)] mb-1 scroll-mt-6">Outros módulos disponíveis</h2>
       <div className="flex items-center justify-between gap-3 mb-5">
         <p className="text-[var(--muted)] text-sm">
           Ainda não fazem parte do seu plano. Fale com a gente se quiser saber mais.
