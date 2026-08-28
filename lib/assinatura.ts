@@ -13,10 +13,13 @@ export interface AssinaturaItem {
   label: string
   tipo: 'unico' | 'recorrente'
   valor_centavos: number
+  valor_variavel_nota: string | null
   documentacao_titulo: string | null
   documentacao_conteudo: string | null
   guia_titulo: string | null
   guia_conteudo: string | null
+  anexo_titulo: string | null
+  anexo_url: string | null
   ativo: boolean
   ordem: number
   pagamentos: AssinaturaPagamento[]
@@ -48,6 +51,5 @@ export const MODULOS_DISPONIVEIS_CLIENTE = [
   { label: 'Orçamentos e Pedidos', icone: '📋' },
   { label: 'Vídeos no Site', icone: '🎬' },
   { label: 'WhatsApp Web no Painel', icone: '💬' },
-  { label: 'Google Ads', icone: '🎯' },
   { label: 'GPT Ads', icone: '✨' },
 ] as const

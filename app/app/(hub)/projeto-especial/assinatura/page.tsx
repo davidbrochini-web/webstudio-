@@ -19,7 +19,7 @@ export default async function AssinaturaPage() {
   const supabase = await createClient()
   const { data: itensRaw } = await supabase
     .from('assinatura_itens')
-    .select('id, slug, label, tipo, valor_centavos, documentacao_titulo, documentacao_conteudo, guia_titulo, guia_conteudo, ativo, ordem, assinatura_pagamentos(id, valor_centavos, status, referencia, vencimento, pago_em)')
+    .select('id, slug, label, tipo, valor_centavos, valor_variavel_nota, documentacao_titulo, documentacao_conteudo, guia_titulo, guia_conteudo, anexo_titulo, anexo_url, ativo, ordem, assinatura_pagamentos(id, valor_centavos, status, referencia, vencimento, pago_em)')
     .eq('tenant_id', info.tenantId)
     .eq('ativo', true)
     .is('deleted_at', null)
@@ -133,6 +133,16 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
             <span className="text-xs font-bold text-[var(--ink)]">{formatCentavos(item.valor_centavos)}</span>
           </div>
         </div>
+      ) : item.valor_variavel_nota ? (
+        <div className="mt-2 pt-2 border-t border-[var(--border)] flex flex-col gap-0.5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-[10px] text-[var(--muted)]">Valor</span>
+            <span className="text-xs font-bold text-amber-500">Pendente</span>
+          </div>
+          <p className="text-[9px] text-[var(--muted)] leading-snug line-clamp-2" title={item.valor_variavel_nota}>
+            {item.valor_variavel_nota}
+          </p>
+        </div>
       ) : (
         <div className="mt-2 pt-2 border-t border-[var(--border)] flex flex-col gap-0.5">
           <div className="flex items-baseline justify-between">
@@ -152,7 +162,7 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
         </div>
       )}
 
-      {(item.documentacao_conteudo || item.guia_conteudo) && (
+      {(item.documentacao_conteudo || item.guia_conteudo || item.anexo_url) && (
         <div className="flex gap-1.5 mt-3">
           {item.documentacao_conteudo && item.documentacao_titulo && (
             <DocumentacaoModal
@@ -175,6 +185,18 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
               label="Guia"
               variant="destaque"
             />
+          )}
+          {item.anexo_url && (
+            <a
+              href={item.anexo_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={item.anexo_titulo ?? 'Anexo'}
+              className="flex-1 flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-1.5 rounded-lg border-2 transition-colors"
+              style={{ borderColor: 'var(--dj-primary, #0EA5A0)', color: 'var(--dj-primary, #0EA5A0)' }}
+            >
+              📎 PDF
+            </a>
           )}
         </div>
       )}
