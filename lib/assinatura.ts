@@ -15,6 +15,8 @@ export interface AssinaturaItem {
   valor_centavos: number
   documentacao_titulo: string | null
   documentacao_conteudo: string | null
+  guia_titulo: string | null
+  guia_conteudo: string | null
   ativo: boolean
   ordem: number
   pagamentos: AssinaturaPagamento[]

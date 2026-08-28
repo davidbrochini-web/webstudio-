@@ -55,27 +55,34 @@ function renderInline(texto: string): React.ReactNode {
 export default function DocumentacaoModal({
   titulo,
   conteudo,
-  compact = false,
+  icone = '📄',
+  label = 'Documentação',
+  variant = 'default',
 }: {
   titulo: string
   conteudo: string
-  compact?: boolean
+  icone?: string
+  label?: string
+  variant?: 'default' | 'compact' | 'destaque'
 }) {
   const [aberto, setAberto] = useState(false)
+
+  const buttonClass =
+    variant === 'compact'
+      ? 'flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] transition-colors'
+      : variant === 'destaque'
+        ? 'flex-1 flex items-center justify-center gap-1 text-[11px] font-bold px-2 py-1.5 rounded-lg border-2 transition-colors'
+        : 'text-sm font-bold px-4 py-2 rounded-full border-2 transition-colors'
 
   return (
     <>
       <button
         onClick={() => setAberto(true)}
-        aria-label="Ver documentação"
-        className={
-          compact
-            ? 'flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] transition-colors'
-            : 'text-sm font-bold px-4 py-2 rounded-full border-2 transition-colors'
-        }
+        aria-label={`Ver ${label}`}
+        className={buttonClass}
         style={{ borderColor: 'var(--dj-primary, #0EA5A0)', color: 'var(--dj-primary, #0EA5A0)' }}
       >
-        {compact ? '📄' : '📄 Documentação'}
+        {variant === 'compact' ? icone : <>{icone} {label}</>}
       </button>
 
       {aberto && (

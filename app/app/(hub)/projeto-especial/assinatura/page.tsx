@@ -16,7 +16,7 @@ export default async function AssinaturaPage() {
   const supabase = await createClient()
   const { data: itensRaw } = await supabase
     .from('assinatura_itens')
-    .select('id, slug, label, tipo, valor_centavos, documentacao_titulo, documentacao_conteudo, ativo, ordem, assinatura_pagamentos(id, valor_centavos, status, referencia, vencimento, pago_em)')
+    .select('id, slug, label, tipo, valor_centavos, documentacao_titulo, documentacao_conteudo, guia_titulo, guia_conteudo, ativo, ordem, assinatura_pagamentos(id, valor_centavos, status, referencia, vencimento, pago_em)')
     .eq('tenant_id', info.tenantId)
     .eq('ativo', true)
     .is('deleted_at', null)
@@ -79,14 +79,9 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
 
   return (
     <div className="relative aspect-square bg-[var(--card-bg)] border border-[var(--border)] rounded-2xl p-3 sm:p-4 flex flex-col">
-      <div className="flex items-start justify-between gap-1 mb-2">
-        <span className="inline-block text-[9px] font-bold uppercase tracking-wider text-white bg-[#0EA5A0] px-2 py-0.5 rounded-full">
-          Ativo
-        </span>
-        {item.documentacao_conteudo && item.documentacao_titulo && (
-          <DocumentacaoModal titulo={item.documentacao_titulo} conteudo={item.documentacao_conteudo} compact />
-        )}
-      </div>
+      <span className="self-start inline-block text-[9px] font-bold uppercase tracking-wider text-white bg-[#0EA5A0] px-2 py-0.5 rounded-full mb-2">
+        Ativo
+      </span>
 
       <p className="font-display font-bold text-[13px] sm:text-sm text-[var(--ink)] leading-snug line-clamp-2 mb-auto">
         {item.label}
@@ -124,6 +119,29 @@ function ItemAtivoCard({ item }: { item: AssinaturaItem }) {
                 {formatDataCurta(proximoVencimento.vencimento)}
               </span>
             </div>
+          )}
+        </div>
+      )}
+
+      {(item.documentacao_conteudo || item.guia_conteudo) && (
+        <div className="flex gap-1.5 mt-3">
+          {item.documentacao_conteudo && item.documentacao_titulo && (
+            <DocumentacaoModal
+              titulo={item.documentacao_titulo}
+              conteudo={item.documentacao_conteudo}
+              icone="📄"
+              label="Docs"
+              variant="destaque"
+            />
+          )}
+          {item.guia_conteudo && item.guia_titulo && (
+            <DocumentacaoModal
+              titulo={item.guia_titulo}
+              conteudo={item.guia_conteudo}
+              icone="📘"
+              label="Guia"
+              variant="destaque"
+            />
           )}
         </div>
       )}
