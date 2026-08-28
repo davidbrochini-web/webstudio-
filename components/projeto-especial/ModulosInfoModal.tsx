@@ -10,7 +10,7 @@ export default function ModulosInfoModal() {
     <>
       <button
         onClick={() => setAberto(true)}
-        className="text-xs font-medium text-[var(--muted)] hover:text-[var(--ink)] underline underline-offset-2 whitespace-nowrap"
+        className="cursor-pointer text-xs font-medium text-[var(--muted)] hover:text-[var(--ink)] underline underline-offset-2 whitespace-nowrap"
       >
         O que é cada módulo?
       </button>
@@ -29,7 +29,7 @@ export default function ModulosInfoModal() {
               <button
                 onClick={() => setAberto(false)}
                 aria-label="Fechar"
-                className="text-slate-400 hover:text-slate-600 text-2xl leading-none"
+                className="cursor-pointer text-slate-400 hover:text-slate-600 text-2xl leading-none"
               >
                 ×
               </button>

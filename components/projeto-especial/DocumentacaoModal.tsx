@@ -108,7 +108,7 @@ export default function DocumentacaoModal({
       <button
         onClick={() => setAberto(true)}
         aria-label={`Ver ${label}`}
-        className={buttonClass}
+        className={`cursor-pointer ${buttonClass}`}
         style={{ borderColor: 'var(--dj-primary, #0EA5A0)', color: 'var(--dj-primary, #0EA5A0)' }}
       >
         {variant === 'compact' ? icone : <>{icone} {label}</>}
@@ -129,7 +129,7 @@ export default function DocumentacaoModal({
                 <a
                   href={pdfHref}
                   download
-                  className="text-xs font-bold px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap"
+                  className="cursor-pointer text-xs font-bold px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap"
                   style={{ borderColor: 'var(--dj-primary, #0EA5A0)', color: 'var(--dj-primary, #0EA5A0)' }}
                 >
                   ⬇ Baixar PDF
@@ -137,7 +137,7 @@ export default function DocumentacaoModal({
                 <button
                   onClick={() => setAberto(false)}
                   aria-label="Fechar"
-                  className="text-slate-400 hover:text-slate-600 text-2xl leading-none"
+                  className="cursor-pointer text-slate-400 hover:text-slate-600 text-2xl leading-none"
                 >
                   ×
                 </button>

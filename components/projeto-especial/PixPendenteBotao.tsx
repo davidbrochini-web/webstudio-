@@ -29,9 +29,9 @@ export default function PixPendenteBotao({
     <>
       <button
         onClick={() => setAberto(true)}
-        className="flex-shrink-0 text-sm font-medium text-red-600 hover:text-red-700 border border-red-300 hover:border-red-400 rounded-full px-3.5 py-2 transition-colors whitespace-nowrap animate-pulse"
+        className="cursor-pointer flex-shrink-0 text-sm font-medium text-red-600 hover:text-red-700 border border-red-300 hover:border-red-400 rounded-full px-3.5 py-2 transition-colors whitespace-nowrap animate-pulse"
       >
-        {formatCentavos(totalCentavos)} pendente · Pix
+        {formatCentavos(totalCentavos)} pendente · Clique para pagar
       </button>
 
       {aberto && (
@@ -48,7 +48,7 @@ export default function PixPendenteBotao({
               <button
                 onClick={() => setAberto(false)}
                 aria-label="Fechar"
-                className="text-slate-400 hover:text-slate-600 text-2xl leading-none"
+                className="cursor-pointer text-slate-400 hover:text-slate-600 text-2xl leading-none"
               >
                 ×
               </button>
@@ -66,7 +66,7 @@ export default function PixPendenteBotao({
 
               <button
                 onClick={copiar}
-                className="text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90 mb-3 w-full"
+                className="cursor-pointer text-sm font-bold px-4 py-2 rounded-full text-white transition-opacity hover:opacity-90 mb-3 w-full"
                 style={{ background: 'var(--dj-primary, #0EA5A0)' }}
               >
                 {copiado ? '✓ Copiado!' : '📋 Copiar código Pix'}
