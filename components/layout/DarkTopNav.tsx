@@ -94,7 +94,7 @@ function UserMenu({ email, fotoUrl }: { email: string; fotoUrl?: string | null }
             {initials}
           </span>
         )}
-        <span className="text-sm text-white/80 max-w-[160px] truncate">{email}</span>
+        <span className="hidden sm:inline text-sm text-white/80 max-w-[160px] truncate">{email}</span>
       </button>
       {open && (
         <div className="absolute top-full right-0 mt-1 bg-[#111714] border border-white/10 rounded-xl shadow-xl py-1.5 min-w-[160px] z-50">
@@ -134,15 +134,23 @@ export default function DarkTopNav({
   fotoUrl?: string | null
 }) {
   const pathname = usePathname()
+  const [menuAberto, setMenuAberto] = useState(false)
+  const temPendencia = items.some(i => i.dot)
+
+  // Fecha o menu mobile sozinho ao navegar pra outra página —
+  // sem isso, ele ficaria aberto por cima da tela nova.
+  useEffect(() => {
+    setMenuAberto(false)
+  }, [pathname])
 
   return (
-    <nav className="bg-[#0B0F0C] border-b border-white/10 px-6 h-16 flex items-center justify-between sticky top-0 z-40">
+    <nav className="relative bg-[#0B0F0C] border-b border-white/10 px-6 h-16 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-8 min-w-0">
-        <Link href={homeHref} className="flex items-center gap-2 flex-shrink-0">
-          <Image src="/brand/omnidesign-icon.png" alt="" width={23} height={24} className="h-6 w-auto" />
-          <span className="font-display font-bold text-lg text-white">omnidesign</span>
+        <Link href={homeHref} className="flex items-center gap-2 flex-shrink-0 min-w-0">
+          <Image src="/brand/omnidesign-icon.png" alt="" width={23} height={24} className="h-6 w-auto flex-shrink-0" />
+          <span className="hidden sm:inline font-display font-bold text-lg text-white">omnidesign</span>
           {badge && (
-            <span className="text-[10px] font-bold uppercase tracking-wide text-white/30 border border-white/15 rounded-full px-2 py-0.5 ml-1 truncate max-w-[140px]">
+            <span className="hidden sm:inline text-[10px] font-bold uppercase tracking-wide text-white/30 border border-white/15 rounded-full px-2 py-0.5 ml-1 truncate max-w-[140px]">
               {badge}
             </span>
           )}
@@ -178,7 +186,66 @@ export default function DarkTopNav({
       <div className="flex items-center gap-2 flex-shrink-0">
         <ThemeToggle />
         <UserMenu email={email} fotoUrl={fotoUrl} />
+        {items.length > 0 && (
+          <button
+            onClick={() => setMenuAberto(o => !o)}
+            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuAberto}
+            className="cursor-pointer sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-colors relative"
+          >
+            {temPendencia && !menuAberto && (
+              <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+            )}
+            {menuAberto ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+            )}
+          </button>
+        )}
       </div>
+
+      {menuAberto && (
+        <div className="sm:hidden absolute top-16 left-0 right-0 bg-[#0B0F0C] border-b border-white/10 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto z-40">
+          {badge && (
+            <p className="px-6 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wide text-white/30 truncate">{badge}</p>
+          )}
+          <div className="flex flex-col py-2">
+            {items.map(item => {
+              if (item.children) {
+                const active = item.children.some(c => pathname === c.href || pathname.startsWith(c.href + '/'))
+                return (
+                  <div key={item.label}>
+                    <p className={`px-6 pt-3 pb-1 text-xs font-bold uppercase tracking-wide ${active ? 'text-[var(--brand2)]' : 'text-white/40'}`}>
+                      {item.label}
+                    </p>
+                    {item.children.map(child => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`block px-8 py-2.5 text-sm ${pathname === child.href ? 'text-[var(--brand2)]' : 'text-white/70'}`}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )
+              }
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href!}
+                  className={`relative flex items-center px-6 py-3 text-[15px] font-medium ${active ? 'text-[var(--brand2)] bg-white/5' : 'text-white/70'}`}
+                >
+                  {item.label}
+                  {item.dot && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
