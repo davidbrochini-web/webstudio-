@@ -26,7 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: tratamento.meta_titulo ? { absolute: tratamento.meta_titulo } : tratamento.titulo,
     description: tratamento.meta_descricao || tratamento.descricao_curta,
     alternates: { canonical: `${SITE_URL_BASE}/tratamentos/${slug}` },
-    openGraph: tratamento.imagem_og ? { images: [tratamento.imagem_og] } : undefined,
+    // Antes só usava imagem_og (sempre vazio nos 7 tratamentos) e
+    // caía sem querer na foto do médico herdada do layout pai. Usa
+    // a própria imagem do tratamento como fallback antes de deixar
+    // undefined — sempre tem uma imagem específica pra compartilhar.
+    openGraph: { images: [tratamento.imagem_og || tratamento.imagem_url].filter(Boolean) as string[] },
   }
 }
 
@@ -39,8 +43,28 @@ export default async function TratamentoDetalhePage({ params }: { params: Promis
 
   const beneficios: string[] = (tratamento.beneficios ?? '').split('\n').map((b: string) => b.trim()).filter(Boolean)
 
+  // Só a home tinha dados estruturados (Dentist) — páginas de
+  // tratamento não tinham nenhum. MedicalProcedure é o tipo correto
+  // do schema.org pra esse conteúdo, e linka de volta pro Dentist
+  // via performer/location.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalProcedure',
+    name: tratamento.titulo,
+    description: tratamento.meta_descricao || tratamento.descricao_curta,
+    ...(tratamento.duracao && { howPerformed: tratamento.duracao }),
+    performer: {
+      '@type': 'Dentist',
+      name: site.business_name,
+      url: SITE_URL_BASE,
+      ...(site.telefone && { telephone: site.telefone }),
+      ...(site.endereco && { address: site.endereco }),
+    },
+  }
+
   return (
     <PageShell site={site}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article className="px-6 py-16 max-w-3xl mx-auto">
         {tratamento.imagem_url && (
           <img src={tratamento.imagem_url} alt={tratamento.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
