@@ -20,4 +20,9 @@ export const DOMAIN_MAP: Record<string, string> = {
   // enquanto o site só existe no fallback .vercel.app, pra homologação.
   // 'elite.g12.br': '/projetos-especiais/colegio-elite',
   // 'www.elite.g12.br': '/projetos-especiais/colegio-elite',
+  // LocalDesk: mesma situação — domínio localdesk.com.br ainda não
+  // apontado pro projeto (aguardando o David). Descomentar quando o
+  // DNS estiver configurado.
+  // 'localdesk.com.br': '/projetos-especiais/localdesk',
+  // 'www.localdesk.com.br': '/projetos-especiais/localdesk',
 }

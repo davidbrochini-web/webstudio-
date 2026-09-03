@@ -1,0 +1,53 @@
+/* ============================================================
+   LocalDesk — Global CSS
+   Conceito: painel de diagnóstico / status técnico direto ao ponto
+   Público geral, sem jargão corporativo. Tom: honesto, sem enrolação.
+   ============================================================ */
+.ld-site {
+  --bg:        #F5F6F8;
+  --bg-panel:  #FFFFFF;
+  --bg-sunken: #ECEFF3;
+  --line:      #DDE1E7;
+  --ink:       #10151F;
+  --muted:     #545C6B;
+  --blue:      #1E4FD8;
+  --blue-dim:  #E8EDFC;
+  --green:     #12B886;
+  --green-dim: #E4F8F1;
+  --amber:     #B8710A;
+  --amber-dim: #FBF0DD;
+  --measure:   40rem;
+  --font-display: var(--font-plex), "Helvetica Neue", Arial, sans-serif;
+  --font-body:    var(--font-plex), "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    var(--font-plex-mono), "Courier New", monospace;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+.ld-site h1, .ld-site h2, .ld-site h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.ld-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.ld-measure {
+  max-width: var(--measure);
+}
+
+.ld-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 3px var(--green-dim);
+}
