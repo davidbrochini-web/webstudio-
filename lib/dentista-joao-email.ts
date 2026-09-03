@@ -264,30 +264,3 @@ function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
-// ── 6. Lembrete leve da 1ª mensalidade (Hospedagem+Agendamento) ──────
-// Disparo único agendado via pg_cron pra 20/09/2026 (ver
-// app/api/cron/lembrete-mensalidade-dentista-joao/route.ts) — avisa
-// com 10 dias de antecedência que a mensalidade de R$100 (Hospedagem
-// R$50 + Agendamento Personalizado R$50) vence em 30/09. Pedido
-// explícito do David: tom leve, "não quero que pareça cobrança
-// chata" — só avisa, sem qualquer linguagem de urgência/inadimplência.
-export async function notificarLembreteMensalidade(params: {
-  emailDestino: string | null
-}): Promise<void> {
-  if (!params.emailDestino) return
-
-  await sendEmail({
-    from: FROM,
-    to: params.emailDestino,
-    cc: ADMIN_CC,
-    subject: 'Um lembrete tranquilo sobre sua mensalidade',
-    html: WRAPPER('Só passando pra avisar 🙂', `
-      <p style="margin:0 0 12px;font-size:14px;color:#444;">Olá, Dr. João! Tudo bem?</p>
-      <p style="margin:0 0 12px;font-size:14px;color:#444;">Só passando pra avisar, sem pressa nenhuma: no dia <strong>30/09</strong> começa a cobrança mensal da hospedagem do seu site + o sistema de agendamento personalizado.</p>
-      <p style="margin:0 0 16px;font-size:15px;color:#2a2a2a;font-weight:bold;">R$ 100,00/mês</p>
-      <p style="margin:0 0 12px;font-size:14px;color:#444;">Não precisa fazer nada agora — é só um aviso antecipado. Quando a data chegar, o QR Code do Pix já vai estar te esperando no seu painel, em <strong>Assinatura</strong>.</p>
-      <p style="margin:16px 0 0;font-size:14px;color:#444;">Qualquer dúvida, é só chamar a gente por aqui mesmo. 🙂</p>
-    `),
-  })
-}
-
