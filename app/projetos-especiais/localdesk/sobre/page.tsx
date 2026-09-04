@@ -19,9 +19,19 @@ export default async function SobrePage() {
     <>
       <Header base={base} cta={cta} />
 
-      <section className="ld-container pt-14 pb-16">
-        <h1 className="font-bold text-3xl sm:text-4xl text-[var(--ink)] mb-6">Sobre a LocalDesk</h1>
-        <p className="ld-measure text-lg text-[var(--muted)] leading-relaxed">{site.missao}</p>
+      <section className="ld-container pt-14 pb-16 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 items-center">
+        <div>
+          <h1 className="font-bold text-3xl sm:text-4xl text-[var(--ink)] mb-6">Sobre a LocalDesk</h1>
+          <p className="ld-measure text-lg text-[var(--muted)] leading-relaxed">{site.missao}</p>
+        </div>
+        <div className="rounded-2xl overflow-hidden aspect-[4/3]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1721332154191-ba5f1534266e?w=800&q=70"
+            alt="Reparo detalhado de placa de notebook"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </section>
 
       <section className="bg-[var(--bg-sunken)] py-16">

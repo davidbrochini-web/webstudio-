@@ -62,25 +62,34 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Painel de "diagnóstico" — visual grounded no assunto (status
-            de atendimento), não é screenshot fake nem gradiente genérico. */}
-        <div className="bg-[var(--bg-panel)] border border-[var(--line)] rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-5">
-            <span className="ld-status-dot" />
-            <span className="font-mono text-xs text-[var(--muted)] uppercase tracking-wide">Painel de atendimento</span>
-          </div>
-          <div className="flex flex-col gap-3">
-            {[
-              { label: 'Diagnóstico', valor: 'Gratuito', cor: 'var(--blue)' },
-              { label: 'Venda de peça', valor: 'Não fazemos', cor: 'var(--muted)' },
-              { label: 'Atendimento remoto', valor: 'Brasil inteiro', cor: 'var(--green)' },
-              { label: 'Atendimento a domicílio', valor: 'São Paulo, SP', cor: 'var(--green)' },
-            ].map(row => (
-              <div key={row.label} className="flex items-center justify-between border-b border-[var(--line)] pb-3 last:border-0 last:pb-0">
-                <span className="text-sm text-[var(--muted)]">{row.label}</span>
-                <span className="text-sm font-bold" style={{ color: row.cor }}>{row.valor}</span>
-              </div>
-            ))}
+        {/* Foto real (Unsplash, uso comercial livre) + o "painel de
+            atendimento" sobreposto na base — mistura imagem viva de
+            TI com o dado concreto, em vez de escolher um ou outro. */}
+        <div className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] sm:aspect-[5/4]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1604754742629-3e5728249d73?w=900&q=70"
+            alt="Técnico fazendo manutenção interna em um computador"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4 bg-[var(--bg-panel)]/95 backdrop-blur border border-[var(--line)] rounded-xl p-4 sm:p-5 shadow-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="ld-status-dot" />
+              <span className="font-mono text-[10px] sm:text-xs text-[var(--muted)] uppercase tracking-wide">Painel de atendimento</span>
+            </div>
+            <div className="flex flex-col gap-2 sm:gap-2.5">
+              {[
+                { label: 'Diagnóstico', valor: 'Gratuito', cor: 'var(--blue)' },
+                { label: 'Venda de peça', valor: 'Não fazemos', cor: 'var(--muted)' },
+                { label: 'Atendimento remoto', valor: 'Brasil inteiro', cor: 'var(--green)' },
+                { label: 'Atendimento a domicílio', valor: 'São Paulo, SP', cor: 'var(--green)' },
+              ].map(row => (
+                <div key={row.label} className="flex items-center justify-between border-b border-[var(--line)] pb-2 sm:pb-2.5 last:border-0 last:pb-0">
+                  <span className="text-xs sm:text-sm text-[var(--muted)]">{row.label}</span>
+                  <span className="text-xs sm:text-sm font-bold" style={{ color: row.cor }}>{row.valor}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -122,17 +131,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Diferenciais */}
+      {/* Diferenciais — fundo com foto real de placa de circuito
+          (Unsplash), overlay escuro por cima pra manter o texto
+          100% legível. Dá vida sem perder contraste. */}
       {diferenciais.length > 0 && (
-        <section className="bg-[var(--ink)] py-16 sm:py-20">
-          <div className="ld-container">
+        <section className="relative py-16 sm:py-20 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=60"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[var(--ink)]/90" />
+          <div className="ld-container relative">
             <h2 className="font-bold text-2xl sm:text-3xl text-white mb-10">Por que a LocalDesk</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {diferenciais.map(d => (
-                <div key={d.titulo}>
+                <div key={d.titulo} className="bg-[var(--ink)]/40 backdrop-blur-sm rounded-xl p-4 border border-white/10">
                   <span className="text-2xl">{d.icone}</span>
                   <p className="font-bold text-white mt-3 mb-1.5">{d.titulo}</p>
-                  <p className="text-sm text-white/60 leading-relaxed">{d.texto}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{d.texto}</p>
                 </div>
               ))}
             </div>

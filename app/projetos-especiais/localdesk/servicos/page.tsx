@@ -28,11 +28,21 @@ export default async function ServicosPage() {
     <>
       <Header base={base} cta={cta} />
 
-      <section className="ld-container pt-14 pb-10">
-        <h1 className="font-bold text-3xl sm:text-4xl text-[var(--ink)] mb-3">Serviços</h1>
-        <p className="ld-measure text-[var(--muted)] leading-relaxed">
-          Trabalhamos só com o serviço — diagnóstico, instalação e manutenção. Não vendemos peça: se precisar de uma, você compra por conta e a gente instala.
-        </p>
+      <section className="ld-container pt-14 pb-10 grid grid-cols-1 lg:grid-cols-[1fr_0.7fr] gap-10 items-center">
+        <div>
+          <h1 className="font-bold text-3xl sm:text-4xl text-[var(--ink)] mb-3">Serviços</h1>
+          <p className="ld-measure text-[var(--muted)] leading-relaxed">
+            Trabalhamos só com o serviço — diagnóstico, instalação e manutenção. Não vendemos peça: se precisar de uma, você compra por conta e a gente instala.
+          </p>
+        </div>
+        <div className="rounded-2xl overflow-hidden aspect-[4/3] hidden lg:block">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://images.unsplash.com/photo-1591238372338-22d30c883a86?w=800&q=70"
+            alt="Gabinete de computador aberto durante manutenção"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </section>
 
       <section className="ld-container pb-20">
