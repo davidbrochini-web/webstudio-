@@ -54,13 +54,14 @@ export interface SiteEspecial {
   tagline: string | null
   status: 'rascunho' | 'publicado'
   seo_indexavel: boolean
+  textos_customizados: Record<string, string>
 }
 
 export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createPublicClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, status, seo_indexavel')
+    .select('id, tenant_id, business_name, tagline, status, seo_indexavel, textos_customizados')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

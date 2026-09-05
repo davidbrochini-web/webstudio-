@@ -36,9 +36,33 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const site = await getSiteEspecial()
+  const t = site.textos_customizados ?? {}
+
+  // Paleta customizável (aba Cores no painel) — mesmo mecanismo do
+  // dentista-joao/colegio-elite (CSS vars sobrescritas por inline
+  // style), só que guardada em textos_customizados em vez de colunas
+  // dedicadas: a paleta gótica daqui tem ~10 tokens (não um par
+  // primária/secundária), e textos_customizados já existe pra isso —
+  // sem migration nova. Defaults = os mesmos hex fixos que já
+  // existiam no :root do ce-styles.css.
+  const paletaStyle: React.CSSProperties = {
+    '--bg': t.paleta_bg || '#0b0a08',
+    '--bg-panel': t.paleta_bg_panel || '#15120e',
+    '--bg-panel-2': t.paleta_bg_panel_2 || '#1c1812',
+    '--line': t.paleta_line || '#322c22',
+    '--gold': t.paleta_gold || '#cdb077',
+    '--gold-dim': t.paleta_gold_dim || '#8f7c54',
+    '--blood': t.paleta_blood || '#9c2b2b',
+    '--blood-bright': t.paleta_blood_bright || '#c43a3a',
+    '--paper': t.paleta_paper || '#e8dfc8',
+    '--paper-dim': t.paleta_paper_dim || '#b7ad94',
+    '--muted': t.paleta_muted || '#6f6858',
+  } as React.CSSProperties
+
   return (
-    <div className={`ce-site ${cinzel.variable} ${garamond.variable} ${mono.variable}`}>
+    <div className={`ce-site ${cinzel.variable} ${garamond.variable} ${mono.variable}`} style={paletaStyle}>
       {children}
     </div>
   )

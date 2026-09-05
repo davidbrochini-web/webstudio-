@@ -94,6 +94,14 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         href: '/app/casos-esquecidos/novo',
       })
       navItems.push({
+        label: '🎨 Editor do Site',
+        href: '/app/casos-esquecidos/editor',
+      })
+      navItems.push({
+        label: '🎨 Cores',
+        href: '/app/casos-esquecidos/cores',
+      })
+      navItems.push({
         label: '💳 Assinatura',
         href: '/app/projeto-especial/assinatura',
       })
