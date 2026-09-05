@@ -18,7 +18,14 @@ for (const [domain, path] of Object.entries(DOMAIN_MAP)) {
   PATH_TO_DOMAIN[path] = domain
 }
 
-function siteUrl(projetoEspecialSlug: string | null, siteSlug: string | null): string | null {
+// Domínio próprio da própria Omnidesign — site institucional é servido
+// direto na raiz do app (não passa pelo sistema de tenant/site como os
+// clientes), então não tem como derivar isso de `sites`/DOMAIN_MAP. É
+// singleton (só existe um tenant "Omnidesign (interno)"), daí o id fixo.
+const OMNIDESIGN_TENANT_ID = 'a9aaf70b-3193-4fa3-8052-d0d91efc6981'
+
+function siteUrl(tenantId: string, projetoEspecialSlug: string | null, siteSlug: string | null): string | null {
+  if (tenantId === OMNIDESIGN_TENANT_ID) return '/'
   if (projetoEspecialSlug) {
     const path = `/projetos-especiais/${projetoEspecialSlug}`
     const dominio = PATH_TO_DOMAIN[path]
@@ -108,7 +115,7 @@ export default async function AdminHome() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {(recentes ?? []).map(t => {
           const site = Array.isArray(t.sites) ? t.sites[0] : t.sites
-          const url = siteUrl(t.projeto_especial_slug, site?.slug ?? null)
+          const url = siteUrl(t.id, t.projeto_especial_slug, site?.slug ?? null)
           return (
             <div key={t.id} className="bg-[var(--card-bg)] border border-[var(--border)] rounded-xl p-5 flex flex-col gap-2">
               <div className="flex items-start justify-between gap-2">
@@ -122,17 +129,22 @@ export default async function AdminHome() {
               <p className="text-xs text-[var(--muted)]">
                 {t.plano}{site?.status ? ` · site ${site.status}` : ''}
               </p>
-              {url ? (
-                <a
-                  href={url}
-                  target="_blank"
-                  className="mt-2 inline-flex items-center justify-center text-xs font-semibold text-white bg-[var(--brand)] rounded-lg px-3 py-2 hover:opacity-90 transition-opacity"
-                >
-                  Ver site →
+              <div className="mt-2 flex gap-1.5">
+                {url && (
+                  <a href={url} target="_blank"
+                    className="flex-1 text-center text-[11px] font-semibold text-white bg-[var(--brand)] rounded-md px-2 py-1.5 hover:opacity-90 transition-opacity">
+                    Site
+                  </a>
+                )}
+                <a href={`/admin/impersonar/${t.id}`}
+                  className="flex-1 text-center text-[11px] font-semibold text-white bg-slate-600 rounded-md px-2 py-1.5 hover:opacity-90 transition-opacity">
+                  Admin
                 </a>
-              ) : (
-                <span className="mt-2 text-xs text-[var(--muted)]">Sem site ainda</span>
-              )}
+                <Link href={`/admin/tenants/${t.id}`}
+                  className="flex-1 text-center text-[11px] font-semibold text-[var(--ink)] border border-[var(--border)] rounded-md px-2 py-1.5 hover:bg-[var(--off)] transition-colors">
+                  Info
+                </Link>
+              </div>
             </div>
           )
         })}
