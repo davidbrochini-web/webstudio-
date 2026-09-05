@@ -100,6 +100,21 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         })
       }
 
+      if (tenant.projeto_especial_slug === 'localdesk') {
+        navItems.push({
+          label: '📥 Leads',
+          href: '/app/localdesk/leads',
+        })
+        navItems.push({
+          label: '🎨 Editor do Site',
+          href: '/app/localdesk',
+        })
+        navItems.push({
+          label: '🎨 Cores',
+          href: '/app/localdesk/cores',
+        })
+      }
+
       if (tenant.projeto_especial_slug === 'colegio-elite') {
         navItems.push({
           label: '📥 Leads',

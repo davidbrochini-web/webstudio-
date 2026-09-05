@@ -44,6 +44,7 @@ export async function upsertServico(
   }
 
   revalidatePath('/app/site/servicos')
+  revalidatePath('/app/localdesk/servicos')
   return { success: true }
 }
 
@@ -52,4 +53,5 @@ export async function deleteServico(id: string) {
   const { error } = await supabase.from('site_servicos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/app/site/servicos')
+  revalidatePath('/app/localdesk/servicos')
 }

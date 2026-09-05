@@ -12,6 +12,11 @@ interface SiteData {
   cta_label: string
   whatsapp: string | null
   instagram_handle: string | null
+  telefone?: string | null
+  endereco?: string | null
+  missao?: string | null
+  visao?: string | null
+  valores?: string | null
 }
 
 function Field({ label, name, defaultValue, readOnly, textarea, placeholder }: {
@@ -35,7 +40,7 @@ function Field({ label, name, defaultValue, readOnly, textarea, placeholder }: {
   )
 }
 
-export default function SiteIdentityForm({ site, readOnly }: { site: SiteData; readOnly: boolean }) {
+export default function SiteIdentityForm({ site, readOnly, extended }: { site: SiteData; readOnly: boolean; extended?: boolean }) {
   const [state, formAction, pending] = useActionState<SiteIdentityFormState, FormData>(updateSiteIdentity, {})
 
   return (
@@ -49,6 +54,19 @@ export default function SiteIdentityForm({ site, readOnly }: { site: SiteData; r
       <Field label="Texto do botão principal" name="cta_label" defaultValue={site.cta_label} readOnly={readOnly} placeholder="Ex: Agendar avaliação" />
       <Field label="WhatsApp (só números, com DDD e 55)" name="whatsapp" defaultValue={site.whatsapp} readOnly={readOnly} placeholder="5511999999999" />
       <Field label="Instagram (com @)" name="instagram_handle" defaultValue={site.instagram_handle} readOnly={readOnly} placeholder="@seunegocio" />
+
+      {extended && (
+        <>
+          <div className="border-t border-[var(--border)] pt-4 mt-1">
+            <p className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-3">Institucional</p>
+          </div>
+          <Field label="Telefone (só números, com DDD e 55)" name="telefone" defaultValue={site.telefone} readOnly={readOnly} placeholder="5511999999999" />
+          <Field label="Endereço" name="endereco" defaultValue={site.endereco} readOnly={readOnly} placeholder="Rua, número, bairro, cidade" />
+          <Field label="Missão" name="missao" defaultValue={site.missao} readOnly={readOnly} textarea />
+          <Field label="Visão" name="visao" defaultValue={site.visao} readOnly={readOnly} textarea />
+          <Field label="Valores (um por linha)" name="valores" defaultValue={site.valores} readOnly={readOnly} textarea />
+        </>
+      )}
 
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}
       {state.success && <p className="text-sm text-[var(--green)]">Salvo!</p>}

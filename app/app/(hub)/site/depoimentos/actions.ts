@@ -40,6 +40,7 @@ export async function upsertDepoimento(
   }
 
   revalidatePath('/app/site/depoimentos')
+  revalidatePath('/app/localdesk/depoimentos')
   return { success: true }
 }
 
@@ -48,4 +49,5 @@ export async function deleteDepoimento(id: string) {
   const { error } = await supabase.from('site_depoimentos').update({ deleted_at: new Date().toISOString() }).eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/app/site/depoimentos')
+  revalidatePath('/app/localdesk/depoimentos')
 }
