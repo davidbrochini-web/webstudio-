@@ -19,7 +19,7 @@ export default async function CoresPage() {
   return (
     <div className="max-w-4xl">
       <div className="flex items-center gap-2 text-sm text-[var(--muted)] mb-8">
-        <Link href="/app/projeto-especial" className="hover:text-[var(--ink)] transition-colors">Painel</Link>
+        <Link href="/app" className="hover:text-[var(--ink)] transition-colors">Painel</Link>
         <span className="text-[var(--border)]">/</span>
         <span className="text-[var(--ink)] font-medium">Cores</span>
       </div>

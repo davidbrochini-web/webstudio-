@@ -93,6 +93,10 @@ export default async function HubLayout({ children }: { children: React.ReactNod
         label: '✍️ Novo caso',
         href: '/app/casos-esquecidos/novo',
       })
+      navItems.push({
+        label: '💳 Assinatura',
+        href: '/app/projeto-especial/assinatura',
+      })
     }
 
     if (info.projetoEspecialSlug === 'localdesk') {
@@ -107,6 +111,10 @@ export default async function HubLayout({ children }: { children: React.ReactNod
       navItems.push({
         label: '🎨 Cores',
         href: '/app/localdesk/cores',
+      })
+      navItems.push({
+        label: '💳 Assinatura',
+        href: '/app/projeto-especial/assinatura',
       })
     }
 
@@ -126,6 +134,14 @@ export default async function HubLayout({ children }: { children: React.ReactNod
       navItems.push({
         label: '🔍 SEO',
         href: '/app/colegio-elite/seo',
+      })
+      navItems.push({
+        label: '🎨 Cores',
+        href: '/app/projeto-especial/cores',
+      })
+      navItems.push({
+        label: '💳 Assinatura',
+        href: '/app/projeto-especial/assinatura',
       })
     }
   }
