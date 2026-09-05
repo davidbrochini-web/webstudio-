@@ -36,6 +36,11 @@ export async function generateMetadata(): Promise<Metadata> {
       'patologia oral',
       'Dr. João Victor Pimenta',
     ],
+    // Verificação do Google Search Console — mesmo padrão do GA4: um
+    // token por domínio, nunca o global da Omnidesign.
+    verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION_DENTISTA_JOAO
+      ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION_DENTISTA_JOAO }
+      : undefined,
     robots: { index: site.seo_indexavel, follow: site.seo_indexavel },
     alternates: { canonical: SITE_URL_BASE },
     openGraph: {

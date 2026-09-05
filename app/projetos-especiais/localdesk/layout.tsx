@@ -15,6 +15,14 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${site.business_name}`,
     },
     description: site.tagline ?? undefined,
+    // Verificação do Google Search Console — só entra quando a env
+    // NEXT_PUBLIC_GSC_VERIFICATION_LOCALDESK existir na Vercel (mesmo
+    // padrão do GA4: um token por domínio, nunca o token global da
+    // Omnidesign, senão o GSC nunca conseguiria confirmar a
+    // propriedade do domínio certo).
+    verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION_LOCALDESK
+      ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION_LOCALDESK }
+      : undefined,
     robots: { index: site.seo_indexavel, follow: site.seo_indexavel },
     alternates: { canonical: SITE_URL_BASE },
     openGraph: {

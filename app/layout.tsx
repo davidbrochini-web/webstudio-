@@ -11,9 +11,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
   // Verificação do Google Search Console — ativa quando a env
   // NEXT_PUBLIC_GSC_VERIFICATION for setada na Vercel (só o token,
-  // sem a tag inteira). Nota: a meta tag aparece em todos os domínios
-  // servidos por este layout, mas isso é inofensivo — o token só
-  // verifica propriedade de omnidesign.com.br no GSC.
+  // sem a tag inteira). Essa é SÓ a do domínio da própria Omnidesign.
+  // Cada Projeto Especial com domínio próprio tem seu próprio token
+  // no generateMetadata do layout dele (mesmo padrão do GA4 em
+  // GoogleAnalytics.tsx) — nunca reaproveitar este aqui pra outro
+  // domínio, o Google não conseguiria confirmar a propriedade certa.
   verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION
     ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION }
     : undefined,

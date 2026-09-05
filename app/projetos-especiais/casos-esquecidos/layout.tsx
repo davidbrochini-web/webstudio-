@@ -17,6 +17,11 @@ export async function generateMetadata(): Promise<Metadata> {
       'contos de terror', 'histórias de terror', 'terror psicológico', 'contos de terror grátis',
       'lendas urbanas', 'investigação paranormal', 'D. Broch', 'livro de terror brasileiro',
     ],
+    // Verificação do Google Search Console — mesmo padrão do GA4: um
+    // token por domínio, nunca o global da Omnidesign.
+    verification: process.env.NEXT_PUBLIC_GSC_VERIFICATION_CASOS_ESQUECIDOS
+      ? { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION_CASOS_ESQUECIDOS }
+      : undefined,
     robots: { index: site.seo_indexavel, follow: site.seo_indexavel },
     alternates: {
       canonical: SITE_URL_BASE,
