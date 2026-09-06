@@ -6,14 +6,23 @@ import { createClient } from '@/lib/supabase/client'
 
 /**
  * Login próprio do projeto especial dentista-joao.
- * Exibe campos de "Usuário" + "Senha" (sem expor email técnico).
- * Mapa: usuário "joao" (case-insensitive) → joao@dentistajoao.local
+ * Exibe campos de "Usuário" + "Senha" (sem expor email técnico pra maioria dos casos).
+ * Mapa: usuário "joao" (case-insensitive) → e-mail real de login do Dr. João.
+ * Também aceita o próprio e-mail digitado direto (qualquer email cadastrado passa como está).
  * Após login, vai direto pra /app/projeto-especial (painel do cliente).
  */
 
 const USUARIO_MAP: Record<string, string> = {
-  joao: 'joao@dentistajoao.local',
-  joão: 'joao@dentistajoao.local',
+  joao: 'drjoaovictorpimenta@gmail.com',
+  joão: 'drjoaovictorpimenta@gmail.com',
+}
+
+function resolveEmail(usuarioDigitado: string): string | null {
+  const normalizado = usuarioDigitado.trim().toLowerCase()
+  if (USUARIO_MAP[normalizado]) return USUARIO_MAP[normalizado]
+  // Se o usuário digitar um e-mail válido diretamente, usa como está
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizado)) return normalizado
+  return null
 }
 
 export default function LoginPage() {
@@ -29,7 +38,7 @@ export default function LoginPage() {
     setErro(null)
     setLoading(true)
 
-    const email = USUARIO_MAP[usuario.trim().toLowerCase()]
+    const email = resolveEmail(usuario)
     if (!email) {
       setErro('Usuário não encontrado.')
       setLoading(false)
