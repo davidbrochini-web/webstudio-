@@ -19,13 +19,15 @@ import { DOMAIN_MAP } from '@/lib/domain-map'
 // não entra nessa lista — o rewrite deve continuar pegando o /login dele.
 const SEM_LOGIN_PROPRIO = new Set(['/projetos-especiais/casos-esquecidos'])
 
-// /primeiro-acesso é rota compartilhada da plataforma (troca de senha
-// provisória), igual /app — nunca deve ser reescrita pra dentro de um
-// projeto especial. Sem essa exclusão, um domínio próprio (ex:
-// drjoaovictorpimenta.com.br) reescreve o redirect do middleware pra
-// "{basePath}/primeiro-acesso", que não existe → 404 (bug real
-// encontrado 06/09: pessoa com must_change_password=true nunca via a
-// tela de trocar senha em domínio de Projeto Especial).
+// /primeiro-acesso e /redefinir-senha são rotas compartilhadas da
+// plataforma (troca de senha provisória / recuperação de senha),
+// igual /app — nunca devem ser reescritas pra dentro de um projeto
+// especial. Sem essa exclusão, um domínio próprio (ex:
+// drjoaovictorpimenta.com.br) reescreve o redirect do middleware ou o
+// link do e-mail de recuperação pra "{basePath}/primeiro-acesso" ou
+// "{basePath}/redefinir-senha", que não existem → 404 (bug real
+// encontrado 06/09 com /primeiro-acesso; /redefinir-senha é rota nova,
+// já nasce com a exclusão certa).
 
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
@@ -34,7 +36,7 @@ export async function proxy(request: NextRequest) {
   // ── Domínio customizado: rewrite pra dentro do projeto especial ──
   const basePath = DOMAIN_MAP[host]
   const ehLoginSemDono = pathname === '/login' && basePath && SEM_LOGIN_PROPRIO.has(basePath)
-  if (basePath && !ehLoginSemDono && !pathname.startsWith(basePath) && !pathname.startsWith('/app') && !pathname.startsWith('/primeiro-acesso') && !pathname.startsWith('/_next') && !pathname.startsWith('/api') && !pathname.includes('.')) {
+  if (basePath && !ehLoginSemDono && !pathname.startsWith(basePath) && !pathname.startsWith('/app') && !pathname.startsWith('/primeiro-acesso') && !pathname.startsWith('/redefinir-senha') && !pathname.startsWith('/_next') && !pathname.startsWith('/api') && !pathname.includes('.')) {
     const dest = new URL(`${basePath}${pathname === '/' ? '' : pathname}${search}`, request.url)
     return NextResponse.rewrite(dest)
   }
