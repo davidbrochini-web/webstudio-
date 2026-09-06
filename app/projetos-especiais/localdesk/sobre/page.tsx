@@ -27,8 +27,8 @@ export default async function SobrePage() {
         <div className="rounded-2xl overflow-hidden aspect-[4/3]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://images.unsplash.com/photo-1721332154191-ba5f1534266e?w=800&q=70"
-            alt="Reparo detalhado de placa de notebook"
+            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=70"
+            alt="Equipe de TI trabalhando em escritório"
             className="w-full h-full object-cover"
           />
         </div>
@@ -50,6 +50,25 @@ export default async function SobrePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[var(--bg-sunken)] py-16">
+        <div className="ld-container">
+          <p className="text-xs font-bold uppercase tracking-wide text-[var(--blue)] mb-2">Nossa Trajetória</p>
+          <h2 className="font-bold text-2xl text-[var(--ink)] mb-10">Uma história em construção</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {[
+              { ano: '2020', titulo: 'Fundação', texto: 'Início das atividades com foco em suporte técnico direto, sem intermediários.' },
+              { ano: '2026', titulo: 'Expansão para empresas', texto: 'Ampliação do portfólio com soluções de segurança, backup e infraestrutura pra pequenas e médias empresas.' },
+            ].map(item => (
+              <div key={item.ano} className="bg-[var(--bg-panel)] border border-[var(--line)] rounded-2xl p-5">
+                <span className="font-mono text-sm text-[var(--blue)] font-bold">{item.ano}</span>
+                <p className="font-bold text-[var(--ink)] mt-2 mb-1.5">{item.titulo}</p>
+                <p className="text-sm text-[var(--muted)] leading-relaxed">{item.texto}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
