@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { criarAgendamentoPublico, type AgendamentoFormState } from '@/app/projetos-especiais/dentista-joao/actions'
+import { reportConversion, CONV_AGENDAMENTO } from '@/lib/dentista-joao-gtag'
 
 interface Config {
   duracao_slot_minutos: number
@@ -122,6 +123,11 @@ export default function AgendamentoForm({ config, horarios, bloqueios, ocupados,
     setSelectedDate(day)
     setSelectedSlot(null)
   }
+
+  // Conversão do Google Ads: dispara uma vez quando o agendamento é enviado
+  useEffect(() => {
+    if (state.success) reportConversion(CONV_AGENDAMENTO)
+  }, [state.success])
 
   if (state.success) {
     return (

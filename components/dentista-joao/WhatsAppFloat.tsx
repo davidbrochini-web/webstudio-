@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { reportConversion, CONV_WHATSAPP } from '@/lib/dentista-joao-gtag'
 
 /**
  * Botão flutuante do WhatsApp com:
@@ -26,7 +27,10 @@ export default function WhatsAppFloat({ whatsapp }: { whatsapp: string | null })
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Conversar no WhatsApp"
-        onClick={() => setPulsed(false)}
+        onClick={() => {
+          setPulsed(false)
+          reportConversion(CONV_WHATSAPP)
+        }}
         className="wa-btn relative w-14 h-14 rounded-full bg-[#25D366] shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
       >
         {/* Anel de pulso */}
