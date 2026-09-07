@@ -15,6 +15,12 @@ export interface CampanhaResumo {
   impressoes: number
   custo: number
   ctr: number
+  conversoes: number
+}
+
+export interface ConversaoPorTipo {
+  nome: string
+  quantidade: number
 }
 
 export interface KeywordResumo {
@@ -33,8 +39,7 @@ export interface ResumoGoogleAds {
   atualizadoEm: string
   campanhas: CampanhaResumo[]
   keywords: KeywordResumo[]
-  totalAnuncios: number
-  totalAnunciosAtivos: number
+  conversoesPorTipo: ConversaoPorTipo[]
 }
 
 async function renovarAccessToken(creds: {
@@ -88,8 +93,7 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
     atualizadoEm: new Date().toISOString(),
     campanhas: [],
     keywords: [],
-    totalAnuncios: 0,
-    totalAnunciosAtivos: 0,
+    conversoesPorTipo: [],
   }
 
   const admin = createAdminClient()
@@ -115,7 +119,8 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
 
   const campQuery = `
     SELECT campaign.id, campaign.name, campaign.status, campaign_budget.amount_micros,
-           metrics.clicks, metrics.impressions, metrics.cost_micros, metrics.ctr
+           metrics.clicks, metrics.impressions, metrics.cost_micros, metrics.ctr,
+           metrics.conversions
     FROM campaign
     WHERE segments.date DURING LAST_30_DAYS AND ${filtroAtivas}
   `
@@ -127,16 +132,20 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
     ORDER BY metrics.clicks DESC
     LIMIT 20
   `
-  const adQuery = `
-    SELECT ad_group_ad.status
-    FROM ad_group_ad
-    WHERE ${filtroAtivas}
+  // Conversões por tipo de ação (Agendamento/WhatsApp/Chamada) — nomes vêm
+  // exatamente como cadastrados em conversionActions:mutate, sem precisar
+  // hardcodar o texto aqui (funciona pra qualquer cliente com suas próprias
+  // ações de conversão, não só o nome específico das 3 do Dr. João).
+  const convQuery = `
+    SELECT conversion_action.name, metrics.conversions
+    FROM conversion_action
+    WHERE segments.date DURING LAST_30_DAYS
   `
 
-  const [campRows, kwRows, adRows] = await Promise.all([
+  const [campRows, kwRows, convRows] = await Promise.all([
     gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, campQuery),
     gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, kwQuery),
-    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, adQuery),
+    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, convQuery),
   ])
 
   if (campRows === null) {
@@ -154,6 +163,7 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
       impressoes: Number(r.metrics?.impressions ?? 0),
       custo: Number(r.metrics?.costMicros ?? 0) / 1e6,
       ctr: Number(r.metrics?.ctr ?? 0),
+      conversoes: Number(r.metrics?.conversions ?? 0),
     }))
     .sort((a: CampanhaResumo, b: CampanhaResumo) => (ordemStatus[a.status] ?? 2) - (ordemStatus[b.status] ?? 2))
 
@@ -167,16 +177,19 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
     cpcMedio: Number(r.metrics?.averageCpc ?? 0) / 1e6,
   }))
 
-  const totalAnuncios = (adRows ?? []).length
-  const totalAnunciosAtivos = (adRows ?? []).filter((r: any) => r.adGroupAd?.status === 'ENABLED').length
+  const conversoesPorTipo: ConversaoPorTipo[] = (convRows ?? [])
+    .map((r: any) => ({
+      nome: r.conversionAction?.name ?? '',
+      quantidade: Number(r.metrics?.conversions ?? 0),
+    }))
+    .filter((c: ConversaoPorTipo) => c.nome)
 
   return {
     disponivel: true,
     atualizadoEm: new Date().toISOString(),
     campanhas,
     keywords,
-    totalAnuncios,
-    totalAnunciosAtivos,
+    conversoesPorTipo,
   }
 }
 

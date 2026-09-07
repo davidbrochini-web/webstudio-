@@ -83,32 +83,46 @@ export default async function GoogleDashboard({
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs text-slate-500">
-                    <div>Orçamento: <span className="font-semibold text-slate-700">{formatMoeda(c.orcamentoDiario)}/dia</span></div>
-                    <div>Cliques: <span className="font-semibold text-slate-700">{c.cliques}</span></div>
-                    <div>Impressões: <span className="font-semibold text-slate-700">{c.impressoes}</span></div>
-                    <div>Custo: <span className="font-semibold text-slate-700">{formatMoeda(c.custo)}</span></div>
+                    <div>Gasto por dia: <span className="font-semibold text-slate-700">{formatMoeda(c.orcamentoDiario)}</span></div>
+                    <div>Cliques no anúncio: <span className="font-semibold text-slate-700">{c.cliques}</span></div>
+                    <div>Quantas vezes apareceu: <span className="font-semibold text-slate-700">{c.impressoes}</span></div>
+                    <div>Gasto até agora: <span className="font-semibold text-slate-700">{formatMoeda(c.custo)}</span></div>
+                    <div className="col-span-2">Pessoas que agendaram, chamaram ou mandaram mensagem: <span className="font-semibold text-emerald-700">{c.conversoes}</span></div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex gap-4 text-sm text-slate-600 mb-6 pb-6 border-b border-slate-100">
-              <span>📢 <span className="font-semibold">{resumo.totalAnunciosAtivos}</span> de {resumo.totalAnuncios} anúncios ativos</span>
+            <div className="mb-6 pb-6 border-b border-slate-100">
+              <h3 className="font-semibold text-sm text-slate-700 mb-3">O que as campanhas trouxeram (últimos 30 dias)</h3>
+              {resumo.conversoesPorTipo.length === 0 ? (
+                <p className="text-sm text-slate-400">Ainda não teve nenhum resultado registrado.</p>
+              ) : (
+                <div className="flex gap-3 flex-wrap">
+                  {resumo.conversoesPorTipo.map((cv, i) => (
+                    <div key={i} className="bg-emerald-50 border border-emerald-100 rounded-lg px-4 py-2.5">
+                      <div className="text-xs text-slate-500">{cv.nome}</div>
+                      <div className="text-lg font-bold text-emerald-700">{cv.quantidade}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <h3 className="font-semibold text-sm text-slate-700 mb-3">Principais palavras-chave</h3>
+            <h3 className="font-semibold text-sm text-slate-700 mb-1">O que as pessoas buscaram no Google</h3>
+            <p className="text-xs text-slate-400 mb-3">Termos que fizeram seu anúncio aparecer</p>
             {resumo.keywords.length === 0 ? (
-              <p className="text-sm text-slate-400">Nenhuma palavra-chave com dados ainda.</p>
+              <p className="text-sm text-slate-400">Ainda não tem dados suficientes.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-xs text-slate-400 border-b border-slate-100">
-                      <th className="pb-2 pr-4 font-medium">Palavra-chave</th>
+                      <th className="pb-2 pr-4 font-medium">Termo buscado</th>
                       <th className="pb-2 pr-4 font-medium">Campanha</th>
                       <th className="pb-2 pr-4 font-medium">Cliques</th>
-                      <th className="pb-2 pr-4 font-medium">Impressões</th>
-                      <th className="pb-2 font-medium">CPC médio</th>
+                      <th className="pb-2 pr-4 font-medium">Vezes que apareceu</th>
+                      <th className="pb-2 font-medium">Custo médio por clique</th>
                     </tr>
                   </thead>
                   <tbody>
