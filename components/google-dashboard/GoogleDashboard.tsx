@@ -42,7 +42,7 @@ export default async function GoogleDashboard({
   return (
     <div className="flex flex-col gap-6">
       {/* Links externos */}
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex flex-col sm:flex-row gap-3">
         {analyticsUrl && <LinkExterno href={analyticsUrl} label="Google Analytics" icone="📊" />}
         {searchConsoleUrl && <LinkExterno href={searchConsoleUrl} label="Search Console" icone="🔍" />}
         {meuNegocioUrl && <LinkExterno href={meuNegocioUrl} label="Google Meu Negócio" icone="📍" />}
@@ -105,6 +105,7 @@ export default async function GoogleDashboard({
                   <thead>
                     <tr className="text-left text-xs text-slate-400 border-b border-slate-100">
                       <th className="pb-2 pr-4 font-medium">Palavra-chave</th>
+                      <th className="pb-2 pr-4 font-medium">Campanha</th>
                       <th className="pb-2 pr-4 font-medium">Cliques</th>
                       <th className="pb-2 pr-4 font-medium">Impressões</th>
                       <th className="pb-2 font-medium">CPC médio</th>
@@ -114,6 +115,7 @@ export default async function GoogleDashboard({
                     {resumo.keywords.map((k, i) => (
                       <tr key={i} className="border-b border-slate-50 last:border-0">
                         <td className="py-2 pr-4 text-slate-700">{k.texto}</td>
+                        <td className="py-2 pr-4 text-slate-400 text-xs">{k.campanha}</td>
                         <td className="py-2 pr-4 text-slate-600">{k.cliques}</td>
                         <td className="py-2 pr-4 text-slate-600">{k.impressoes}</td>
                         <td className="py-2 text-slate-600">{formatMoeda(k.cpcMedio)}</td>

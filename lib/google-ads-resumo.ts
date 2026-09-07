@@ -21,6 +21,7 @@ export interface KeywordResumo {
   texto: string
   matchType: string
   status: string
+  campanha: string
   cliques: number
   impressoes: number
   cpcMedio: number
@@ -108,23 +109,28 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
     return { ...vazio, motivoIndisponivel: 'Sessão do Google Ads expirada — peça pro time técnico reconectar.' }
   }
 
+  // Campanhas REMOVED (deletadas) não têm valor nenhum pro cliente ver —
+  // ficam de fora do resumo inteiro (campanhas, keywords e contagem de anúncios).
+  const filtroAtivas = `campaign.status != 'REMOVED'`
+
   const campQuery = `
     SELECT campaign.id, campaign.name, campaign.status, campaign_budget.amount_micros,
            metrics.clicks, metrics.impressions, metrics.cost_micros, metrics.ctr
     FROM campaign
-    WHERE segments.date DURING LAST_30_DAYS
+    WHERE segments.date DURING LAST_30_DAYS AND ${filtroAtivas}
   `
   const kwQuery = `
-    SELECT ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type,
+    SELECT campaign.name, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type,
            ad_group_criterion.status, metrics.clicks, metrics.impressions, metrics.average_cpc
     FROM keyword_view
-    WHERE segments.date DURING LAST_30_DAYS
+    WHERE segments.date DURING LAST_30_DAYS AND ${filtroAtivas}
     ORDER BY metrics.clicks DESC
     LIMIT 20
   `
   const adQuery = `
     SELECT ad_group_ad.status
     FROM ad_group_ad
+    WHERE ${filtroAtivas}
   `
 
   const [campRows, kwRows, adRows] = await Promise.all([
@@ -137,21 +143,25 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
     return { ...vazio, motivoIndisponivel: 'Não foi possível consultar o Google Ads agora. Tente novamente em alguns minutos.' }
   }
 
-  const campanhas: CampanhaResumo[] = campRows.map((r: any) => ({
-    id: r.campaign.id,
-    nome: r.campaign.name,
-    status: r.campaign.status,
-    orcamentoDiario: Number(r.campaignBudget?.amountMicros ?? 0) / 1e6,
-    cliques: Number(r.metrics?.clicks ?? 0),
-    impressoes: Number(r.metrics?.impressions ?? 0),
-    custo: Number(r.metrics?.costMicros ?? 0) / 1e6,
-    ctr: Number(r.metrics?.ctr ?? 0),
-  }))
+  const ordemStatus: Record<string, number> = { ENABLED: 0, PAUSED: 1 }
+  const campanhas: CampanhaResumo[] = campRows
+    .map((r: any) => ({
+      id: r.campaign.id,
+      nome: r.campaign.name,
+      status: r.campaign.status,
+      orcamentoDiario: Number(r.campaignBudget?.amountMicros ?? 0) / 1e6,
+      cliques: Number(r.metrics?.clicks ?? 0),
+      impressoes: Number(r.metrics?.impressions ?? 0),
+      custo: Number(r.metrics?.costMicros ?? 0) / 1e6,
+      ctr: Number(r.metrics?.ctr ?? 0),
+    }))
+    .sort((a: CampanhaResumo, b: CampanhaResumo) => (ordemStatus[a.status] ?? 2) - (ordemStatus[b.status] ?? 2))
 
   const keywords: KeywordResumo[] = (kwRows ?? []).map((r: any) => ({
     texto: r.adGroupCriterion?.keyword?.text ?? '',
     matchType: r.adGroupCriterion?.keyword?.matchType ?? '',
     status: r.adGroupCriterion?.status ?? '',
+    campanha: r.campaign?.name ?? '',
     cliques: Number(r.metrics?.clicks ?? 0),
     impressoes: Number(r.metrics?.impressions ?? 0),
     cpcMedio: Number(r.metrics?.averageCpc ?? 0) / 1e6,
