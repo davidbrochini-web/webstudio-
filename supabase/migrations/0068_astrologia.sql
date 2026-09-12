@@ -365,3 +365,29 @@ INSERT INTO astrologia_planeta_signo (planeta, signo, influencia) VALUES
 ('Júpiter','Peixes','Fortuna pela intuição e pela compaixão — confiar no fluxo e agir com fé traz resultados inesperados.')
 
 ON CONFLICT (planeta, signo) DO UPDATE SET influencia = EXCLUDED.influencia;
+
+-- 0068 patch (aplicado separadamente via Management API):
+-- GRANT necessários para acesso anon + tabela de log
+GRANT SELECT ON astrologia_signos        TO anon, authenticated;
+GRANT SELECT ON astrologia_planeta_signo TO anon, authenticated;
+GRANT INSERT ON astrologia_inscricoes    TO anon, authenticated;
+GRANT SELECT ON astrologia_inscricoes    TO authenticated;
+
+CREATE TABLE IF NOT EXISTS astrologia_logs (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome        TEXT        NOT NULL,
+  data_nasc   DATE,
+  cidade      TEXT,
+  signo_solar TEXT,
+  resultado   TEXT        NOT NULL CHECK (resultado IN ('sucesso','erro')),
+  erro_msg    TEXT,
+  user_agent  TEXT,
+  criado_em   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE astrologia_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "astrologia_logs_insert" ON astrologia_logs;
+CREATE POLICY "astrologia_logs_insert" ON astrologia_logs FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "astrologia_logs_admin_read" ON astrologia_logs;
+CREATE POLICY "astrologia_logs_admin_read" ON astrologia_logs FOR SELECT USING (is_super_admin());
+GRANT INSERT ON astrologia_logs TO anon, authenticated;
+GRANT SELECT ON astrologia_logs TO authenticated;
