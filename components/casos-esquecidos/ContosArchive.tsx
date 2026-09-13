@@ -53,7 +53,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
           <div className="section-head">
             <span className="eyebrow">Arquivo de Casos</span>
             <h1>Contos de Terror para Ler Grátis</h1>
-            <p>Histórias de terror publicadas toda semana por D. Broch. Cada caso é uma história independente do universo de &quot;Alguns Casos Devem Ficar Esquecidos&quot;.</p>
+            <p>Histórias de terror publicadas toda semana por D. Broch. Cada caso é uma história independente do universo de &quot;Alguns Casos Devem Ficar Esquecidos&quot; — completa, gratuita e sem cadastro. Primeira vez aqui? Veja <Link href={`${base}/livros-de-terror-gratis`}>por onde começar</Link>.</p>
           </div>
           <div className="tema-nav" aria-label="Temas">
             {getAllTemas().map(t => (

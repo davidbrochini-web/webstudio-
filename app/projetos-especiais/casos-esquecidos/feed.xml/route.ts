@@ -18,7 +18,7 @@ export async function GET() {
 
   const items = ordenados.map(c => {
     const url = `${SITE_URL_BASE}/contos/${c.slug}`
-    const pubDate = new Date(c.created_at).toUTCString()
+    const pubDate = new Date(c.data_publicacao || c.created_at).toUTCString()
     return `
     <item>
       <title>${escapeXml(c.titulo)}</title>
@@ -36,7 +36,7 @@ export async function GET() {
   <channel>
     <title>Casos Esquecidos — Contos de Terror por D. Broch</title>
     <link>${SITE_URL_BASE}</link>
-    <description>Contos de terror gratuitos publicados toda semana por D. Broch.</description>
+    <description>Contos e livros de terror para ler grátis, publicados toda semana por D. Broch.</description>
     <language>pt-BR</language>
     <atom:link href="${SITE_URL_BASE}/feed.xml" rel="self" type="application/rss+xml" />
     ${items}

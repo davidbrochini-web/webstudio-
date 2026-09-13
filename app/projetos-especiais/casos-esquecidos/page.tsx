@@ -22,7 +22,8 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 // chave (não faz merge profundo), então "alternates" e "openGraph" do
 // layout somem assim que a página define os seus próprios.
 export const metadata: Metadata = {
-  title: { absolute: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch' },
+  title: { absolute: 'Casos Esquecidos — Contos e Livros de Terror para Ler Grátis | D. Broch' },
+  description: 'Contos e livros de terror para ler grátis, direto no navegador, sem cadastro e sem PDF. Histórias novas toda semana por D. Broch — terror psicológico, lendas urbanas e investigação paranormal.',
   alternates: {
     canonical: SITE_URL_BASE,
     types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },
@@ -59,7 +60,36 @@ export default async function Home() {
         name: 'Com que frequência saem contos novos?',
         acceptedAnswer: { '@type': 'Answer', text: 'Um novo conto de terror é publicado toda semana, sempre gratuito. O arquivo completo fica disponível na página de contos.' },
       },
+      {
+        '@type': 'Question',
+        name: 'Tem livro de terror pra ler de graça?',
+        acceptedAnswer: { '@type': 'Answer', text: `Tem sim. No Casos Esquecidos você lê ${totalContos} contos de terror completos e gratuitos, direto no navegador, sem baixar PDF e sem cadastro. Quem quiser o livro físico ou e-book, Alguns Casos Devem Ficar Esquecidos, encontra na Amazon — mas os contos do site são grátis de verdade, sem pegadinha.` },
+      },
+      {
+        '@type': 'Question',
+        name: 'Preciso baixar algum arquivo pra ler os contos?',
+        acceptedAnswer: { '@type': 'Answer', text: 'Não. Todos os contos ficam publicados direto no site, funcionam em qualquer celular ou computador e não exigem PDF, e-mail ou cadastro — é só abrir e ler.' },
+      },
+      {
+        '@type': 'Question',
+        name: 'Qual conto de terror ler primeiro?',
+        acceptedAnswer: { '@type': 'Answer', text: 'Cada caso é uma história independente, então não precisa seguir ordem. Se você é novo aqui, comece pelos mais recentes na home ou escolha um tema no arquivo — lendas urbanas, terror psicológico, sobrenatural, criaturas, terror da internet, maldições ou assombração.' },
+      },
     ],
+  }
+
+  // WebSite: dá nome de site consistente pro Google (evita o "site name"
+  // errado na SERP) e amarra o autor como publisher da série inteira.
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL_BASE}/#website`,
+    name: 'Casos Esquecidos',
+    alternateName: 'Alguns Casos Devem Ficar Esquecidos',
+    url: SITE_URL_BASE,
+    description: 'Contos e livros de terror para ler grátis, publicados toda semana por D. Broch.',
+    inLanguage: 'pt-BR',
+    publisher: { '@type': 'Person', name: 'D. Broch', url: `${SITE_URL_BASE}/sobre` },
   }
 
   const bookSchema = {
@@ -70,12 +100,15 @@ export default async function Home() {
     url: 'https://www.amazon.com.br/dp/B0F6D1LXSV',
     genre: 'Terror',
     inLanguage: 'pt-BR',
+    bookFormat: 'https://schema.org/EBook',
     image: 'https://casosesquecidos.com.br/assets/casos-esquecidos/capa.jpg',
-    description: 'Terror psicológico, investigação paranormal e atmosferas dignas de lendas da internet.',
+    description: 'Onze casos investigados pelo Detetive — terror psicológico, investigação paranormal e atmosferas dignas de lendas da internet.',
+    offers: { '@type': 'Offer', url: 'https://www.amazon.com.br/dp/B0F6D1LXSV', availability: 'https://schema.org/InStock', priceCurrency: 'BRL' },
   }
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Header base={base} />
@@ -84,8 +117,8 @@ export default async function Home() {
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Arquivo de Casos — Grátis para ler</span>
-            <h1>Contos do universo</h1>
-            <p>Histórias curtas publicadas toda semana — contadas por quem sobreviveu, ou por quem não teve essa sorte.</p>
+            <h1>Contos de terror para ler grátis</h1>
+            <p>Histórias curtas publicadas toda semana — contadas por quem sobreviveu, ou por quem não teve essa sorte. Sem cadastro, sem PDF: é só abrir e ler.</p>
           </div>
 
           <Link href={`${base}/contos`} className="archive-cta">
@@ -213,6 +246,18 @@ export default async function Home() {
             <details className="faq-item">
               <summary>Com que frequência saem contos novos?</summary>
               <p>Um novo conto de terror é publicado toda semana, sempre gratuito. O arquivo completo fica na <Link href={`${base}/contos`}>página de contos</Link>.</p>
+            </details>
+            <details className="faq-item">
+              <summary>Tem livro de terror pra ler de graça?</summary>
+              <p>Tem sim. Aqui você lê <strong>{totalContos} contos de terror</strong> completos e gratuitos, direto no navegador, sem baixar PDF e sem cadastro — veja a <Link href={`${base}/livros-de-terror-gratis`}>seleção de livros e contos de terror grátis</Link>. Quem quiser o livro físico ou e-book, <em>Alguns Casos Devem Ficar Esquecidos</em>, encontra na Amazon — mas os contos do site são grátis de verdade, sem pegadinha.</p>
+            </details>
+            <details className="faq-item">
+              <summary>Preciso baixar algum arquivo pra ler os contos?</summary>
+              <p>Não. Todos os contos ficam publicados direto no site, funcionam em qualquer celular ou computador e não exigem PDF, e-mail ou cadastro — é só abrir e ler.</p>
+            </details>
+            <details className="faq-item">
+              <summary>Qual conto de terror ler primeiro?</summary>
+              <p>Cada caso é uma história independente, então não precisa seguir ordem. Se você é novo aqui, comece pelos mais recentes acima ou escolha um tema no <Link href={`${base}/contos`}>arquivo</Link> — lendas urbanas, terror psicológico, sobrenatural, criaturas, terror da internet, maldições ou assombração.</p>
             </details>
           </div>
         </div>

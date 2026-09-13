@@ -9,6 +9,7 @@ export default function Footer({ base }: { base: string }) {
           <a href="https://www.amazon.com.br/dp/B0F6D1LXSV" target="_blank" rel="noopener">Amazon</a>
           <a href="https://www.instagram.com/db.casosesquecidos/" target="_blank" rel="noopener">Instagram</a>
           <Link href={`${base}/contos`}>Contos</Link>
+          <Link href={`${base}/livros-de-terror-gratis`}>Ler grátis</Link>
           <Link href={`${base}/sobre`}>O Autor</Link>
           <Link href={`${base}/#apoio`}>Pix</Link>
           <Link href="/login">Login</Link>

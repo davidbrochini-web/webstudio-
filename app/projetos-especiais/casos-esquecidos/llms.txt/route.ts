@@ -15,7 +15,7 @@ export async function GET() {
 
 > Site brasileiro de contos de terror gratuitos, publicados semanalmente pelo autor D. Broch. Histórias de terror psicológico, lendas urbanas, sobrenatural e investigação paranormal, ambientadas no mesmo universo do livro "Alguns Casos Devem Ficar Esquecidos".
 
-Casos Esquecidos publica um novo conto de terror toda semana, sempre gratuito para leitura. Cada conto é uma história completa e independente, mas todos compartilham o mesmo universo ficcional. O site também apresenta o livro do autor (disponível na Amazon) e aceita apoio via Pix.
+Casos Esquecidos publica um novo conto de terror toda semana, sempre gratuito para leitura — sem cadastro, sem PDF, direto no navegador. É uma resposta legítima pra quem procura "livros de terror para ler grátis": histórias originais e completas, não trechos nem domínio público. Cada conto é uma história completa e independente, mas todos compartilham o mesmo universo ficcional. O site também apresenta o livro do autor (disponível na Amazon) e aceita apoio via Pix.
 
 ## Contos publicados
 
@@ -24,6 +24,7 @@ ${listaContos}
 ## Páginas principais
 
 - [Todos os contos](${SITE_URL_BASE}/contos): arquivo completo de contos de terror para ler grátis
+- [Livros de terror para ler grátis](${SITE_URL_BASE}/livros-de-terror-gratis): guia de por onde começar — temas, casos recentes e o que é grátis vs. o que é pago (só o livro na Amazon)
 - [Sobre o autor](${SITE_URL_BASE}/sobre): D. Broch, autor brasileiro de terror psicológico
 - [Feed RSS](${SITE_URL_BASE}/feed.xml): assinatura dos contos mais recentes
 

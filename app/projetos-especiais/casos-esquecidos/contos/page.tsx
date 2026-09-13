@@ -6,7 +6,7 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 
 export const metadata: Metadata = {
   title: 'Contos de Terror — Histórias de Terror Grátis Toda Semana',
-  description: 'Contos de terror e histórias de terror gratuitas, publicadas toda semana por D. Broch. Horror psicológico e investigação paranormal — leia agora.',
+  description: 'Arquivo completo de contos e livros de terror para ler grátis, publicados toda semana por D. Broch. Terror psicológico, lendas urbanas e investigação paranormal — leia agora, sem cadastro.',
   alternates: {
     canonical: `${SITE_URL_BASE}/contos`,
     types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },

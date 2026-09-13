@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, htmlToText, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         ? [{ url: ogImage, width: 1600, height: 700, alt: `Ilustração do conto ${conto.titulo}` }]
         : [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630 }],
       type: 'article',
-      publishedTime: conto.created_at,
-      modifiedTime: conto.updated_at || conto.created_at,
+      publishedTime: conto.data_publicacao || conto.created_at,
+      modifiedTime: conto.updated_at || conto.data_publicacao || conto.created_at,
     },
     twitter: {
       card: 'summary_large_image',
@@ -67,21 +67,59 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
     getContoAdjacente(site.id, conto.numero, 'proximo'),
   ])
 
-  const dataPub = new Date(conto.created_at)
-  const dataFormatada = dataPub.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+  // data_publicacao é a data real em que o caso ficou público (contos
+  // agendados são inseridos no banco dias antes — created_at seria a
+  // data de inserção, não a de publicação). Vale pro texto da página,
+  // pro OG e pro JSON-LD: é o sinal de "frescor" que o Google lê.
+  const dataPubIso = conto.data_publicacao || conto.created_at
+  const dataPub = new Date(dataPubIso)
+  const dataFormatada = dataPub.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' })
 
+  const textoPuro = htmlToText(conto.texto_html)
+  const wordCount = textoPuro.split(/\s+/).filter(Boolean).length
+  const minutosLeitura = Number((conto.tempo_leitura || '').match(/\d+/)?.[0] || Math.max(1, Math.round(wordCount / 205)))
+  const nomesTemas = (conto.temas || []).map(t => getTema(t)?.nomeCurto).filter(Boolean) as string[]
+  const imagemAbs = imagemAbsoluta(conto.imagem_url)
+
+  // ShortStory + Article no mesmo nó: ShortStory descreve o que a página
+  // é de verdade; Article é o tipo que o Google usa pra elegibilidade de
+  // rich result de artigo (headline/image/datePublished/author). Multi-
+  // type é JSON-LD válido. isAccessibleForFree é o sinal explícito de
+  // "grátis" — casa com a intenção de busca "para ler grátis".
   const schemaJson = JSON.stringify({
     '@context': 'https://schema.org',
-    '@type': 'ShortStory',
+    '@type': ['ShortStory', 'Article'],
+    '@id': `${SITE_URL_BASE}/contos/${conto.slug}#conto`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL_BASE}/contos/${conto.slug}` },
+    headline: conto.titulo,
     name: conto.titulo,
-    author: { '@type': 'Person', name: 'D. Broch', url: `${SITE_URL_BASE}/sobre` },
+    alternativeName: `Caso Nº ${String(conto.numero).padStart(3, '0')}`,
+    description: conto.resumo,
+    author: {
+      '@type': 'Person',
+      name: 'D. Broch',
+      url: `${SITE_URL_BASE}/sobre`,
+      sameAs: ['https://www.amazon.com.br/dp/B0F6D1LXSV', 'https://www.instagram.com/db.casosesquecidos/'],
+    },
+    publisher: { '@type': 'Person', name: 'D. Broch', url: `${SITE_URL_BASE}/sobre` },
     url: `${SITE_URL_BASE}/contos/${conto.slug}`,
-    genre: 'Terror',
+    genre: ['Terror', 'Horror', ...nomesTemas],
+    keywords: ['conto de terror', 'história de terror grátis', ...nomesTemas.map(t => `terror ${t.toLowerCase()}`)].join(', '),
     inLanguage: 'pt-BR',
-    datePublished: conto.created_at,
-    dateModified: conto.updated_at || conto.created_at,
-    image: imagemAbsoluta(conto.imagem_url) || undefined,
-    isPartOf: { '@type': 'WebSite', name: 'Casos Esquecidos', url: SITE_URL_BASE },
+    isAccessibleForFree: true,
+    isFamilyFriendly: false,
+    datePublished: dataPubIso,
+    dateModified: conto.updated_at || dataPubIso,
+    wordCount,
+    timeRequired: `PT${minutosLeitura}M`,
+    position: conto.numero,
+    image: imagemAbs ? { '@type': 'ImageObject', url: imagemAbs, width: 1600, height: 700 } : undefined,
+    isPartOf: {
+      '@type': ['WebSite', 'CreativeWorkSeries'],
+      '@id': `${SITE_URL_BASE}/#website`,
+      name: 'Casos Esquecidos',
+      url: SITE_URL_BASE,
+    },
   })
 
   const breadcrumbJson = JSON.stringify({

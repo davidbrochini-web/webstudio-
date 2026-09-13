@@ -48,8 +48,34 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
     ],
   }
 
+  // CollectionPage + ItemList: diz ao Google que esta é uma página de
+  // listagem por tema (não conteúdo duplicado do arquivo) e lista os
+  // casos que pertencem a ela — mesmo padrão do arquivo e do hub.
+  const collectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${SITE_URL_BASE}/contos/tema/${tema.slug}`,
+    name: tema.nome,
+    description: tema.descricao,
+    url: `${SITE_URL_BASE}/contos/tema/${tema.slug}`,
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    isPartOf: { '@type': 'WebSite', '@id': `${SITE_URL_BASE}/#website`, name: 'Casos Esquecidos', url: SITE_URL_BASE },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: contos.length,
+      itemListElement: [...contos].sort((a, b) => b.numero - a.numero).map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE_URL_BASE}/contos/${c.slug}`,
+        name: c.titulo,
+      })),
+    },
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Header base={base} />
       <section>
