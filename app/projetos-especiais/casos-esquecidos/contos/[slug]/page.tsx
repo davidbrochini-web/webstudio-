@@ -93,7 +93,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL_BASE}/contos/${conto.slug}` },
     headline: conto.titulo,
     name: conto.titulo,
-    alternativeName: `Caso Nº ${String(conto.numero).padStart(3, '0')}`,
+    alternativeHeadline: `Caso Nº ${String(conto.numero).padStart(3, '0')}`,
     description: conto.resumo,
     author: {
       '@type': 'Person',
