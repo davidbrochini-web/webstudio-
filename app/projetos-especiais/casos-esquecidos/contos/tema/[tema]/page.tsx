@@ -78,6 +78,7 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Header base={base} />
+      <main>
       <section>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
@@ -103,6 +104,7 @@ export default async function TemaPage({ params }: { params: Promise<{ tema: str
           </div>
         </div>
       </section>
+      </main>
       <Footer base={base} />
     </>
   )

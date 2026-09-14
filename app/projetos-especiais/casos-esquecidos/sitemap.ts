@@ -22,6 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: SITE_URL_BASE, lastModified: maisRecente, priority: 1, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/contos`, lastModified: maisRecente, priority: 0.9, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/livros-de-terror-gratis`, lastModified: maisRecente, priority: 0.8, changeFrequency: 'weekly' },
+    { url: `${SITE_URL_BASE}/contos/curtos`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
+    { url: `${SITE_URL_BASE}/contos/brasileiros`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
+    { url: `${SITE_URL_BASE}/contos/para-dormir`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
+    { url: `${SITE_URL_BASE}/creepypasta-brasileira`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/sobre`, priority: 0.6, changeFrequency: 'monthly' },
   ]
 

@@ -17,7 +17,7 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 // dizer que O LIVRO (Amazon, pago) é grátis — o que é grátis são os
 // contos do site, e o texto deixa isso explícito.
 export const metadata: Metadata = {
-  title: 'Livros de Terror para Ler Grátis — Contos Completos Online',
+  title: 'Livros de Terror para Ler Grátis Online', // ≤60 c/ template
   description: 'Livros e contos de terror para ler grátis, direto no navegador: sem cadastro, sem PDF, sem pegadinha. Histórias completas de D. Broch, com casos novos toda semana.',
   alternates: { canonical: `${SITE_URL_BASE}/livros-de-terror-gratis` },
   robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
@@ -94,8 +94,9 @@ export default async function LivrosDeTerrorGratisPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <Header base={base} />
+      <main>
 
-      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
             <Link href={base || '/'}>Início</Link> <span>›</span> <strong>Livros de terror grátis</strong>
@@ -155,7 +156,7 @@ export default async function LivrosDeTerrorGratisPage() {
         </div>
       </section>
 
-      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">E o livro?</span>
@@ -176,6 +177,7 @@ export default async function LivrosDeTerrorGratisPage() {
         </div>
       </section>
 
+      </main>
       <Footer base={base} />
     </>
   )

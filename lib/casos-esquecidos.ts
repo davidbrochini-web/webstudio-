@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { createPublicClient } from '@/lib/supabase/public'
+import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
 import { headers } from 'next/headers'
 import { DOMAIN_MAP } from '@/lib/domain-map'
@@ -31,6 +32,15 @@ export type { Conto }
 // Path interno onde as páginas realmente moram no Next.js.
 const INTERNAL_PATH = '/projetos-especiais/casos-esquecidos'
 
+// Tag única de cache pra todo o conteúdo público (contos + agendados)
+// deste site. `atualizarConto`/`criarConto`/`cores/actions.ts` chamam
+// `revalidateTag(CACHE_TAG_CONTOS)` depois de qualquer escrita — sem
+// isso, a mudança só apareceria no ar depois dos `revalidate` abaixo
+// (até 1h). Uma tag só é suficiente aqui: publicação é ~1x/semana via
+// admin, não em massa, então invalidar tudo de uma vez é barato e
+// simples — não precisa de granularidade por conto/tema.
+export const CACHE_TAG_CONTOS = 'casos-esquecidos-contos'
+
 /**
  * Path a usar em TODO link interno do site (nav, footer, cards, etc).
  * No domínio próprio, retorna '' — link fica limpo, ex: `${base}/contos`
@@ -57,7 +67,7 @@ export interface SiteEspecial {
   textos_customizados: Record<string, string>
 }
 
-export async function getSiteEspecial(): Promise<SiteEspecial> {
+const buscarSiteEspecialSemCache = async (): Promise<SiteEspecial | null> => {
   const supabase = await createPublicClient()
   const { data: site } = await supabase
     .from('sites')
@@ -65,9 +75,28 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()
+  return (site as SiteEspecial) || null
+}
 
+// Cache de 1h — antes desta mudança, TODA página do Casos Esquecidos
+// disparava essa query (e mais 2-5 outras) do zero a cada request,
+// porque getBasePath() (abaixo) chama headers() e isso força a rota
+// inteira a renderizar como dynamic, anulando o `revalidate = 3600`
+// declarado em cada page.tsx (ISR nunca rodou de verdade nesse
+// projeto). unstable_cache cacheia o RESULTADO da query mesmo em rota
+// dynamic — é isso que derruba o TTFB (medido em 1,2-3,5s) pra
+// ~dezenas de ms no cache-hit. Revalidação: automática em 1h, ou
+// imediata via revalidateTag(CACHE_TAG_CONTOS) nas actions do admin.
+const getSiteEspecialCached = unstable_cache(
+  buscarSiteEspecialSemCache,
+  ['casos-esquecidos-site-especial'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
+
+export async function getSiteEspecial(): Promise<SiteEspecial> {
+  const site = await getSiteEspecialCached()
   if (!site) notFound()
-  return site as SiteEspecial
+  return site
 }
 
 export async function getSiteId(): Promise<string> {
@@ -75,69 +104,89 @@ export async function getSiteId(): Promise<string> {
   return site.id
 }
 
-export async function getAllContos(siteId: string): Promise<Conto[]> {
-  const supabase = await createPublicClient()
-  const { data, error } = await supabase
-    .from('contos')
-    .select('*')
-    .eq('site_id', siteId)
-    .eq('publicado', true)
-    .order('numero', { ascending: true })
-  if (error) throw error
-  return data || []
-}
+export const getAllContos = unstable_cache(
+  async (siteId: string): Promise<Conto[]> => {
+    const supabase = await createPublicClient()
+    const { data, error } = await supabase
+      .from('contos')
+      .select('*')
+      .eq('site_id', siteId)
+      .eq('publicado', true)
+      .order('numero', { ascending: true })
+    if (error) throw error
+    return data || []
+  },
+  ['casos-esquecidos-get-all-contos'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-export async function getContoBySlug(siteId: string, slug: string): Promise<Conto | null> {
-  const supabase = await createPublicClient()
-  const { data, error } = await supabase
-    .from('contos')
-    .select('*')
-    .eq('site_id', siteId)
-    .eq('slug', slug)
-    .eq('publicado', true)
-    .single()
-  if (error) return null
-  return data
-}
+export const getContoBySlug = unstable_cache(
+  async (siteId: string, slug: string): Promise<Conto | null> => {
+    const supabase = await createPublicClient()
+    const { data, error } = await supabase
+      .from('contos')
+      .select('*')
+      .eq('site_id', siteId)
+      .eq('slug', slug)
+      .eq('publicado', true)
+      .single()
+    if (error) return null
+    return data
+  },
+  ['casos-esquecidos-get-conto-by-slug'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-export async function getRecentContos(siteId: string, limit = 3): Promise<Conto[]> {
-  const supabase = await createPublicClient()
-  const { data, error } = await supabase
-    .from('contos')
-    .select('*')
-    .eq('site_id', siteId)
-    .eq('publicado', true)
-    .order('numero', { ascending: false })
-    .limit(limit)
-  if (error) throw error
-  return data || []
-}
+export const getRecentContos = unstable_cache(
+  async (siteId: string, limit = 3): Promise<Conto[]> => {
+    const supabase = await createPublicClient()
+    const { data, error } = await supabase
+      .from('contos')
+      .select('*')
+      .eq('site_id', siteId)
+      .eq('publicado', true)
+      .order('numero', { ascending: false })
+      .limit(limit)
+    if (error) throw error
+    return data || []
+  },
+  ['casos-esquecidos-get-recent-contos'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-export async function getTotalContos(siteId: string): Promise<number> {
-  const supabase = await createPublicClient()
-  const { count, error } = await supabase
-    .from('contos')
-    .select('*', { count: 'exact', head: true })
-    .eq('site_id', siteId)
-    .eq('publicado', true)
-  if (error) throw error
-  return count || 0
-}
+export const getTotalContos = unstable_cache(
+  async (siteId: string): Promise<number> => {
+    const supabase = await createPublicClient()
+    const { count, error } = await supabase
+      .from('contos')
+      .select('*', { count: 'exact', head: true })
+      .eq('site_id', siteId)
+      .eq('publicado', true)
+    if (error) throw error
+    return count || 0
+  },
+  ['casos-esquecidos-get-total-contos'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-export async function getContosByTema(siteId: string, tema: string): Promise<Conto[]> {
-  const supabase = await createPublicClient()
-  const { data, error } = await supabase
-    .from('contos')
-    .select('*')
-    .eq('site_id', siteId)
-    .eq('publicado', true)
-    .contains('temas', [tema])
-    .order('numero', { ascending: true })
-  if (error) throw error
-  return data || []
-}
+export const getContosByTema = unstable_cache(
+  async (siteId: string, tema: string): Promise<Conto[]> => {
+    const supabase = await createPublicClient()
+    const { data, error } = await supabase
+      .from('contos')
+      .select('*')
+      .eq('site_id', siteId)
+      .eq('publicado', true)
+      .contains('temas', [tema])
+      .order('numero', { ascending: true })
+    if (error) throw error
+    return data || []
+  },
+  ['casos-esquecidos-get-contos-by-tema'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-export async function getContosRelacionados(siteId: string, temas: string[], numeroAtual: number, limit = 3): Promise<Conto[]> {
+const buscarContosRelacionadosSemCache = async (siteId: string, temas: string[], numeroAtual: number, limit = 3): Promise<Conto[]> => {
   if (!temas || temas.length === 0) return []
   const supabase = createPublicClient()
   const { data, error } = await supabase
@@ -158,29 +207,48 @@ export async function getContosRelacionados(siteId: string, temas: string[], num
   return comContagem.slice(0, limit).map(x => x.conto)
 }
 
-export async function getContoAdjacente(siteId: string, numero: number, direcao: 'anterior' | 'proximo'): Promise<Conto | null> {
-  const supabase = await createPublicClient()
-  const query = supabase
-    .from('contos')
-    .select('*')
-    .eq('site_id', siteId)
-    .eq('publicado', true)
+export const getContosRelacionados = unstable_cache(
+  buscarContosRelacionadosSemCache,
+  ['casos-esquecidos-get-contos-relacionados'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
-  const { data, error } = direcao === 'anterior'
-    ? await query.lt('numero', numero).order('numero', { ascending: false }).limit(1)
-    : await query.gt('numero', numero).order('numero', { ascending: true }).limit(1)
-  if (error) throw error
-  return data && data.length > 0 ? data[0] : null
-}
+export const getContoAdjacente = unstable_cache(
+  async (siteId: string, numero: number, direcao: 'anterior' | 'proximo'): Promise<Conto | null> => {
+    const supabase = await createPublicClient()
+    const query = supabase
+      .from('contos')
+      .select('*')
+      .eq('site_id', siteId)
+      .eq('publicado', true)
+
+    const { data, error } = direcao === 'anterior'
+      ? await query.lt('numero', numero).order('numero', { ascending: false }).limit(1)
+      : await query.gt('numero', numero).order('numero', { ascending: true }).limit(1)
+    if (error) throw error
+    return data && data.length > 0 ? data[0] : null
+  },
+  ['casos-esquecidos-get-conto-adjacente'],
+  { revalidate: 3600, tags: [CACHE_TAG_CONTOS] }
+)
 
 export type CasoAgendado = { numero: number; titulo: string; data_publicacao: string }
 
-export async function getCasosAgendados(siteId: string): Promise<CasoAgendado[]> {
-  const supabase = await createPublicClient()
-  const { data, error } = await supabase.rpc('casos_agendados_publicos', { p_site_id: siteId })
-  if (error) throw error
-  return data || []
-}
+export const getCasosAgendados = unstable_cache(
+  async (siteId: string): Promise<CasoAgendado[]> => {
+    const supabase = await createPublicClient()
+    const { data, error } = await supabase.rpc('casos_agendados_publicos', { p_site_id: siteId })
+    if (error) throw error
+    return data || []
+  },
+  ['casos-esquecidos-get-casos-agendados'],
+  // revalidate curto (5min): esta lista muda de "não existe ainda" pra
+  // "existe" no exato instante em que a data agendada chega — não é
+  // uma escrita do admin (que já invalida via tag), é a passagem do
+  // tempo. 1h de cache aqui atrasaria demais o card "selado" virar
+  // conto de verdade no arquivo.
+  { revalidate: 300, tags: [CACHE_TAG_CONTOS] }
+)
 
 // ── Admin: escreve/edita, respeitando RLS (usuário autenticado com
 //    membership no tenant — mesmo padrão de login/auth do resto da

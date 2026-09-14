@@ -22,7 +22,10 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 // chave (não faz merge profundo), então "alternates" e "openGraph" do
 // layout somem assim que a página define os seus próprios.
 export const metadata: Metadata = {
-  title: { absolute: 'Casos Esquecidos — Contos e Livros de Terror para Ler Grátis | D. Broch' },
+  // <title> curto (≤60 chars, sem truncar na SERP) — a versão longa
+  // com "D. Broch" e "e Livros" continua em openGraph/twitter (não
+  // sofrem o mesmo limite de truncagem do Google).
+  title: { absolute: 'Casos Esquecidos — Contos de Terror para Ler Grátis' },
   description: 'Contos e livros de terror para ler grátis, direto no navegador, sem cadastro e sem PDF. Histórias novas toda semana por D. Broch — terror psicológico, lendas urbanas e investigação paranormal.',
   alternates: {
     canonical: SITE_URL_BASE,
@@ -112,8 +115,9 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(bookSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Header base={base} />
+      <main>
 
-      <section id="contos" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <section id="contos" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Arquivo de Casos — Grátis para ler</span>
@@ -166,7 +170,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">O Universo em Livro</span>
@@ -216,7 +220,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="universo" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/universo-cult.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg lore">
+      <section id="universo" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/universo-cult.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg lore">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">O Universo</span>
@@ -263,7 +267,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="apoio" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <section id="apoio" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Apoie o trabalho</span>
@@ -284,6 +288,7 @@ export default async function Home() {
         </div>
       </section>
 
+      </main>
       <Footer base={base} />
     </>
   )

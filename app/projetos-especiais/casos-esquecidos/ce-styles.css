@@ -110,7 +110,7 @@ section { padding: 2.75rem 0; }
 .ce-site .case-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
 .ce-site .case-card.locked { opacity: 0.55; }
 .ce-site .case-card .case-number { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--blood-bright); }
-.ce-site .case-card h3 { font-size: 1.35rem; line-height: 1.25; }
+.ce-site .case-card h2 { font-size: 1.35rem; line-height: 1.25; }
 .ce-site .case-card .case-excerpt { color: var(--paper-dim); font-size: 0.98rem; }
 .ce-site .case-card .case-meta { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 .ce-site .status-tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.55rem; border: 1px solid var(--gold-dim); color: var(--gold); }
@@ -222,8 +222,17 @@ section { padding: 2.75rem 0; }
 .ce-site /* Footer */
 .site-footer { border-top: 1px solid var(--line); padding: 3rem 0; }
 .ce-site .site-footer .container { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; align-items: center; }
-.ce-site .footer-links { display: flex; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.ce-site .footer-links a { color: var(--paper-dim); }
+/* flex-wrap: sem isso, os 7 links (Amazon/Instagram/Contos/Ler
+   grátis/O Autor/Pix/Login) não cabiam nos 375px de um mobile comum e
+   os últimos (Pix, Login) renderizavam FORA da viewport — inacessíveis
+   por toque e, de quebra, o Lighthouse lia contraste errado neles
+   (media pixel fora do canvas renderizado). Achado ao investigar um
+   falso positivo de color-contrast: a cor sempre foi igual em todos os
+   7 links (#e8dfc8, 14.9:1 de contraste) — o bug real era layout, não
+   cor. */
+.ce-site .footer-links { display: flex; flex-wrap: wrap; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.ce-site .footer-links a { color: var(--paper); }
+.ce-site .footer-links a:hover { color: var(--gold); }
 .ce-site .footer-note { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
 .ce-site /* Book section */
 .book-block { display: grid; gap: 2rem; grid-template-columns: 1fr; }

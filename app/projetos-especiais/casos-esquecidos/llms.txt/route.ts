@@ -25,6 +25,10 @@ ${listaContos}
 
 - [Todos os contos](${SITE_URL_BASE}/contos): arquivo completo de contos de terror para ler grátis
 - [Livros de terror para ler grátis](${SITE_URL_BASE}/livros-de-terror-gratis): guia de por onde começar — temas, casos recentes e o que é grátis vs. o que é pago (só o livro na Amazon)
+- [Contos de terror curtos](${SITE_URL_BASE}/contos/curtos): casos de até 8 minutos de leitura
+- [Contos de terror brasileiros](${SITE_URL_BASE}/contos/brasileiros): terror ambientado no Brasil real
+- [Contos para ler antes de dormir](${SITE_URL_BASE}/contos/para-dormir): seleção atmosférica, sem criaturas explícitas
+- [Creepypasta brasileira](${SITE_URL_BASE}/creepypasta-brasileira): terror da internet e lendas urbanas nacionais
 - [Sobre o autor](${SITE_URL_BASE}/sobre): D. Broch, autor brasileiro de terror psicológico
 - [Feed RSS](${SITE_URL_BASE}/feed.xml): assinatura dos contos mais recentes
 

@@ -19,10 +19,15 @@ export default function CaseCard({ conto, prefix, priority = false }: { conto: C
           className="case-card-img"
           sizes="(max-width: 700px) 90vw, (max-width: 1100px) 45vw, 30vw"
           priority={priority}
+          fetchPriority={priority ? 'high' : 'auto'}
         />
       )}
       <span className="case-number">Caso Nº {String(conto.numero).padStart(3, '0')}</span>
-      <h3>{conto.titulo}</h3>
+      {/* h2 (não h3): em toda página que usa este card (home, arquivo,
+          tema, relacionados no conto), o h1 é único e estes cards são
+          o próximo nível de conteúdo — h3 pulava um nível e o
+          Lighthouse acusava heading-order quebrado. */}
+      <h2>{conto.titulo}</h2>
       <p className="case-excerpt">{conto.resumo}</p>
       <div className="case-meta">
         <span>{conto.tempo_leitura || '— min'}</span>

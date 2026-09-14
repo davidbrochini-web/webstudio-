@@ -1,11 +1,22 @@
 import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
 import { headers } from 'next/headers'
+import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 import GoogleAnalytics from '@/components/layout/GoogleAnalytics'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
 import { DOMAIN_MAP } from '@/lib/domain-map'
+
+// Antes: @import do Google Fonts em globals.css — render-blocking (761ms
+// medidos no Lighthouse) em TODO domínio da plataforma, incluindo os que
+// nem usam essas fontes (Casos Esquecidos usa Cinzel/Garamond isolados em
+// `.ce-site`, ver ce-styles.css). next/font faz self-host em build time
+// (sem round-trip pro Google em runtime) e injeta como CSS var — mesmo
+// resultado visual pra Omnidesign/Dentista João, zero bloqueio a mais.
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-inter', display: 'swap' })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk', display: 'swap' })
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains-mono', display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
@@ -74,7 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const dominioDeProjetoEspecial = host in DOMAIN_MAP
 
   return (
-    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="pt-BR" className={`scroll-smooth ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>

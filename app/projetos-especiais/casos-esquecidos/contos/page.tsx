@@ -5,7 +5,7 @@ import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/casos-esqueci
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
 export const metadata: Metadata = {
-  title: 'Contos de Terror — Histórias de Terror Grátis Toda Semana',
+  title: 'Contos de Terror Grátis Toda Semana', // ≤60 c/ template ' | Casos Esquecidos'
   description: 'Arquivo completo de contos e livros de terror para ler grátis, publicados toda semana por D. Broch. Terror psicológico, lendas urbanas e investigação paranormal — leia agora, sem cadastro.',
   alternates: {
     canonical: `${SITE_URL_BASE}/contos`,

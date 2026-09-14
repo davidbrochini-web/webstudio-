@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
+import { CACHE_TAG_CONTOS } from '@/lib/casos-esquecidos'
 
 export interface IdentidadeCasosFormState {
   error?: string
@@ -35,6 +36,7 @@ export async function updateIdentidadeCasos(
 
   if (error) return { error: `Erro ao salvar: ${error.message}` }
 
+  updateTag(CACHE_TAG_CONTOS)
   revalidatePath('/app/casos-esquecidos')
   revalidatePath('/projetos-especiais/casos-esquecidos', 'layout')
   return { success: true }

@@ -142,8 +142,9 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJson }} />
       <Header base={base} />
+      <main>
 
-      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.jpg')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
             <Link href={base || '/'}>Início</Link> <span>›</span> <Link href={`${base}/contos`}>Contos</Link> <span>›</span> <strong>{conto.titulo}</strong>
@@ -216,6 +217,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
         </div>
       </div>
 
+      </main>
       <Footer base={base} />
     </>
   )

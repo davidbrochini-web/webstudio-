@@ -1,12 +1,13 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
 import {
   slugify,
   markdownToHtml,
   estimarTempoLeitura,
   getUltimoContoPorNumero,
+  CACHE_TAG_CONTOS,
 } from '@/lib/casos-esquecidos'
 
 export type ContoResultado = { ok: true; slug: string } | { ok: false; error: string }
@@ -14,10 +15,19 @@ export type ContoResultado = { ok: true; slug: string } | { ok: false; error: st
 const BASE = '/projetos-especiais/casos-esquecidos'
 
 function revalidarSitePublico(slug: string, temas: string[]) {
+  // updateTag (não revalidateTag: dentro de Server Action, é a API certa
+  // pra invalidação imediata — "read-your-own-writes") invalida o
+  // unstable_cache das funções de leitura em lib/casos-esquecidos.ts
+  // (sem isso, a página recarrega mas ainda serve os dados antigos do
+  // cache de 1h). revalidatePath continua depois pra derrubar o Full
+  // Route Cache dessas rotas.
+  updateTag(CACHE_TAG_CONTOS)
   revalidatePath(BASE)
   revalidatePath(`${BASE}/contos`)
   revalidatePath(`${BASE}/contos/${slug}`)
+  revalidatePath(`${BASE}/livros-de-terror-gratis`)
   revalidatePath(`${BASE}/feed.xml`)
+  revalidatePath(`${BASE}/llms.txt`)
   for (const t of temas) revalidatePath(`${BASE}/contos/tema/${t}`)
 }
 

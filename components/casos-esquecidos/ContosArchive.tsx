@@ -44,10 +44,36 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
     })),
   }
 
+  // FAQ só na página 1 (a canônica/indexada) — evita schema e conteúdo
+  // duplicado nas páginas 2+ do arquivo, que já ficam de fora do sitemap.
+  const faqSchema = ehPrimeiraPagina ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Os contos de terror são grátis mesmo?',
+        acceptedAnswer: { '@type': 'Answer', text: `Sim, os ${ordenados.length} casos publicados aqui são 100% gratuitos — sem assinatura, sem cadastro, sem limite de leitura por mês. O único conteúdo pago do universo é o livro Alguns Casos Devem Ficar Esquecidos, vendido separadamente na Amazon.` },
+      },
+      {
+        '@type': 'Question',
+        name: 'Preciso ler os contos em ordem?',
+        acceptedAnswer: { '@type': 'Answer', text: 'Não. Cada caso é uma história independente — dá pra começar por qualquer um. Quem lê vários fora de ordem só descobre as conexões entre eles um pouco mais tarde, o que também é uma forma válida de ler.' },
+      },
+      {
+        '@type': 'Question',
+        name: 'O arquivo é atualizado com que frequência?',
+        acceptedAnswer: { '@type': 'Answer', text: 'Um conto novo é publicado toda semana. Este arquivo (e o feed RSS) sempre reflete a lista mais recente.' },
+      },
+    ],
+  } : null
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+      {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       <Header base={base} />
+      <main>
       <section>
         <div className="container">
           <div className="section-head">
@@ -60,11 +86,17 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
               <Link key={t.slug} href={`${base}/contos/tema/${t.slug}`} className="tema-tag">{t.nomeCurto}</Link>
             ))}
           </div>
+          <div className="tema-nav" aria-label="Outras formas de explorar o arquivo" style={{ marginTop: '-0.5rem' }}>
+            <Link href={`${base}/contos/curtos`} className="tema-tag">Contos Curtos</Link>
+            <Link href={`${base}/contos/brasileiros`} className="tema-tag">Contos Brasileiros</Link>
+            <Link href={`${base}/contos/para-dormir`} className="tema-tag">Pra Ler Antes de Dormir</Link>
+            <Link href={`${base}/creepypasta-brasileira`} className="tema-tag">Creepypasta Brasileira</Link>
+          </div>
           <div className="case-grid">
             {ehPrimeiraPagina && agendadosOrdenados.map(a => (
               <article key={a.numero} className="case-card locked">
                 <span className="case-number">Caso Nº {String(a.numero).padStart(3, '0')}</span>
-                <h3>{a.titulo}</h3>
+                <h2>{a.titulo}</h2>
                 <p className="case-excerpt">Esse mistério vai abrir dia {formatarDataAbertura(a.data_publicacao)}.</p>
                 <div className="case-meta">
                   <span>—</span>
@@ -78,7 +110,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
             {ehUltimaPagina && agendadosOrdenados.length === 0 && (
               <article className="case-card locked">
                 <span className="case-number">Caso Nº {String(ordenados.length + 1).padStart(3, '0')}</span>
-                <h3>Em breve</h3>
+                <h2>Em breve</h2>
                 <p className="case-excerpt">Um novo caso é arquivado toda semana. Volte em breve ou acompanhe nas redes para saber quando abrir.</p>
                 <div className="case-meta">
                   <span>—</span>
@@ -102,10 +134,42 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
               </div>
             </nav>
           )}
+
+          {ehPrimeiraPagina && (
+            <div className="lore" style={{ marginTop: '3rem', maxWidth: '68ch' }}>
+              <p>Este arquivo reúne todos os contos de terror grátis já publicados por D. Broch — {ordenados.length} casos até agora, todos completos, todos gratuitos, sem cadastro e sem baixar nada. Não é uma amostra do livro: são histórias próprias, escritas direto pra serem lidas aqui, no navegador, em qualquer ordem que você quiser começar.</p>
+              <p>A frequência é semanal, então o arquivo cresce toda semana — se você já leu tudo, volte em alguns dias que tem caso novo. Enquanto isso, os temas acima ajudam a filtrar por tipo de medo: lendas urbanas, terror psicológico, sobrenatural, criaturas, terror da internet, maldições ou assombração.</p>
+            </div>
+          )}
         </div>
       </section>
 
-      <section style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', padding: '3rem 0' }} className="section-bg">
+      {ehPrimeiraPagina && (
+        <section id="faq-contos">
+          <div className="container">
+            <div className="section-head">
+              <span className="eyebrow">Perguntas Frequentes</span>
+              <h2>Sobre o arquivo de contos</h2>
+            </div>
+            <div className="faq-list">
+              <details className="faq-item">
+                <summary>Os contos de terror são grátis mesmo?</summary>
+                <p>Sim, os {ordenados.length} casos publicados aqui são 100% gratuitos — sem assinatura, sem cadastro, sem limite de leitura por mês. O único conteúdo pago do universo é o livro <em>Alguns Casos Devem Ficar Esquecidos</em>, vendido separadamente na Amazon.</p>
+              </details>
+              <details className="faq-item">
+                <summary>Preciso ler os contos em ordem?</summary>
+                <p>Não. Cada caso é uma história independente — dá pra começar por qualquer um. Quem lê vários fora de ordem só descobre as conexões entre eles um pouco mais tarde, o que também é uma forma válida de ler.</p>
+              </details>
+              <details className="faq-item">
+                <summary>O arquivo é atualizado com que frequência?</summary>
+                <p>Um conto novo é publicado toda semana. Este arquivo (e o <Link href={`${base}/feed.xml`}>feed RSS</Link>) sempre reflete a lista mais recente.</p>
+              </details>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.webp')", backgroundSize: 'cover', backgroundPosition: 'center', padding: '3rem 0' }} className="section-bg">
         <div className="container">
           <div className="support-block">
             <div>
@@ -124,6 +188,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
         </div>
       </section>
 
+      </main>
       <Footer base={base} />
     </>
   )

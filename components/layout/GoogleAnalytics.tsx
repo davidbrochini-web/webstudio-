@@ -55,23 +55,34 @@ declare global {
   }
 }
 
-function PageViewTracker() {
+function PageViewTracker({ pronto }: { pronto: boolean }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    if (typeof window.gtag !== 'function') return
+    // Sem `pronto` como dependência, esse efeito só reexecutava na
+    // TROCA de pathname — se o gtag ainda não tivesse carregado no
+    // mount inicial (`typeof window.gtag !== 'function'`), o pageview
+    // da carga inicial era silenciosamente perdido pra sempre, porque
+    // o efeito não rodava de novo só porque o script terminou de
+    // carregar. Bug pré-existente, independente da strategy — mas
+    // `lazyOnload` (abaixo) o tornaria muito mais frequente. Fix:
+    // `pronto` (setado no onLoad do script de init) entra como
+    // dependência, então o pageview inicial dispara assim que o gtag
+    // fica disponível, não só nas navegações seguintes.
+    if (!pronto || typeof window.gtag !== 'function') return
     const query = searchParams.toString()
     window.gtag('event', 'page_view', {
       page_path: query ? `${pathname}?${query}` : pathname,
     })
-  }, [pathname, searchParams])
+  }, [pathname, searchParams, pronto])
 
   return null
 }
 
 export default function GoogleAnalytics() {
   const [gaId, setGaId] = useState<string | null>(null)
+  const [pronto, setPronto] = useState(false)
 
   useEffect(() => {
     const id = GA_POR_HOST[window.location.hostname]
@@ -82,11 +93,17 @@ export default function GoogleAnalytics() {
 
   return (
     <>
+      {/* lazyOnload (em vez de afterInteractive): tira o gtag.js do
+          caminho crítico de hidratação — no Lighthouse mobile do Casos
+          Esquecidos isso custava ~393ms de bootup-time dentro do TBT.
+          GA4 não precisa competir com a página ficando interativa;
+          o fix de `pronto` acima garante que o pageview inicial não se
+          perde só porque o script demora mais pra carregar agora. */}
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
-      <Script id="ga4-init" strategy="afterInteractive">
+      <Script id="ga4-init" strategy="lazyOnload" onLoad={() => setPronto(true)}>
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -94,7 +111,7 @@ export default function GoogleAnalytics() {
           gtag('config', '${gaId}', { send_page_view: false });
         `}
       </Script>
-      <PageViewTracker />
+      <PageViewTracker pronto={pronto} />
     </>
   )
 }

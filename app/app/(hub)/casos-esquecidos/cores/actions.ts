@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
+import { CACHE_TAG_CONTOS } from '@/lib/casos-esquecidos'
 
 const CHAVES_PALETA = [
   'paleta_bg', 'paleta_bg_panel', 'paleta_bg_panel_2', 'paleta_line',
@@ -26,6 +27,7 @@ export async function updatePaletaCasos(siteId: string, valores: Record<string, 
   const { error } = await supabase.from('sites').update({ textos_customizados: novo }).eq('id', siteId)
   if (error) throw new Error(error.message)
 
+  updateTag(CACHE_TAG_CONTOS)
   revalidatePath('/app/casos-esquecidos/cores')
   revalidatePath('/projetos-especiais/casos-esquecidos', 'layout')
 }

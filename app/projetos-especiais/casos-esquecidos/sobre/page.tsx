@@ -33,6 +33,7 @@ export default async function SobrePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
       <Header base={base} />
+      <main>
       <section>
         <div className="container">
           <div className="section-head">
@@ -57,6 +58,7 @@ export default async function SobrePage() {
           </div>
         </div>
       </section>
+      </main>
       <Footer base={base} />
     </>
   )
