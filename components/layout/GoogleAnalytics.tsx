@@ -83,22 +83,39 @@ function PageViewTracker({ pronto }: { pronto: boolean }) {
 export default function GoogleAnalytics() {
   const [gaId, setGaId] = useState<string | null>(null)
   const [pronto, setPronto] = useState(false)
+  // Carrega o GA4 só na primeira interação real (clique, toque, scroll,
+  // tecla) OU depois de 4s, o que vier primeiro — nunca compete com o
+  // carregamento inicial da página por CPU/banda. Efeito real: quem
+  // sai do site em menos de 4s sem tocar em nada não gera pageview —
+  // na prática isso é bounce mesmo, então o número que se perde é
+  // justamente o que já não contaria como visita engajada.
+  const [carregarAgora, setCarregarAgora] = useState(false)
 
   useEffect(() => {
     const id = GA_POR_HOST[window.location.hostname]
     if (id) setGaId(id)
   }, [])
 
-  if (!gaId) return null
+  useEffect(() => {
+    if (carregarAgora) return
+    const eventos: (keyof WindowEventMap)[] = ['pointerdown', 'keydown', 'touchstart', 'scroll']
+    const disparar = () => setCarregarAgora(true)
+    eventos.forEach(ev => window.addEventListener(ev, disparar, { once: true, passive: true }))
+    const timer = window.setTimeout(disparar, 4000)
+    return () => {
+      eventos.forEach(ev => window.removeEventListener(ev, disparar))
+      window.clearTimeout(timer)
+    }
+  }, [carregarAgora])
+
+  if (!gaId || !carregarAgora) return null
 
   return (
     <>
-      {/* lazyOnload (em vez de afterInteractive): tira o gtag.js do
-          caminho crítico de hidratação — no Lighthouse mobile do Casos
-          Esquecidos isso custava ~393ms de bootup-time dentro do TBT.
-          GA4 não precisa competir com a página ficando interativa;
-          o fix de `pronto` acima garante que o pageview inicial não se
-          perde só porque o script demora mais pra carregar agora. */}
+      {/* strategy lazyOnload é redundante aqui (o carregarAgora já
+          atrasa o mount inteiro até interação/4s) mas mantido como
+          segunda camada de segurança — nunca custa nada no caminho
+          crítico de qualquer jeito. */}
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="lazyOnload"

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
+import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getSiteEspecial, getAllContos, getRecentContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
@@ -96,7 +97,7 @@ export default async function LivrosDeTerrorGratisPage() {
       <Header base={base} />
       <main>
 
-      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <SectionBg as="div" className="story-header" src="/assets/casos-esquecidos/bg/contos-grave.webp" priority>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
             <Link href={base || '/'}>Início</Link> <span>›</span> <strong>Livros de terror grátis</strong>
@@ -105,7 +106,7 @@ export default async function LivrosDeTerrorGratisPage() {
           <h1>Livros de terror para ler grátis</h1>
           <p className="byline">Histórias completas, sem cadastro, sem PDF, sem pegadinha. É só abrir e ler.</p>
         </div>
-      </div>
+      </SectionBg>
 
       <section>
         <div className="container">
@@ -156,7 +157,7 @@ export default async function LivrosDeTerrorGratisPage() {
         </div>
       </section>
 
-      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <SectionBg id="livro" src="/assets/casos-esquecidos/bg/livro-desk.webp">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">E o livro?</span>
@@ -175,7 +176,7 @@ export default async function LivrosDeTerrorGratisPage() {
             </div>
           </div>
         </div>
-      </section>
+      </SectionBg>
 
       </main>
       <Footer base={base} />

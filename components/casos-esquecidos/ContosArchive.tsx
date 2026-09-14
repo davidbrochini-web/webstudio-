@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
+import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getAllContos, getCasosAgendados } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
@@ -169,7 +170,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
         </section>
       )}
 
-      <section style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.webp')", backgroundSize: 'cover', backgroundPosition: 'center', padding: '3rem 0' }} className="section-bg">
+      <SectionBg src="/assets/casos-esquecidos/bg/apoio-door.webp" style={{ padding: '3rem 0' }}>
         <div className="container">
           <div className="support-block">
             <div>
@@ -186,7 +187,7 @@ export default async function ContosArchive({ siteId, pagina, base }: { siteId: 
             </div>
           </div>
         </div>
-      </section>
+      </SectionBg>
 
       </main>
       <Footer base={base} />

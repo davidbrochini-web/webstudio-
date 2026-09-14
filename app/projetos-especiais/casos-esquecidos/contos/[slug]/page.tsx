@@ -6,6 +6,7 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, htmlToText, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -144,7 +145,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
       <Header base={base} />
       <main>
 
-      <div className="story-header section-bg" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <SectionBg as="div" className="story-header" src="/assets/casos-esquecidos/bg/livro-desk.webp" priority>
         <div className="container">
           <nav className="breadcrumbs" aria-label="Você está aqui">
             <Link href={base || '/'}>Início</Link> <span>›</span> <Link href={`${base}/contos`}>Contos</Link> <span>›</span> <strong>{conto.titulo}</strong>
@@ -163,7 +164,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
         </div>
-      </div>
+      </SectionBg>
 
       {banner && (
         <Image

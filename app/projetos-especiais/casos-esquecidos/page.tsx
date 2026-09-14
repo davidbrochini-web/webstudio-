@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
+import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
 
 
@@ -117,7 +118,7 @@ export default async function Home() {
       <Header base={base} />
       <main>
 
-      <section id="contos" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/contos-grave.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <SectionBg id="contos" src="/assets/casos-esquecidos/bg/contos-grave.webp" priority>
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Arquivo de Casos — Grátis para ler</span>
@@ -142,7 +143,7 @@ export default async function Home() {
             <Link className="btn btn-ghost" href={`${base}/contos`}>Ver todos os casos →</Link>
           </div>
         </div>
-      </section>
+      </SectionBg>
 
       <section className="hero">
         <div className="container">
@@ -160,7 +161,11 @@ export default async function Home() {
           </div>
           <div className="hero-covers">
             <div className="hero-cover-main">
-              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch." width={1024} height={1536} sizes="(max-width: 480px) 200px, (max-width: 880px) 260px, 290px" priority />
+              {/* sem `priority`: esta seção (.hero) vem DEPOIS do
+                  #contos (que já tem o H1 + primeiro card com
+                  priority) — não é mais a primeira coisa visível,
+                  então não precisa de preload de alta prioridade. */}
+              <Image src="/assets/casos-esquecidos/capa.jpg" alt="Capa do livro Alguns Casos Devem Ficar Esquecidos, de D. Broch." width={1024} height={1536} sizes="(max-width: 480px) 200px, (max-width: 880px) 260px, 290px" />
             </div>
             <div className="hero-cover-back">
               <Image src="/assets/casos-esquecidos/capa-livro-2.jpg" alt="Capa do segundo livro de D. Broch — em andamento" width={800} height={1200} sizes="(max-width: 480px) 170px, (max-width: 880px) 220px, 240px" />
@@ -170,7 +175,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="livro" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/livro-desk.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <SectionBg id="livro" src="/assets/casos-esquecidos/bg/livro-desk.webp">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">O Universo em Livro</span>
@@ -218,9 +223,9 @@ export default async function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </SectionBg>
 
-      <section id="universo" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/universo-cult.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg lore">
+      <SectionBg id="universo" src="/assets/casos-esquecidos/bg/universo-cult.webp" className="lore">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">O Universo</span>
@@ -230,7 +235,7 @@ export default async function Home() {
           <p>Elas não têm forma fixa. Podem ser um corredor de hotel, uma parede amarela desbotada, um restaurante de beira de estrada que ninguém lembra de ter visto antes. Alguns que passaram por lá tentaram descrever. A maioria parou de tentar. Os que não pararam... deixaram de ser bons narradores.</p>
           <p>Existem aqueles que caçam o que vive nessas frestas. Existem aqueles que são caçados. E existem os que nunca tiveram escolha — que foram tocados por esse mundo antes mesmo de saber que ele existia, e agora carregam isso como cicatriz, como bússola, como maldição.</p>
         </div>
-      </section>
+      </SectionBg>
 
       <section id="faq">
         <div className="container">
@@ -267,7 +272,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="apoio" style={{ backgroundImage: "url('/assets/casos-esquecidos/bg/apoio-door.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }} className="section-bg">
+      <SectionBg id="apoio" src="/assets/casos-esquecidos/bg/apoio-door.webp">
         <div className="container">
           <div className="section-head">
             <span className="eyebrow">Apoie o trabalho</span>
@@ -286,7 +291,7 @@ export default async function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </SectionBg>
 
       </main>
       <Footer base={base} />

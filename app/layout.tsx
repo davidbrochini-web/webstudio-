@@ -14,9 +14,21 @@ import { DOMAIN_MAP } from '@/lib/domain-map'
 // `.ce-site`, ver ce-styles.css). next/font faz self-host em build time
 // (sem round-trip pro Google em runtime) e injeta como CSS var — mesmo
 // resultado visual pra Omnidesign/Dentista João, zero bloqueio a mais.
-const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-inter', display: 'swap' })
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk', display: 'swap' })
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains-mono', display: 'swap' })
+// preload:false nos três: são a tipografia do site institucional (raiz)
+// e do admin, mas o next/font por padrão injeta um <link rel="preload">
+// de alta prioridade em TODA página do monorepo, mesmo em rotas que
+// nunca renderizam texto nessas fontes (ex: Casos Esquecidos usa
+// Cinzel/Garamond isolados, tem SEU PRÓPRIO next/font — as 3 fontes
+// daqui nunca aparecem visualmente lá). Medido em produção: essas 3
+// fontes eram ~148KB de download de alta prioridade desperdiçado em
+// TODA página do Casos Esquecidos. preload:false não muda qual fonte
+// renderiza em lugar nenhum — só para de forçar o download antecipado
+// em páginas que não usam. Onde a fonte É usada (Omnidesign, admin),
+// o navegador busca normalmente ao encontrar o texto — comportamento
+// padrão, sem regressão visual.
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-inter', display: 'swap', preload: false })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-space-grotesk', display: 'swap', preload: false })
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains-mono', display: 'swap', preload: false })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://omnidesign.com.br'),
