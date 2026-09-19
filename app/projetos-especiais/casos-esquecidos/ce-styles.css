@@ -10,9 +10,20 @@
   --gold-dim:     #8f7c54;
   --blood:        #9c2b2b;
   --blood-bright: #c43a3a;
+  /* Variante só pra texto pequeno sobre --bg/--bg-panel (nº do caso
+     nos cards): --blood-bright tem só 3,57-3,78:1 de contraste aí,
+     reprova AA (4,5:1). Mesma matiz, mais claro — não toquei em
+     --blood-bright porque ele também é cor de hover de link/botão,
+     onde o contraste é outra conta (texto sobre o botão, não isso
+     aqui sobre o fundo) e mudar ali era risco visual desnecessário. */
+  --blood-accessible: #cf5c5c;
   --paper:        #e8dfc8;
   --paper-dim:    #b7ad94;
-  --muted:        #6f6858;
+  /* Original #6f6858 tinha 3,38-3,58:1 contra --bg/--bg-panel — usado
+     em breadcrumbs, rodapé, meta dos cards, tag "selado": reprovava
+     AA (4,5:1) em TODOS esses lugares, não só onde o Lighthouse
+     amostrou. Mesma matiz, mais claro, agora passa nos dois fundos. */
+  --muted:        #857d6a;
   --measure:      64rem;
   --font-display: var(--font-cinzel), "Times New Roman", serif;
   --font-body:    var(--font-garamond), Georgia, serif;
@@ -109,7 +120,7 @@ section { padding: 2.75rem 0; }
 .ce-site .case-card { position: relative; background: var(--bg-panel); border: 1px solid var(--line); padding: 1.75rem; display: flex; flex-direction: column; gap: 0.9rem; transition: border-color 0.15s ease, transform 0.15s ease; }
 .ce-site .case-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
 .ce-site .case-card.locked { opacity: 0.55; }
-.ce-site .case-card .case-number { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--blood-bright); }
+.ce-site .case-card .case-number { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; color: var(--blood-accessible); }
 .ce-site .case-card h2 { font-size: 1.35rem; line-height: 1.25; }
 .ce-site .case-card .case-excerpt { color: var(--paper-dim); font-size: 0.98rem; }
 .ce-site .case-card .case-meta { margin-top: auto; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -119,7 +130,7 @@ section { padding: 2.75rem 0; }
 .ce-site .case-card:hover .case-card-img { filter: brightness(1); }
 .ce-site /* Story reading */
 .story-header { padding-top: 3.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--line); }
-.ce-site .story-header .case-number { font-family: var(--font-mono); color: var(--blood-bright); font-size: 0.8rem; letter-spacing: 0.1em; }
+.ce-site .story-header .case-number { font-family: var(--font-mono); color: var(--blood-accessible); font-size: 0.8rem; letter-spacing: 0.1em; }
 .ce-site .story-header h1 { margin-top: 0.75rem; font-size: clamp(2rem, 4.5vw, 2.9rem); max-width: 22ch; }
 .ce-site .story-header .byline { margin-top: 1rem; color: var(--paper-dim); font-family: var(--font-mono); font-size: 0.82rem; }
 .ce-site .story-banner { width: 100%; height: auto; max-height: 420px; object-fit: cover; object-position: center 30%; display: block; border-bottom: 1px solid var(--line); }
