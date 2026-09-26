@@ -148,15 +148,15 @@ export default function GoogleAnalytics() {
           atrasa o mount inteiro até interação/4s) mas mantido como
           segunda camada de segurança — nunca custa nada no caminho
           crítico de qualquer jeito. */}
+      {/* A fila (dataLayer + js + config GA4/Ads) já foi montada no
+          useEffect acima. `pronto` vem do onLoad da PRÓPRIA biblioteca
+          (script externo, onLoad confiável) — um script inline só pra
+          sinalizar isso não disparava onLoad e o page_view nunca saía. */}
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="lazyOnload"
+        onLoad={() => setPronto(true)}
       />
-      {/* A fila (dataLayer + js + config GA4/Ads) já foi montada no
-          useEffect acima; aqui só marca "pronto" pro pageview inicial. */}
-      <Script id="ga4-init" strategy="lazyOnload" onLoad={() => setPronto(true)}>
-        {`void 0;`}
-      </Script>
       <PageViewTracker pronto={pronto} />
     </>
   )
