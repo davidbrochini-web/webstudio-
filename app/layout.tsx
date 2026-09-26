@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from 'next'
 import { Suspense } from 'react'
-import { headers } from 'next/headers'
 import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeScript } from '@/components/layout/ThemeScript'
 import GoogleAnalytics from '@/components/layout/GoogleAnalytics'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
-import { DOMAIN_MAP } from '@/lib/domain-map'
 
 // Antes: @import do Google Fonts em globals.css — render-blocking (761ms
 // medidos no Lighthouse) em TODO domínio da plataforma, incluindo os que
@@ -83,18 +81,10 @@ export const viewport: Viewport = {
   themeColor: '#060606',
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // WhatsAppFloat exclui rotas /projetos-especiais via usePathname() —
-  // mas isso só funciona no domínio .vercel.app, onde o path REAL
-  // contém esse prefixo. Em domínio customizado (drjoaovictorpimenta.
-  // com.br, casosesquecidos.com.br etc.) o proxy.ts reescreve o path
-  // internamente e o visitante/usePathname() nunca vê "/projetos-
-  // especiais" — a exclusão por path silenciosamente falhava, e o
-  // botão flutuante da PRÓPRIA Omnidesign (número da agência) aparecia
-  // no site do cliente. Fix: checar pelo HOST aqui no server (onde dá
-  // pra ler o header de verdade, sem depender do path reescrito).
-  const host = (await headers()).get('host')?.split(':')[0] ?? ''
-  const dominioDeProjetoEspecial = host in DOMAIN_MAP
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // O WhatsApp da Omnidesign é ocultado nos domínios de Projeto Especial
+  // pelo próprio WhatsAppFloat, no cliente — ver comentário lá. Não ler
+  // headers() aqui: isso tornava dinâmica TODA rota da plataforma.
 
   return (
     <html lang="pt-BR" className={`scroll-smooth ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
@@ -103,7 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="antialiased">
         {children}
-        <WhatsAppFloat ocultarPorDominio={dominioDeProjetoEspecial} />
+        <WhatsAppFloat />
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>

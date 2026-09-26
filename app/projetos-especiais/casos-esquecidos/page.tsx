@@ -8,7 +8,7 @@ import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
 
 // title.absolute quebra a herança do template do layout raiz da
 // plataforma (%s | Omnidesign) — sem isso, como a home não define

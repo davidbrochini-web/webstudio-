@@ -2,8 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { createPublicClient } from '@/lib/supabase/public'
 import { unstable_cache } from 'next/cache'
 import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
-import { DOMAIN_MAP } from '@/lib/domain-map'
 import {
   SITE_SLUG,
   SITE_URL_BASE,
@@ -33,7 +31,6 @@ export { SITE_SLUG, SITE_URL_BASE, imagemAbsoluta, slugify, markdownToHtml, html
 export type { Conto }
 
 // Path interno onde as páginas realmente moram no Next.js.
-const INTERNAL_PATH = '/projetos-especiais/casos-esquecidos'
 
 // Tag única de cache pra todo o conteúdo público (contos + agendados)
 // deste site. `atualizarConto`/`criarConto`/`cores/actions.ts` chamam
@@ -46,18 +43,18 @@ export const CACHE_TAG_CONTOS = 'casos-esquecidos-contos'
 
 /**
  * Path a usar em TODO link interno do site (nav, footer, cards, etc).
- * No domínio próprio, retorna '' — link fica limpo, ex: `${base}/contos`
- * vira `/contos`, sem vazar `/projetos-especiais/casos-esquecidos` pra
- * URL que o visitante vê, pro Google indexar, ou pro sitemap. No domínio
- * de fallback (*.vercel.app, sem o rewrite do proxy.ts), retorna o path
- * interno completo, senão os links quebrariam lá.
- * Mesmo padrão de lib/dentista-joao.ts getBasePath().
+ * Sempre '' desde 26/09/2026: o site só é servido no domínio próprio
+ * (casosesquecidos.com.br). Qualquer acesso ao path interno
+ * (/projetos-especiais/casos-esquecidos/...) em qualquer host recebe 308
+ * pro domínio oficial no proxy.ts — então link sem prefixo é sempre certo.
+ *
+ * Antes lia headers() pra decidir entre '' e o path interno, e isso
+ * tornava TODA página pública do site dinâmica (cache-control: no-store,
+ * sem CDN, TTFB 200-540ms, sem back/forward cache). Mantida async pra
+ * não mexer nas chamadas existentes.
  */
 export async function getBasePath(): Promise<string> {
-  const h = await headers()
-  const host = h.get('host')?.replace(/:\d+$/, '') ?? ''
-  const isCustomDomain = Boolean(DOMAIN_MAP[host])
-  return isCustomDomain ? '' : INTERNAL_PATH
+  return ''
 }
 
 export interface SiteEspecial {
@@ -83,8 +80,9 @@ const buscarSiteEspecialSemCache = async (): Promise<SiteEspecial | null> => {
 
 // Cache de 1h — antes desta mudança, TODA página do Casos Esquecidos
 // disparava essa query (e mais 2-5 outras) do zero a cada request,
-// porque getBasePath() (abaixo) chama headers() e isso força a rota
-// inteira a renderizar como dynamic, anulando o `revalidate = 3600`
+// porque getBasePath() chamava headers() e isso forçava a rota
+// inteira a renderizar como dynamic (corrigido 26/09/2026 — agora as
+// páginas são ISR de verdade), anulando o `revalidate = 3600`
 // declarado em cada page.tsx (ISR nunca rodou de verdade nesse
 // projeto). unstable_cache cacheia o RESULTADO da query mesmo em rota
 // dynamic — é isso que derruba o TTFB (medido em 1,2-3,5s) pra

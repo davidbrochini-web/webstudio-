@@ -9,7 +9,7 @@ import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, g
 import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
 
 export async function generateStaticParams() {
   // Defensivo: se as env vars do Supabase não estiverem disponíveis no

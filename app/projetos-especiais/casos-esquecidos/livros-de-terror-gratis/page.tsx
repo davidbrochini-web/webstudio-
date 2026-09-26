@@ -8,7 +8,7 @@ import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getSiteEspecial, getAllContos, getRecentContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
 
 // Página-hub pra intenção de busca "livros de terror para ler grátis"
 // (keyword que já traz tráfego orgânico pra home segundo o Search

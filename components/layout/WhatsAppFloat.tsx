@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { DOMAIN_MAP } from '@/lib/domain-map'
 
 const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXXXXXX'}`
 
@@ -10,9 +12,19 @@ const WA_LINK = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '55XXXXXXX
 // misturar com o da Omnidesign aqui).
 const ROTAS_EXCLUIDAS = ['/admin', '/app', '/login', '/primeiro-acesso', '/projetos-especiais', '/sandbox']
 
-export default function WhatsAppFloat({ ocultarPorDominio }: { ocultarPorDominio?: boolean }) {
+// Domínio de Projeto Especial (casosesquecidos.com.br, drjoaovictorpimenta
+// .com.br...) nunca mostra o WhatsApp da Omnidesign. Antes isso era
+// decidido no app/layout.tsx lendo headers() — o que tornava DINÂMICA
+// toda rota da plataforma (sem cache de CDN, cache-control: no-store).
+// Agora a decisão é do navegador: não renderiza nada até montar, lê o
+// hostname real e só então decide. Sem flash do botão errado no site do
+// cliente (começa oculto) e sem prender o layout raiz a headers().
+export default function WhatsAppFloat() {
   const pathname = usePathname()
-  if (ocultarPorDominio) return null
+  const [host, setHost] = useState<string | null>(null)
+  useEffect(() => { setHost(window.location.hostname) }, [])
+  if (host === null) return null
+  if (host in DOMAIN_MAP) return null
   if (ROTAS_EXCLUIDAS.some(rota => pathname.startsWith(rota))) return null
 
   return (

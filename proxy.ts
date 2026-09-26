@@ -33,6 +33,19 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const host = request.headers.get('host')?.replace(/:\d+$/, '') ?? ''
 
+  // ── Casos Esquecidos: path interno nunca é servido direto ─────────
+  // O site só existe em casosesquecidos.com.br (links sem prefixo, ver
+  // lib/casos-esquecidos.ts getBasePath). Acesso ao path interno por
+  // qualquer host (*.vercel.app, omnidesign.com.br/projetos-especiais/...,
+  // ou o próprio domínio com o prefixo) → 308 pro endereço canônico.
+  // Arquivos com extensão (icon.svg, feed.xml...) ficam de fora: são
+  // servidos pelo path interno de propósito.
+  const CASOS_INTERNO = '/projetos-especiais/casos-esquecidos'
+  if ((pathname === CASOS_INTERNO || pathname.startsWith(`${CASOS_INTERNO}/`)) && !pathname.includes('.')) {
+    const resto = pathname.slice(CASOS_INTERNO.length) || '/'
+    return NextResponse.redirect(`https://casosesquecidos.com.br${resto}${search}`, 308)
+  }
+
   // ── Domínio customizado: rewrite pra dentro do projeto especial ──
   const basePath = DOMAIN_MAP[host]
   const ehLoginSemDono = pathname === '/login' && basePath && SEM_LOGIN_PROPRIO.has(basePath)

@@ -3,7 +3,14 @@ import ContosArchive from '@/components/casos-esquecidos/ContosArchive'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
+
+// Lista vazia de propósito: sem generateStaticParams o Next trata a rota
+// como dinâmica (sem cache de CDN). Com ela vazia, cada página é
+// renderizada no 1º acesso e fica em cache ISR pelo `revalidate` acima.
+export async function generateStaticParams() {
+  return []
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ n: string }> }): Promise<Metadata> {
   const { n } = await params

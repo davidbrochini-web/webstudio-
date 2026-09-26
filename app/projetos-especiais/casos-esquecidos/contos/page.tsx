@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import ContosArchive from '@/components/casos-esquecidos/ContosArchive'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
 
 export const metadata: Metadata = {
   title: 'Contos de Terror Grátis Toda Semana', // ≤60 c/ template ' | Casos Esquecidos'

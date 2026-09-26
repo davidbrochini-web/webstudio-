@@ -7,7 +7,7 @@ import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import { getSiteEspecial, getContosByTema, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { getTema, getAllTemas } from '@/lib/temas-casos-esquecidos'
 
-export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
+export const revalidate = 300 // ISR — CDN serve pronto; republica a cada 5 min (conto agendado aparece no máx. 5 min após a hora)
 
 export async function generateStaticParams() {
   return getAllTemas().map(t => ({ tema: t.slug }))

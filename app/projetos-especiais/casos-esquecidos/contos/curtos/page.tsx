@@ -5,7 +5,7 @@ import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import { getSiteEspecial, getAllContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
-export const revalidate = 3600
+export const revalidate = 300
 
 const LIMITE_MINUTOS = 8
 
