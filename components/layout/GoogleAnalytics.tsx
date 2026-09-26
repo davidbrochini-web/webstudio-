@@ -37,6 +37,18 @@ const GA_POR_HOST: Record<string, string | undefined> = {
   'www.casosesquecidos.com.br': process.env.NEXT_PUBLIC_GA_ID_CASOS_ESQUECIDOS,
 }
 
+/**
+ * Google Ads (tag de conversão) por domínio. Antes o PageShell do
+ * dentista-joao carregava um SEGUNDO gtag.js (afterInteractive, no
+ * caminho crítico) só pro AW — 2 bibliotecas gtag + ~670ms de CPU no
+ * mobile. Agora é UMA biblioteca, com os dois `config` (GA4 + AW) na
+ * mesma fila. Domínio sem entrada aqui simplesmente não configura Ads.
+ */
+const ADS_POR_HOST: Record<string, string | undefined> = {
+  'drjoaovictorpimenta.com.br': 'AW-11027488126',
+  'www.drjoaovictorpimenta.com.br': 'AW-11027488126',
+}
+
 // Confere que todo domínio de projeto especial conhecido (DOMAIN_MAP)
 // tem uma chave correspondente aqui — só um lembrete em dev, não
 // bloqueia nada em produção.
@@ -92,8 +104,28 @@ export default function GoogleAnalytics() {
   const [carregarAgora, setCarregarAgora] = useState(false)
 
   useEffect(() => {
-    const id = GA_POR_HOST[window.location.hostname]
-    if (id) setGaId(id)
+    const host = window.location.hostname
+    const id = GA_POR_HOST[host]
+    if (!id) return
+    // Fila do gtag criada JÁ no mount (custo zero: sem rede, sem CPU).
+    // Só a biblioteca (gtag.js) é que espera interação/4s. Isso garante
+    // que uma conversão disparada no primeiro clique (ex: WhatsApp,
+    // antes da biblioteca terminar de baixar) entra na fila DEPOIS dos
+    // `config` e é enviada normalmente quando o gtag.js processar a fila
+    // — nada se perde por causa do carregamento adiado.
+    window.dataLayer = window.dataLayer || []
+    if (typeof window.gtag !== 'function') {
+      window.gtag = function gtag() {
+        // gtag exige o objeto `arguments` original (não um array)
+        // eslint-disable-next-line prefer-rest-params
+        window.dataLayer.push(arguments)
+      }
+    }
+    window.gtag('js', new Date())
+    window.gtag('config', id, { send_page_view: false })
+    const ads = ADS_POR_HOST[host]
+    if (ads) window.gtag('config', ads)
+    setGaId(id)
   }, [])
 
   useEffect(() => {
@@ -120,13 +152,10 @@ export default function GoogleAnalytics() {
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="lazyOnload"
       />
+      {/* A fila (dataLayer + js + config GA4/Ads) já foi montada no
+          useEffect acima; aqui só marca "pronto" pro pageview inicial. */}
       <Script id="ga4-init" strategy="lazyOnload" onLoad={() => setPronto(true)}>
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${gaId}', { send_page_view: false });
-        `}
+        {`void 0;`}
       </Script>
       <PageViewTracker pronto={pronto} />
     </>

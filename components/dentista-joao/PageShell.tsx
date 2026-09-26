@@ -1,10 +1,8 @@
-import Script from 'next/script'
 import SiteNav from '@/components/dentista-joao/SiteNav'
 import SiteFooter from '@/components/dentista-joao/SiteFooter'
 import WhatsAppFloat from '@/components/dentista-joao/WhatsAppFloat'
 import type { SiteEspecial } from '@/lib/dentista-joao'
 import { getBasePath } from '@/lib/dentista-joao'
-import { GADS_TAG_ID } from '@/lib/dentista-joao-gtag'
 
 export default async function PageShell({ site, children }: { site: SiteEspecial; children: React.ReactNode }) {
   const base = await getBasePath()
@@ -22,14 +20,9 @@ export default async function PageShell({ site, children }: { site: SiteEspecial
       <main>{children}</main>
       <SiteFooter site={site} base={base} />
       <WhatsAppFloat whatsapp={site.whatsapp} />
-      {/* Google Ads — tag base pra rastreamento de conversão (agendamento + WhatsApp) */}
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GADS_TAG_ID}`} strategy="afterInteractive" />
-      <Script id="gads-base" strategy="afterInteractive">{`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${GADS_TAG_ID}');
-      `}</Script>
+      {/* Google Ads: a tag base (config AW) é carregada pelo componente
+          único components/layout/GoogleAnalytics.tsx (ADS_POR_HOST), junto
+          com o GA4 numa só biblioteca gtag.js — não duplicar aqui. */}
     </div>
   )
 }

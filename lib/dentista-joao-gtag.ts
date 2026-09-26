@@ -1,5 +1,5 @@
 // Rastreamento de conversão do Google Ads — site Dr. João Victor Pimenta.
-// Tag base carregada no PageShell; eventos disparados nos pontos de conversão:
+// Tag base: config AW feito em components/layout/GoogleAnalytics.tsx (ADS_POR_HOST); eventos disparados nos pontos de conversão:
 // - Envio do formulário de agendamento (AgendamentoForm)
 // - Clique no botão flutuante de WhatsApp (WhatsAppFloat)
 
@@ -11,6 +11,10 @@ type GtagFn = (...args: unknown[]) => void
 
 export function reportConversion(sendTo: string) {
   if (typeof window === 'undefined') return
+  // O gtag (fila) é criado no mount do GoogleAnalytics, antes de
+  // qualquer interação possível — então existe mesmo que a biblioteca
+  // gtag.js ainda esteja baixando; o evento fica na fila e é enviado
+  // quando ela carregar.
   const gtag = (window as unknown as { gtag?: GtagFn }).gtag
   if (typeof gtag === 'function') {
     gtag('event', 'conversion', { send_to: sendTo })
