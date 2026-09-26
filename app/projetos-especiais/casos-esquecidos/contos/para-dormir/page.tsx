@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getAllContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getAllContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 export const revalidate = 3600
 
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL_BASE}/contos/para-dormir` },
   robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
   openGraph: {
+    ...ogBase('/contos/para-dormir'),
     title: 'Contos de Terror para Ler Antes de Dormir — Casos Esquecidos',
     description: 'Histórias curtas e atmosféricas, prontas pra ler no escuro antes de apagar a luz.',
     url: `${SITE_URL_BASE}/contos/para-dormir`,

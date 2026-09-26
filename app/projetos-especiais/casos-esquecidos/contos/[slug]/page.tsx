@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, htmlToText, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContoBySlug, getAllContos, getContosRelacionados, getContoAdjacente, imagemAbsoluta, htmlToText, SITE_URL_BASE, getBasePath, ogBase, metaDescricao, dataModificacao } from '@/lib/casos-esquecidos'
 import SectionBg from '@/components/casos-esquecidos/SectionBg'
 import { getTema } from '@/lib/temas-casos-esquecidos'
 
@@ -33,9 +33,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const ogImage = imagemAbsoluta(conto.imagem_url)
   return {
     title: `${conto.titulo} — Caso Nº ${String(conto.numero).padStart(3, '0')}`,
-    description: conto.resumo,
+    description: metaDescricao(conto.resumo),
     robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
     openGraph: {
+      ...ogBase(`/contos/${conto.slug}`),
       title: `${conto.titulo} — Conto de Terror por D. Broch`,
       description: conto.resumo,
       images: ogImage
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         : [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630 }],
       type: 'article',
       publishedTime: conto.data_publicacao || conto.created_at,
-      modifiedTime: conto.updated_at || conto.data_publicacao || conto.created_at,
+      modifiedTime: dataModificacao(conto),
     },
     twitter: {
       card: 'summary_large_image',
@@ -110,7 +111,7 @@ export default async function ContoPage({ params }: { params: Promise<{ slug: st
     isAccessibleForFree: true,
     isFamilyFriendly: false,
     datePublished: dataPubIso,
-    dateModified: conto.updated_at || dataPubIso,
+    dateModified: dataModificacao(conto),
     wordCount,
     timeRequired: `PT${minutosLeitura}M`,
     position: conto.numero,

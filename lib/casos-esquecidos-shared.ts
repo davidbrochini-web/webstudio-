@@ -80,3 +80,40 @@ export function estimarTempoLeitura(html: string): string {
   const minutos = Math.max(1, Math.round(palavras / 200))
   return `Leitura ~${minutos} min`
 }
+
+// ── SEO helpers (26/09/2026) ────────────────────────────────────────
+// Metadata do Next faz merge RASO: quando a página declara `openGraph`,
+// o objeto do layout (siteName/locale/type) é descartado inteiro. Toda
+// página pública espalha `ogBase(path)` no próprio openGraph pra não
+// perder og:url/og:site_name/og:locale.
+export function ogBase(path = '') {
+  return {
+    siteName: 'Casos Esquecidos',
+    locale: 'pt_BR',
+    url: `${SITE_URL_BASE}${path}`,
+  }
+}
+
+// Meta description: o Google corta em ~155-160 caracteres. O resumo do
+// conto é escrito pro card (costuma ter 180-230), então a <meta
+// description> leva uma versão cortada em fronteira de palavra. OG e
+// Twitter continuam com o texto completo (WhatsApp/Facebook mostram mais).
+export function metaDescricao(texto: string, max = 155): string {
+  const limpo = texto.replace(/\s+/g, ' ').trim()
+  if (limpo.length <= max) return limpo
+  const corte = limpo.slice(0, max - 1)
+  // Prefere a pausa natural da frase (travessão, vírgula, ponto) se ela
+  // cair depois de 60% do limite; senão, corta na última palavra.
+  const pausa = Math.max(corte.lastIndexOf(' — '), corte.lastIndexOf(', '), corte.lastIndexOf('. '))
+  const fim = pausa > max * 0.6 ? pausa : corte.lastIndexOf(' ')
+  return corte.slice(0, fim > 0 ? fim : corte.length).replace(/[\s,;:—–-]+$/, '') + '…'
+}
+
+// Contos agendados são gravados dias antes de publicar, então updated_at
+// fica ANTERIOR a data_publicacao — e dateModified < datePublished é
+// sinal de dado inconsistente pro Google. A data de modificação pública
+// é sempre a mais recente entre as duas.
+export function dataModificacao(c: { updated_at?: string | null; data_publicacao?: string | null; created_at: string }): string {
+  const candidatas = [c.updated_at, c.data_publicacao, c.created_at].filter(Boolean) as string[]
+  return candidatas.reduce((a, b) => (new Date(b).getTime() > new Date(a).getTime() ? b : a))
+}

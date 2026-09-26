@@ -3,13 +3,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
-import { SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 export const metadata: Metadata = {
   title: 'Sobre D. Broch — Autor de Terror',
-  description: 'D. Broch é autor brasileiro de terror psicológico e investigação paranormal. Criador do universo Alguns Casos Devem Ficar Esquecidos e dos contos de terror publicados semanalmente neste site.',
+  description: 'D. Broch é autor brasileiro de terror psicológico e investigação paranormal, criador do universo Alguns Casos Devem Ficar Esquecidos e dos contos deste site.',
   alternates: { canonical: `${SITE_URL_BASE}/sobre` },
   openGraph: {
+    ...ogBase('/sobre'), type: 'website',
     title: 'Sobre D. Broch — Autor de Terror',
     description: 'Autor brasileiro de terror psicológico e investigação paranormal.',
     images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: 'Casos Esquecidos — D. Broch' }],

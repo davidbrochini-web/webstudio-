@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { getSiteEspecial, getAllContos, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getAllContos, SITE_URL_BASE, dataModificacao } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -14,8 +14,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // realmente muda nelas, e dá ao Google um motivo concreto pra
   // recrawlear a home/arquivo quando sai caso novo.
   const maisRecente = contos.reduce<string | undefined>((acc, c) => {
-    const d = c.updated_at || c.data_publicacao || c.created_at
-    return !acc || d > acc ? d : acc
+    const d = dataModificacao(c)
+    return !acc || new Date(d) > new Date(acc) ? d : acc
   }, undefined)
 
   const estaticas: MetadataRoute.Sitemap = [
@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const dinamicas: MetadataRoute.Sitemap = contos.map(c => ({
     url: `${SITE_URL_BASE}/contos/${c.slug}`,
-    lastModified: c.updated_at || c.data_publicacao || c.created_at,
+    lastModified: dataModificacao(c),
     priority: 0.7,
   }))
 

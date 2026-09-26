@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(SITE_URL_BASE),
     title: { default: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch', template: '%s | Casos Esquecidos' },
-    description: 'Contos e livros de terror para ler grátis, publicados toda semana por D. Broch — terror psicológico, lendas urbanas e investigação paranormal. Sem cadastro, sem PDF.',
+    description: 'Contos e livros de terror para ler grátis, publicados toda semana por D. Broch: terror psicológico, lendas urbanas e investigação paranormal. Sem cadastro.',
     keywords: [
       'contos de terror', 'histórias de terror', 'terror psicológico', 'contos de terror grátis',
       'livros de terror para ler grátis', 'livro de terror grátis online', 'histórias de terror para ler',
@@ -29,14 +29,16 @@ export async function generateMetadata(): Promise<Metadata> {
       types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },
     },
     openGraph: {
+      url: SITE_URL_BASE,
       siteName: 'Casos Esquecidos',
       locale: 'pt_BR',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Casos Esquecidos — Contos e Livros de Terror | D. Broch',
-      description: 'Contos de terror gratuitos toda semana. Terror psicológico e investigação paranormal por D. Broch.',
+      // Sem title/description aqui de propósito: o merge de metadata é raso,
+      // e páginas que não redeclaram `twitter` herdavam este título genérico.
+      // Sem eles, o X/Twitter cai no og:title/og:description de cada página.
       images: [`${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`],
     },
   }

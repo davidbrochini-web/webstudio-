@@ -5,7 +5,7 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import SectionBg from '@/components/casos-esquecidos/SectionBg'
-import { getSiteEspecial, getAllContos, getRecentContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getAllContos, getRecentContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -19,10 +19,11 @@ export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1
 // contos do site, e o texto deixa isso explícito.
 export const metadata: Metadata = {
   title: 'Livros de Terror para Ler Grátis Online', // ≤60 c/ template
-  description: 'Livros e contos de terror para ler grátis, direto no navegador: sem cadastro, sem PDF, sem pegadinha. Histórias completas de D. Broch, com casos novos toda semana.',
+  description: 'Livros e contos de terror para ler grátis no navegador: sem cadastro, sem PDF, sem pegadinha. Histórias completas de D. Broch, com casos novos toda semana.',
   alternates: { canonical: `${SITE_URL_BASE}/livros-de-terror-gratis` },
   robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
   openGraph: {
+    ...ogBase('/livros-de-terror-gratis'),
     title: 'Livros de Terror para Ler Grátis — Casos Esquecidos',
     description: 'Histórias de terror completas pra ler agora, de graça, no navegador. Novos casos toda semana.',
     url: `${SITE_URL_BASE}/livros-de-terror-gratis`,

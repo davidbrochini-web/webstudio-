@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getContosByTema, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getContosByTema, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { getTema, getAllTemas } from '@/lib/temas-casos-esquecidos'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ tema: str
     description: tema.descricao,
     alternates: { canonical: `${SITE_URL_BASE}/contos/tema/${tema.slug}` },
     openGraph: {
+    ...ogBase(`/contos/tema/${tema.slug}`), type: 'website',
       title: tema.nome,
       description: tema.descricao,
       images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: tema.nome }],

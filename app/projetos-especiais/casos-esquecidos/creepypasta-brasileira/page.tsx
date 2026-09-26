@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
-import { getSiteEspecial, getAllContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getAllContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 export const revalidate = 3600
 
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL_BASE}/creepypasta-brasileira` },
   robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
   openGraph: {
+    ...ogBase('/creepypasta-brasileira'),
     title: 'Creepypasta Brasileira — Casos Esquecidos',
     description: 'Terror da internet e lendas urbanas brasileiras, em formato creepypasta. Grátis, sem cadastro.',
     url: `${SITE_URL_BASE}/creepypasta-brasileira`,

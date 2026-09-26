@@ -5,7 +5,7 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import SectionBg from '@/components/casos-esquecidos/SectionBg'
-import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -27,12 +27,13 @@ export const metadata: Metadata = {
   // com "D. Broch" e "e Livros" continua em openGraph/twitter (não
   // sofrem o mesmo limite de truncagem do Google).
   title: { absolute: 'Casos Esquecidos — Contos de Terror para Ler Grátis' },
-  description: 'Contos e livros de terror para ler grátis, direto no navegador, sem cadastro e sem PDF. Histórias novas toda semana por D. Broch — terror psicológico, lendas urbanas e investigação paranormal.',
+  description: 'Contos de terror para ler grátis, direto no navegador, sem cadastro e sem PDF. Histórias novas toda semana por D. Broch: terror psicológico e lendas urbanas.',
   alternates: {
     canonical: SITE_URL_BASE,
     types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },
   },
   openGraph: {
+    ...ogBase(''), type: 'website',
     images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: 'Casos Esquecidos — Contos e Livros de Terror' }],
   },
 }

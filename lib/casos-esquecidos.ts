@@ -12,6 +12,9 @@ import {
   markdownToHtml,
   htmlToText,
   estimarTempoLeitura,
+  ogBase,
+  metaDescricao,
+  dataModificacao,
   type Conto,
 } from '@/lib/casos-esquecidos-shared'
 
@@ -26,7 +29,7 @@ import {
  * lib/casos-esquecidos-shared.ts, pra poderem ser importadas também por
  * client components (ex: ContoForm) sem quebrar o build.
  */
-export { SITE_SLUG, SITE_URL_BASE, imagemAbsoluta, slugify, markdownToHtml, htmlToText, estimarTempoLeitura }
+export { SITE_SLUG, SITE_URL_BASE, imagemAbsoluta, slugify, markdownToHtml, htmlToText, estimarTempoLeitura, ogBase, metaDescricao, dataModificacao }
 export type { Conto }
 
 // Path interno onde as páginas realmente moram no Next.js.

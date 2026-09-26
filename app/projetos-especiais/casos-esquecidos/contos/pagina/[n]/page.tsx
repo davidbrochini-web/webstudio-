@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import ContosArchive from '@/components/casos-esquecidos/ContosArchive'
-import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/casos-esquecidos'
+import { getSiteEspecial, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ n: string
       types: { 'application/rss+xml': `${SITE_URL_BASE}/feed.xml` },
     },
     openGraph: {
+    ...ogBase(`/contos/pagina/${n}`), type: 'website',
       title: `Arquivo de Casos — Página ${n}`,
       description: 'Contos de terror publicados toda semana. Histórias contadas por quem sobreviveu — ou por quem não teve essa sorte.',
       images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: 'Casos Esquecidos — Contos de Terror' }],
