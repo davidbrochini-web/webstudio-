@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export interface CarouselSlide {
   titulo: string
@@ -76,23 +77,29 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
           >
             {s.imagem_url && (
               <>
-                <img
+                {/* Fundo: miniatura minúscula (64px, ~2KB) ampliada + blur-2xl.
+                    Visualmente idêntico ao fundo com a foto cheia (o blur apaga
+                    a resolução), mas não baixa a mesma foto pesada 2x e não
+                    vira o elemento de LCP no lugar da imagem real. */}
+                <Image
                   src={s.imagem_url}
                   alt=""
                   aria-hidden="true"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  className={`absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70 hero-kenburns ${
+                  fill
+                  sizes="64px"
+                  quality={40}
+                  priority={i === 0}
+                  className={`object-cover scale-110 blur-2xl opacity-70 hero-kenburns ${
                     i === index ? 'hero-kenburns-active' : ''
                   }`}
                 />
-                <img
+                <Image
                   src={s.imagem_url}
-                  alt=""
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  {...(i === 0 ? { fetchPriority: 'high' as const } : {})}
-                  className="absolute inset-0 w-full h-full object-contain"
+                  alt={s.titulo}
+                  fill
+                  sizes="100vw"
+                  priority={i === 0}
+                  className="object-contain"
                 />
               </>
             )}
@@ -130,16 +137,23 @@ export default function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
             slide fica só por autoplay, swipe (mobile) e os dots abaixo. */}
         {slides.length > 1 && (
           <>
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+            {/* Área de toque de 24x24 (mínimo WCAG/Lighthouse) com a bolinha
+                visual do mesmo tamanho de antes dentro — nada muda na tela. */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex">
               {slides.map((s, i) => (
                 <button
                   key={s.titulo}
                   onClick={() => go(i, true)}
                   aria-label={`Ir pro slide ${i + 1}`}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    i === index ? 'bg-white w-6' : 'bg-white/40 w-2 hover:bg-white/60'
-                  }`}
-                />
+                  aria-current={i === index}
+                  className="group min-w-6 h-6 px-1 flex items-center justify-center"
+                >
+                  <span
+                    className={`block h-2 rounded-full transition-all duration-500 ${
+                      i === index ? 'bg-white w-6' : 'bg-white/40 w-2 group-hover:bg-white/60'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </>

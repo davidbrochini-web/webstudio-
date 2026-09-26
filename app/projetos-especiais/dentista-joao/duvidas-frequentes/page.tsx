@@ -6,12 +6,16 @@ import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 import Reveal from '@/components/dentista-joao/Reveal'
 import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSiteEspecial()
+  const description = 'Tire suas dúvidas sobre tratamentos, agendamento e cuidados odontológicos.'
   return {
     title: 'Dúvidas Frequentes',
-    description: 'Tire suas dúvidas sobre tratamentos, agendamento e cuidados odontológicos.',
+    description,
     alternates: { canonical: `${SITE_URL_BASE}/duvidas-frequentes` },
+    ...ogPagina(site, { path: '/duvidas-frequentes', titulo: `Dúvidas Frequentes — ${site.business_name}`, descricao: description }),
   }
 }
 

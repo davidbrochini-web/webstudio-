@@ -1,8 +1,10 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 async function getCursoEvento(siteId: string, slug: string) {
   const supabase = await createClient()
@@ -26,7 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: item.meta_titulo ? { absolute: item.meta_titulo } : item.titulo,
     description: item.meta_descricao || item.descricao.slice(0, 160),
     alternates: { canonical: `${SITE_URL_BASE}/cursos-e-eventos/${slug}` },
-    openGraph: item.imagem_og ? { images: [item.imagem_og] } : undefined,
+    ...ogPagina(site, {
+      path: `/cursos-e-eventos/${slug}`,
+      titulo: item.meta_titulo || `${item.titulo} — ${site.business_name}`,
+      descricao: item.meta_descricao || item.descricao.slice(0, 160),
+      imagem: item.imagem_og || item.imagem_url,
+      tipo: 'website',
+    }),
   }
 }
 
@@ -41,7 +49,7 @@ export default async function CursoEventoDetalhePage({ params }: { params: Promi
     <PageShell site={site}>
       <article className="px-6 py-16 max-w-3xl mx-auto">
         {item.imagem_url && (
-          <img src={item.imagem_url} alt={item.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
+          <Image src={item.imagem_url} alt={item.alt_text || item.titulo} width={1200} height={600} sizes="(min-width: 768px) 720px, 100vw" priority className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
         )}
 
         {item.data_evento && (

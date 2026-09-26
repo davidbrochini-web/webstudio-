@@ -6,6 +6,7 @@ import PageBanner from '@/components/dentista-joao/PageBanner'
 import AgendamentoForm from '@/components/dentista-joao/AgendamentoForm'
 import ContatoForm from '@/components/dentista-joao/ContatoForm'
 import { texto } from '@/lib/textos-customizados'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -13,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Contato',
     description: `Entre em contato com a ${site.business_name} ou agende sua consulta direto pelo site.`,
     alternates: { canonical: `${SITE_URL_BASE}/contato` },
+    ...ogPagina(site, { path: '/contato', titulo: `Contato — ${site.business_name}` }),
   }
 }
 

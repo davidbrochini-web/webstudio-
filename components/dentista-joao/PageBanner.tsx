@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 /**
@@ -22,12 +23,15 @@ export default function PageBanner({
   return (
     <section className="relative px-5 sm:px-6 py-16 sm:py-24 text-center overflow-hidden">
       {imageUrl && (
-        <img
+        <Image
           src={imageUrl}
           alt=""
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover blur-sm scale-110"
+          fill
+          aria-hidden="true"
+          sizes="640px"
+          quality={50}
+          priority
+          className="object-cover blur-sm scale-110"
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--dj-secondary)]/85 to-[var(--dj-secondary)]/75" />

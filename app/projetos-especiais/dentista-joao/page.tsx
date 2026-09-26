@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -8,13 +9,17 @@ import HeroCarousel, { type CarouselSlide } from '@/components/dentista-joao/Her
 import Reveal from '@/components/dentista-joao/Reveal'
 import WaveDivider from '@/components/dentista-joao/WaveDivider'
 import FaqAccordion from '@/components/dentista-joao/FaqAccordion'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
   return {
-    title: { absolute: site.business_name },
+    // Nome sozinho no <title> não carrega nenhum termo que o paciente
+    // busca — especialidade + bairro são o que aparece no Google.
+    title: { absolute: `${site.business_name} | Bucomaxilofacial em Tucuruvi, SP` },
     description: site.tagline ?? undefined,
     alternates: { canonical: SITE_URL_BASE },
+    ...ogPagina(site, { path: '', titulo: `${site.business_name} | Bucomaxilofacial em Tucuruvi, SP`, descricao: site.tagline }),
   }
 }
 
@@ -128,7 +133,7 @@ export default async function HomePage() {
       {fotos?.[0] && (
         <section className="px-6 py-16 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <Reveal>
-            <img loading="lazy" decoding="async" src={fotos[0].url} alt="" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[var(--dj-primary)]/20 shadow-lg" />
+            <Image src={fotos[0].url} alt={`Consultório ${site.business_name}`} width={800} height={600} sizes="(min-width: 768px) 480px, 100vw" className="w-full aspect-[4/3] object-cover rounded-2xl border-4 border-[var(--dj-primary)]/20 shadow-lg" />
           </Reveal>
           <Reveal delay={150}>
             <h2 className="font-display font-bold text-2xl text-slate-400 mb-1">Bem-vindo à</h2>
@@ -169,10 +174,12 @@ export default async function HomePage() {
                     >
                       {/* Imagem de fundo */}
                       {t.imagem_url ? (
-                        <img
-                          loading="lazy" decoding="async"
+                        <Image
                           src={t.imagem_url}
                           alt={t.titulo}
+                          width={800}
+                          height={600}
+                          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
                           className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${i === 0 ? 'aspect-[3/2] sm:aspect-[4/3]' : 'aspect-[4/3]'}`}
                         />
                       ) : (
@@ -221,7 +228,7 @@ export default async function HomePage() {
               {depoimentos.map((d, i) => (
                 <Reveal key={`${d.nome}-${i}`} delay={i * 70} className="depoimentos-card flex-shrink-0 sm:flex-shrink sm:block">
                   <div className="h-full bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col">
-                    <div className="flex gap-0.5 mb-3" aria-label={`${d.nota} de 5 estrelas`}>
+                    <div className="flex gap-0.5 mb-3" role="img" aria-label={`${d.nota} de 5 estrelas`}>
                       {[1, 2, 3, 4, 5].map(n => (
                         <span key={n} className={n <= d.nota ? 'text-amber-400' : 'text-slate-200'} aria-hidden="true">★</span>
                       ))}
@@ -229,7 +236,7 @@ export default async function HomePage() {
                     <p className="text-sm text-slate-600 leading-relaxed flex-1">&ldquo;{d.texto}&rdquo;</p>
                     <div className="flex items-center gap-3 mt-5 pt-4 border-t border-slate-100">
                       {d.foto_url ? (
-                        <img loading="lazy" decoding="async" src={d.foto_url} alt={d.alt_text || d.nome}
+                        <Image src={d.foto_url} alt={d.alt_text || d.nome} width={88} height={88} sizes="44px"
                           className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
                       ) : (
                         <div className="w-11 h-11 rounded-full bg-[var(--dj-primary)]/15 text-[var(--dj-primary)] font-display font-bold flex items-center justify-center flex-shrink-0">
@@ -272,7 +279,7 @@ export default async function HomePage() {
               >
                 {c.imagem_url && (
                   <div className="overflow-hidden">
-                    <img loading="lazy" decoding="async" src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Image src={c.imagem_url} alt={c.titulo} width={640} height={480} sizes="(min-width: 640px) 33vw, 80vw" className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
                 )}
                 <div className="p-5">
@@ -320,7 +327,10 @@ export default async function HomePage() {
                 <div className="relative w-full max-w-[280px]">
                   <div className="absolute -top-3 -left-3 w-full h-full rounded-3xl border-2 border-[var(--dj-primary)]/40" />
                   <div className="absolute -bottom-3 -right-3 w-full h-full rounded-3xl bg-[var(--dj-secondary)]/10" />
-                  <img loading="lazy" decoding="async"
+                  <Image
+                    width={560}
+                    height={747}
+                    sizes="280px"
                     src={site.hero_imagem_url}
                     alt={site.business_name}
                     className="relative w-full aspect-[3/4] rounded-3xl object-cover shadow-2xl border-4 border-white"
@@ -357,7 +367,7 @@ export default async function HomePage() {
                 <Link href={`${base}/artigos/${a.slug}`} className="block group">
                   {a.capa_url && (
                     <div className="overflow-hidden rounded-2xl mb-3">
-                      <img loading="lazy" decoding="async" src={a.capa_url} alt="" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <Image src={a.capa_url} alt={a.titulo} width={640} height={400} sizes="(min-width: 640px) 33vw, 100vw" className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                   )}
                   <h3 className="font-display font-bold text-sm text-[var(--dj-secondary)] mb-1 leading-snug group-hover:text-[var(--dj-primary)] transition-colors">{a.titulo}</h3>

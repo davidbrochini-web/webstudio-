@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -6,12 +7,16 @@ import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
 import Reveal from '@/components/dentista-joao/Reveal'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSiteEspecial()
+  const description = 'Conheça os tratamentos odontológicos oferecidos, incluindo cirurgia e traumatologia bucomaxilofacial, implantes e mais.'
   return {
     title: 'Tratamentos',
-    description: 'Conheça os tratamentos odontológicos oferecidos, incluindo cirurgia e traumatologia bucomaxilofacial, implantes e mais.',
+    description,
     alternates: { canonical: `${SITE_URL_BASE}/tratamentos` },
+    ...ogPagina(site, { path: '/tratamentos', titulo: `Tratamentos — ${site.business_name}`, descricao: description }),
   }
 }
 
@@ -63,9 +68,12 @@ export default async function TratamentosPage() {
                   {/* Imagem com hover zoom */}
                   <Reveal delay={0} className="overflow-hidden rounded-2xl shadow-md">
                     {t.imagem_url ? (
-                      <img
+                      <Image
                         src={t.imagem_url}
                         alt={t.alt_text || t.titulo}
+                        width={800}
+                        height={600}
+                        sizes="(min-width: 768px) 480px, 100vw"
                         className="w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-700"
                       />
                     ) : (

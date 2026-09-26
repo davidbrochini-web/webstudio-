@@ -1,8 +1,10 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 async function getPost(siteId: string, slug: string) {
   const supabase = await createClient()
@@ -26,7 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.meta_titulo ? { absolute: post.meta_titulo } : post.titulo,
     description: post.meta_descricao || post.resumo,
     alternates: { canonical: `${SITE_URL_BASE}/artigos/${slug}` },
-    openGraph: post.imagem_og ? { images: [post.imagem_og] } : undefined,
+    ...ogPagina(site, {
+      path: `/artigos/${slug}`,
+      titulo: post.meta_titulo || `${post.titulo} — ${site.business_name}`,
+      descricao: post.meta_descricao || post.resumo,
+      imagem: post.imagem_og || post.capa_url,
+      tipo: 'article',
+    }),
   }
 }
 
@@ -49,7 +57,7 @@ export default async function ArtigoDetalhePage({ params }: { params: Promise<{ 
     <PageShell site={site}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article className="px-6 py-16 max-w-3xl mx-auto">
-        {post.capa_url && <img src={post.capa_url} alt={post.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />}
+        {post.capa_url && <Image src={post.capa_url} alt={post.alt_text || post.titulo} width={1200} height={600} sizes="(min-width: 768px) 720px, 100vw" priority className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />}
         <h1 className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-4">{post.titulo}</h1>
         <p className="text-base text-slate-500 leading-relaxed mb-8">{post.resumo}</p>
         <div className="text-[15px] text-slate-600 leading-[1.8] whitespace-pre-wrap">{post.conteudo}</div>

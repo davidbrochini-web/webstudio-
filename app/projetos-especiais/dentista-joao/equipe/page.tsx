@@ -1,9 +1,11 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -11,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Equipe',
     description: `Conheça a equipe da ${site.business_name}: formação, especialidades e experiência de quem vai cuidar do seu sorriso.`,
     alternates: { canonical: `${SITE_URL_BASE}/equipe` },
+    ...ogPagina(site, { path: '/equipe', titulo: `Equipe — ${site.business_name}` }),
   }
 }
 
@@ -46,7 +49,7 @@ export default async function EquipePage() {
             {equipe.map(p => (
               <div key={p.nome} className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-6 items-start">
                 {p.foto_url ? (
-                  <img src={p.foto_url} alt={p.alt_text || p.nome} className="w-40 h-40 rounded-full object-cover mx-auto sm:mx-0" />
+                  <Image src={p.foto_url} alt={p.alt_text || p.nome} width={320} height={320} sizes="160px" className="w-40 h-40 rounded-full object-cover mx-auto sm:mx-0" />
                 ) : (
                   <div className="w-40 h-40 rounded-full bg-slate-100 mx-auto sm:mx-0 flex items-center justify-center text-4xl text-slate-300">👤</div>
                 )}

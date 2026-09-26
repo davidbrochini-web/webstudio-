@@ -1,8 +1,10 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
 import PageShell from '@/components/dentista-joao/PageShell'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 async function getTratamento(siteId: string, slug: string) {
   const supabase = await createClient()
@@ -23,14 +25,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tratamento = await getTratamento(site.id, slug)
   if (!tratamento) return {}
   return {
-    title: tratamento.meta_titulo ? { absolute: tratamento.meta_titulo } : tratamento.titulo,
+    title: tratamento.meta_titulo ? { absolute: tratamento.meta_titulo } : tituloLegivel(tratamento.titulo),
     description: tratamento.meta_descricao || tratamento.descricao_curta,
     alternates: { canonical: `${SITE_URL_BASE}/tratamentos/${slug}` },
-    // Antes só usava imagem_og (sempre vazio nos 7 tratamentos) e
-    // caía sem querer na foto do médico herdada do layout pai. Usa
-    // a própria imagem do tratamento como fallback antes de deixar
-    // undefined — sempre tem uma imagem específica pra compartilhar.
-    openGraph: { images: [tratamento.imagem_og || tratamento.imagem_url].filter(Boolean) as string[] },
+    ...ogPagina(site, {
+      path: `/tratamentos/${slug}`,
+      titulo: tratamento.meta_titulo || `${tituloLegivel(tratamento.titulo)} — ${site.business_name}`,
+      descricao: tratamento.meta_descricao || tratamento.descricao_curta,
+      imagem: tratamento.imagem_og || tratamento.imagem_url,
+    }),
   }
 }
 
@@ -67,7 +70,7 @@ export default async function TratamentoDetalhePage({ params }: { params: Promis
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <article className="px-6 py-16 max-w-3xl mx-auto">
         {tratamento.imagem_url && (
-          <img src={tratamento.imagem_url} alt={tratamento.alt_text || ''} className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
+          <Image src={tratamento.imagem_url} alt={tratamento.alt_text || tratamento.titulo} width={1200} height={600} sizes="(min-width: 768px) 720px, 100vw" priority className="w-full aspect-[16/8] object-cover rounded-2xl mb-8" />
         )}
 
         <h1 className="font-display font-extrabold text-3xl text-[var(--dj-secondary)] mb-3">{tratamento.titulo}</h1>

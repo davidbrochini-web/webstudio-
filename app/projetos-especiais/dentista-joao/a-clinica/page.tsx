@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao'
@@ -5,6 +6,7 @@ import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import Reveal from '@/components/dentista-joao/Reveal'
 import { texto } from '@/lib/textos-customizados'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
@@ -12,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'A Clínica',
     description: site.tagline || `Conheça a ${site.business_name}: nossa missão, valores e a estrutura pensada pra cuidar do seu sorriso.`,
     alternates: { canonical: `${SITE_URL_BASE}/a-clinica` },
+    ...ogPagina(site, { path: '/a-clinica', titulo: `A Clínica — ${site.business_name}` }),
   }
 }
 
@@ -47,7 +50,7 @@ export default async function AClinicaPage() {
             {fotos.map((f, i) => (
               <Reveal key={f.url} delay={i * 60}>
                 <div className="overflow-hidden rounded-2xl">
-                  <img src={f.url} alt="" className="w-full aspect-square object-cover hover:scale-105 transition-transform duration-500" />
+                  <Image src={f.url} alt={`${site.business_name} — foto ${i + 1} da clínica`} width={480} height={480} sizes="(min-width: 640px) 33vw, 50vw" className="w-full aspect-square object-cover hover:scale-105 transition-transform duration-500" />
                 </div>
               </Reveal>
             ))}

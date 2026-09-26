@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import type { SiteEspecial } from '@/lib/dentista-joao'
 import MobileMenu from '@/components/dentista-joao/MobileMenu'
@@ -40,8 +41,7 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
 
   const logo = site.logo_url ? (
     <div className="w-[68px] h-[68px] sm:w-[104px] sm:h-[104px] bg-white rounded-2xl p-1.5 shadow-xl border-2 border-[var(--dj-primary)]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={site.logo_url} alt={site.business_name} className="w-full h-full object-cover rounded-xl" />
+      <Image src={site.logo_url} alt={site.business_name} width={104} height={104} sizes="(min-width: 640px) 104px, 68px" priority className="w-full h-full object-cover rounded-xl" />
     </div>
   ) : (
     <span className="font-display font-bold text-base sm:text-lg text-[var(--dj-secondary)] whitespace-nowrap">
@@ -129,7 +129,7 @@ export default function SiteNav({ site, base }: { site: SiteEspecial; base: stri
                   bloco (funciona igual com ou sem itens ao lado — no
                   mobile/tablet os itens somem e só sobra isso, ainda
                   assim centralizado) */}
-              <div className="relative w-14 sm:w-20 lg:w-28 h-full flex-shrink-0" aria-hidden="true">
+              <div className="relative w-14 sm:w-20 lg:w-28 h-full flex-shrink-0">
                 <Link href={base || '/'} className="absolute left-1/2 -translate-x-1/2 top-2.5 sm:top-3 z-10">
                   {logo}
                 </Link>

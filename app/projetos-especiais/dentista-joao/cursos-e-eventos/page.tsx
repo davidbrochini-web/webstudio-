@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
@@ -5,12 +6,16 @@ import { getSiteEspecial, SITE_URL_BASE, getBasePath } from '@/lib/dentista-joao
 import PageShell from '@/components/dentista-joao/PageShell'
 import PageBanner from '@/components/dentista-joao/PageBanner'
 import SecaoOcultaAviso from '@/components/dentista-joao/SecaoOcultaAviso'
+import { ogPagina, tituloLegivel } from '@/lib/dentista-joao-seo'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSiteEspecial()
+  const description = 'Confira os próximos cursos, palestras e eventos sobre saúde bucal promovidos pela clínica.'
   return {
     title: 'Cursos e Eventos',
-    description: 'Confira os próximos cursos, palestras e eventos sobre saúde bucal promovidos pela clínica.',
+    description,
     alternates: { canonical: `${SITE_URL_BASE}/cursos-e-eventos` },
+    ...ogPagina(site, { path: '/cursos-e-eventos', titulo: `Cursos e Eventos — ${site.business_name}`, descricao: description }),
   }
 }
 
@@ -46,7 +51,7 @@ export default async function CursosEventosPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {itens.map(c => (
               <Link key={c.slug} href={`${base}/cursos-e-eventos/${c.slug}`} className="block group border border-slate-100 rounded-2xl overflow-hidden hover:border-[var(--dj-primary)] transition-colors">
-                {c.imagem_url && <img src={c.imagem_url} alt="" className="w-full aspect-[4/3] object-cover" />}
+                {c.imagem_url && <Image src={c.imagem_url} alt={c.titulo} width={640} height={480} sizes="(min-width: 640px) 33vw, 100vw" className="w-full aspect-[4/3] object-cover" />}
                 <div className="p-5">
                   {c.data_evento && (
                     <p className="text-xs font-bold text-[var(--dj-primary)] mb-1.5">
