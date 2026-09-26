@@ -44,6 +44,15 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const site = await getSiteEspecial()
+  // 19/09: `paleta_muted` no banco tinha o valor antigo (#6f6858, que
+  // reprova contraste AA) mesmo depois do fix no CSS — porque esta
+  // paleta customizada por site SOBRESCREVE a variável via inline
+  // style (maior especificidade que qualquer regra de classe). Corrigi
+  // o valor direto no banco (SELECT/UPDATE, ver Doc IA), mas como foi
+  // SQL direto e não pela Server Action de `cores/actions.ts`, o
+  // `updateTag(CACHE_TAG_CONTOS)` que dispara invalidação imediata não
+  // rodou — esse deploy é o teste de se um deploy novo também limpa o
+  // Data Cache (unstable_cache) ou se só o TTL de 1h resolve.
   const t = site.textos_customizados ?? {}
 
   // Paleta customizável (aba Cores no painel) — mesmo mecanismo do
