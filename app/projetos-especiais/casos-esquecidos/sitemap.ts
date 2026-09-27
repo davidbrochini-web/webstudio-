@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getSiteEspecial, getAllContos, SITE_URL_BASE, dataModificacao } from '@/lib/casos-esquecidos'
 import { getAllTemas } from '@/lib/temas-casos-esquecidos'
+import { getAllDocumentarios } from '@/lib/documentarios'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
@@ -9,6 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (!site.seo_indexavel) return []
 
   const contos = await getAllContos(site.id)
+  const docs = await getAllDocumentarios(site.id)
 
   // lastModified das listagens = data do conto mais recente: é o que
   // realmente muda nelas, e dá ao Google um motivo concreto pra
@@ -26,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL_BASE}/contos/brasileiros`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/contos/para-dormir`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/creepypasta-brasileira`, lastModified: maisRecente, priority: 0.6, changeFrequency: 'weekly' },
+    { url: `${SITE_URL_BASE}/arquivos`, lastModified: maisRecente, priority: 0.8, changeFrequency: 'weekly' },
     { url: `${SITE_URL_BASE}/sobre`, priority: 0.6, changeFrequency: 'monthly' },
   ]
 
@@ -42,5 +45,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...estaticas, ...temas, ...dinamicas]
+  const arquivos: MetadataRoute.Sitemap = docs.map(d => ({
+    url: `${SITE_URL_BASE}/arquivos/${d.slug}`,
+    lastModified: dataModificacao(d),
+    priority: 0.7,
+  }))
+
+  return [...estaticas, ...temas, ...dinamicas, ...arquivos]
 }

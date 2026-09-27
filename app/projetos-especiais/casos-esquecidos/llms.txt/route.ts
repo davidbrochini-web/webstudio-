@@ -1,4 +1,5 @@
 import { getSiteEspecial, getAllContos, SITE_URL_BASE } from '@/lib/casos-esquecidos'
+import { getAllDocumentarios } from '@/lib/documentarios'
 
 export const revalidate = 3600 // ISR — conteúdo público, republica a cada 1h no máximo
 
@@ -6,6 +7,10 @@ export async function GET() {
   const site = await getSiteEspecial()
   const contos = await getAllContos(site.id)
   const ordenados = [...contos].sort((a, b) => a.numero - b.numero)
+  const docs = await getAllDocumentarios(site.id)
+  const listaDocs = docs.length
+    ? docs.map(d => `- [${d.titulo}](${SITE_URL_BASE}/arquivos/${d.slug}): ${d.caso}, ${d.local_caso}, ${d.ano_caso}. ${d.resumo}`).join('\n')
+    : '- (primeiros arquivos em breve)'
 
   const listaContos = ordenados
     .map(c => `- [${c.titulo}](${SITE_URL_BASE}/contos/${c.slug}): ${c.resumo}`)
@@ -21,7 +26,15 @@ Casos Esquecidos publica um novo conto de terror toda semana, sempre gratuito pa
 
 ${listaContos}
 
+## Arquivos do Observador — casos reais
+
+Série de documentários sobre casos reais inexplicáveis com mais de 50 anos. Cada texto apresenta os fatos documentados (datas, nomes, laudos, testemunhas) e as teorias existentes; a parte final é uma interpretação ficcional do narrador, o Observador, e está sinalizada como ficção no próprio texto.
+
+${listaDocs}
+
 ## Páginas principais
+
+- [Casos reais inexplicáveis](${SITE_URL_BASE}/arquivos): arquivo dos documentários do Observador
 
 - [Todos os contos](${SITE_URL_BASE}/contos): arquivo completo de contos de terror para ler grátis
 - [Livros de terror para ler grátis](${SITE_URL_BASE}/livros-de-terror-gratis): guia de por onde começar — temas, casos recentes e o que é grátis vs. o que é pago (só o livro na Amazon)
