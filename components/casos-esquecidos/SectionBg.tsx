@@ -29,8 +29,19 @@ export default function SectionBg({
   priority?: boolean
   children: ReactNode
 }) {
+  // Variante leve pro celular (640px, ~20KB em vez de ~100KB). O overlay
+  // de .section-bg::before cobre a imagem com 88-93% de preto, então a
+  // perda de resolução é invisível. <picture> + media query (e não srcset
+  // com `w`) porque srcset multiplica pelo DPR: um celular com DPR 2,6
+  // pediria a versão de 1024px do mesmo jeito. Convenção: arquivo
+  // `nome-640.webp` ao lado de `nome.webp` em /assets/casos-esquecidos/bg/.
+  const mobileSrc = src.startsWith('/assets/casos-esquecidos/bg/') && src.endsWith('.webp')
+    ? src.replace(/\.webp$/, '-640.webp')
+    : null
   return (
     <As id={id} className={`section-bg ${className}`.trim()} style={style}>
+      <picture>
+      {mobileSrc && <source media="(max-width: 700px)" srcSet={mobileSrc} />}
       <img
         src={src}
         alt=""
@@ -40,6 +51,7 @@ export default function SectionBg({
         decoding="async"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', zIndex: -2 }}
       />
+      </picture>
       {children}
     </As>
   )
