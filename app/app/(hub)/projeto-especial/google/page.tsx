@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentTenant } from '@/lib/current-tenant'
 import GoogleDashboard from '@/components/google-dashboard/GoogleDashboard'
+import AnalyticsCard from '@/components/google-dashboard/AnalyticsCard'
 
 /**
  * Nunca renderizar a página vazia: antes, qualquer condição faltando
@@ -46,6 +47,11 @@ export default async function GooglePage() {
           adsUrl={site.google_ads_url}
         />
       </Suspense>
+      <div className="mt-6">
+        <Suspense fallback={<Aviso>Carregando visitas do site…</Aviso>}>
+          <AnalyticsCard identificador={info.projetoEspecialSlug} />
+        </Suspense>
+      </div>
     </div>
   )
 }
