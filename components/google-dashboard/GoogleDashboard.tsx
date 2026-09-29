@@ -5,6 +5,7 @@ interface GoogleDashboardProps {
   analyticsUrl: string | null
   searchConsoleUrl: string | null
   meuNegocioUrl: string | null
+  adsUrl?: string | null
 }
 
 function formatMoeda(v: number) {
@@ -36,6 +37,7 @@ export default async function GoogleDashboard({
   analyticsUrl,
   searchConsoleUrl,
   meuNegocioUrl,
+  adsUrl,
 }: GoogleDashboardProps) {
   const resumo = await getResumoGoogleAds(identificadorGoogleAds)
 
@@ -46,6 +48,7 @@ export default async function GoogleDashboard({
         {analyticsUrl && <LinkExterno href={analyticsUrl} label="Google Analytics" icone="📊" />}
         {searchConsoleUrl && <LinkExterno href={searchConsoleUrl} label="Search Console" icone="🔍" />}
         {meuNegocioUrl && <LinkExterno href={meuNegocioUrl} label="Google Meu Negócio" icone="📍" />}
+        {adsUrl && <LinkExterno href={adsUrl} label="Campanhas Google Ads" icone="📣" />}
       </div>
 
       {/* Resumo de campanhas Google Ads */}

@@ -31,6 +31,7 @@ export interface SiteEspecial {
   tenant_id: string
   business_name: string
   tagline: string | null
+  seo_descricao: string | null
   hero_title: string | null
   hero_sub: string | null
   hero_imagem_url: string | null
@@ -66,7 +67,7 @@ export async function getSiteEspecial(): Promise<SiteEspecial> {
   const supabase = await createClient()
   const { data: site } = await supabase
     .from('sites')
-    .select('id, tenant_id, business_name, tagline, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, instagram_visivel, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, secao_depoimentos_visivel, seo_indexavel, textos_customizados, cor_primaria, cor_secundaria, logo_posicao, email_notificacoes')
+    .select('id, tenant_id, business_name, tagline, seo_descricao, hero_title, hero_sub, hero_imagem_url, logo_url, whatsapp, instagram_handle, instagram_visivel, telefone, endereco, status, missao, visao, valores, secao_tratamentos_visivel, secao_cursos_visivel, secao_equipe_visivel, secao_faq_visivel, secao_artigos_visivel, secao_depoimentos_visivel, seo_indexavel, textos_customizados, cor_primaria, cor_secundaria, logo_posicao, email_notificacoes')
     .eq('slug', SITE_SLUG)
     .is('deleted_at', null)
     .single()

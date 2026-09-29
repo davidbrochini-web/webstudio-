@@ -12,7 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteEspecial()
   return {
     title: 'A Clínica',
-    description: site.tagline || `Conheça a ${site.business_name}: nossa missão, valores e a estrutura pensada pra cuidar do seu sorriso.`,
+    // Não usa a tagline: é o texto longo da própria página e duplicava a
+    // description da home. Frase curta própria (<160 chars).
+    description: `Conheça a clínica do ${site.business_name} no Tucuruvi (SP): atendimento individualizado em cirurgia bucomaxilofacial e implantodontia.`,
     alternates: { canonical: `${SITE_URL_BASE}/a-clinica` },
     ...ogPagina(site, { path: '/a-clinica', titulo: `A Clínica — ${site.business_name}` }),
   }

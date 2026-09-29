@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: site.business_name,
       template: `%s — ${site.business_name}`,
     },
-    description: site.tagline ?? undefined,
+    description: site.seo_descricao || site.tagline || undefined,
     // Sem isso, o campo "keywords" (não redefinido nas páginas filhas)
     // herdava por padrão as keywords institucionais da Omnidesign
     // (definidas em app/layout.tsx — "agência de marketing digital",

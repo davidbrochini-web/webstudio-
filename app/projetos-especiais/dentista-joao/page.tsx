@@ -17,9 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
     // Nome sozinho no <title> não carrega nenhum termo que o paciente
     // busca — especialidade + bairro são o que aparece no Google.
     title: { absolute: `${site.business_name} | Bucomaxilofacial em Tucuruvi, SP` },
-    description: site.tagline ?? undefined,
+    description: site.seo_descricao || site.tagline || undefined,
     alternates: { canonical: SITE_URL_BASE },
-    ...ogPagina(site, { path: '', titulo: `${site.business_name} | Bucomaxilofacial em Tucuruvi, SP`, descricao: site.tagline }),
+    ...ogPagina(site, { path: '', titulo: `${site.business_name} | Bucomaxilofacial em Tucuruvi, SP`, descricao: site.seo_descricao || site.tagline }),
   }
 }
 
