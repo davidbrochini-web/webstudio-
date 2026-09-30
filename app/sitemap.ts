@@ -43,6 +43,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    { url: `${BASE_URL}/privacidade`, changeFrequency: 'yearly', priority: 0.2 },
+    { url: `${BASE_URL}/termos`, changeFrequency: 'yearly', priority: 0.2 },
     // Páginas de categoria do blog — mesma fonte de verdade dos posts
     // (categoria distinta salva no banco), sem lista fixa.
     ...categorias.map(categoria => ({

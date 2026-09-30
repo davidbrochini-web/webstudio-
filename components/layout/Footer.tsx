@@ -17,6 +17,10 @@ export default function Footer() {
         </Link>
         <p className="text-xs text-white/30 text-center">
           © {new Date().getFullYear()} Omnidesign — Todos os direitos reservados
+          {' · '}
+          <Link href="/privacidade" className="hover:text-white/60 underline-offset-2 hover:underline">Privacidade</Link>
+          {' · '}
+          <Link href="/termos" className="hover:text-white/60 underline-offset-2 hover:underline">Termos</Link>
         </p>
       </div>
     </footer>
