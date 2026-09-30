@@ -1,7 +1,8 @@
-import { getResumoAnalytics } from '@/lib/google-analytics-resumo'
+import type { ResumoAnalytics } from '@/lib/google-analytics-resumo'
 
 function variacao(atual: number, anterior: number) {
-  if (!anterior) return null
+  // Base muito pequena gera percentuais enganosos (1 → 13 pessoas = +1200%).
+  if (anterior < 5) return null
   const p = Math.round(((atual - anterior) / anterior) * 100)
   return { texto: `${p > 0 ? '+' : ''}${p}%`, positivo: p >= 0 }
 }
@@ -34,9 +35,7 @@ function nomePagina(caminho: string) {
   return caminho
 }
 
-export default async function AnalyticsCard({ identificador }: { identificador: string }) {
-  const r = await getResumoAnalytics(identificador, 28)
-
+export default function AnalyticsCard({ resumo: r }: { resumo: ResumoAnalytics }) {
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-6">
       <h2 className="font-bold text-lg text-slate-800 mb-1">Visitas no site</h2>

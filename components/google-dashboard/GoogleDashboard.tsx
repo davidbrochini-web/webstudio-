@@ -1,7 +1,7 @@
-import { getResumoGoogleAds } from '@/lib/google-ads-resumo'
+import type { ResumoGoogleAds } from '@/lib/google-ads-resumo'
 
 interface GoogleDashboardProps {
-  identificadorGoogleAds: string
+  resumo: ResumoGoogleAds
   analyticsUrl: string | null
   searchConsoleUrl: string | null
   meuNegocioUrl: string | null
@@ -26,21 +26,23 @@ function LinkExterno({ href, label, icone }: { href: string; label: string; icon
   )
 }
 
-const statusLabel: Record<string, string> = {
-  ENABLED: 'Ativa',
-  PAUSED: 'Pausada',
-  REMOVED: 'Removida',
+// Situação REAL de veiculação (primary_status do Google), não só o
+// interruptor ligado/desligado: campanha "ativa" com anúncios pausados
+// ou conta sem saldo não aparece pra ninguém.
+const situacaoLabel: Record<string, { texto: string; classe: string }> = {
+  no_ar: { texto: 'No ar', classe: 'bg-emerald-100 text-emerald-700' },
+  pausada: { texto: 'Pausada', classe: 'bg-amber-100 text-amber-700' },
+  analise: { texto: 'Em análise', classe: 'bg-sky-100 text-sky-700' },
+  parada: { texto: 'Aguardando início', classe: 'bg-slate-200 text-slate-600' },
 }
 
-export default async function GoogleDashboard({
-  identificadorGoogleAds,
+export default function GoogleDashboard({
+  resumo,
   analyticsUrl,
   searchConsoleUrl,
   meuNegocioUrl,
   adsUrl,
 }: GoogleDashboardProps) {
-  const resumo = await getResumoGoogleAds(identificadorGoogleAds)
-
   return (
     <div className="flex flex-col gap-6">
       {/* Links externos */}
@@ -55,7 +57,7 @@ export default async function GoogleDashboard({
       <div className="bg-white border border-slate-200 rounded-xl p-6">
         <h2 className="font-bold text-lg text-slate-800 mb-1">Campanhas Google Ads</h2>
         <p className="text-xs text-slate-400 mb-5">
-          Últimos 30 dias · atualizado {new Date(resumo.atualizadoEm).toLocaleString('pt-BR')}
+          Últimos {resumo.periodoDias} dias · atualizado {new Date(resumo.atualizadoEm).toLocaleString('pt-BR')}
         </p>
 
         {!resumo.disponivel && (
@@ -77,19 +79,15 @@ export default async function GoogleDashboard({
                 <div key={c.id} className="border border-slate-100 rounded-lg p-4 bg-slate-50/50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-sm text-slate-800">{c.nome}</span>
-                    <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        c.status === 'ENABLED' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                      }`}
-                    >
-                      {statusLabel[c.status] ?? c.status}
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${(situacaoLabel[c.situacao] ?? situacaoLabel.parada).classe}`}>
+                      {(situacaoLabel[c.situacao] ?? situacaoLabel.parada).texto}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs text-slate-500">
-                    <div>Gasto por dia: <span className="font-semibold text-slate-700">{formatMoeda(c.orcamentoDiario)}</span></div>
+                    <div>Limite por dia: <span className="font-semibold text-slate-700">{formatMoeda(c.orcamentoDiario)}</span></div>
                     <div>Cliques no anúncio: <span className="font-semibold text-slate-700">{c.cliques}</span></div>
                     <div>Quantas vezes apareceu: <span className="font-semibold text-slate-700">{c.impressoes}</span></div>
-                    <div>Gasto até agora: <span className="font-semibold text-slate-700">{formatMoeda(c.custo)}</span></div>
+                    <div>Investido no período: <span className="font-semibold text-slate-700">{formatMoeda(c.custo)}</span></div>
                     <div className="col-span-2">Pessoas que agendaram, chamaram ou mandaram mensagem: <span className="font-semibold text-emerald-700">{c.conversoes}</span></div>
                   </div>
                 </div>
@@ -97,7 +95,7 @@ export default async function GoogleDashboard({
             </div>
 
             <div className="mb-6 pb-6 border-b border-slate-100">
-              <h3 className="font-semibold text-sm text-slate-700 mb-3">O que as campanhas trouxeram (últimos 30 dias)</h3>
+              <h3 className="font-semibold text-sm text-slate-700 mb-3">O que as campanhas trouxeram (últimos {resumo.periodoDias} dias)</h3>
               {resumo.conversoesPorTipo.length === 0 ? (
                 <p className="text-sm text-slate-400">Ainda não teve nenhum resultado registrado.</p>
               ) : (

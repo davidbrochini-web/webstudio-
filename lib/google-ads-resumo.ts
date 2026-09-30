@@ -16,6 +16,8 @@ export interface CampanhaResumo {
   custo: number
   ctr: number
   conversoes: number
+  /** Situação real de veiculação (campaign.primary_status), não só o "ligado/desligado". */
+  situacao: 'no_ar' | 'pausada' | 'analise' | 'parada'
 }
 
 export interface ConversaoPorTipo {
@@ -37,9 +39,26 @@ export interface ResumoGoogleAds {
   disponivel: boolean
   motivoIndisponivel?: string
   atualizadoEm: string
+  periodoDias: number
   campanhas: CampanhaResumo[]
   keywords: KeywordResumo[]
   conversoesPorTipo: ConversaoPorTipo[]
+  totais: { custo: number; cliques: number; impressoes: number; conversoes: number }
+}
+
+// Período em datas explícitas (fuso da conta: America/Sao_Paulo). Os
+// literais LAST_7_DAYS/LAST_30_DAYS do GAQL não cobrem 90 dias.
+function filtroPeriodo(dias: number) {
+  const fmt = (d: Date) => d.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
+  const fim = new Date()
+  const ini = new Date(fim.getTime() - (dias - 1) * 86_400_000)
+  return `segments.date BETWEEN '${fmt(ini)}' AND '${fmt(fim)}'`
+}
+
+const SITUACAO: Record<string, CampanhaResumo['situacao']> = {
+  ELIGIBLE: 'no_ar',
+  PAUSED: 'pausada',
+  PENDING: 'analise',
 }
 
 async function renovarAccessToken(creds: {
@@ -87,13 +106,15 @@ async function gadsQuery(
   return data.results ?? []
 }
 
-async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogleAds> {
+async function buscarResumoSemCache(identificador: string, dias = 30): Promise<ResumoGoogleAds> {
   const vazio: ResumoGoogleAds = {
     disponivel: false,
     atualizadoEm: new Date().toISOString(),
+    periodoDias: dias,
     campanhas: [],
     keywords: [],
     conversoesPorTipo: [],
+    totais: { custo: 0, cliques: 0, impressoes: 0, conversoes: 0 },
   }
 
   const admin = createAdminClient()
@@ -117,18 +138,19 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
   // ficam de fora do resumo inteiro (campanhas, keywords e contagem de anúncios).
   const filtroAtivas = `campaign.status != 'REMOVED'`
 
+  const periodo = filtroPeriodo(dias)
   const campQuery = `
-    SELECT campaign.id, campaign.name, campaign.status, campaign_budget.amount_micros,
+    SELECT campaign.id, campaign.name, campaign.status, campaign.primary_status, campaign_budget.amount_micros,
            metrics.clicks, metrics.impressions, metrics.cost_micros, metrics.ctr,
            metrics.conversions
     FROM campaign
-    WHERE segments.date DURING LAST_30_DAYS AND ${filtroAtivas}
+    WHERE ${periodo} AND ${filtroAtivas}
   `
   const kwQuery = `
     SELECT campaign.name, ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type,
            ad_group_criterion.status, metrics.clicks, metrics.impressions, metrics.average_cpc
     FROM keyword_view
-    WHERE segments.date DURING LAST_30_DAYS AND ${filtroAtivas}
+    WHERE ${periodo} AND ${filtroAtivas}
     ORDER BY metrics.clicks DESC
     LIMIT 20
   `
@@ -139,7 +161,7 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
   const convQuery = `
     SELECT conversion_action.name, metrics.conversions
     FROM conversion_action
-    WHERE segments.date DURING LAST_30_DAYS
+    WHERE ${periodo}
   `
 
   const [campRows, kwRows, convRows] = await Promise.all([
@@ -164,6 +186,7 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
       custo: Number(r.metrics?.costMicros ?? 0) / 1e6,
       ctr: Number(r.metrics?.ctr ?? 0),
       conversoes: Number(r.metrics?.conversions ?? 0),
+      situacao: SITUACAO[r.campaign.primaryStatus] ?? 'parada',
     }))
     .sort((a: CampanhaResumo, b: CampanhaResumo) => (ordemStatus[a.status] ?? 2) - (ordemStatus[b.status] ?? 2))
 
@@ -187,9 +210,16 @@ async function buscarResumoSemCache(identificador: string): Promise<ResumoGoogle
   return {
     disponivel: true,
     atualizadoEm: new Date().toISOString(),
+    periodoDias: dias,
     campanhas,
     keywords,
     conversoesPorTipo,
+    totais: {
+      custo: campanhas.reduce((s, c) => s + c.custo, 0),
+      cliques: campanhas.reduce((s, c) => s + c.cliques, 0),
+      impressoes: campanhas.reduce((s, c) => s + c.impressoes, 0),
+      conversoes: campanhas.reduce((s, c) => s + c.conversoes, 0),
+    },
   }
 }
 
