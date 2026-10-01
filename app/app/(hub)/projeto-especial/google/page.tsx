@@ -58,7 +58,16 @@ export default async function GooglePage({ searchParams }: { searchParams: Promi
 
   if (!info) return <div>{titulo}<Aviso>Nenhuma empresa vinculada a este login.</Aviso></div>
   if (!info.siteId || !info.projetoEspecialSlug) {
-    return <div>{titulo}<Aviso>Este painel ainda não tem site configurado (tenant {info.tenantNome}).</Aviso></div>
+    return (
+      <div>
+        {titulo}
+        <Aviso>
+          Você está no painel de <strong>{info.tenantNome}</strong>, que não tem esta aba de Google.
+          {!info.impersonating &&
+            ' Se queria ver o Dentista João como o cliente vê: volte ao admin e clique em "Admin" no card dele. A sessão "ver como" dura 4 horas; se esta tela ficou aberta além disso, o menu pode mostrar o cliente por engano.'}
+        </Aviso>
+      </div>
+    )
   }
 
   const supabase = await createClient()
