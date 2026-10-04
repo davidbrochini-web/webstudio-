@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
+import { ehPrefetch } from '@/lib/route-prefetch'
 import { PROJETO_ESPECIAL_APP_PATH } from '@/lib/current-tenant'
 
 /**
@@ -10,7 +11,9 @@ import { PROJETO_ESPECIAL_APP_PATH } from '@/lib/current-tenant'
  * bloqueia isso pra quem não é superadmin antes de chegar aqui — a
  * checagem abaixo é defesa em profundidade, não a única barreira.
  */
+// Prefetch do <Link> nunca pode trocar/apagar o cookie de impersonação.
 export async function GET(request: NextRequest, { params }: { params: Promise<{ tenantId: string }> }) {
+  if (ehPrefetch(request)) return new NextResponse(null, { status: 204 })
   const { tenantId } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
