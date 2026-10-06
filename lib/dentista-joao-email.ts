@@ -179,12 +179,17 @@ export async function notificarLembretePaciente(params: {
   horaInicio: string
   horaFim: string
   janela: '24h' | '1h'
+  /** Só usado na janela de 24h: a consulta pode cair "hoje" (ex.: 20h, avisada às 8h) ou "amanhã". */
+  quando?: 'hoje' | 'amanhã'
 }): Promise<void> {
-  const label = params.janela === '24h' ? 'amanhã' : 'daqui a 1 hora'
+  const hora = params.horaInicio.slice(0, 5)
+  const label = params.janela === '24h' ? `${params.quando ?? 'amanhã'}, às ${hora}` : 'daqui a 1 hora'
   await sendEmail({
     from: FROM,
     to: params.email,
-    subject: params.janela === '24h' ? 'Lembrete: sua consulta é amanhã' : 'Lembrete: sua consulta é daqui a 1 hora',
+    subject: params.janela === '24h'
+      ? `Lembrete: sua consulta é ${params.quando ?? 'amanhã'} às ${hora}`
+      : 'Lembrete: sua consulta é daqui a 1 hora',
     html: WRAPPER(`Sua consulta é ${label} ⏰`, `
       <p style="margin:0 0 12px;font-size:14px;color:#444;">Olá, ${escapeHtml(params.nome)}. Só lembrando:</p>
       <p style="margin:0;font-size:15px;color:#2a2a2a;font-weight:bold;">${formatDataHora(params.data, params.horaInicio, params.horaFim)}</p>
@@ -201,9 +206,12 @@ export async function notificarLembreteAdmin(params: {
   horaInicio: string
   horaFim: string
   janela: '24h' | '1h'
+  quando?: 'hoje' | 'amanhã'
 }): Promise<void> {
   if (!params.emailDestino) return
-  const label = params.janela === '24h' ? 'amanhã' : 'em 1 hora'
+  const label = params.janela === '24h'
+    ? `${params.quando ?? 'amanhã'} às ${params.horaInicio.slice(0, 5)}`
+    : 'em 1 hora'
   await sendEmail({
     from: FROM,
     to: params.emailDestino,
@@ -252,6 +260,62 @@ export async function notificarResumoDiario(params: {
     html: WRAPPER(`Bom dia! Sua agenda de hoje`, `
       <p style="margin:0 0 16px;font-size:13px;color:#666;text-transform:capitalize;">${dataFmt}</p>
       ${params.agendamentos.length ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${linhas}</table>` : linhas}
+    `),
+  })
+}
+
+// ── 6. Resumo semanal — pro admin, toda segunda às 6h (BRT) ───────────
+// Pedido do cliente (06/10/2026). Semana = segunda a domingo da semana
+// corrente (a rota calcula as datas). Dia sem consulta aparece como
+// "livre" de propósito: a pergunta que o e-mail responde é "como está
+// minha semana", e o buraco na agenda também é informação.
+export interface AgendamentoSemana extends AgendamentoResumo {
+  data: string
+}
+
+export async function notificarResumoSemanal(params: {
+  emailDestino: string | null
+  dias: string[] // 7 datas YYYY-MM-DD, segunda → domingo
+  confirmados: AgendamentoSemana[]
+  pendentes: number
+}): Promise<void> {
+  if (!params.emailDestino) return
+
+  const fmtCurto = (d: string) =>
+    new Date(d + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+  const periodo = `${fmtCurto(params.dias[0])} a ${fmtCurto(params.dias[6])}`
+  const total = params.confirmados.length
+
+  const blocos = params.dias.map(dia => {
+    const doDia = params.confirmados.filter(a => a.data === dia)
+    const titulo = new Date(dia + 'T00:00:00').toLocaleDateString('pt-BR', {
+      weekday: 'long', day: '2-digit', month: '2-digit',
+    })
+    const corpo = doDia.length
+      ? doDia.map(a => `
+          <tr>
+            <td style="padding:4px 0;font-size:14px;color:#2a2a2a;font-weight:bold;white-space:nowrap;vertical-align:top;">${a.hora_inicio.slice(0, 5)}–${a.hora_fim.slice(0, 5)}</td>
+            <td style="padding:4px 0 4px 12px;font-size:14px;color:#444;">${escapeHtml(a.paciente_nome)}${a.tipo_consulta_nome ? ` <span style="color:#999;">· ${escapeHtml(a.tipo_consulta_nome)}</span>` : ''}</td>
+          </tr>`).join('')
+      : `<tr><td style="padding:4px 0;font-size:13px;color:#aaa;">Livre</td></tr>`
+    return `
+      <p style="margin:18px 0 6px;font-size:13px;color:#2a2a2a;font-weight:bold;text-transform:capitalize;border-bottom:1px solid #eee;padding-bottom:4px;">${titulo}${doDia.length ? ` <span style="color:#999;font-weight:normal;">(${doDia.length})</span>` : ''}</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${corpo}</table>`
+  }).join('')
+
+  const avisoPendentes = params.pendentes > 0
+    ? `<p style="margin:20px 0 0;padding:12px;background:#fff8e6;border-radius:8px;font-size:13px;color:#8a6100;">⏳ ${params.pendentes} ${params.pendentes === 1 ? 'pedido aguardando' : 'pedidos aguardando'} sua confirmação nesta semana.</p>`
+    : ''
+
+  await sendEmail({
+    from: FROM,
+    to: params.emailDestino,
+    cc: ADMIN_CC,
+    subject: `Agenda da semana (${total} ${total === 1 ? 'consulta' : 'consultas'}) — ${periodo}`,
+    html: WRAPPER('Bom dia! Sua agenda da semana', `
+      <p style="margin:0;font-size:13px;color:#666;">${periodo} · ${total} ${total === 1 ? 'consulta confirmada' : 'consultas confirmadas'}</p>
+      ${blocos}
+      ${avisoPendentes}
     `),
   })
 }
