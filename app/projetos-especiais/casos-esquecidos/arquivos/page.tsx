@@ -4,13 +4,8 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import DocCard from '@/components/casos-esquecidos/DocCard'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
-import { getAllDocumentarios, getDocumentariosAgendados, numeroArquivo } from '@/lib/documentarios'
-
-function formatarDataAbertura(iso: string): string {
-  return new Date(iso).toLocaleString('pt-BR', {
-    timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
-  })
-}
+import { getAllDocumentarios, getDocumentariosAgendados } from '@/lib/documentarios'
+import DocSeladoCard from '@/components/casos-esquecidos/DocSeladoCard'
 
 export const revalidate = 300
 
@@ -88,17 +83,7 @@ export default async function ArquivosPage() {
           </div>
           {docs.length + agendados.length > 0 ? (
             <div className="case-grid">
-              {agendados.map(a => (
-                <article key={`agendado-${a.numero}`} className="case-card locked">
-                  <span className="case-number">{numeroArquivo(a.numero)} · {a.local_caso}, {a.ano_caso}</span>
-                  <h2>{a.titulo}</h2>
-                  <p className="case-excerpt">Esse arquivo vai abrir dia {formatarDataAbertura(a.data_publicacao)}.</p>
-                  <div className="case-meta">
-                    <span>—</span>
-                    <span className="status-tag" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>Selado — Agendado</span>
-                  </div>
-                </article>
-              ))}
+              {agendados.map(a => <DocSeladoCard key={`agendado-${a.numero}`} doc={a} />)}
               {docs.map((d, i) => <DocCard key={d.id} doc={d} priority={i < 3} />)}
             </div>
           ) : (

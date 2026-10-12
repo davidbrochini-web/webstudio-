@@ -327,3 +327,16 @@ section { padding: 2.75rem 0; }
 .ce-site .faq-item[open] summary::after { content: "—"; }
 .ce-site .faq-item p { margin: 0.9rem 0 0.2rem; color: var(--paper-dim); font-size: 1rem; }
 
+
+/* Casos Reais na home (faixa de arquivo) + link cruzado docs → contos */
+.ce-site .reais-band {
+  padding: 4.5rem 0;
+  border-top: 1px solid rgba(205,176,119,0.25);
+  border-bottom: 1px solid rgba(205,176,119,0.25);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 4px),
+    #0d0c0a;
+}
+.ce-site .cross-ficcao { text-align: center; padding: 3rem 1.25rem 4rem; max-width: 46rem; }
+.ce-site .cross-ficcao h2 { margin: 0.5rem 0 0.75rem; }
+.ce-site .cross-ficcao p { color: var(--paper-dim); margin-bottom: 1.5rem; }

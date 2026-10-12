@@ -4,7 +4,7 @@ export default function Header({ base }: { base: string }) {
   return (
     <>
       <div className="announce-bar">
-        <Link href={`${base}/contos`}>📖 Novos contos de terror toda semana — <strong>grátis para ler</strong> →</Link>
+        <Link href={`${base}/contos`}>📖 Novos contos de terror e casos reais toda semana — <strong>grátis para ler</strong> →</Link>
       </div>
       <header className="site-header">
         <div className="container">

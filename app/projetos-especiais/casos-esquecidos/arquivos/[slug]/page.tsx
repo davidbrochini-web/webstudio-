@@ -150,6 +150,13 @@ export default async function DocumentarioPage({ params }: { params: Promise<{ s
           <Link className="btn btn-ghost" href={`${base}/#apoio`}>Apoiar via Pix</Link>
         </div>
       </div>
+
+      <section className="container cross-ficcao">
+        <span className="eyebrow">Prefere ficção?</span>
+        <h2>Contos de terror para ler grátis</h2>
+        <p>Histórias curtas do mesmo arquivo, contadas por quem sobreviveu — ou por quem não teve essa sorte.</p>
+        <Link className="btn btn-primary" href={`${base}/contos`}>Ler os contos →</Link>
+      </section>
       </main>
       <Footer base={base} />
     </>

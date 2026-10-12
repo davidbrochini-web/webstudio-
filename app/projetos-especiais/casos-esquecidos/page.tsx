@@ -5,6 +5,9 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import CaseCard from '@/components/casos-esquecidos/CaseCard'
 import SectionBg from '@/components/casos-esquecidos/SectionBg'
+import DocCard from '@/components/casos-esquecidos/DocCard'
+import DocSeladoCard from '@/components/casos-esquecidos/DocSeladoCard'
+import { getAllDocumentarios, getDocumentariosAgendados } from '@/lib/documentarios'
 import { getSiteEspecial, getRecentContos, getTotalContos, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
 
 
@@ -41,10 +44,16 @@ export const metadata: Metadata = {
 export default async function Home() {
   const site = await getSiteEspecial()
   const base = await getBasePath()
-  const [recentContos, totalContos] = await Promise.all([
+  const [recentContos, totalContos, docsPublicados, docsAgendados] = await Promise.all([
     getRecentContos(site.id, 3),
     getTotalContos(site.id),
+    getAllDocumentarios(site.id),
+    getDocumentariosAgendados(site.id),
   ])
+  // Vitrine de Casos Reais: os 3 mais recentes já abertos; se ainda não
+  // houver 3, completa com os próximos selados (mais próximos primeiro).
+  const docsRecentes = [...docsPublicados].sort((a, b) => b.numero - a.numero).slice(0, 3)
+  const docsProximos = [...docsAgendados].sort((a, b) => a.numero - b.numero).slice(0, 3 - docsRecentes.length)
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -145,6 +154,23 @@ export default async function Home() {
           </div>
         </div>
       </SectionBg>
+
+      <section className="reais-band" aria-labelledby="casos-reais-titulo">
+        <div className="container">
+          <div className="section-head">
+            <span className="eyebrow">Arquivos do Observador — Casos Reais</span>
+            <h2 id="casos-reais-titulo">Casos reais que ninguém conseguiu explicar</h2>
+            <p>Fatos documentados — datas, nomes, laudos, testemunhas. Depois, a versão de quem foi até lá conferir. Os fatos são reais. A conclusão, dizem, é ficção.</p>
+          </div>
+          <div className="case-grid">
+            {docsRecentes.map(d => <DocCard key={d.id} doc={d} />)}
+            {docsProximos.map(d => <DocSeladoCard key={`agendado-${d.numero}`} doc={d} />)}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+            <Link className="btn btn-ghost" href={`${base}/arquivos`}>Abrir os arquivos →</Link>
+          </div>
+        </div>
+      </section>
 
       <section className="hero">
         <div className="container">
