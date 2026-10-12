@@ -67,3 +67,26 @@ export const getDocumentarioBySlug = unstable_cache(
 export function numeroArquivo(n: number): string {
   return `Arquivo Nº ${String(n).padStart(3, '0')}`
 }
+
+export type DocumentarioAgendado = {
+  numero: number
+  titulo: string
+  local_caso: string
+  ano_caso: number
+  data_publicacao: string
+}
+
+// Só metadados do card "selado" (RPC SECURITY DEFINER, migration 0074) —
+// o conteúdo continua protegido pela RLS até a data. revalidate curto
+// pelo mesmo motivo de getCasosAgendados: a lista muda com a passagem
+// do tempo, não com escrita do admin.
+export const getDocumentariosAgendados = unstable_cache(
+  async (siteId: string): Promise<DocumentarioAgendado[]> => {
+    const supabase = createPublicClient()
+    const { data, error } = await supabase.rpc('documentarios_agendados_publicos', { p_site_id: siteId })
+    if (error) throw error
+    return data || []
+  },
+  ['casos-esquecidos-get-documentarios-agendados'],
+  { revalidate: 300, tags: [CACHE_TAG_CONTOS] }
+)

@@ -4,7 +4,13 @@ import Header from '@/components/casos-esquecidos/Header'
 import Footer from '@/components/casos-esquecidos/Footer'
 import DocCard from '@/components/casos-esquecidos/DocCard'
 import { getSiteEspecial, SITE_URL_BASE, getBasePath, ogBase } from '@/lib/casos-esquecidos'
-import { getAllDocumentarios } from '@/lib/documentarios'
+import { getAllDocumentarios, getDocumentariosAgendados, numeroArquivo } from '@/lib/documentarios'
+
+function formatarDataAbertura(iso: string): string {
+  return new Date(iso).toLocaleString('pt-BR', {
+    timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+  })
+}
 
 export const revalidate = 300
 
@@ -28,7 +34,12 @@ export const metadata: Metadata = {
 export default async function ArquivosPage() {
   const site = await getSiteEspecial()
   const base = await getBasePath()
-  const docs = [...(await getAllDocumentarios(site.id))].sort((a, b) => b.numero - a.numero)
+  const [todos, agendadosRaw] = await Promise.all([
+    getAllDocumentarios(site.id),
+    getDocumentariosAgendados(site.id),
+  ])
+  const docs = [...todos].sort((a, b) => b.numero - a.numero)
+  const agendados = [...agendadosRaw].sort((a, b) => b.numero - a.numero)
 
   const collectionSchema = {
     '@context': 'https://schema.org',
@@ -75,8 +86,19 @@ export default async function ArquivosPage() {
             <p>Nove esquiadores que rasgaram a própria barraca por dentro nos Montes Urais. Dois técnicos encontrados mortos com máscaras de chumbo num morro de Niterói. Um navio achado navegando sozinho no meio do Atlântico. Três faroleiros que sumiram de uma ilha de pedra. Uma colônia inteira que deixou só uma palavra entalhada num poste.</p>
             <p>Os Arquivos do Observador reúnem casos reais com mais de cinquenta anos que nunca tiveram explicação satisfatória. Cada documentário apresenta os fatos verdadeiros — datas, nomes, laudos, testemunhas — e as teorias que os humanos criaram para explicá-los. Depois, o Observador viaja até o local e dá a própria versão do que aconteceu. Os fatos são reais e documentados. A conclusão do Observador é ficção. Ou é o que dizem.</p>
           </div>
-          {docs.length > 0 ? (
+          {docs.length + agendados.length > 0 ? (
             <div className="case-grid">
+              {agendados.map(a => (
+                <article key={`agendado-${a.numero}`} className="case-card locked">
+                  <span className="case-number">{numeroArquivo(a.numero)} · {a.local_caso}, {a.ano_caso}</span>
+                  <h2>{a.titulo}</h2>
+                  <p className="case-excerpt">Esse arquivo vai abrir dia {formatarDataAbertura(a.data_publicacao)}.</p>
+                  <div className="case-meta">
+                    <span>—</span>
+                    <span className="status-tag" style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>Selado — Agendado</span>
+                  </div>
+                </article>
+              ))}
               {docs.map((d, i) => <DocCard key={d.id} doc={d} priority={i < 3} />)}
             </div>
           ) : (
