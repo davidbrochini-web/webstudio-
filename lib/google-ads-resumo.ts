@@ -81,15 +81,29 @@ async function renovarAccessToken(creds: {
   return data.access_token ?? null
 }
 
+// Versão mínima da API do Google Ads. O Google desativa versões antigas
+// sem aviso no nosso lado: a v22 foi bloqueada em 16/10/2026 e derrubou a
+// aba Google, porque a versão estava fixa aqui e a coluna
+// google_ads_acessos.api_version era ignorada. Agora vale a MAIOR entre
+// esta constante e a do banco: dá pra subir a versão só pelo banco (sem
+// deploy), e uma linha antiga no banco nunca rebaixa a versão do código.
+const GOOGLE_ADS_API_VERSION = 'v25'
+
+function versaoEfetiva(doBanco: string | null | undefined): string {
+  const n = (v: string | null | undefined) => Number(/^v(\d+)$/.exec(v ?? '')?.[1] ?? 0)
+  return n(doBanco) > n(GOOGLE_ADS_API_VERSION) ? (doBanco as string) : GOOGLE_ADS_API_VERSION
+}
+
 async function gadsQuery(
   customerId: string,
   mccId: string,
   accessToken: string,
   developerToken: string,
-  query: string
+  query: string,
+  versao: string = GOOGLE_ADS_API_VERSION
 ) {
   const resp = await fetch(
-    `https://googleads.googleapis.com/v22/customers/${customerId}/googleAds:search`,
+    `https://googleads.googleapis.com/${versao}/customers/${customerId}/googleAds:search`,
     {
       method: 'POST',
       headers: {
@@ -120,7 +134,7 @@ async function buscarResumoSemCache(identificador: string, dias = 30): Promise<R
   const admin = createAdminClient()
   const { data: creds } = await admin
     .from('google_ads_acessos')
-    .select('developer_token, client_id, client_secret, refresh_token, mcc_id, customer_id')
+    .select('developer_token, client_id, client_secret, refresh_token, mcc_id, customer_id, api_version')
     .eq('identificador', identificador)
     .eq('ativo', true)
     .maybeSingle()
@@ -139,6 +153,7 @@ async function buscarResumoSemCache(identificador: string, dias = 30): Promise<R
   const filtroAtivas = `campaign.status != 'REMOVED'`
 
   const periodo = filtroPeriodo(dias)
+  const versao = versaoEfetiva(creds.api_version)
   const campQuery = `
     SELECT campaign.id, campaign.name, campaign.status, campaign.primary_status, campaign_budget.amount_micros,
            metrics.clicks, metrics.impressions, metrics.cost_micros, metrics.ctr,
@@ -165,9 +180,9 @@ async function buscarResumoSemCache(identificador: string, dias = 30): Promise<R
   `
 
   const [campRows, kwRows, convRows] = await Promise.all([
-    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, campQuery),
-    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, kwQuery),
-    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, convQuery),
+    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, campQuery, versao),
+    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, kwQuery, versao),
+    gadsQuery(creds.customer_id, creds.mcc_id, accessToken, creds.developer_token, convQuery, versao),
   ])
 
   if (campRows === null) {
@@ -229,3 +244,100 @@ export const getResumoGoogleAds = unstable_cache(
   ['resumo-google-ads'],
   { revalidate: 900 }
 )
+
+// ── Relatório por período (e-mail para o cliente) ─────────────────────
+// Sem cache de propósito: o e-mail sai com o número do momento do envio.
+// Mesmo princípio do resumo: credencial nunca sai daqui, só agregados.
+export interface RelatorioGoogleAds {
+  disponivel: boolean
+  motivoIndisponivel?: string
+  desde: string
+  ate: string
+  totais: { impressoes: number; cliques: number; custo: number; conversoes: number }
+  campanhas: { nome: string; impressoes: number; cliques: number; custo: number; conversoes: number; orcamentoDiario: number }[]
+  porDia: { data: string; impressoes: number; cliques: number; custo: number }[]
+  keywords: { texto: string; campanha: string; impressoes: number; cliques: number; custo: number }[]
+  saldoDisponivel: number | null
+}
+
+export async function relatorioGoogleAds(identificador: string, desde: string): Promise<RelatorioGoogleAds> {
+  const ate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
+  const vazio: RelatorioGoogleAds = {
+    disponivel: false, desde, ate,
+    totais: { impressoes: 0, cliques: 0, custo: 0, conversoes: 0 },
+    campanhas: [], porDia: [], keywords: [], saldoDisponivel: null,
+  }
+
+  const admin = createAdminClient()
+  const { data: creds } = await admin
+    .from('google_ads_acessos')
+    .select('developer_token, client_id, client_secret, refresh_token, mcc_id, customer_id, api_version')
+    .eq('identificador', identificador)
+    .eq('ativo', true)
+    .maybeSingle()
+  if (!creds) return { ...vazio, motivoIndisponivel: 'Conta Google Ads não conectada.' }
+
+  const token = await renovarAccessToken(creds)
+  if (!token) return { ...vazio, motivoIndisponivel: 'Sessão do Google Ads expirada.' }
+
+  const versao = versaoEfetiva(creds.api_version)
+  const q = (query: string) =>
+    gadsQuery(creds.customer_id, creds.mcc_id, token, creds.developer_token, query, versao)
+  const periodo = `segments.date BETWEEN '${desde}' AND '${ate}'`
+  const ativas = `campaign.status = 'ENABLED'`
+
+  const [camp, dia, kw, saldo] = await Promise.all([
+    q(`SELECT campaign.name, campaign_budget.amount_micros, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions
+       FROM campaign WHERE ${periodo} AND ${ativas}`),
+    q(`SELECT segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros
+       FROM customer WHERE ${periodo}`),
+    q(`SELECT campaign.name, ad_group_criterion.keyword.text, metrics.impressions, metrics.clicks, metrics.cost_micros
+       FROM keyword_view WHERE ${periodo} AND ${ativas} AND metrics.impressions > 0
+       ORDER BY metrics.clicks DESC, metrics.impressions DESC LIMIT 10`),
+    q(`SELECT account_budget.approved_spending_limit_micros, account_budget.amount_served_micros
+       FROM account_budget WHERE account_budget.status = 'APPROVED'`),
+  ])
+  if (camp === null) return { ...vazio, motivoIndisponivel: 'Não foi possível consultar o Google Ads.' }
+
+  const num = (v: unknown) => Number(v ?? 0)
+  const campanhas = camp.map((r: any) => ({
+    nome: r.campaign.name as string,
+    orcamentoDiario: num(r.campaignBudget?.amountMicros) / 1e6,
+    impressoes: num(r.metrics?.impressions),
+    cliques: num(r.metrics?.clicks),
+    custo: num(r.metrics?.costMicros) / 1e6,
+    conversoes: num(r.metrics?.conversions),
+  })).sort((a: { cliques: number; impressoes: number }, b: { cliques: number; impressoes: number }) =>
+    b.cliques - a.cliques || b.impressoes - a.impressoes)
+
+  const porDia = (dia ?? []).map((r: any) => ({
+    data: r.segments.date as string,
+    impressoes: num(r.metrics?.impressions),
+    cliques: num(r.metrics?.clicks),
+    custo: num(r.metrics?.costMicros) / 1e6,
+  })).sort((a: { data: string }, b: { data: string }) => a.data.localeCompare(b.data))
+
+  const keywords = (kw ?? []).map((r: any) => ({
+    texto: r.adGroupCriterion?.keyword?.text ?? '',
+    campanha: r.campaign?.name ?? '',
+    impressoes: num(r.metrics?.impressions),
+    cliques: num(r.metrics?.clicks),
+    custo: num(r.metrics?.costMicros) / 1e6,
+  }))
+
+  const saldoDisponivel = saldo && saldo.length
+    ? saldo.reduce((s: number, r: any) =>
+        s + (num(r.accountBudget?.approvedSpendingLimitMicros) - num(r.accountBudget?.amountServedMicros)) / 1e6, 0)
+    : null
+
+  return {
+    disponivel: true, desde, ate,
+    totais: {
+      impressoes: campanhas.reduce((s: number, c: { impressoes: number }) => s + c.impressoes, 0),
+      cliques: campanhas.reduce((s: number, c: { cliques: number }) => s + c.cliques, 0),
+      custo: campanhas.reduce((s: number, c: { custo: number }) => s + c.custo, 0),
+      conversoes: campanhas.reduce((s: number, c: { conversoes: number }) => s + c.conversoes, 0),
+    },
+    campanhas, porDia, keywords, saldoDisponivel,
+  }
+}
