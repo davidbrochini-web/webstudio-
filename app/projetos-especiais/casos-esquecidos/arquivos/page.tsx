@@ -9,17 +9,17 @@ import DocSeladoCard from '@/components/casos-esquecidos/DocSeladoCard'
 
 export const revalidate = 300
 
-const DESC = 'Casos reais inexplicáveis e mistérios que a polícia não resolveu — Dyatlov, Máscaras de Chumbo, Mary Celeste — contados pelo Observador. Grátis.'
+const DESC = 'Casos reais sem explicação e mistérios que a polícia não resolveu — Dyatlov, Máscaras de Chumbo, Mary Celeste — contados pelo Observador. Grátis.'
 
 export const metadata: Metadata = {
-  title: 'Casos Reais Inexplicáveis e Mistérios Sem Solução', // ≤60 c/ template
+  title: 'Casos Reais Sem Explicação e Mistérios Sem Solução', // ≤60 c/ template
   description: DESC,
-  keywords: ['casos reais inexplicáveis', 'mistérios reais não resolvidos', 'casos misteriosos reais', 'mistérios sem solução', 'passo dyatlov', 'máscaras de chumbo', 'mary celeste', 'colônia de roanoke'],
+  keywords: ['casos reais sem explicação', 'casos reais inexplicáveis', 'mistérios reais não resolvidos', 'casos misteriosos reais', 'mistérios sem solução', 'passo dyatlov', 'máscaras de chumbo', 'mary celeste', 'colônia de roanoke'],
   alternates: { canonical: `${SITE_URL_BASE}/arquivos` },
   robots: { index: true, follow: true, 'max-image-preview': 'large' } as Metadata['robots'],
   openGraph: {
     ...ogBase('/arquivos'),
-    title: 'Casos Reais Inexplicáveis — Arquivos do Observador',
+    title: 'Casos Reais Sem Explicação — Arquivos do Observador',
     description: DESC,
     type: 'website',
     images: [{ url: `${SITE_URL_BASE}/assets/casos-esquecidos/og-home.jpg`, width: 1200, height: 630, alt: 'Arquivos do Observador' }],
@@ -40,7 +40,7 @@ export default async function ArquivosPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     '@id': `${SITE_URL_BASE}/arquivos`,
-    name: 'Arquivos do Observador — casos reais inexplicáveis',
+    name: 'Arquivos do Observador — casos reais sem explicação',
     description: DESC,
     url: `${SITE_URL_BASE}/arquivos`,
     inLanguage: 'pt-BR',
@@ -74,7 +74,7 @@ export default async function ArquivosPage() {
           </nav>
           <div className="section-head">
             <span className="eyebrow">Arquivos do Observador — {docs.length} {docs.length === 1 ? 'caso aberto' : 'casos abertos'}</span>
-            <h1>Casos reais inexplicáveis</h1>
+            <h1>Casos reais sem explicação</h1>
             <p>Mistérios reais que a polícia arquivou sem resposta, contados por quem foi até lá conferir.</p>
           </div>
           <div className="lore" style={{ maxWidth: '68ch', marginBottom: '2.5rem' }}>
