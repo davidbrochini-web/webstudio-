@@ -19,6 +19,12 @@ function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
 
+// Texto livre vindo do body: escapa tudo e só então converte **x** em negrito.
+const paragrafos = (ps: string[] | undefined, destaque = false) => (ps ?? [])
+  .map(p => `<p style="margin:0 0 12px;font-size:14px;line-height:1.5;color:#444;${destaque ? 'background:#f4f7f4;padding:14px;border-radius:10px;' : ''}">${
+    escapeHtml(p).replace(/\*\*(.+?)\*\*/g, '<strong style="color:#0A0F0B;">$1</strong>')}</p>`)
+  .join('')
+
 const TH = 'padding:6px 4px;font-size:11px;color:#888;text-align:right;font-weight:normal;border-bottom:1px solid #eee;'
 const TD = 'padding:6px 4px;font-size:13px;color:#2a2a2a;text-align:right;border-bottom:1px solid #f3f3f3;'
 const TDL = TD.replace('text-align:right', 'text-align:left')
@@ -35,6 +41,10 @@ export async function enviarRelatorioGoogleAds(params: {
   emailDestino: string | null
   saudacao?: string
   rel: RelatorioGoogleAds
+  /** Parágrafos livres (texto puro; **negrito** permitido) antes dos números e depois deles. */
+  abertura?: string[]
+  fechamento?: string[]
+  assunto?: string
 }): Promise<{ enviado: boolean }> {
   const { rel } = params
   if (!params.emailDestino || !rel.disponivel) return { enviado: false }
@@ -88,7 +98,8 @@ export async function enviarRelatorioGoogleAds(params: {
         <tr><td style="padding:28px;">
           <h1 style="margin:0 0 6px;font-size:18px;color:#0A0F0B;">Relatório Google Ads</h1>
           <p style="margin:0 0 16px;font-size:13px;color:#666;">${periodo}</p>
-          <p style="margin:0 0 16px;font-size:14px;color:#444;">Olá${params.saudacao ? `, ${escapeHtml(params.saudacao)}` : ''}! Segue o resumo das suas campanhas no Google desde o início da veiculação.</p>
+          <p style="margin:0 0 16px;font-size:14px;color:#444;">Olá${params.saudacao ? `, ${escapeHtml(params.saudacao)}` : ''}!${params.abertura?.length ? '' : ' Segue o resumo das suas campanhas no Google desde o início da veiculação.'}</p>
+          ${paragrafos(params.abertura)}
 
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 4px;">
             <tr>${card('Impressões', int(t.impressoes))}${card('Cliques', int(t.cliques))}${card('Investido', brl(t.custo))}</tr>
@@ -105,6 +116,7 @@ export async function enviarRelatorioGoogleAds(params: {
           ${rel.keywords.length ? titulo('Principais buscas que mostraram seu anúncio') + tabela(['Palavra-chave', 'Impr.', 'Cliques'], linhasKw) : ''}
 
           <p style="margin:8px 0 0;font-size:12px;color:#888;">Impressões: vezes em que o anúncio apareceu no Google. Cliques: pessoas que clicaram para ver o site. Contatos pelo anúncio: agendamentos, WhatsApp e ligações registrados a partir do anúncio.</p>
+          <div style="margin:20px 0 0;">${paragrafos(params.fechamento, true)}</div>
           <p style="margin:16px 0 0;font-size:14px;color:#444;">Qualquer dúvida, é só responder este e-mail.</p>
           <p style="margin:8px 0 0;font-size:14px;color:#444;">Um abraço,<br><strong>Equipe Omnidesign</strong></p>
         </td></tr>
@@ -122,7 +134,7 @@ export async function enviarRelatorioGoogleAds(params: {
     to: params.emailDestino,
     cc: ADMIN,
     replyTo: ADMIN,
-    subject: `Relatório Google Ads — ${periodo}: ${int(t.cliques)} cliques, ${int(t.impressoes)} impressões`,
+    subject: params.assunto ?? `Relatório Google Ads — ${periodo}: ${int(t.cliques)} cliques, ${int(t.impressoes)} impressões`,
     html,
   })
   return { enviado: r.ok }

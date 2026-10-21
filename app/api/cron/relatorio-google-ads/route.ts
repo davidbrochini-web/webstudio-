@@ -12,7 +12,9 @@ function autenticado(req: NextRequest): boolean {
 
 /**
  * Relatório de Google Ads por e-mail para o cliente (genérico por conta).
- * Body: { "identificador": "dentista-joao", "desde": "2026-10-08", "saudacao": "Dr. João" }
+ * Body: { "identificador": "dentista-joao", "desde": "2026-10-08", "saudacao": "Dr. João",
+ *         "abertura"?: string[], "fechamento"?: string[], "assunto"?: string }
+ * abertura/fechamento: parágrafos em texto puro (**negrito** permitido).
  * Destinatário: sites.email_notificacoes do tenant da conta, CC David.
  * Os números são puxados do Google no momento da chamada (sem cache).
  * Primeiro uso: Dr. João, 16/10/2026 às 20h BRT (migration 0074).
@@ -20,7 +22,7 @@ function autenticado(req: NextRequest): boolean {
 export async function POST(req: NextRequest) {
   if (!autenticado(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
-  const body = await req.json().catch(() => ({})) as { identificador?: string; desde?: string; saudacao?: string }
+  const body = await req.json().catch(() => ({})) as { identificador?: string; desde?: string; saudacao?: string; abertura?: string[]; fechamento?: string[]; assunto?: string }
   if (!body.identificador || !body.desde || !/^\d{4}-\d{2}-\d{2}$/.test(body.desde)) {
     return NextResponse.json({ error: 'identificador e desde (YYYY-MM-DD) obrigatórios' }, { status: 400 })
   }
@@ -40,6 +42,9 @@ export async function POST(req: NextRequest) {
     emailDestino: site?.email_notificacoes ?? null,
     saudacao: body.saudacao,
     rel,
+    abertura: Array.isArray(body.abertura) ? body.abertura.map(String) : undefined,
+    fechamento: Array.isArray(body.fechamento) ? body.fechamento.map(String) : undefined,
+    assunto: typeof body.assunto === 'string' ? body.assunto : undefined,
   })
 
   return NextResponse.json({ ok: true, enviado, totais: rel.totais, saldo: rel.saldoDisponivel })
